@@ -1,0 +1,39 @@
+.WelcomeContainer {
+    width: 55rem;
+    height: 42rem;
+    background-color: white;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+h1 {
+    font-family: Inter-light-italic;
+    margin: 5rem 0;
+}
+
+h1>span {
+    font-family: Inter-b;
+}
+
+p {
+    margin: 0;
+    font-size: .75rem;
+}
+button{
+    font-family: Inter-md !important;
+    font-size: 1.6rem !important;
+}
+
+.btn-green {
+    background-color: #07F407;
+    border-color: #07F407;
+}
+.btn-green:hover{
+    background-color: #02bd02;
+    border-color: #02bd02;
+}
+.div-btn{
+    margin-bottom: 2rem;
+}
