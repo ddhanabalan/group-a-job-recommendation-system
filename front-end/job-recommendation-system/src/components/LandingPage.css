@@ -1,4 +1,7 @@
 .WelcomeContainer {
+    position:absolute;
+    top: 5px;
+    left: 10px;
     width: 55rem;
     height: 42rem;
     background-color: white;
