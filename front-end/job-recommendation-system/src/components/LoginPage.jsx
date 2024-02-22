@@ -14,6 +14,7 @@ function Login(){
   console.log("errors", {errors})
   return (
     <>
+    {/*Login Form*/}
       <div className="login_container">
         <div className="form_container b-2">
           <form noValidate autoComplete='off' onSubmit={handleSubmit((data) => console.log(data))}>
@@ -23,7 +24,7 @@ function Login(){
               <p className="lg">Login with Credentials</p><br/>
               <Stack spacing={2}>
                 
-                
+                {/*email box validation checking*/}
                 <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: 1 }}>
                   <Mail sx={{position: 'relative', top: -3}} />
                   <TextField  variant="standard" 
@@ -39,6 +40,8 @@ function Login(){
                                             }})}/>
                               
                 </Box>
+
+                {/*password box validation checking*/}
                 <Box sx={{ display: 'flex', alignItems: 'flex-end', gap: 1 }}>
                   <Lock sx={{position: 'relative', top: -3}} />
                   <TextField variant="standard" 
