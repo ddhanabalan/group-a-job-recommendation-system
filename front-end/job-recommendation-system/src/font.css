@@ -18,3 +18,7 @@
     font-family: 'Inter-md';
     src: url(./fonts/Inter-Medium.otf);
 }
+@font-face {
+    font-family: 'Inter-black';
+    src: url(./fonts/Inter-Black.otf);
+}

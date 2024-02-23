@@ -1,13 +1,13 @@
-import Button from 'react-bootstrap/Button';
-import './LandingPage.css'
-export default function LandingPage() {
+import { Link } from 'react-router-dom'
+import './RedirectToRole.css'
+export default function RedirectToRole() {
 
     return (
         <div className="WelcomeContainer">
             <h1>Welcome to <span>CareerGo</span></h1>
             <div className="d-grid gap-1 col-6 mx-auto div-btn">
                 <p>Looking for a job?</p>
-                <button class="btn btn-primary btn-lg" type="button">Job Seeker</button>
+                <Link to="/login"><button class="btn btn-primary btn-lg" type="button">Job Seeker</button></Link>
             </div>
             <div className="d-grid gap-1 col-6 mx-auto div-btn">
                 <p>Looking for potential candidates for your company?</p>
