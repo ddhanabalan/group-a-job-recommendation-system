@@ -25,14 +25,16 @@ button{
     font-family: Inter-md !important;
     font-size: 1.6rem !important;
 }
-
+.btn{
+    width:100%
+}
 .btn-green {
     background-color: #07F407;
     border-color: #07F407;
 }
-.btn-green:hover{
-    background-color: #02bd02;
-    border-color: #02bd02;
+.btn-green:hover,.btn-green:active{
+    background-color: #02bd02 !important;
+    border-color: #02bd02 !important;
 }
 .div-btn{
     margin-bottom: 2rem;

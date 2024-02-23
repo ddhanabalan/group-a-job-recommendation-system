@@ -1,15 +1,21 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css'
-import LandingPage from './components/LandingPage';
-import LoginPage from './components/LoginPage';
-
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import LoginPage from './pages/LoginPage';
+import LandingPage from './pages/LandingPage';
+import SeekerLogin from './pages/SeekerLogin';
 function App() {
- 
+
 
   return (
     <>
-
-      <LoginPage/>
+      <BrowserRouter>
+        <Routes>
+          <Route index element={<LandingPage />} />
+          <Route path="/login" element={<LoginPage />} />
+        </Routes>
+      </BrowserRouter>
+      {/* <SeekerLogin /> */}
     </>
   )
 }
