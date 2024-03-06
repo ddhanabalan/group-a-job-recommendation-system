@@ -5,7 +5,7 @@ from pydantic import EmailStr
 from datetime import datetime
 
 from .database import SessionLocal, engine
-from .crud import seekercrud, recuitercrud
+from .crud import seekercrud, recruitercrud
 from .schemas import seekerschema, recruiterschema
 from .models import seekermodel, recruitermodel
 
