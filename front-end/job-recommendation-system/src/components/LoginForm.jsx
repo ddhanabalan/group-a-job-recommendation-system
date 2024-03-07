@@ -53,7 +53,6 @@ function LoginForm() {
                         message: "Email not valid"
                       }
                     })} />
-
               </Box>
 
               {/*password box validation checking*/}
@@ -74,7 +73,8 @@ function LoginForm() {
                         })} 
                       />
                     <Box onClick={handleVisibility}>{visible?<VisibilityIcon sx={{fontSize:'medium', position: 'relative', top: -2}}/>:<VisibilityOffIcon sx={{fontSize:'medium', position: 'relative', top: -2}}/>}</Box>
-                </Box>
+              </Box>
+              
             </Stack>
             <IconButton type="submit" sx={{ borderRadius: 50, backgroundColor: '#E7E4E4', position: 'relative', top: 20 , alignSelf:'center',width:45,height:45}}>
               <ArrowForwardRoundedIcon sx={{ color: 'black' }} />

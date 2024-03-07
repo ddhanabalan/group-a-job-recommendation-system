@@ -8,7 +8,7 @@ import { Box, Button, TextField, Stack } from '@mui/material'
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import CircleIcon from '@mui/icons-material/Circle';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 
 
 
@@ -24,11 +24,15 @@ function SignUpForm() {
   // const { info, setInfo } = useState(); 
 
   // console.log("errors", { errors })
+
   function handleVisibility(){
+    //Passsword Visibility toggle
     setVisible(!visible);
   }
 
+  
   function subForm(data){
+    //Form data submission and passing it to sign up page part 2
     console.log(data)
     navigate("../signup2/" + userType, {state: {"email": data.email, "password": data.password,"userType": userType}})
   }
@@ -118,7 +122,7 @@ function SignUpForm() {
 
             </form>
             <br/>
-            <a href="/login" className="sigup-redirect">Already a User? Sign in</a>
+            <Link to={'../login/'+ userType}  state={{"userType": userType}}><p className="sigup-redirect">Already a user? Sign in</p></Link>
         </Box>
 
         

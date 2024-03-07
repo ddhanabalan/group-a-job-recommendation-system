@@ -25,7 +25,9 @@ function SignUpForm2() {
 
   // const { info, setInfo } = useState(); 
 
+  
   function subForm(data){
+    //form data submission and redirecting to login
     const newdata = {...data,...location.state,};
     console.log("full data", newdata);
     setSuccess(true);
@@ -35,18 +37,20 @@ function SignUpForm2() {
 
   return (
     <>
-      {/*SignUp Form*/}
-      <div className="confirmed-box" style={{visibility:success?"visible":"hidden"}}><ConfBox/></div>
+      {/*SignUp Form part-2(Personal info from seekers/Company info from employers)*/}
+      
+      <div className="confirmed-box" style={{visibility:success?"visible":"hidden"}}><ConfBox/></div> {/*Final Registration confirmed message box*/}
       <div className="signup_container">
         
         <Box sx={{ boxShadow: 0, paddingBottom: 1, paddingTop: 3, paddingX: 4, borderRadius: 5, width: 800, height: 580, display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: 'white' }}>
           <form noValidate autoComplete='off' onSubmit={handleSubmit(subForm)}>
-            <h3 className="display-flex align-items-start signup-header">Personal information</h3>
+            <h3 className="display-flex align-items-start signup-header">{userType==="seeker"?"Personal":"Company"} information</h3>
             <br />
-
+            {/*form has separate textboxes displayed according to who is signing up*/}
             <Grid container spacing={3} sx={{ width: 680 }}>
               {
               userType==="seeker"?
+                  /*First Name*/
                   <Grid item xs>
                     <p className="text-head">First Name<span className="text-danger"> *</span></p>
                     <TextField variant="outlined" sx={{ '& .MuiInputBase-root': { height: '30px' }, width: 300, backgroundColor: '#D9D9D9', paddingY: 0 }} type='text'
@@ -62,6 +66,7 @@ function SignUpForm2() {
                     <p className="error-message">{errors.fname?.message || ""}</p>
                   </Grid>
                     :
+                  /*Company Name*/
                   <Grid item xs>
                   <p className="text-head">Company Name<span className="text-danger"> *</span></p>
                   <TextField variant="outlined" sx={{ '& .MuiInputBase-root': { height: '30px' }, width: 300, backgroundColor: '#D9D9D9', paddingY: 0 }} type='text'
@@ -75,6 +80,7 @@ function SignUpForm2() {
               }
               {
               userType==="seeker"?
+                  /*last name*/
                   <Grid item xs>
                     <p className="text-head">Last Name<span className="text-danger"> *</span></p>
                     <TextField variant="outlined" sx={{ '& .MuiInputBase-root': { height: '30px' }, width: 300, backgroundColor: '#D9D9D9', paddingY: 0 }}
@@ -91,6 +97,7 @@ function SignUpForm2() {
                     <p className="error-message">{errors.lname?.message || ""}</p>
                   </Grid>
                   :
+                  /*Address*/
                   <Grid item xs>
                     <p className="text-head">Address<span className="text-danger"> *</span></p>
                     <TextField variant="outlined" sx={{ '& .MuiInputBase-root': { height: '30px' }, width: 300, backgroundColor: '#D9D9D9', paddingY: 0 }}
@@ -103,6 +110,7 @@ function SignUpForm2() {
                     <p className="error-message">{errors.address?.message || ""}</p>
                   </Grid>
               }
+                {/*Country*/}
               <Grid item xs>
                 <p className="text-head">Country<span className="text-danger"> *</span></p>
                 <TextField variant="outlined" sx={{ '& .MuiInputBase-root': { height: '30px' }, width: 300, backgroundColor: '#D9D9D9', paddingY: 0 }} select
@@ -117,6 +125,8 @@ function SignUpForm2() {
                 </TextField>
                 <p className="error-message">{errors.country?.message || ""}</p>
               </Grid>
+
+              {/*Phone number*/}
               <Grid item xs>
                 <p className="text-head">Phone Number<span className="text-danger"> *</span></p>
 
@@ -137,6 +147,7 @@ function SignUpForm2() {
               
               {
               userType==="seeker"?
+                  /*Date of Birth*/
                   <Grid item xs>
                     <p className="text-head">Date-of-Birth<span className="text-danger"> *</span></p>
                     <TextField variant="outlined" sx={{ '& .MuiInputBase-root': { height: '30px' }, width: 300, backgroundColor: '#D9D9D9', paddingY: 0}}
@@ -150,6 +161,7 @@ function SignUpForm2() {
                     <p className="error-message">{errors.dob?.message || ""}</p>
                   </Grid>
                   :
+                  /*Pincode*/
                   <Grid item xs>
                   <p className="text-head">Pincode<span className="text-danger"> *</span></p>
                   <TextField variant="outlined" sx={{ '& .MuiInputBase-root': { height: '30px' }, width: 300, backgroundColor: '#D9D9D9', paddingY: 0 }} type='text'
@@ -168,6 +180,7 @@ function SignUpForm2() {
 
               {
               userType==="seeker"?
+                  /*Gender*/
                   <Grid item xs>
                     <p className="text-head">Gender<span className="text-danger"> *</span></p>
                     <TextField variant="outlined" sx={{ '& .MuiInputBase-root': { height: '30px' }, width: 300, backgroundColor: '#D9D9D9', paddingY: 0 }} select defaultValue="" 
@@ -181,6 +194,7 @@ function SignUpForm2() {
                     <p className="error-message">{errors.gender?.message || ""}</p>
                   </Grid>
                   :
+                  /*Industry*/
                   <Grid item xs>
                     <p className="text-head">Industry<span className="text-danger"> *</span></p>
                     <TextField variant="outlined" sx={{ '& .MuiInputBase-root': { height: '30px' }, width: 300, backgroundColor: '#D9D9D9', paddingY: 0 }} select defaultValue="" 
@@ -195,6 +209,7 @@ function SignUpForm2() {
                   </Grid>
               }
             </Grid>
+            {/*Submit button*/}
             <Box sx={{ display: "flex", flexDirection: "column-reverse", alignItems: "center", height: Object.keys(errors).length === 0?260:215 }}>
               <Button variant="contained" type="submit" sx={{ backgroundColor: 'black', borderRadius: 2, width: "175px", height: "50px" }} endIcon={<ArrowForwardIcon />}>
                 <p>Continue</p>
