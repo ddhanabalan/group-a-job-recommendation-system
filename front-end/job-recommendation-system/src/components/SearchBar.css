@@ -1,0 +1,9 @@
+.search {
+    width: 40%;
+    height: 50px;
+    background-color: white;
+    margin-top: 15px !important;
+    position: absolute !important;
+    top: 0px;
+    border-radius: 30px;
+}
