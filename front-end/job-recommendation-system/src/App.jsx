@@ -6,12 +6,15 @@ import LandingPage from './pages/LandingPage';
 import SeekerLogin from './pages/SeekerLogin';
 import SignUpPage from './pages/SignUp';
 import SignUpPage2 from './pages/SignUp2';
+import JobSection from './pages/JobSection';
+import CandidateSection from './pages/CandidateSection';
+import Error from './pages/Error';
 function App() {
 
 
   return (
     <>
-      <BrowserRouter>
+      {/* <BrowserRouter>
         <Routes>
           <Route index element={<LandingPage/>} />
           <Route path="/login/seeker" element={<LoginPage />} />
@@ -20,10 +23,14 @@ function App() {
           <Route path="/signup/employer" element={<SignUpPage />} />
           <Route path="/signup2/seeker" element={<SignUpPage2 />} />
           <Route path="/signup2/employer" element={<SignUpPage2 />} />
-
+          <Route index element={<LandingPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="*" element={<Error />} />
         </Routes>
-      </BrowserRouter>
-      {/* <SeekerLogin /> */}
+      </BrowserRouter> */}
+      {/* <JobSection /> */}
+      {/* <Error/> */}
+<CandidateSection/>
     </>
   )
 }
