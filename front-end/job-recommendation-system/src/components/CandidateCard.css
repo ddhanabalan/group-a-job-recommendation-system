@@ -1,0 +1,37 @@
+.chip-with-icon{
+    background-color: transparent !important;
+    font-size: 15px !important;
+    font-family: inherit !important;
+    color: #7B7777 !important;
+}
+.job-card-info-div-parameter{
+    color: #7B7777;
+}
+.job-card-info-div{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 5px;
+}
+
+.job-card-info-div p{
+    font-size: 15px;
+    width: 50%;
+}
+.job-card-div2 {
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+
+}
+
+.job-card-div1 {
+    width: 80%;
+}
+.job-card{
+    flex-direction: row-reverse;
+}
+.job-card-img-container{
+    height: 6.313rem;
+    width: 6.313rem;
+}

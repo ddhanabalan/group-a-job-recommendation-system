@@ -3,19 +3,25 @@ import './App.css'
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import LandingPage from './pages/LandingPage';
-import SeekerLogin from './pages/SeekerLogin';
+import JobSection from './pages/JobSection';
+import CandidateSection from './pages/CandidateSection';
+import Error from './pages/Error';
 function App() {
 
 
   return (
     <>
-      <BrowserRouter>
+      {/* <BrowserRouter>
         <Routes>
           <Route index element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
+          <Route path="*" element={<Error />} />
+
         </Routes>
-      </BrowserRouter>
-      {/* <SeekerLogin /> */}
+      </BrowserRouter> */}
+      {/* <JobSection /> */}
+      {/* <Error/> */}
+<CandidateSection/>
     </>
   )
 }

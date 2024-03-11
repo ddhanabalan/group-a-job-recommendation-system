@@ -1,0 +1,56 @@
+.card {
+    display: flex;
+    flex-direction: row;
+    box-sizing: border-box;
+    margin: 10px 0;
+    width: 95%;
+    height: fit-content;
+    background-color: white;
+    border-radius: 11px;
+    padding: 10px;
+    cursor: pointer;
+}
+.card:hover{
+    border: solid 1px black;
+}
+.card-h1{
+    font-size: 1.6rem;
+}
+.card-company-name-p{
+    font-size: .938rem;
+    color: #7B7777;
+}
+.card-img-container{
+    width: 4.5rem;
+    height: 4.5rem;
+    border-radius: 50%;
+    background-color: #D9D9D9;
+}
+.card-salary{
+    font-size: 1rem;
+    color: #2BA84A;
+    font-family: Inter-md;
+}
+.card-time-p{
+    font-size: .8rem;
+    color: #7B7777;
+    position: absolute;
+    bottom: 10px;
+}
+.card-tags{
+    margin: 5px 0 10px 0;
+}
+.card-tags-child{
+    font-family: Inter-regular !important;
+    border-radius: 3px !important;
+}
+.card-div2{
+width: 20%;
+display: flex;
+flex-direction: column;
+align-items: center;
+
+}
+.card-div1{
+width: 80%;
+}
