@@ -8,7 +8,9 @@ export default function CandidateSection() {
         <div id="page">
             <Filter title="Filter applicants"/>
             <StatsAI value="candidates"/>
-            <SearchBar toSearch="Search candidates" />
+            <div className="candidate-search">
+                <SearchBar toSearch="Search candidates" />
+            </div>
             <Candidates/>
         </div>
         

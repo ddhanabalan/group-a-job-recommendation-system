@@ -1,0 +1,86 @@
+.opening-card {
+    display: flex;
+    flex-direction: row;
+    box-sizing: border-box;
+    margin: 10px 0;
+    width: 95%;
+    height: fit-content;
+    background-color: #D9D9D9;
+    border-radius: 11px;
+    padding: 7px 17px;
+    cursor: pointer;
+}
+.opening-card:hover{
+    border: solid 1px black;
+}
+.opening-card-h1{
+    font-size: 20px;
+}
+.opening-card-company-name-p{
+    font-size:  13px;
+    color: #7B7777;
+}
+.opening-card-img-container{
+    margin-top: 2px;
+    margin-right: 4px !important;
+    width: 5.8rem;
+    height: 5.7rem;
+    border-radius: 50%;
+    background-color: white;
+}
+.opening-card-salary{
+    font-size: 0.9rem;
+    color: #2BA84A;
+    font-family: Inter-md;
+}
+.opening-card-time-p{
+    font-size: .8rem;
+    color: #7B7777;
+    position: absolute;
+    bottom: 10px;
+}
+.opening-card-tags{
+    margin: 5px 0 10px 0;
+}
+.opening-card-tags-child{
+    font-family: Inter-regular !important;
+    border-radius: 3px !important;
+}
+.opening-card-div2{
+width: 20%;
+display: flex;
+flex-direction: column;
+align-items: center;
+
+}
+.opening-card-div1{
+width: 80%;
+}
+
+.opening-vacancy-buttons{
+    margin-top: 5px;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+}
+.opening-vacancy-buttons p{
+    font-size: 11px;
+    margin-right: -5px;   
+}
+
+@media only screen and (max-width: 960px) {
+    .opening-vacancy-buttons {
+      flex-flow: column;
+      
+    }
+    .opening-vacancy-buttons button{
+        align-self: flex-start;
+    }
+
+    .opening-card-img-container{
+        width: 3rem;
+        height: 3rem;
+    }
+
+  }

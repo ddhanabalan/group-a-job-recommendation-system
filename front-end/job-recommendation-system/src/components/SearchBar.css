@@ -1,9 +1,11 @@
+
 .search {
-    width: 40%;
+    width: inherit;
     height: 50px;
-    background-color: white;
     margin-top: 15px !important;
     position: absolute !important;
+    display: flex;
+    justify-content: center;
     top: 0px;
     border-radius: 30px;
 }
