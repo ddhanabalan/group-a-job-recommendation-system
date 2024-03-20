@@ -10,16 +10,25 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@emotion/react": "^11.11.3",
+    "@emotion/react": "^11.11.4",
     "@emotion/styled": "^11.11.0",
+    "@lottiefiles/lottie-player": "^2.0.4",
     "@mui/icons-material": "^5.15.10",
-    "@mui/material": "^5.15.10",
+
+    "@mui/material": "^5.15.12",
+    "@mui/x-date-pickers": "^6.19.6",
     "bootstrap": "^5.3.3",
+    "dayjs": "^1.11.10",
+    "@mui/material": "^5.15.10",
+    "autosuggest-highlight": "^3.3.4",
+    "bootstrap": "^5.3.3",
+    "lottie-react": "^2.4.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.1",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.50.1",
-    "react-router-dom": "^6.22.1"
+    "react-router-dom": "^6.22.1",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@types/react": "^18.2.55",

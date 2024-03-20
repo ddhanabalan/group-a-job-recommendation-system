@@ -1,8 +1,9 @@
 import './StatsAI.css';
-export default function StatsAI() {
+import AiButton from './AiButton';
+export default function StatsAI({value}) {
     return (
         <div className="StatsAIContainer">
-
+            <AiButton value={value} />
         </div>
     )
 }

@@ -31,7 +31,7 @@ body {
   display: flex;
   min-width: 320px;
   min-height: 100vh;
-  font-family: Inter-regular;
+  font-family: Inter-regular !important;
 }
 
 h1 {
