@@ -13,7 +13,7 @@ def create_seeker_init(db: Session, user: seekerschema.SeekersInit):
 def get_seeker_userid_from_username(db: Session, username: str):
     return (
         db.query(seekermodel.SeekersDetails)
-        .add_column(seekermodel.SeekersDetails.userID)
+        .add_column(seekermodel.SeekersDetails.user_id)
         .filter(seekermodel.SeekersDetails.username == username)
         .first()
     )

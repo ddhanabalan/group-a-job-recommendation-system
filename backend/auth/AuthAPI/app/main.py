@@ -1,8 +1,12 @@
 from datetime import datetime, timedelta
 from enum import Enum
 
+import httpx
+import requests
+
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from fastapi.middleware.cors import CORSMiddleware
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
@@ -14,6 +18,14 @@ from .models import authmodel
 from .schemas import authschema
 
 authmodel.Base.metadata.create_all(bind=engine)
+origins = [
+    "http://localhost.tiangolo.com",
+    "https://localhost.tiangolo.com",
+    "http://localhost",
+    "http://127.0.0.1:5500",
+    "http://localhost:8001",
+    "http://localhost:5500",
+]
 
 
 def get_db():
@@ -28,6 +40,14 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 app = FastAPI()
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 
 class UserTypeEnum(str, Enum):
@@ -44,10 +64,10 @@ def get_password_hashed(password):
 
 
 def authenticate_user(username: str, password: str, db: Session = Depends(get_db)):
-    user = authschema.UserInDB(**authcrud.get_auth_user(db, username))
+    user = authcrud.get_auth_user(db=db, username=username)
     if not user:
         return False
-    if not verify_password(password, user.hashed_pwd):
+    if not verify_password(password, user.hashed_password):
         return False
     return user
 
@@ -82,7 +102,7 @@ async def get_current_user(
     except JWTError:
         raise credential_exception
 
-    user = authschema.UserInDB(**authcrud.get_auth_user(db, token_data.username))
+    user = authcrud.get_auth_user(db, token_data.username)
     if user is None:
         raise credential_exception
 
@@ -98,8 +118,10 @@ async def get_current_active_user(
 
 
 @app.post("/token", response_model=authschema.Token)
-async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
-    user = authenticate_user(form_data.username, form_data.password)
+async def login_for_access_token(
+    form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
+):
+    user = authenticate_user(form_data.username, form_data.password, db=db)
     if not user:
         return HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -120,14 +142,30 @@ async def users_info(current_user=Depends(get_current_active_user)):
     return current_user
 
 
-@app.post("/{user_type}/register", response_model=authschema.UserInDB)
+@app.post("/{user_type}/register", status_code=status.HTTP_201_CREATED)
 async def register(
     user: authschema.UserIn, user_type: UserTypeEnum, db: Session = Depends(get_db)
 ):
-    hashed_pwd = get_password_hashed(user.pwd)
+    hashed_pwd = get_password_hashed(user.password)
     user_dict = user.dict()
-    user_dict.pop("pwd")
-    user_dict.update({"hashed_password": hashed_pwd, "user_type": user_type})
-    user_db = authschema.UserInDB(**user_dict)
-    authcrud.create_auth_user_init(db=db, user=user_db)
-    return user_db
+    user_dict.pop("password")
+    response = await httpx.AsyncClient().post(
+        url=f"http://localhost:8001/user/{user_type.value}/init", json=user_dict
+    )
+    res_data = response.json()
+    if res_data is None:
+        return HTTPException(
+            status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
+            detail="User Init was not Successful"
+        )
+    user_db = authschema.UserInDB(
+        **{
+            "username": user_dict.get("username"),
+            "email": user_dict.get("email"),
+            "hashed_password": hashed_pwd,
+            "user_type": user_type.value,
+            "user_id": res_data["user_id"],
+        }
+    )
+    if response.status_code == 201:
+        authcrud.create_auth_user_init(db=db, user=user_db)
