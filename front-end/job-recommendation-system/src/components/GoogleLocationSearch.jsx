@@ -7,6 +7,7 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import parse from 'autosuggest-highlight/parse';
 import { debounce } from '@mui/material/utils';
+import { forwardRef } from 'react';
 
 // This key was created specifically for the demo in mui.com.
 // You need to create a new one for your application.
@@ -26,7 +27,7 @@ function loadScript(src, position, id) {
 
 const autocompleteService = { current: null };
 
-export default function GoogleLocationSearch({ data, changeFn, locationValue, value, updateValue }) {
+const GoogleLocationSearch = forwardRef(function GoogleLocationSearch({ data, changeFn, locationValue, value, updateValue,textFieldType="standard",disUnderline=false, textBgColor="#D9D9D9", textPad="0px", bordRad="0px", fntFam="auto", fntSize="auto", ...props}, ref) {
     const [inputValue, setInputValue] = React.useState('');
     const [options, setOptions] = React.useState([]);
     const loaded = React.useRef(false);
@@ -115,11 +116,22 @@ export default function GoogleLocationSearch({ data, changeFn, locationValue, va
             }}
             onInputChange={(event, newInputValue) => {
                 setInputValue(newInputValue);
-                changeFn(newInputValue)
+                changeFn(newInputValue);
             }}
             renderInput={(params) => (
-                <TextField {...params} placeholder={data.inputPlaceholder} value={locationValue} variant="standard" className='tags-add-input'
-                />
+                <TextField {...params} placeholder={data.inputPlaceholder} value={locationValue} variant={textFieldType} className='tags-add-input'
+                InputProps={{
+                    ...params.InputProps,
+                    disableUnderline: disUnderline,
+                  }}
+                ref={ref}
+                sx={{backgroundColor: textBgColor,
+                     paddingX: textPad,
+                     borderRadius: bordRad,
+                     '.MuiInputBase-input': { fontFamily: fntFam, fontSize: fntSize},              
+                    }}
+                {...props}/>
+
             )}
             renderOption={(props, option) => {
                 const matches =
@@ -156,4 +168,6 @@ export default function GoogleLocationSearch({ data, changeFn, locationValue, va
             }}
         />
     );
-}
+})
+
+export default GoogleLocationSearch;
