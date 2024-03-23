@@ -1,49 +1,46 @@
-from pydantic import BaseModel, EmailStr, PastDate
+from pydantic import BaseModel, EmailStr
 from datetime import datetime
+from typing import Optional
 
 
 class SeekersBase(BaseModel):
-    user_id: int
+    user_id: Optional[int] = None
     username: str
-    first_name: str or None = None
-    last_name: str or None = None
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
     email: EmailStr
-    dob: PastDate or None = None
+    dob: Optional[datetime] = None
 
 
-class SeekersInit(SeekersBase):
-    creation_at: datetime
-
-
-class SeekersDetails(SeekersInit):
-    bio: str or None = None
-    address: str or None = None
-    city: str or None = None
-    country: str or None = None
-    institution: str or None = None
-    experience: str or None = None
-    education: str or None = None
-    age: int or None = None
-    gender: str or None = None
-    location: str or None = None
-    creation_at: datetime or None = None
-    updated_at: datetime or None = None
+class SeekersDetails(SeekersBase):
+    bio: Optional[str]
+    address: Optional[str]
+    city: Optional[str]
+    country: Optional[str]
+    institution: Optional[str]
+    experience: Optional[str]
+    education: Optional[str]
+    age: Optional[int]
+    gender: Optional[str]
+    location: Optional[str]
+    created_at: Optional[datetime]
+    updated_at: Optional[datetime]
 
 
 class SeekersLocType(BaseModel):
     id: int
     user_id: int
     loc_type: str
-    creation_at: datetime or None = None
-    updated_at: datetime or None = None
+    created_at: Optional[datetime]
+    updated_at: Optional[datetime]
 
 
 class SeekersEmpType(BaseModel):
     id: int
     user_id: int
     emp_type: str
-    creation_at: datetime or None = None
-    updated_at: datetime or None = None
+    created_at: Optional[datetime]
+    updated_at: Optional[datetime]
 
 
 class SeekersFormerJob(BaseModel):
@@ -53,29 +50,29 @@ class SeekersFormerJob(BaseModel):
     job_company_name: str
     job_experience: str
     job_time: str
-    creation_at: datetime or None = None
-    updated_at: datetime or None = None
+    created_at: Optional[datetime]
+    updated_at: Optional[datetime]
 
 
 class SeekersSkill(BaseModel):
     id: int
     user_id: int
     skill: str
-    creation_at: datetime or None = None
-    updated_at: datetime or None = None
+    created_at: Optional[datetime]
+    updated_at: Optional[datetime]
 
 
 class SeekersEducation(BaseModel):
     id: int
     user_id: int
     education: str
-    creation_at: datetime or None = None
-    updated_at: datetime or None = None
+    created_at: Optional[datetime]
+    updated_at: Optional[datetime]
 
 
 class SeekersPOI(BaseModel):
     id: int
     user_id: int
     position: str
-    creation_at: datetime or None = None
-    updated_at: datetime or None = None
+    created_at: Optional[datetime]
+    updated_at: Optional[datetime]
