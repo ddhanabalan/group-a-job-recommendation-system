@@ -5,11 +5,45 @@ import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import AddIcon from '@mui/icons-material/Add';
 import { IconButton, Button, Icon } from '@mui/material';
 import SortIcon from '@mui/icons-material/Sort';
+import { useEffect, useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 
-export default function OpeningsListBar({data}) {
-    const demoInfo = { jobTitle: "Python Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: "50k", postDate: "13/9/23" };
-    const finalInfo = {...demoInfo, ...data}
-    console.log({finalInfo})
+function HighlightableJobCard({id, highlighted, data, onclick}){
+    return(
+    <div className="card-holder" onClick={()=>onclick(id)}>
+        <JobOpeningCard data={data} highlighted={highlighted}/>
+    </div>
+    )
+}
+
+export default function OpeningsListBar({data, userType, chooseEntry}) {
+    
+    const finalInfo = {...data}
+    
+    const [highlightedId, setHighlightedId] = useState(0);
+    const [searchVal, setSearch] = useState(null); //variable for storing earth star value
+    
+    
+    function onSearch(searchValue){
+        //function for updating searchvalue from searchbox
+        setSearch(searchValue);
+    }
+    
+    function highlightDiv(id){
+        //function for highlighting selected opening cards
+        setHighlightedId(id);
+        
+    }
+    
+    useEffect(() => {
+                    if(highlightedId!=null)
+                    {
+                    chooseEntry(highlightedId)
+                    }
+                    }, 
+                    [highlightedId])
+    
+    
     return (
         <>
         <div className="left-bar">
@@ -21,7 +55,7 @@ export default function OpeningsListBar({data}) {
                         </IconButton>
                     </div>
                     <div className="opening-search">
-                        <SearchBar searchHeight={33} searchColor="#D9D9D9"/>
+                        <SearchBar searchHeight={33} onSearch={onSearch} searchColor="#D9D9D9"/>
                     </div>
                     <div className="sort-icon">
                         <IconButton sx={{ borderRadius: 50, backgroundColor: '#E7E4E4',width:35,height:35}}>
@@ -29,27 +63,18 @@ export default function OpeningsListBar({data}) {
                         </IconButton>
                     </div>
                 </div>
-                {data.usertype=="employer"?
-                    <div className="create-vacancy-button">
-                        <Button variant="contained" sx={{color: 'black', backgroundColor: '#D9D9D9',width: 'fit-content', paddingY: "4px", paddingX: "10px", textTransform: "none", borderRadius: 20}} endIcon={<Icon sx={{backgroundColor: "white", borderRadius: 50, width: "23px", height: "23px", display: "flex", alignSelf: "centre"}}><AddIcon sx={{color:"black"}}/></Icon>}>
+                {userType=="employer"?
+                    <div className="create-vacancy-button" >
+                        <Link to="../employer/job-vacancy"><Button variant="contained"  sx={{color: 'black', backgroundColor: '#D9D9D9',width: 'fit-content', paddingY: "4px", paddingX: "10px", textTransform: "none", borderRadius: 20}} endIcon={<Icon sx={{backgroundColor: "white", borderRadius: 50, width: "23px", height: "23px", display: "flex", alignSelf: "centre"}}><AddIcon sx={{color:"black"}}/></Icon>}>
                         <p>Create Job Vacancy</p>
-                        </Button>
+                        </Button></Link>
                     </div>
                     :
                     <></>
                 }
             </div>
             <div className="openings-container">
-                <JobOpeningCard data={finalInfo} />
-                <JobOpeningCard data={finalInfo} />
-                <JobOpeningCard data={finalInfo} />
-                <JobOpeningCard data={finalInfo} />
-                <JobOpeningCard data={finalInfo} />
-                <JobOpeningCard data={finalInfo} />
-                <JobOpeningCard data={finalInfo} />
-                <JobOpeningCard data={finalInfo} />
-                <JobOpeningCard data={finalInfo} />
-                <JobOpeningCard data={finalInfo} />
+                {Object.keys(finalInfo).map((id) => (<HighlightableJobCard key={id} id={id} onclick={highlightDiv} highlighted={highlightedId == id} data={{...finalInfo[id],'userType':userType}} />))}
             </div>
         </div>
         </>

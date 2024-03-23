@@ -7,14 +7,15 @@ import DoneIcon from '@mui/icons-material/Done';
 import { Button } from '@mui/material';
 import { useState } from 'react';
 
-export default function JobDesciptionForm({ data }) {
-    const [submit, setSubmit] = useState(false);
+export default function JobDesciptionForm({ data, userType }) {
+    
+    const [submit, setSubmit] = useState(data.applied);
     const [tag_state,setTagState] = useState(false);
-    console.log({data});
+    
+    //function for senting applicant details from the form to company
     function handleApplication(){
         setSubmit(true);
     }
-
 
     return (
         <>
@@ -23,13 +24,17 @@ export default function JobDesciptionForm({ data }) {
                 <div className='job-desc-div1'>
                     <h1 className='job-desc-h1'>{data.jobTitle}</h1>
                     <p className='job-desc-company-name-p'>{data.companyName}</p>
-                    <Stack className="job-desc-tags" direction="row" spacing={1}>
-                        {data.tags.map(e => {
-                            return (<Chip key={uuid()} className="job-desc-tags-child" label={e} size='small' />)
-                        })}
+                    {data.tags?
+                        <Stack className="job-desc-tags" direction="row" spacing={1}>
+                            {data.tags.map(e => {
+                                return (<Chip key={uuid()} className="job-desc-tags-child" label={e} size='small' />)
+                            })}
 
-                    </Stack>
-                    <p className='job-desc-salary'>{data.currency} {data.salary} per month</p>
+                        </Stack>
+                        :
+                        <></>
+                    }
+                    <p className='job-desc-salary'>{data.currency} {data.salary[0]} - {data.salary[1]} per month</p>
                 </div>
                 <div className='job-desc-div2'>
                     <div className='job-desc-img-container'>
@@ -58,10 +63,11 @@ export default function JobDesciptionForm({ data }) {
 
                 <div className="job-skills">
                     <h6>Skills</h6>
+                    {/*skill tags */}
                     <div className='desc'><Stack className="job-desc-tags" direction="row" spacing={1}>
                         {data.skills.map(e => {
                             return (<div className="job-desc-skill-tags-child" key={uuid()}>
-                                    {e} {data.usertype=="employer"?
+                                    {e} {userType=="employer"?
                                             <></>
                                             :
                                             <div className={tag_state?"skill-status red":"skill-status green"}></div>
@@ -73,7 +79,7 @@ export default function JobDesciptionForm({ data }) {
                     </div>
                 </div>    
             </div>
-            {data.usertype=="employer"?
+            {userType=="employer"?
                 <></>
                 :
                 <div className="apply-button">

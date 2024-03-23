@@ -9,6 +9,7 @@ import JobSection from './pages/JobSection';
 import JobOpeningsSection from './pages/JobOpenings';
 import CandidateSection from './pages/CandidateSection';
 import Error from './pages/Error';
+import CreateJobVacancy from './pages/CreateJobVacancy';
 function App() {
 
 
@@ -28,6 +29,7 @@ function App() {
           <Route path="/candidates" element={<CandidateSection/>}/>
           <Route path="/seeker/openings" element={<JobOpeningsSection/>}/>
           <Route path="/employer/openings" element={<JobOpeningsSection/>}/>
+          <Route path="/employer/job-vacancy" element={<CreateJobVacancy/>}/>
           <Route index element={<LandingPage />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="*" element={<Error />} />
