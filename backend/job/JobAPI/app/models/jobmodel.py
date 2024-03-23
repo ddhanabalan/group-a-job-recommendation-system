@@ -1,6 +1,6 @@
 from sqlalchemy import Column, String, Integer, DateTime, Boolean, ForeignKey
 from sqlalchemy.orm import relationship
-from sqlalchemy.sql import func
+from datetime import datetime
 from ..database import Base
 
 
@@ -20,8 +20,8 @@ class JobVacancy(Base):
     last_date = Column(DateTime)
     closed = Column(Boolean, default=False)
     no_of_request = Column(Integer)
-    creation_at = Column(DateTime, default=func.now())
-    updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
 
 class JobRequest(Base):
@@ -31,5 +31,5 @@ class JobRequest(Base):
     job_id = Column(Integer, ForeignKey("job_vacancy.job_id"), index=True)
     user_id = Column(Integer, index=True)
     status = Column(String(64))
-    creation_at = Column(DateTime, default=func.now())
-    updated_at = Column(DateTime, default=func.now(), onupdate=func.now())
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

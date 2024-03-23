@@ -1,8 +1,7 @@
 from datetime import datetime, timedelta
 from enum import Enum
-
 import httpx
-import requests
+from typing import Union
 
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -64,7 +63,7 @@ def get_password_hashed(password):
 
 
 def authenticate_user(username: str, password: str, db: Session = Depends(get_db)):
-    user = authcrud.get_auth_user(db=db, username=username)
+    user = authcrud.get_auth_user_by_username(db=db, username=username)
     if not user:
         return False
     if not verify_password(password, user.hashed_password):
@@ -102,7 +101,7 @@ async def get_current_user(
     except JWTError:
         raise credential_exception
 
-    user = authcrud.get_auth_user(db, token_data.username)
+    user = authcrud.get_auth_user_by_username(db, token_data.username)
     if user is None:
         raise credential_exception
 
@@ -123,7 +122,7 @@ async def login_for_access_token(
 ):
     user = authenticate_user(form_data.username, form_data.password, db=db)
     if not user:
-        return HTTPException(
+        raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid Username or Password",
             headers={"WWW-Authenticate": "Bearer"},
@@ -144,8 +143,26 @@ async def users_info(current_user=Depends(get_current_active_user)):
 
 @app.post("/{user_type}/register", status_code=status.HTTP_201_CREATED)
 async def register(
-    user: authschema.UserIn, user_type: UserTypeEnum, db: Session = Depends(get_db)
+    user: Union[authschema.UserInSeeker, authschema.UserInRecuiter],
+    user_type: UserTypeEnum,
+    db: Session = Depends(get_db),
 ):
+    if (
+        user_type.value == "s"
+        and type(user) is not authschema.UserInSeeker
+        or user_type.value == "r"
+        and type(user) is not authschema.UserInRecuiter
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
+            detail="Data Requested doesn't validate the user type",
+        )
+    existing_user = authcrud.get_auth_user_by_username(db=db,username=user.username)
+    if existing_user is not None:
+        raise HTTPException(
+            status_code=status.HTTP_302_FOUND,
+            detail="User Already Exist!",
+        )
     hashed_pwd = get_password_hashed(user.password)
     user_dict = user.dict()
     user_dict.pop("password")
@@ -154,9 +171,9 @@ async def register(
     )
     res_data = response.json()
     if res_data is None:
-        return HTTPException(
+        raise HTTPException(
             status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
-            detail="User Init was not Successful"
+            detail="User Init was not Successful",
         )
     user_db = authschema.UserInDB(
         **{
@@ -168,4 +185,4 @@ async def register(
         }
     )
     if response.status_code == 201:
-        authcrud.create_auth_user_init(db=db, user=user_db)
+        authcrud.create_auth_user(db=db, user=user_db)

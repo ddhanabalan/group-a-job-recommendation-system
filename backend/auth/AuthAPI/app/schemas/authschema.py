@@ -1,5 +1,6 @@
-from pydantic import BaseModel, EmailStr, PastDate
+from pydantic import BaseModel, EmailStr
 from datetime import datetime
+from typing import Optional
 
 
 class Token(BaseModel):
@@ -8,28 +9,39 @@ class Token(BaseModel):
 
 
 class TokenData(BaseModel):
-    username: str or None = None
+    username: Optional[str] = None
 
 
-class User(BaseModel):
+class UserBase(BaseModel):
     username: str
     email: EmailStr
     disabled: bool = False
-    user_id: int | None = None
+    user_id: Optional[int] = None
     user_type: str
-    last_login: datetime | None = None
-    creation_at: datetime | None = None
-    updated_at: datetime | None = None
+    last_login: Optional[datetime] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
 
-class UserInDB(User):
+class User(UserBase):
+    pass
+
+
+class UserInDB(UserBase):
     hashed_password: str
 
 
 class UserIn(BaseModel):
     username: str
-    first_name: str | None = None
-    last_name: str | None = None
     email: EmailStr
-    dob: PastDate | None = None
+    dob: Optional[datetime] = None
     password: str
+
+
+class UserInSeeker(UserIn):
+    first_name: Optional[str]
+    last_name: Optional[str]
+
+
+class UserInRecruiter(UserIn):
+    company_name: Optional[str]

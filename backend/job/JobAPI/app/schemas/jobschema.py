@@ -1,4 +1,5 @@
 from pydantic import BaseModel
+from typing import Optional
 from datetime import datetime
 
 
@@ -13,7 +14,7 @@ class JobVacancyBase(BaseModel):
     emp_type: str
     last_date: datetime
     closed: bool = False
-    no_of_request: int | None
+    no_of_request: Optional[int] = 0
 
 
 class JobVacancyCreate(JobVacancyBase):
@@ -23,8 +24,8 @@ class JobVacancyCreate(JobVacancyBase):
 class JobVacancy(JobVacancyBase):
     job_id: int
     company_id: int
-    creation_at: datetime
-    updated_at: datetime
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
     class Config:
         orm_mode = True
@@ -34,8 +35,8 @@ class JobRequestBase(BaseModel):
     job_id: int
     user_id: int
     status: str
-    creation_at: datetime
-    updated_at: datetime
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
 
 class JobRequestCreate(JobRequestBase):

@@ -1,5 +1,6 @@
 from sqlalchemy import Column, String, Integer, Date, DateTime, Boolean
 from sqlalchemy.orm import relationship
+from datetime import datetime
 from ..database import Base
 
 
@@ -14,5 +15,5 @@ class UserAuth(Base):
     user_id = Column(Integer)
     user_type = Column(String(1))
     last_login = Column(DateTime)
-    creation_at = Column(DateTime)
-    updated_at = Column(DateTime)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

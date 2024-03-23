@@ -1,5 +1,5 @@
 import httpx
-from fastapi import FastAPI, Depends, HTTPException, status,Request
+from fastapi import FastAPI, Depends, HTTPException, status, Request
 from sqlalchemy.orm import Session
 from pydantic import EmailStr
 from fastapi.middleware.cors import CORSMiddleware
@@ -35,7 +35,6 @@ app.add_middleware(
 )
 
 
-
 def get_db():
     db = SessionLocal()
     try:
@@ -46,7 +45,7 @@ def get_db():
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
-    detail = exc.errors()[0]['msg']
+    detail = exc.errors()[0]["msg"]
     raise HTTPException(status_code=422, detail=detail)
 
 
@@ -61,14 +60,33 @@ async def user_seeker_init(
     user: seekerschema.SeekersBase, db: Session = Depends(get_db)
 ):
     username = user.username
+    print("in")
     user_details = seekercrud.get_seeker_userid_from_username(db=db, username=username)
     if user_details is not None:
         return {"user_id": user_details.user_id}
     user_details = user.dict()
-    user_details.update({"creation_at": datetime.now()})
-    user_init = seekerschema.SeekersInit(**user_details)
+    user_init = seekerschema.SeekersBase(**user_details)
     seekercrud.create_seeker_init(db, user_init)
     user_details = seekercrud.get_seeker_userid_from_username(db=db, username=username)
+    return {"user_id": user_details.user_id}
+
+
+@app.post("/user/r/init", status_code=status.HTTP_201_CREATED)
+async def user_recruiters_init(
+    user: recruiterschema.RecruiterBase, db: Session = Depends(get_db)
+):
+    username = user.username
+    user_details = recruitercrud.get_recruiter_userid_from_username(
+        db=db, username=username
+    )
+    if user_details is not None:
+        return {"user_id": user_details.user_id}
+    user_details = user.dict()
+    user_init = recruiterschema.RecruiterBase(**user_details)
+    recruitercrud.create_recruiter_init(db, user_init)
+    user_details = recruitercrud.get_recruiter_userid_from_username(
+        db=db, username=username
+    )
     return {"user_id": user_details.user_id}
 
 
