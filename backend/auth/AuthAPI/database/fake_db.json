@@ -1,0 +1,10 @@
+{
+  "test": {
+    "username": "test",
+    "hashed_pwd": "$2b$12$IrpUz0nNKhZWAqS.6ve7Ceb9G0Pua4z3uSly2VPZbTW1m76W9PBee",
+    "name": "test123",
+    "email": "test@gmail.com",
+    "disabled": false,
+    "user_type": "s"
+  }
+}

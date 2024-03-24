@@ -1,0 +1,11 @@
+.confirm-box{
+    background-color: #99FF99;
+    font-family: Inter-md;
+    font-size: 37px;
+    border-radius: 7px;
+    width: 500px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

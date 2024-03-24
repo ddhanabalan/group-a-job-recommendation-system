@@ -1,0 +1,35 @@
+.ai-btn-container {
+    width: 100%;
+    height: 18.75rem;
+    border-radius: 19px;
+    background: linear-gradient(180deg, rgba(220, 3, 255, 1) 0%, rgba(218, 121, 234, 1) 47%, rgba(197, 195, 198, 0) 100%);
+    box-shadow: 0 8px 15px -7px #00000025;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+}
+
+.ai-btn {
+    width: 130px;
+    height: 130px;
+    background-color: white;
+    cursor: pointer;
+    border-radius: 50%;
+    margin: 15px 0;
+    padding: 0;
+}
+.ai-btn:hover{
+    border-color: black;
+}
+.ai-btn-h3{
+    font-family: Inter-b;
+    font-size: 24px;
+    margin: 0 0;
+}
+.ai-btn-p {
+    font-family: Inter-regular;
+    font-size: .875rem;
+    text-align: center;
+}

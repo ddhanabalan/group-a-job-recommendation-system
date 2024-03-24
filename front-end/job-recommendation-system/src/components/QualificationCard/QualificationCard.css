@@ -1,0 +1,30 @@
+.qualification-card {
+    margin: 0 auto;
+    width: 90%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: .938rem;
+    border-bottom: solid 1px black;
+    margin: .938rem 0;
+    padding: .938rem 0;
+}
+
+.qualification-card-image {
+    width: 4.375rem;
+    height: 4.375rem;
+    background-color: #D9D9D9;
+}
+.qualification-card-h2{
+    font-size: 1.25rem;
+    font-family: Inter-b;
+}
+.qualification-card-h3 {
+    font-size: .938rem;
+}
+.qualification-card-p {
+    font-size: .875rem;
+}
+.qualification-card-action-btns{
+    visibility: hidden;
+}

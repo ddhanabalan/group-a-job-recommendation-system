@@ -1,0 +1,10 @@
+.cards-container{
+    width: 50%;
+    height: 90vh;
+    top: 10vh;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+}

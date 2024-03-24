@@ -1,0 +1,11 @@
+.feature-box-middle-pane {
+    background-color: transparent;
+    border: solid 1px #7B7777;
+    width: 95%;
+    height: fit-content;
+    min-height: 10rem;
+}
+.feature-box-container{
+    width: 100%;
+    height: fit-content;
+}

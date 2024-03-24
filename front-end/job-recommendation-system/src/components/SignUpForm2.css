@@ -1,0 +1,17 @@
+.info-header{
+    font-family: Inter-black;   
+}
+
+.text-head{
+    font-weight: bold;
+    font-family: Inter-sb;
+}
+
+.error-message{
+    color: red;
+}
+
+.confirmed-box{
+    position: relative;
+    top: -30px;
+}

@@ -1,0 +1,25 @@
+.nav-bar {
+    position: fixed;
+    top: 85vh;
+    width: 8.75rem;
+    border-radius: 40px;
+    display: flex;
+    z-index: 2;
+    align-self: center;
+    justify-content: space-between;
+    box-sizing: border-box;
+    padding: .3rem;
+    box-shadow: 0px 4px 8px 0px rgba(0, 0, 0, 0.25);
+    /* height: 3.75rem; */
+}
+
+.nav-btn-active {
+    border: solid 1px black !important;
+}
+.nav-bar svg{
+    color: black ;
+}
+.nav-bar,
+.nav-bar button {
+    background-color: white;
+}

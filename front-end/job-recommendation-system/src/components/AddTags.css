@@ -1,0 +1,48 @@
+.tags-container {
+    width: 100%;
+    height: fit-content;
+    min-height: 10rem;
+    background-color: #D9D9D9;
+    border-radius: 15px;
+    position: relative;
+}
+
+.tags-heading {
+    font-size: 15px;
+}
+
+.add-btn {
+    position: absolute !important;
+    right: 0px;
+    top: -4px;
+}
+
+.tags-add-input {
+    position: absolute;
+    left: 15px;
+    width: 80% !important;
+}
+
+.tags-add-input input {
+    padding: 5px 0 2px 0 !important;
+}
+
+.tags-stack {
+    padding: 10px;
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.tag {
+    margin: 4px 2px !important;
+    background-color: white !important;
+    color: black !important;
+}
+
+.tag svg {
+    color: black !important;
+}
+
+.tag svg:hover {
+    color: rgb(54, 54, 54) !important;
+}

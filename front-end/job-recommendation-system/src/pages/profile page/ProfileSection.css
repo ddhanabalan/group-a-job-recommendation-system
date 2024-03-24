@@ -1,0 +1,38 @@
+#profile-page {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+}
+
+.profile-body-section {
+    width: 100%;
+    height: fit-content;
+    display: flex;
+}
+
+.profile-pane {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+}
+
+.profile-left-pane {
+    width: 25%;
+}
+
+.profile-middle-pane {
+    width: 50%;
+}
+
+.profile-right-pane {
+    width: 25%;
+}
+
+/* #profile-section-skills div {
+    background-color: white !important;
+} */
+.spacer-div{
+    width: 100%;
+    height: 10rem;
+}
