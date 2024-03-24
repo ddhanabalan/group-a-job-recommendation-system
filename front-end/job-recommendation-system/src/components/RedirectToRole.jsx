@@ -1,5 +1,5 @@
-import { Link } from 'react-router-dom'
-import './RedirectToRole.css'
+import { Link } from 'react-router-dom';
+import './RedirectToRole.css';
 export default function RedirectToRole() {
 
     return (

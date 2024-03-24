@@ -1,23 +1,21 @@
 // import React, { useState } from 'react'
-import './LoginForm.css'
-import { useForm } from 'react-hook-form'
+import { useForm } from 'react-hook-form';
+import { Box, IconButton, TextField, Stack } from '@mui/material'
 import Mail from '@mui/icons-material/Mail'
 import Lock from '@mui/icons-material/Lock'
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded'
-import { Box, IconButton, TextField, Stack } from '@mui/material'
+import './LoginForm.css'
 
-function LoginForm() {
+function LoginForm({callAPI}) {
 
-  const { register, formState: { errors }, handleSubmit } = useForm();
-  // const { info, setInfo } = useState(); 
-
-  // console.log("errors", { errors })
+  const { register, formState: { errors },handleSubmit } = useForm();
+ 
   return (
     <>
       {/*Login Form*/}
       <div className="login_container">
 
-        <form noValidate autoComplete='off' onSubmit={handleSubmit((data) => console.log(data))}>
+        <form noValidate autoComplete='off' onSubmit={handleSubmit((data)=>callAPI(data))}>
           <h3 className="text-center login-header">Login</h3>
           <br />
           <Box sx={{ boxShadow: 2, paddingBottom: 4, paddingTop: 3, paddingX: 3, borderRadius: 5, width: 340 ,display:'flex',flexDirection:'column'}}>
@@ -32,7 +30,7 @@ function LoginForm() {
                   type='email'
                   helperText={'email' in errors ? errors.email?.message : ""}
                   error={'email' in errors}
-                  {...register("email",
+                  {...register("username",
                     {
                       required: "please enter email",
                       pattern: {
