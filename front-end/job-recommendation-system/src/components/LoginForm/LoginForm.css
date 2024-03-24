@@ -1,6 +1,6 @@
 .login_container {
     width: 22rem;
-    height: 40rem;
+    height: fit-content;
     align-self: flex-start;
     margin: 0 100px;
     padding: 20px 0;
