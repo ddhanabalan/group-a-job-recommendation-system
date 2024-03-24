@@ -1,3 +1,4 @@
+import './JobSection.css'
 import Filter from "../components/Filter";
 import StatsAI from "../components/StatsAI";
 import SearchBar from "../components/SearchBar";
@@ -9,8 +10,10 @@ export default function JobSection() {
             <Filter title="Filter jobs" />
             <NavigationBar active="job/candidate"/>
             <StatsAI value="jobs"/>
-            <SearchBar toSearch="Search Jobs" />
-            <Jobs />
+            <div className="job-search">
+            <SearchBar toSearch="Search Jobs" /> 
+            </div>
+            <Jobs/>
         </div>
     )
 }

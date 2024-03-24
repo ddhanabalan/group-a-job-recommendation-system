@@ -1,8 +1,8 @@
 .login_container {
-    width: 25rem;
-    height: 50rem;
+    width: 22rem;
+    height: 40rem;
     align-self: flex-start;
-    margin: 0 50px;
+    margin: 0 100px;
     padding: 20px 0;
     border: none;
     border-radius: 20px;
@@ -23,7 +23,8 @@
 
 
 .lk {
-    margin: 20px 0;
+    margin-top: 20px;
+    margin-bottom: 100px;    
     font-size: 14px;
     font-family: Inter-regular;
     color: #0D63B2;
@@ -33,11 +34,12 @@
 .lg {
     font-size: 12px;
     font-family: Inter-b;
+
 }
 
 .sigup-redirect {
-    position: absolute;
-    bottom: 100px;
+    margin-top: 100px;
+    margin-bottom: 10px;
     font-family: Inter-b;
     color: #2299F8;
     font-size:14px;

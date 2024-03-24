@@ -1,5 +1,6 @@
 from sqlalchemy import Column, String, Integer, Date, DateTime, ForeignKey
 from sqlalchemy.orm import relationship
+from datetime import datetime
 from ..database import Base
 
 
@@ -22,8 +23,8 @@ class SeekersDetails(Base):
     age = Column(Integer)
     gender = Column(String(16))
     location = Column(String(512))
-    creation_at = Column(DateTime)
-    updated_at = Column(DateTime)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
 
 class SeekersPOI(Base):
@@ -31,8 +32,8 @@ class SeekersPOI(Base):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("seekers_details.user_id"))
     position = Column(String(32))
-    creation_at = Column(DateTime)
-    updated_at = Column(DateTime)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
 
 class SeekersEmpType(Base):
@@ -41,8 +42,8 @@ class SeekersEmpType(Base):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("seekers_details.user_id"), index=True)
     emp_type = Column(String(32))
-    creation_at = Column(DateTime)
-    updated_at = Column(DateTime)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
 
 class SeekersEducation(Base):
@@ -51,8 +52,8 @@ class SeekersEducation(Base):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("seekers_details.user_id"), index=True)
     education = Column(String(32))
-    creation_at = Column(DateTime)
-    updated_at = Column(DateTime)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
 
 class SeekersSkill(Base):
@@ -61,8 +62,8 @@ class SeekersSkill(Base):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("seekers_details.user_id"), index=True)
     skill = Column(String(32))
-    creation_at = Column(DateTime)
-    updated_at = Column(DateTime)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
 
 class SeekersFormerJob(Base):
@@ -74,8 +75,8 @@ class SeekersFormerJob(Base):
     jobCompanyName = Column(String(256))
     jobExperience = Column(String(32))
     jobTime = Column(String(64))
-    creation_at = Column(DateTime)
-    updated_at = Column(DateTime)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
 
 class SeekersLocType(Base):
@@ -84,5 +85,5 @@ class SeekersLocType(Base):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("seekers_details.user_id"), index=True)
     loc_type = Column(String(32))
-    creation_at = Column(DateTime)
-    updated_at = Column(DateTime)
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
