@@ -11,6 +11,7 @@ import JobOpeningsSection from './pages/JobOpenings';
 import CandidateSection from './pages/CandidateSection';
 import Error from './pages/Error';
 import ProfileSection from './pages/profile page/ProfileSection';
+import CreateJobVacancy from './pages/CreateJobVacancy';
 function App() {
   const [loginStatus, SetLoginStatus] = useState();
   const updateState = (state) => {
