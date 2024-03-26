@@ -1,4 +1,4 @@
-import '../AddTags.css';
+import '../AddTags/AddTags.css';
 import './AddSkills.css';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
