@@ -1,17 +1,17 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import './App.css'
+import './App.css';
 import { useState } from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import LoginPage from './pages/LoginPage';
-import LandingPage from './pages/LandingPage';
-import SignUpPage from './pages/SignUp';
-import SignUpPage2 from './pages/SignUp2';
-import JobSection from './pages/JobSection';
-import JobOpeningsSection from './pages/JobOpenings';
-import CandidateSection from './pages/CandidateSection';
-import Error from './pages/Error';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import CandidateSection from './pages/CandidateSection/CandidateSection';
+import CreateJobVacancy from './pages/CreateJobVacancy/CreateJobVacancy';
+import Error from './pages/Error/Error';
+import JobOpeningsSection from './pages/JobOpenings/JobOpenings';
+import JobSection from './pages/JobSection/JobSection';
+import LandingPage from './pages/LandingPage/LandingPage';
+import LoginPage from './pages/LoginPage/LoginPage';
+import SignUpPage from './pages/SignUp/SignUp';
+import SignUpPage2 from './pages/SignUp/SignUp2';
 import ProfileSection from './pages/profile page/ProfileSection';
-import CreateJobVacancy from './pages/CreateJobVacancy';
 function App() {
   const [loginStatus, SetLoginStatus] = useState();
   const updateState = (state) => {

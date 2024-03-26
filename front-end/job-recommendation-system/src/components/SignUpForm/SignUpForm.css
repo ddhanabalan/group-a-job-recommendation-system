@@ -1,0 +1,36 @@
+.signup-header{
+    font-family: Inter-black;   
+}
+
+.signup-container{
+    box-shadow: 2px; 
+    padding: 4px 3px 3px 3px; 
+    border-radius: 20px;
+    padding: 20px 235px; 
+    width: fit-content ;
+    height: fit-content; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center;
+    gap: 30px;
+    background-color: white;
+}
+
+.details-container{
+    box-shadow: 0px 5px 12px 0px rgba(0, 0, 0, 0.2);  
+    padding: 7px 6px 3px 3px;
+    
+    border-radius: 10px; 
+    width: fit-content ; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center;
+    background-color: white;
+    gap: 30px;
+    padding: 20px;
+}
+
+.signup-redirect{
+    font-family:Inter-b;
+    font-size: 14; 
+}
