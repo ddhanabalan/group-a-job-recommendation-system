@@ -7,7 +7,8 @@ import ContactCard from '../../components/ContactCard/ContactCard';
 import AddSkills from '../../components/AddSkills/AddSkills';
 import NavigationBar from '../../components/NavigationBar/NavigationBar';
 import './ProfileSection.css';
-export default function ProfileSection({ data }) {
+export default function ProfileSection({ data, updateState }) {
+    updateState(false);
     const [skill, SetSkill] = useState('');
     const [skills, SetSkills] = useState([{ tag: "software", id: uuid() }, { tag: "data science", id: uuid() }]);
 

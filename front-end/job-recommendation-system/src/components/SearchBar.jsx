@@ -20,7 +20,7 @@ export default function SearchBar({toSearch, searchHeight=50, searchColor="white
             value={searchTerm}
             onChange={handleChange}
             InputProps={{
-                sx: { borderRadius: 30 ,height: searchHeight, backgroundColor: searchColor},
+                sx: { borderRadius: 30, height: 'fit-content', backgroundColor: searchColor },
                 endAdornment: (
                     <InputAdornment position="end">
                         <SearchIcon />
