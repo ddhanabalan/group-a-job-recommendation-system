@@ -23,7 +23,7 @@ export default function MultipleOptions({ heading, options, onChange=() => {}, p
         <Box className='options-container' sx={{marginY: margY}}>
                 {heading==""?<></>:<p className="options-heading">{heading}</p>}
 
-                <FormGroup row >
+                <FormGroup row sx={{padding:'.6rem'}}>
                     {options.map(e => {
                         return (
                             <FormControlLabel key={uuid()} control={<Checkbox value={e} checked={checkedItems[e] || false} onChange={() => handleChange(e)} icon={<RadioButtonUncheckedRoundedIcon />} checkedIcon={<CheckCircleRoundedIcon />} />}

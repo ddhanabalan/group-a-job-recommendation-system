@@ -1,11 +1,23 @@
 .confirm-box{
     background-color: #99FF99;
-    font-family: Inter-md;
-    font-size: 37px;
+    font-family: Inter-sb;
     border-radius: 7px;
     width: 500px;
-    height: 40px;
+    height: 2.5rem;
     display: flex;
     align-items: center;
     justify-content: center;
+}
+.confirm-box >p{
+    font-size: 1rem;
+}
+.success-ani{
+    height: 100%;
+    width: auto;
+    display: flex;
+    align-items: center;
+}
+.success-ani svg{
+    height: 60% !important;
+    width: auto;
 }

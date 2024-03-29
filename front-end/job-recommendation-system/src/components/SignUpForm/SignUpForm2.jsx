@@ -1,224 +1,296 @@
 import './SignUpForm2.css'
 import { useForm } from 'react-hook-form'
 import { useState } from 'react'
-import ConfBox from "../ConfirmMsgBox/ConfirmMsgBox.jsx"
+import { Button, TextField, MenuItem } from '@mui/material'
 import { useLocation, useNavigate } from 'react-router-dom';
+import { styled } from '@mui/material/styles';
+import ConfBox from "../ConfirmMsgBox/ConfirmMsgBox.jsx"
+import LoaderAnimation from '../../components/LoaderAnimation/LoaderAnimation';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
-import { Box, Grid, Button, TextField, MenuItem } from '@mui/material'
-
+import axios from '../../api/axios';
+import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
+import profilePlaceholder from '../../images/profile_placeholder.svg';
 
 function SignUpForm2() {
+  const VisuallyHiddenInput = styled('input')({
+    clip: 'rect(0 0 0 0)',
+    clipPath: 'inset(50%)',
+    height: 1,
+    overflow: 'hidden',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    whiteSpace: 'nowrap',
+    width: 1,
+  });
 
-  const { register, formState: { errors }, handleSubmit, watch } = useForm({ mode: 'onTouched' });
-  
-  const countries = ['India','USA','Australia','China','Japan']
+  const { register, formState: { errors }, handleSubmit, watch } = useForm({ mode: 'onTouched' | 'onSubmit' });
+
+  const countries = ['India', 'USA', 'Australia', 'China', 'Japan']
   const genders = ['Male', 'Female', 'Transgender', 'Others']
   const industries = ['Automobile', 'Agriculture', 'Medical', 'Defense', 'Aeronautical', 'Chemical']
   const location = useLocation();
   const navigate = useNavigate();
-  const userType = location["pathname"].includes("employer")?"employer":"seeker";
+  const userType = location["pathname"].includes("employer") ? "employer" : "seeker";
   //const userType = location.state.userType;
-  const [success, setSuccess] = useState(false)
+  const [loading, SetLoading] = useState(false)
+  const [success, SetSuccess] = useState(false)
+  const [img, SetImg] = useState();
+  const handleChange = (e) => {
+    console.log(e.target.files)
+    const data = new FileReader();
+    data.addEventListener('load', () => {
+      SetImg(data.result)
+    })
+    data.readAsDataURL(e.target.files[0])
+
+  }
 
 
 
 
   // const { info, setInfo } = useState(); 
 
-  
-  function subForm(data){
+
+  async function subForm(data) {
     //form data submission and redirecting to login
-    const newdata = {...data,...location.state,};
+    SetLoading(true)
+    console.log(location)
+    const newdata = { ...data, ...location.state, 'profile_picture': img };
+    delete newdata.userType
     console.log("full data", newdata);
-    setSuccess(true);
-    navigate("/login/" + userType);
+    try {
+       await axios.post('/seeker/register', newdata, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+
+    } catch (e) {
+      console.log(e)
+      alert(e.message)
+    }
+    SetLoading(false)
+    SetSuccess(true);
+    // setTimeout(()=>{setSuccess(false)},3000)
+    // navigate("/login/" + userType);
 
   }
 
   return (
     <>
       {/*SignUp Form part-2(Personal info from seekers/Company info from employers)*/}
-      
-      <div className="confirmed-box" style={{visibility:success?"visible":"hidden"}}><ConfBox/></div> {/*Final Registration confirmed message box*/}
+      {loading && <LoaderAnimation />}
+      <div className="confirmed-box" style={{ visibility: success ? "visible" : "hidden" }}><ConfBox /></div> {/*Final Registration confirmed message box*/}
       <div className="signup-container info-box">
-        
-        <h3 className="signup-header personal-info">{userType==="seeker"?"Personal":"Company"} information</h3>
+
+        <h3 className="signup-header info-header">{userType === "seeker" ? "Personal" : "Company"} information</h3>
         {/*<Box sx={{ boxShadow: 0, paddingBottom: 1, paddingTop: 3, paddingX: 4, borderRadius: 5, width: 800, height: 580, display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: 'white' }}>*/}
-        
-          <form noValidate autoComplete='off' onSubmit={handleSubmit(subForm)}>
-            
-            {/*form has separate textboxes displayed according to who is signing up*/}
-            <div className='personal-info-container'>
-              {
-              userType==="seeker"?
-                  /*First Name*/
-                  <div>
-                    <p className="text-head">First Name<span className="text-danger"> *</span></p>
-                    <TextField variant="outlined" sx={{ '& .MuiInputBase-root': { height: '30px' }, width: 300, backgroundColor: '#D9D9D9' }} type='text'
-                      error={'fname' in errors}
-                      {...register("fname",
-                        {
-                          required: "please enter first name",
-                          pattern: {
-                            value: /^[a-zA-Z]+$/,
-                            message: "Only letters allowed"
-                          }
-                        })}/>
-                    <p className="error-message">{errors.fname?.message || ""}</p>
-                  </div>
-                    :
-                  /*Company Name*/
-                  <div>
+
+        <form noValidate autoComplete='on' onSubmit={handleSubmit(subForm)}>
+          {/*form has separate textboxes displayed according to who is signing up*/}
+          <div className='personal-info-container'>
+
+
+            <div>
+              <p className="text-head">Username<span className="text-danger"> *</span></p>
+              <TextField className="personal-details-input" variant="outlined" type='text'
+                error={'username' in errors}
+                {...register("username",
+                  {
+                    required: "username cannot be empty",
+                    pattern: {
+                      value: /^[a-zA-Z]+$/,
+                      message: "Only letters allowed"
+                    }
+                  })} />
+              <p className="error-message">{errors.username?.message || ""}</p>
+            </div>
+            <div className="personal-detail-picture">
+              <p className="text-head">Profile picture (optional)</p>
+              <div className='card-img-container personal-picture'>
+                <Button
+                  component="label"
+                  role={undefined}
+                  variant="contained"
+                  startIcon={<AddCircleRoundedIcon />}
+                >
+                  <VisuallyHiddenInput type="file" onChange={handleChange} />
+                </Button>
+                <div className='p-image'>
+                  <img src={img ? img : profilePlaceholder} alt="profile picture" />
+                </div>
+              </div>
+            </div>
+
+            {
+              userType === "seeker" ?
+                /*First Name*/
+                <div>
+                  <p className="text-head">First Name<span className="text-danger"> *</span></p>
+                  <TextField className="personal-details-input" variant="outlined" type='text'
+                    error={'first_name' in errors}
+                    {...register("first_name",
+                      {
+                        required: "please enter first name",
+                        pattern: {
+                          value: /^[a-zA-Z]+$/,
+                          message: "Only letters allowed"
+                        }
+                      })} />
+                  <p className="error-message">{errors.first_name?.message || ""}</p>
+                </div>
+                :
+                /*Company Name*/
+                <div>
                   <p className="text-head">Company Name<span className="text-danger"> *</span></p>
-                  <TextField variant="outlined" sx={{ '& .MuiInputBase-root': { height: '30px' }, width: 300, backgroundColor: '#D9D9D9' }} type='text'
-                    error={'cname' in errors}
-                    {...register("cname",
+                  <TextField className="personal-details-input" variant="outlined" type='text'
+                    error={'company_name' in errors}
+                    {...register("company_name",
                       {
                         required: "please enter company name",
-                      })}/>
-                  <p className="error-message">{errors.cname?.message || ""}</p>
-                  </div>
-              }
-              {
-              userType==="seeker"?
-                  /*last name*/
-                  <div>
-                    <p className="text-head">Last Name<span className="text-danger"> *</span></p>
-                    <TextField variant="outlined" sx={{ '& .MuiInputBase-root': { height: '30px' }, width: 300, backgroundColor: '#D9D9D9' }}
+                      })} />
+                  <p className="error-message">{errors.company_name?.message || ""}</p>
+                </div>
+            }
+            {
+              userType === "seeker" ?
+                /*last name*/
+                <div>
+                  <p className="text-head">Last Name<span className="text-danger"> *</span></p>
+                  <TextField className="personal-details-input" variant="outlined"
 
-                      error={'lname' in errors}
-                      {...register("lname",
-                        {
-                          required: "please enter last name",
-                          pattern: {
-                            value: /^[a-zA-Z]+$/,
-                            message: "Only letters allowed"
-                          }
-                        })} />
-                    <p className="error-message">{errors.lname?.message || ""}</p>
-                  </div>
-                  :
-                  /*Address*/
-                  <div>
-                    <p className="text-head">Address<span className="text-danger"> *</span></p>
-                    <TextField variant="outlined" sx={{ '& .MuiInputBase-root': { height: '30px' }, width: 300, backgroundColor: '#D9D9D9'}}
+                    error={'last_name' in errors}
+                    {...register("last_name",
+                      {
+                        required: "please enter last name",
+                        pattern: {
+                          value: /^[a-zA-Z]+$/,
+                          message: "Only letters allowed"
+                        }
+                      })} />
+                  <p className="error-message">{errors.last_name?.message || ""}</p>
+                </div>
+                :
+                /*Address*/
+                <div>
+                  <p className="text-head">Address<span className="text-danger"> *</span></p>
+                  <TextField className="personal-details-input" variant="outlined"
 
-                      error={'address' in errors}
-                      {...register("address",
-                        {
-                          required: "please enter address",
-                        })} />
-                    <p className="error-message">{errors.address?.message || ""}</p>
-                  </div>
-              }
-                {/*Country*/}
-              <div>
-                <p className="text-head">Country<span className="text-danger"> *</span></p>
-                <TextField variant="outlined" sx={{ '& .MuiInputBase-root': { height: '30px' }, width: 300, backgroundColor: '#D9D9D9' }} select
-                  defaultValue=""
+                    error={'address' in errors}
+                    {...register("address",
+                      {
+                        required: "please enter address",
+                      })} />
+                  <p className="error-message">{errors.address?.message || ""}</p>
+                </div>
+            }
+            {/*Country*/}
+            <div>
+              <p className="text-head">Country<span className="text-danger"> *</span></p>
+              <TextField className="personal-details-input" variant="outlined" select
+                defaultValue=""
 
-                  error={'country' in errors}
-                  {...register("country",
-                    {
-                      required: "please select country",
-                    })}>
-                  {countries.map((op) => (<MenuItem key={op} value={op}>{op}</MenuItem>))}
-                </TextField>
-                <p className="error-message">{errors.country?.message || ""}</p>
-              </div>
+                error={'country' in errors}
+                {...register("country",
+                  {
+                    required: "please select country",
+                  })}>
+                {countries.map((op) => (<MenuItem key={op} value={op}>{op}</MenuItem>))}
+              </TextField>
+              <p className="error-message">{errors.country?.message || ""}</p>
+            </div>
 
-              {/*Phone number*/}
-              <div>
-                <p className="text-head">Phone Number<span className="text-danger"> *</span></p>
+            {/*Phone number*/}
+            <div>
+              <p className="text-head">Phone Number<span className="text-danger"> *</span></p>
 
 
-                <TextField variant="outlined" sx={{ '& .MuiInputBase-root': { height: '30px' }, width: 300, backgroundColor: '#D9D9D9'}}
-                  error={'phone' in errors}
-                  {...register("phone",
-                    {
-                      required: "please enter phone number",
-                      pattern: {
-                        value: /^\d{10}$/, // Regular expression to check exactly 10 digits
-                        message: "Phone number must be exactly 10 numbers"
-                      }
-                    })} />
+              <TextField className="personal-details-input" variant="outlined"
+                error={'phone' in errors}
+                {...register("phone",
+                  {
+                    required: "please enter phone number",
+                    pattern: {
+                      value: /^\d{10}$/, // Regular expression to check exactly 10 digits
+                      message: "Phone number must be exactly 10 numbers"
+                    }
+                  })} />
 
-                <p className="error-message">{errors.phone?.message || ""}</p>
-              </div>
-              
-              {
-              userType==="seeker"?
-                  /*Date of Birth*/
-                  <div>
-                    <p className="text-head">Date-of-Birth<span className="text-danger"> *</span></p>
-                    <TextField variant="outlined" sx={{ '& .MuiInputBase-root': { height: '30px' }, width: 300, backgroundColor: '#D9D9D9'}}
-                      type="date"
-                      error={'dob' in errors}
-                      {...register("dob",
-                        {
-                  
-                          required: "please enter dob",
-                        })} />
-                    <p className="error-message">{errors.dob?.message || ""}</p>
-                  </div>
-                  :
-                  /*Pincode*/
-                  <div>
+              <p className="error-message">{errors.phone?.message || ""}</p>
+            </div>
+
+            {
+              userType === "seeker" ?
+                /*Date of Birth*/
+                <div>
+                  <p className="text-head">Date-of-Birth<span className="text-danger"> *</span></p>
+                  <TextField className="personal-details-input" variant="outlined"
+                    type="date"
+                    error={'dob' in errors}
+                    {...register("dob",
+                      {
+
+                        required: "please enter dob",
+                      })} />
+                  <p className="error-message">{errors.dob?.message || ""}</p>
+                </div>
+                :
+                /*Pincode*/
+                <div>
                   <p className="text-head">Pincode<span className="text-danger"> *</span></p>
-                  <TextField variant="outlined" sx={{ '& .MuiInputBase-root': { height: '30px' }, width: 300, backgroundColor: '#D9D9D9' }} type='text'
-                    error={'pin' in errors}
-                    {...register("pin",
+                  <TextField className="personal-details-input" variant="outlined" type='text'
+                    error={'pincode' in errors}
+                    {...register("pincode",
                       {
                         required: "please enter pincode",
                         pattern: {
                           value: /^[0-9]+$/,
                           message: "Only numbers allowed"
                         }
-                      })}/>
-                  <p className="error-message">{errors.pin?.message || ""}</p>
-                  </div>
-              }
+                      })} />
+                  <p className="error-message">{errors.pincode?.message || ""}</p>
+                </div>
+            }
 
-              {
-              userType==="seeker"?
-                  /*Gender*/
-                  <div>
-                    <p className="text-head">Gender<span className="text-danger"> *</span></p>
-                    <TextField variant="outlined" sx={{ '& .MuiInputBase-root': { height: '30px' }, width: 300, backgroundColor: '#D9D9D9' }} select defaultValue="" 
-                      error={'gender' in errors}
-                      {...register("gender",
-                        {
-                          required: "please select gender"
-                        })}>
-                      {genders.map((op) => (<MenuItem key={op} value={op}>{op}</MenuItem>))}
-                    </TextField>
-                    <p className="error-message">{errors.gender?.message || ""}</p>
-                  </div>
-                  :
-                  /*Industry*/
-                  <div>
-                    <p className="text-head">Industry<span className="text-danger"> *</span></p>
-                    <TextField variant="outlined" sx={{ '& .MuiInputBase-root': { height: '30px' }, width: 300, backgroundColor: '#D9D9D9' }} select defaultValue="" 
-                      error={'industry' in errors}
-                      {...register("industry",
-                        {
-                          required: "please select industry"
-                        })}>
-                      {industries.map((op) => (<MenuItem key={op} value={op}>{op}</MenuItem>))}
-                    </TextField>
-                    <p className="error-message">{errors.industry?.message || ""}</p>
-                  </div>
-              }
-            </div>
-            {/*Submit button*/}
-            <Box sx={{ display: "flex", flexDirection: "column-reverse", alignItems: "center", height: Object.keys(errors).length === 0?260:215 }}>
-              <Button variant="contained" type="submit" sx={{ backgroundColor: 'black', borderRadius: 2, width: "175px", height: "50px" }} endIcon={<ArrowForwardIcon />}>
-                <p>Continue</p>
-              </Button>
-            </Box>
-          </form>
-          <br />
-          
+            {
+              userType === "seeker" ?
+                /*Gender*/
+                <div>
+                  <p className="text-head">Gender<span className="text-danger"> *</span></p>
+                  <TextField className="personal-details-input" variant="outlined" select defaultValue=""
+                    error={'gender' in errors}
+                    {...register("gender",
+                      {
+                        required: "please select gender"
+                      })}>
+                    {genders.map((op) => (<MenuItem key={op} value={op}>{op}</MenuItem>))}
+                  </TextField>
+                  <p className="error-message">{errors.gender?.message || ""}</p>
+                </div>
+                :
+                /*Industry*/
+                <div>
+                  <p className="text-head">Industry<span className="text-danger"> *</span></p>
+                  <TextField className="personal-details-input" variant="outlined" select defaultValue=""
+                    error={'industry' in errors}
+                    {...register("industry",
+                      {
+                        required: "please select industry"
+                      })}>
+                    {industries.map((op) => (<MenuItem key={op} value={op}>{op}</MenuItem>))}
+                  </TextField>
+                  <p className="error-message">{errors.industry?.message || ""}</p>
+                </div>
+            }
+          </div>
+          {/*Submit button*/}
+          <Button type='submit' className="continue-btn" variant="contained" sx={{ backgroundColor: 'black', borderRadius: 2 }} endIcon={<ArrowForwardIcon />}>
+            <p >Continue</p>
+          </Button>
+        </form>
+        <br />
+
       </div>
     </>
   )

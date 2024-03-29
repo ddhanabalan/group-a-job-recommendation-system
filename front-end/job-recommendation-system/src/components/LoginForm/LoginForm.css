@@ -1,20 +1,23 @@
 .login_container {
+    position: relative;
     width: 22rem;
-    height: fit-content;
+    height: 80vh;
     align-self: flex-start;
-    margin: 0 100px;
+    margin-left:100px;
     padding: 20px 0;
     border: none;
     border-radius: 20px;
     display: flex;
     flex-direction: column;
-    align-items: center; 
+    align-items: center;
     font-family: Inter-regular;
     background: white;
 }
+
 .login-header {
     font-size: 30px;
     font-family: Inter-black;
+    margin-bottom: 1rem;
 }
 
 .form_container {
@@ -24,24 +27,20 @@
 
 .lk {
     margin-top: 20px;
-    margin-bottom: 100px;    
     font-size: 14px;
     font-family: Inter-regular;
-    color: #0D63B2;
-    text-decoration: underline;
+    color: #0D63B2; 
 }
 
 .lg {
     font-size: 12px;
     font-family: Inter-b;
-
 }
 
 .sigup-redirect {
-    margin-top: 100px;
-    margin-bottom: 10px;
+    position: absolute;
+    bottom: 1rem;
     font-family: Inter-b;
     color: #2299F8;
-    font-size:14px;
-    text-decoration: underline;
+    font-size: 14px;
 }

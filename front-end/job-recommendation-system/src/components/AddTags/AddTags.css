@@ -25,6 +25,7 @@
 
 .tags-add-input input {
     padding: 5px 0 2px 0 !important;
+    font-family: Inter-regular !important;
 }
 
 .tags-stack {

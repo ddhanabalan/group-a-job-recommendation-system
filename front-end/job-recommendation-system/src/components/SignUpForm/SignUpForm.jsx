@@ -36,19 +36,19 @@ function SignUpForm() {
     console.log(data)
     navigate("../signup2/" + userType, { state: { "email": data.email, "password": data.password, "userType": userType } })
   }
-
+  const color = watch("password") === watch("cpassword") ? "#07F407" : "#ff2d00"
 
   return (
     <>
       {/*SignUp Form*/}
       <div className="signup-container">
-      <h3 className="display-7 text-center signup-header">SignUp</h3>
+      <h3 className="signup-header">SignUp</h3>
         {/*<Box sx={{ boxShadow: 2, paddingBottom: 4, paddingTop: 3, paddingX: 3, borderRadius: 5, width: 800 ,height: 580, display:'flex', flexDirection:'column', alignItems:'center',backgroundColor: 'white'}}>*/}
-        <form noValidate autoComplete='off' onSubmit={handleSubmit(subForm)}>
+        <form noValidate autoComplete='on' onSubmit={handleSubmit(subForm)}>
           <br />
           {/*<Box sx={{ boxShadow: 7, paddingBottom: 6, paddingTop: 3, paddingX: 3, borderRadius: 5, width: 340 ,display:'flex',alignItems: 'center', flexDirection:'column'}}>*/}
           <div className="details-container">
-            <Stack spacing={1}>
+            <Stack spacing={2}>
 
               {/*email box validation checking*/}
               <Box sx={{ display: 'flex', alignItems: 'email' in errors ? 'center' : 'flex-end', gap: 1 }}>
@@ -71,7 +71,7 @@ function SignUpForm() {
               </Box>
 
               {/*password box validation checking*/}
-              <Box sx={{ display: 'flex', alignItems: 'password' in errors ? 'center' : 'flex-end', gap: 1 }}>
+              <Box sx={{ display: 'flex', alignItems: 'password' in errors ? 'baseline' : 'flex-end', gap: 1 }}>
                 <Lock sx={{ position: 'relative', top: 0 }} />
                 <TextField variant="standard"
                   label="Password"
@@ -81,10 +81,10 @@ function SignUpForm() {
                   {...register("password",
                     {
                       required: "password is required",
-                      // pattern: {
-                      //   value: /^(?=.*[0-9])(?=.*[!@#$%^&*.,])[a-zA-Z0-9!@#$%^&*.,]{6,16}$/,
-                      //   message: "password must be atleast 8 characters long"
-                      // }
+                      pattern: {
+                        value: /^(?=.*[0-9])(?=.*[!@#$%^&*.,])[a-zA-Z0-9!@#$%^&*.,]{8,16}$/,
+                        message: "Your password should have one lowercase, one uppercase, one number, one special symbol from [!@#$%^&*_=+-], and be 8 to 16 characters long"
+                      }
                     })}
                   sx={{ width: 230 }} />
                 <Box onClick={handleVisibility}>{visible ? <VisibilityIcon sx={{ fontSize: 'medium', position: 'relative', top: -2, left: -3 }} /> : <VisibilityOffIcon sx={{ fontSize: 'medium', position: 'relative', top: -3 }} />}</Box>
@@ -93,7 +93,7 @@ function SignUpForm() {
               <Box sx={{ display: 'flex', alignItems: 'cpassword' in errors ? 'center' : 'flex-end', gap: 1 }}>
                 <Box sx={{}}>
                   <Lock sx={{ position: 'relative', top: 0 }} />
-                  <CircleIcon sx={{ color: "#07F407", fontSize: "small", position: "relative", bottom: -8, left: -10 }} />
+                  <CircleIcon sx={{ color: color, fontSize: "small", position: "relative", bottom: -8, left: -10 }} />
                 </Box>
 
                 <TextField variant="standard"
@@ -106,10 +106,6 @@ function SignUpForm() {
                     {
                       required: "password is required",
                       validate: (val) => val === watch("password") || "The passwords don't match",
-                      // pattern: {
-                      //   value: /^(?=.*[0-9])(?=.*[!@#$%^&*.,])[a-zA-Z0-9!@#$%^&*.,]{6,16}$/,
-                      //   message: "password must be atleast 8 characters long"
-                      // }
                     })}
                   sx={{ width: 230, position: 'relative', left: -12 }} />
               </Box>
@@ -121,8 +117,7 @@ function SignUpForm() {
           </div>
 
         </form>
-        <br />
-        <div><Link to={'../login/' + userType} state={{ "userType": userType }}><p className="sigup-redirect">Already a user? Sign in</p></Link></div>
+       <Link to={'../login/' + userType} state={{ "userType": userType }}><p className="sigup-redirect">Already a user? Sign in</p></Link>
       </div>
     </>
   )

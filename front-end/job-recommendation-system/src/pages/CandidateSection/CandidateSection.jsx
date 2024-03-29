@@ -1,7 +1,7 @@
 import Filter from "../../components/Filter/Filter";
 import StatsAI from "../../components/StatsAI/StatsAI";
 import SearchBar from "../../components/SearchBar/SearchBar";
-import Candidates from "../../components/Candidates";
+import Candidates from "../../components/Candidates/Candidates";
 import './CandidateSection.css';
 export default function CandidateSection() {
     return (
