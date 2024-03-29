@@ -1,5 +1,4 @@
 from datetime import datetime, timedelta
-from enum import Enum
 import httpx
 from typing import Union
 
@@ -75,11 +74,6 @@ app.add_middleware(
 )
 
 
-class UserTypeEnum(str, Enum):
-    recruiter = "r"
-    seeker = "s"
-
-
 def verify_password(plain_password, hashed_password):
     return pwd_context.verify(plain_password, hashed_password)
 
@@ -107,7 +101,7 @@ def create_access_token(data: dict, expires_delta: timedelta or None = None):
         expires = datetime.utcnow() + expires_delta
     else:
         expires = datetime.utcnow() + timedelta(minutes=15)
-    to_encode.update({"exp": str(expires)})
+    to_encode.update({"exp": expires})
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
@@ -205,19 +199,26 @@ async def auth(request: Request, db: Session = Depends(get_db)):
 
 @app.get("/verify", status_code=status.HTTP_200_OK)
 async def verify_token(current_user=Depends(get_current_active_user)):
-    return
+    return {"status": "Successful"}
+
+
+@app.get("/email/verify/{token}")
+async def email_verify(token: str, db: Session = Depends(get_db)):
+    user: authschema.UserInDB = await get_current_user(token, db=db)
+    user.verified = True
+    authcrud.update_auth_user(db=db, user_id=user.user_id, user_update=user)
 
 
 @app.post("/{user_type}/register", status_code=status.HTTP_201_CREATED)
 async def register(
-    user: Union[authschema.UserInSeeker, authschema.UserInRecruiter],
-    user_type: UserTypeEnum,
+    user: Union[authschema.UserInRecruiter,authschema.UserInSeeker],
+    user_type: authschema.UserTypeEnum,
     db: Session = Depends(get_db),
 ):
     if (
-        user_type.value == "s"
+        user_type.value == "seeker"
         and type(user) is not authschema.UserInSeeker
-        or user_type.value == "r"
+        or user_type.value == "recruiter"
         and type(user) is not authschema.UserInRecruiter
     ):
         raise HTTPException(
@@ -225,7 +226,7 @@ async def register(
             detail="Data Requested doesn't validate the user type",
         )
     existing_user = authcrud.get_auth_user_by_username(db=db, username=user.username)
-    if existing_user is not None:
+    if existing_user:
         raise HTTPException(
             status_code=status.HTTP_302_FOUND,
             detail="User Already Exist!",
@@ -234,7 +235,7 @@ async def register(
     user_dict = user.dict()
     user_dict.pop("password")
     response = await httpx.AsyncClient().post(
-        url=f"http://{USER_API_HOST}:{PORT}/user/{user_type.value}/init", json=user_dict
+        url=f"http://{USER_API_HOST}:{PORT}/{user_type.value}/init", json=user_dict
     )
     res_data = response.json()
     if res_data is None:
@@ -253,3 +254,5 @@ async def register(
     )
     if response.status_code == status.HTTP_201_CREATED:
         authcrud.create_auth_user(db=db, user=user_db)
+
+    return {"status": "Created"}

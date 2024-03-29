@@ -8,18 +8,19 @@ class RecruiterBase(BaseModel):
     username: str
     company_name: Optional[str] = None
     email: EmailStr
-    dob: Optional[PastDate] = None
+    address: Optional[str] = None
+    pincode: Optional[str] = None
+    profile_picture: Optional[str] = None
+    country: Optional[str] = None
+    industry: Optional[str] = None
 
 
 class RecruiterDetails(RecruiterBase):
     bio: Optional[str] = None
-    address: Optional[str] = None
+    dob: Optional[PastDate] = None
     city: Optional[str] = None
-    country: Optional[str] = None
-    industry: Optional[str] = None
     company_size: Optional[str] = None
     headquarters: Optional[str] = None
-    age: Optional[int] = None
     location: Optional[str] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None

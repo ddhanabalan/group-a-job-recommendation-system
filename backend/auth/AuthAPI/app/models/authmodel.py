@@ -1,6 +1,7 @@
-from sqlalchemy import Column, String, Integer, Date, DateTime, Boolean
+from sqlalchemy import Column, String, Integer, Date, DateTime, Boolean, Enum
 from sqlalchemy.orm import relationship
 from datetime import datetime
+from ..schemas.authschema import UserTypeEnum
 from ..database import Base
 
 
@@ -13,7 +14,8 @@ class UserAuth(Base):
     email = Column(String(32), unique=True)
     disabled = Column(Boolean, default=False)
     user_id = Column(Integer)
-    user_type = Column(String(1))
+    user_type = Column(Enum(UserTypeEnum))
+    verified = Column(Boolean, default=False)
     last_login = Column(DateTime)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
