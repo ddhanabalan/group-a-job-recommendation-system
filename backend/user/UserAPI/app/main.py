@@ -1,5 +1,5 @@
 import httpx
-from fastapi import FastAPI, Depends, HTTPException, status, Request
+from fastapi import FastAPI, Depends, HTTPException, status, Request, Header
 from sqlalchemy.orm import Session
 from pydantic import EmailStr
 from fastapi.middleware.cors import CORSMiddleware
@@ -12,6 +12,8 @@ from .crud import seekercrud, recruitercrud
 from .schemas import seekerschema, recruiterschema
 from .models import seekermodel, recruitermodel
 
+from .config import PORT, JOB_API_HOST, AUTH_API_HOST
+
 seekermodel.Base.metadata.create_all(bind=engine)
 recruitermodel.Base.metadata.create_all(bind=engine)
 
@@ -20,6 +22,8 @@ origins = [
     "https://localhost.tiangolo.com",
     "http://localhost",
     "http://127.0.0.1:5500",
+    f"http://{AUTH_API_HOST}:{PORT}",
+    f"http://{JOB_API_HOST}:{PORT}",
     "http://localhost:8000",
     "http://localhost:5500",
 ]
@@ -43,10 +47,28 @@ def get_db():
         db.close()
 
 
+async def check_authorization(authorization: str = Header(...)):
+    headers = {"Authorization": authorization}
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            f"http://{AUTH_API_HOST}:{PORT}/verify", headers=headers
+        )
+        if response.status_code != status.HTTP_200_OK:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid access token"
+            )
+
+
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
     detail = exc.errors()[0]["msg"]
-    raise HTTPException(status_code=422, detail=detail)
+    raise HTTPException(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, detail=detail)
+
+
+@app.get("/verify", status_code=status.HTTP_200_OK)
+async def verify_token(authorization: str = Header(...)):
+    await check_authorization(authorization)
+    return {"Access": "Successful"}
 
 
 @app.get("/user/s/{username}")
@@ -92,7 +114,10 @@ async def user_recruiters_init(
 
 @app.get("/user/s/details/{email}", response_model=seekerschema.SeekersDetails)
 async def user_seeker_details_email(
-    email: EmailStr, db: Session = Depends(get_db), q: str or None = None
+    email: EmailStr,
+    db: Session = Depends(get_db),
+    q: str or None = None,
+    authorization: str = Header(...),
 ):
     user_details = seekercrud.get_seeker_details_emails(db=db, email=email)
     return user_details
@@ -100,7 +125,10 @@ async def user_seeker_details_email(
 
 @app.get("/user/s/details/{username}", response_model=seekerschema.SeekersDetails)
 async def user_seeker_details_username(
-    username: str, db: Session = Depends(get_db), q: str or None = None
+    username: str,
+    db: Session = Depends(get_db),
+    q: str or None = None,
+    authorization: str = Header(...),
 ):
     user_details = seekercrud.get_seeker_details_username(db=db, username=username)
     return user_details
@@ -108,7 +136,10 @@ async def user_seeker_details_username(
 
 @app.get("/user/s/details/{user_id}", response_model=seekerschema.SeekersDetails)
 async def user_seeker_details(
-    user_id: int, db: Session = Depends(get_db), q: str or None = None
+    user_id: int,
+    db: Session = Depends(get_db),
+    q: str or None = None,
+    authorization: str = Header(...),
 ):
     user_details = seekercrud.get_seeker_details(db=db, user_id=user_id)
     return user_details
@@ -116,7 +147,10 @@ async def user_seeker_details(
 
 @app.get("/user/s/loc-type/{user_id}", response_model=seekerschema.SeekersLocType)
 async def user_seeker_loc_type(
-    user_id: int, db: Session = Depends(get_db), q: str or None = None
+    user_id: int,
+    db: Session = Depends(get_db),
+    q: str or None = None,
+    authorization: str = Header(...),
 ):
     user_loc_type = seekercrud.get_seeker_loc_type(db=db, user_id=user_id)
     return user_loc_type
@@ -124,7 +158,10 @@ async def user_seeker_loc_type(
 
 @app.get("/user/s/emp-type/{user_id}", response_model=seekerschema.SeekersEmpType)
 async def user_seeker_emp_type(
-    user_id: int, db: Session = Depends(get_db), q: str or None = None
+    user_id: int,
+    db: Session = Depends(get_db),
+    q: str or None = None,
+    authorization: str = Header(...),
 ):
     user_emp_type = seekercrud.get_seeker_emp_type(db=db, user_id=user_id)
     return user_emp_type
@@ -132,7 +169,10 @@ async def user_seeker_emp_type(
 
 @app.get("/user/s/poi/{user_id}", response_model=seekerschema.SeekersPOI)
 async def user_seeker_poi(
-    user_id: int, db: Session = Depends(get_db), q: str or None = None
+    user_id: int,
+    db: Session = Depends(get_db),
+    q: str or None = None,
+    authorization: str = Header(...),
 ):
     user_poi = seekercrud.get_seeker_poi(db=db, user_id=user_id)
     return user_poi
@@ -140,7 +180,10 @@ async def user_seeker_poi(
 
 @app.get("/user/s/education/{user_id}", response_model=seekerschema.SeekersEducation)
 async def user_seeker_education(
-    user_id: int, db: Session = Depends(get_db), q: str or None = None
+    user_id: int,
+    db: Session = Depends(get_db),
+    q: str or None = None,
+    authorization: str = Header(...),
 ):
     user_education = seekercrud.get_seeker_education(db=db, user_id=user_id)
     return user_education
@@ -148,7 +191,10 @@ async def user_seeker_education(
 
 @app.get("/user/s/former-job/{user_id}", response_model=seekerschema.SeekersFormerJob)
 async def user_seeker_former_job(
-    user_id: int, db: Session = Depends(get_db), q: str or None = None
+    user_id: int,
+    db: Session = Depends(get_db),
+    q: str or None = None,
+    authorization: str = Header(...),
 ):
     user_former_job = seekercrud.get_seeker_former_job(db=db, user_id=user_id)
     return user_former_job
@@ -156,7 +202,10 @@ async def user_seeker_former_job(
 
 @app.get("/user/s/skill/{user_id}", response_model=seekerschema.SeekersSkill)
 async def user_seeker_skill(
-    user_id: int, db: Session = Depends(get_db), q: str or None = None
+    user_id: int,
+    db: Session = Depends(get_db),
+    q: str or None = None,
+    authorization: str = Header(...),
 ):
     user_skills = seekercrud.get_seeker_skills(db=db, user_id=user_id)
     return user_skills

@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
+from pydantic import EmailStr
 from ..models import authmodel
 from ..schemas import authschema
 
@@ -62,6 +63,27 @@ def get_auth_user_by_username(db: Session, username: str):
         return (
             db.query(authmodel.UserAuth)
             .filter(authmodel.UserAuth.username == username)
+            .first()
+        )
+    except SQLAlchemyError as e:
+        return None
+
+
+def get_auth_user_by_email(db: Session, username: EmailStr):
+    """
+    Retrieve an authentication user by username.
+
+    Args:
+        db (Session): SQLAlchemy database session.
+        username (EmailStr): Email of the user to retrieve.
+
+    Returns:
+        authmodel.UserAuth: User object if found, None otherwise.
+    """
+    try:
+        return (
+            db.query(authmodel.UserAuth)
+            .filter(authmodel.UserAuth.email == username)
             .first()
         )
     except SQLAlchemyError as e:
