@@ -1,13 +1,13 @@
 import Lottie from "lottie-react";
 import "./ConfirmMsgBox.css";
-import greentick from '../../images/green-confirm.json'
-export default function ConfBox(){
+
+export default function ConfBox({message, animation, bgcolor}){
     return (
         <>
         
-        <div className="confirm-box">
-                <p>Account has been successfully created &emsp; </p>
-                <Lottie className="success-ani" animationData={greentick} loop={true} />
+        <div className="confirm-box" style={{backgroundColor: bgcolor}}>
+                <p>{message} &emsp; </p>
+                <Lottie className="success-ani" animationData={animation} loop={true} />
         </div>
         </>
     )

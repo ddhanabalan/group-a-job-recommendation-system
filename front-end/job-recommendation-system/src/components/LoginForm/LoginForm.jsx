@@ -27,10 +27,12 @@ function LoginForm({ callAPI }) {
       {/*Login Form*/}
       <div className="login_container">
 
-        <form noValidate autoComplete='off' onSubmit={handleSubmit((data) => callAPI(data))}>
+        
           <h3 className="login-header">Login</h3>
 
-          <Box sx={{ boxShadow: 2, paddingBottom: 4, paddingTop: 3, paddingX: 3, borderRadius: 5, width: '90%', display: 'flex', flexDirection: 'column' }}>
+          <div className="login-details">
+          {/*<Box sx={{ boxShadow: 2, paddingBottom: 4, paddingTop: 3, paddingX: 3, borderRadius: 5, width: '90%', display: 'flex', flexDirection: 'column' }}>*/}
+          <form noValidate autoComplete='off' onSubmit={handleSubmit((data) => callAPI(data))}>
             <p className="lg">Login with Credentials</p><br />
             <Stack spacing={2}>
 
@@ -76,13 +78,14 @@ function LoginForm({ callAPI }) {
             <IconButton type="submit" sx={{ borderRadius: 50, backgroundColor: '#E7E4E4', position: 'relative', top: 20, alignSelf: 'center', width: 45, height: 45 }}>
               <ArrowForwardRoundedIcon sx={{ color: 'black' }} />
             </IconButton>
-          </Box>
+          </form>
+          </div>
 
-        </form>
+        
 
 
         <a href="" className="lk">forgot your password?</a>
-        <p className="sigup-redirect">New User? SignUp</p>
+        <a className="sigup-redirect">New User? SignUp</a>
         {/* <Link to={'../signup/' + userType} state={{ "userType": userType }}></Link> */}
 
 

@@ -12,7 +12,7 @@ export default function JobDesciptionForm({ data, userData }) {
     //console.log(userData.appliedJobs.includes("4"))
     const [submit, setSubmit] = useState(false);
     //const [tag_state,setTagState] = useState(false);
-    const userSkills = userData.type=="employer"?null:data.skills.map(skill => userData.skills.includes(skill)?true:false).filter(Boolean).length
+    const userSkills = (userData.type=="employer"?null:data.skills.map(skill => userData.skills.includes(skill)?true:false).filter(Boolean).length)
     //console.log(userSkills)
     //function for senting applicant details from the form to company
 
@@ -78,7 +78,7 @@ export default function JobDesciptionForm({ data, userData }) {
                                     {e} {userData.type=="employer"?
                                             <></>
                                             :
-                                            <div className={userData.skills.includes(e)?"skill-status green":"skill-status red"}></div>
+                                            <div className={userData.skills.map(skill => {return skill.toLowerCase()}).includes(e.toLowerCase())?"skill-status green":"skill-status red"}></div>
                                          }
                                     </div>)
                         })}
