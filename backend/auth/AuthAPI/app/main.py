@@ -235,8 +235,9 @@ async def email_verify(token: str,db:Session=Depends(get_db)):
         if username is None or data_type != "emailVerify":
             raise credential_exception
         verified = authcrud.get_user_verified_by_username(db=db,username=username)
+        print(verified)
         if verified:
-            credential_exception = HTTPException(
+            raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail="Already Verified"
             )
