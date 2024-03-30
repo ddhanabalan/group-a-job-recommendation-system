@@ -118,9 +118,7 @@ def create_access_token(data: dict, expires_delta: timedelta or None = None):
 
 
 def validate_access_token(token):
-    (token)
     payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-    (payload)
     data_type = payload.get("type", None)
     username = payload.get("sub", None)
     if data_type is None or username is None:
@@ -228,16 +226,20 @@ async def verify_token(current_user=Depends(get_current_active_user)):
 
 @app.get("/email/verify/{token}")
 async def email_verify(token: str,db:Session=Depends(get_db)):
-    (token)
     credential_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Invalid Verification"
     )
     try:
         username, data_type = validate_access_token(token)
-        (username,data_type)
         if username is None or data_type != "emailVerify":
             raise credential_exception
+        verified = authcrud.get_user_verified_by_username(db=db,username=username)
+        if verified:
+            credential_exception = HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Already Verified"
+            )
         validate_user_update(username=username,db=db)
     except JWTError:
         raise credential_exception

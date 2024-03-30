@@ -89,6 +89,16 @@ def get_auth_user_by_email(db: Session, username: EmailStr):
     except SQLAlchemyError as e:
         return None
 
+def get_user_verified_by_username(db:Session,username:str):
+    try:
+        return (
+            db.query(authmodel.UserAuth)
+            .filter(authmodel.UserAuth.username == username)
+            .first()
+            .verified
+        )
+    except SQLAlchemyError as e:
+        return None
 
 def update_auth_user(db: Session, user_id: int, user_update: authschema.UserInDB):
     """
