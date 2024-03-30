@@ -12,6 +12,10 @@ ENV PORT=8000
 ENV RELOAD=True
 ENV USER_API_HOST=userapi
 ENV JOB_API_HOST=jobapi
+ENV SMTP_SERVER="smtp.gmail.com"
+ENV SMTP_PORT=465
+ENV EMAIL_ADDRESS="careergo.noreply@gmail.com"
+ENV EMAIL_PASSWORD="jodm rbas nwnu fmuy"
 
 WORKDIR $APP_HOME
 

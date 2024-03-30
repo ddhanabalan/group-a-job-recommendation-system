@@ -1,4 +1,5 @@
-from fastapi import APIRouter, Depends, status, Header
+import httpx
+from fastapi import APIRouter, Depends, status, Header, HTTPException
 from sqlalchemy.orm import Session
 from pydantic import EmailStr
 
@@ -6,6 +7,7 @@ from ..database import SessionLocal
 from ..crud import seekercrud
 from ..schemas import seekerschema
 from ..models import seekermodel
+from ..config import PORT, JOB_API_HOST, AUTH_API_HOST
 
 
 def get_db():
@@ -19,10 +21,29 @@ def get_db():
 router = APIRouter(prefix="/seeker")
 
 
-@router.get("/{username}")
-async def user_seeker_username_to_userid(username: str, db: Session = Depends(get_db)):
-    user_id = seekercrud.get_seeker_userid_from_username(db=db, username=username)
-    return {"user_id": user_id}
+async def check_authorization(authorization: str = Header(...)):
+    headers = {"Authorization": authorization}
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            f"http://{AUTH_API_HOST}:{PORT}/verify", headers=headers
+        )
+        if response.status_code != status.HTTP_200_OK:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid access token"
+            )
+
+
+async def get_current_user(authorization: str = Header(...)):
+    headers = {"Authorization": authorization}
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            f"http://{AUTH_API_HOST}:{PORT}/me", headers=headers
+        )
+        if response.status_code != status.HTTP_200_OK:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid access token"
+            )
+        return response.json()
 
 
 @router.post("/init", status_code=status.HTTP_201_CREATED)
@@ -30,7 +51,6 @@ async def user_seeker_init(
     user: seekerschema.SeekersBase, db: Session = Depends(get_db)
 ):
     username = user.username
-    print("in")
     user_details = seekercrud.get_seeker_userid_from_username(db=db, username=username)
     if user_details is not None:
         return {"user_id": user_details.user_id}
@@ -41,6 +61,31 @@ async def user_seeker_init(
     return {"user_id": user_details.user_id}
 
 
+@router.get("/me")
+async def get_current_seeker_details(
+    authorization: str = Header(...), db: Session = Depends(get_db)
+):
+    username = await get_current_user(authorization=authorization)
+    user = seekercrud.get_seeker_details_username(db=db, username=username)
+    return user
+
+
+@router.get("/{username}")
+async def user_seeker_username_to_userid(username: str, db: Session = Depends(get_db)):
+    user_id = seekercrud.get_seeker_userid_from_username(db=db, username=username)
+    return {"user_id": user_id}
+
+
+@router.get("/details/{username}", response_model=seekerschema.SeekersDetails)
+async def user_seeker_details_username(
+    username: str,
+    db: Session = Depends(get_db),
+    q: str or None = None,
+):
+    user_details = seekercrud.get_seeker_details_username(db=db, username=username)
+    return user_details
+
+
 @router.get("/details/{email}", response_model=seekerschema.SeekersDetails)
 async def user_seeker_details_email(
     email: EmailStr,
@@ -49,17 +94,6 @@ async def user_seeker_details_email(
     authorization: str = Header(...),
 ):
     user_details = seekercrud.get_seeker_details_emails(db=db, email=email)
-    return user_details
-
-
-@router.get("/details/{username}", response_model=seekerschema.SeekersDetails)
-async def user_seeker_details_username(
-    username: str,
-    db: Session = Depends(get_db),
-    q: str or None = None,
-    authorization: str = Header(...),
-):
-    user_details = seekercrud.get_seeker_details_username(db=db, username=username)
     return user_details
 
 

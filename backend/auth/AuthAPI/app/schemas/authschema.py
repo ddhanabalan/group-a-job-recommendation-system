@@ -29,6 +29,8 @@ class UserBase(BaseModel):
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
+    class Config:
+        from_attributes = True
 
 class User(UserBase):
     pass
@@ -37,6 +39,8 @@ class User(UserBase):
 class UserInDB(UserBase):
     hashed_password: str
 
+    class Config:
+        from_attributes = True
 
 class UserIn(BaseModel):
     username: str

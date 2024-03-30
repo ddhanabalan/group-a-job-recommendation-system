@@ -28,7 +28,7 @@ class JobVacancy(JobVacancyBase):
     updated_at: Optional[datetime] = None
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class JobRequestBase(BaseModel):
@@ -47,4 +47,4 @@ class JobRequest(JobRequestBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
