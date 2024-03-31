@@ -1,11 +1,12 @@
 .language-card {
     margin: 0 auto;
-    width: 90%;
-    text-align: center;
-    border-bottom: solid 1px black;
-    margin: .938rem 0;
-    padding: .938rem 0;
 }
 .language-card p{
     font-size: .938rem;
+}
+.language{
+    width: 40%;
+}
+.language-pro {
+    width: 55%;
 }

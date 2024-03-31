@@ -1,15 +1,18 @@
 .qualification-card {
+    position: relative;
     margin: 0 auto;
     width: 90%;
     display: flex;
     align-items: center;
-    justify-content: center;
+    justify-content: flex-start;
     gap: .938rem;
     border-bottom: solid 1px black;
     margin: .938rem 0;
     padding: .938rem 0;
 }
-
+.qualification-card-content{
+    width:75%;
+}
 .qualification-card-image {
     width: 4.375rem;
     height: 4.375rem;
@@ -26,5 +29,11 @@
     font-size: .875rem;
 }
 .qualification-card-action-btns{
-    visibility: hidden;
+    position: absolute;
+    right: 0;
+   opacity: 0;
+    transition: opacity 200ms ease-in-out;
+}
+.qualification-card:hover .qualification-card-action-btns{
+   opacity: 1;
 }

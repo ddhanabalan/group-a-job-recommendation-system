@@ -14,10 +14,8 @@ import SignUpPage2 from './pages/SignUp/SignUp2';
 import ProfileSection from './pages/profile page/ProfileSection';
 function App() {
   const [redirect, SetRedirect] = useState();
-  // const [loading, SetLoading] = useState(false)
   const updateState = (state) => {
     SetRedirect(state)
-
   }
 
 
@@ -39,7 +37,7 @@ function App() {
           <Route path="/seeker/openings" element={<JobOpeningsSection />} />
           <Route path="/employer/openings" element={<JobOpeningsSection />} />
           <Route path="/employer/job-vacancy" element={<CreateJobVacancy />} />
-          <Route path="/profile" element={<ProfileSection updateState={updateState} data={{
+          <Route path="/profile" element={<ProfileSection  data={{
             userName: "Amy Williams", userLocation: "Massachusetts, USA", userBio: "🚀 NASA Software Engineer | Mom | STEM Advocate 👩‍🔧✨Embarking on cosmic adventures at NASA by day, crafting precious family moments by night. Join me on this stellar journey! 🌌💖 #NASA #WomenInSTEM #MomEngineer "
           }} />} />
           <Route path="/jobs" element={<JobSection />} />
