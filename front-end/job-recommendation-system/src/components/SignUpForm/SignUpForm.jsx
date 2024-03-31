@@ -42,12 +42,13 @@ function SignUpForm() {
     <>
       {/*SignUp Form*/}
       <div className="signup-container">
-      <h3 className="signup-header">SignUp</h3>
-        {/*<Box sx={{ boxShadow: 2, paddingBottom: 4, paddingTop: 3, paddingX: 3, borderRadius: 5, width: 800 ,height: 580, display:'flex', flexDirection:'column', alignItems:'center',backgroundColor: 'white'}}>*/}
-        <form noValidate autoComplete='on' onSubmit={handleSubmit(subForm)}>
+          <h3 className="signup-header">SignUp</h3>
+          {/*<Box sx={{ boxShadow: 2, paddingBottom: 4, paddingTop: 3, paddingX: 3, borderRadius: 5, width: 800 ,height: 580, display:'flex', flexDirection:'column', alignItems:'center',backgroundColor: 'white'}}>*/}
+        
           <br />
           {/*<Box sx={{ boxShadow: 7, paddingBottom: 6, paddingTop: 3, paddingX: 3, borderRadius: 5, width: 340 ,display:'flex',alignItems: 'center', flexDirection:'column'}}>*/}
           <div className="details-container">
+          <form noValidate autoComplete='on' onSubmit={handleSubmit(subForm)}>
             <Stack spacing={2}>
 
               {/*email box validation checking*/}
@@ -114,10 +115,13 @@ function SignUpForm() {
             <Button variant="contained" type="submit" sx={{ backgroundColor: 'black', borderRadius: 2 }} endIcon={<ArrowForwardIcon />}>
               <p>Continue</p>
             </Button>
+            </form>
           </div>
 
-        </form>
-       <Link to={'../login/' + userType} state={{ "userType": userType }}><p className="sigup-redirect">Already a user? Sign in</p></Link>
+        
+          <div className="login-redirect">
+            <Link to={'../login/' + userType} state={{ "userType": userType }}><p>Already a user? Sign in</p></Link>
+          </div>
       </div>
     </>
   )

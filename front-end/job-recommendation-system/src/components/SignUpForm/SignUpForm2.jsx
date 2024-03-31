@@ -10,6 +10,8 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import axios from '../../api/axios';
 import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import profilePlaceholder from '../../images/profile_placeholder.svg';
+import greentick from '../../images/green-confirm.json'
+import failanim from '../../images/fail-animation.json'
 
 function SignUpForm2() {
   const VisuallyHiddenInput = styled('input')({
@@ -32,9 +34,16 @@ function SignUpForm2() {
   const location = useLocation();
   const navigate = useNavigate();
   const userType = location["pathname"].includes("employer") ? "employer" : "seeker";
+
+  //error messages received after submitting form
+  const serverErrorMsgs= {"server": {"status": false, "message": "unable to reach server"},
+                    "formdata": {"status": false, "message": "Field unfilled.Please complete the form."},
+                    "phone": {"status": false, "message": "Invalid Phone number.Please retype."},
+                    "success": {"status": true, "message": "Account successfully created"}}
+
   //const userType = location.state.userType;
   const [loading, SetLoading] = useState(false)
-  const [success, SetSuccess] = useState(false)
+  const [success, SetSuccess] = useState(true)
   const [img, SetImg] = useState();
   const handleChange = (e) => {
     console.log(e.target.files)
@@ -80,10 +89,21 @@ function SignUpForm2() {
   return (
     <>
       {/*SignUp Form part-2(Personal info from seekers/Company info from employers)*/}
+      <div className='page-container'>
       {loading && <LoaderAnimation />}
-      <div className="confirmed-box" style={{ visibility: success ? "visible" : "hidden" }}><ConfBox /></div> {/*Final Registration confirmed message box*/}
+      {serverErrorMsgs && success==true? /*loads server error messages and displays at top*/
+        <div className="alert-boxes">
+          {
+          Object.keys(serverErrorMsgs).map((err) => {return serverErrorMsgs[err]["status"]?
+          <ConfBox message={serverErrorMsgs[err]["message"]} animation={greentick} bgcolor="#99FF99"/>
+          :
+          <ConfBox message={serverErrorMsgs[err]["message"]} animation={failanim} bgcolor="#FFE5B4"/>})
+          }
+        </div> /*Final Registration confirmed message box*/
+        :
+        <></>
+      }
       <div className="signup-container info-box">
-
         <h3 className="signup-header info-header">{userType === "seeker" ? "Personal" : "Company"} information</h3>
         {/*<Box sx={{ boxShadow: 0, paddingBottom: 1, paddingTop: 3, paddingX: 4, borderRadius: 5, width: 800, height: 580, display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: 'white' }}>*/}
 
@@ -92,7 +112,7 @@ function SignUpForm2() {
           <div className='personal-info-container'>
 
 
-            <div>
+            <div id="item-1">
               <p className="text-head">Username<span className="text-danger"> *</span></p>
               <TextField className="personal-details-input" variant="outlined" type='text'
                 error={'username' in errors}
@@ -106,7 +126,7 @@ function SignUpForm2() {
                   })} />
               <p className="error-message">{errors.username?.message || ""}</p>
             </div>
-            <div className="personal-detail-picture">
+            <div id="item-2" className="personal-detail-picture">
               <p className="text-head">Profile picture (optional)</p>
               <div className='card-img-container personal-picture'>
                 <Button
@@ -122,7 +142,8 @@ function SignUpForm2() {
                 </div>
               </div>
             </div>
-
+            
+            <div id="item-3">
             {
               userType === "seeker" ?
                 /*First Name*/
@@ -153,6 +174,9 @@ function SignUpForm2() {
                   <p className="error-message">{errors.company_name?.message || ""}</p>
                 </div>
             }
+            </div>
+
+            <div id="item-4">
             {
               userType === "seeker" ?
                 /*last name*/
@@ -185,8 +209,10 @@ function SignUpForm2() {
                   <p className="error-message">{errors.address?.message || ""}</p>
                 </div>
             }
+            </div>
+
             {/*Country*/}
-            <div>
+            <div id="item-5">
               <p className="text-head">Country<span className="text-danger"> *</span></p>
               <TextField className="personal-details-input" variant="outlined" select
                 defaultValue=""
@@ -202,7 +228,7 @@ function SignUpForm2() {
             </div>
 
             {/*Phone number*/}
-            <div>
+            <div id="item-6">
               <p className="text-head">Phone Number<span className="text-danger"> *</span></p>
 
 
@@ -219,7 +245,8 @@ function SignUpForm2() {
 
               <p className="error-message">{errors.phone?.message || ""}</p>
             </div>
-
+            
+            <div id="item-7">
             {
               userType === "seeker" ?
                 /*Date of Birth*/
@@ -252,7 +279,9 @@ function SignUpForm2() {
                   <p className="error-message">{errors.pincode?.message || ""}</p>
                 </div>
             }
+            </div>
 
+            <div id="item-8">
             {
               userType === "seeker" ?
                 /*Gender*/
@@ -283,14 +312,20 @@ function SignUpForm2() {
                   <p className="error-message">{errors.industry?.message || ""}</p>
                 </div>
             }
+            </div>
+
           </div>
+
           {/*Submit button*/}
+          <div>
           <Button type='submit' className="continue-btn" variant="contained" sx={{ backgroundColor: 'black', borderRadius: 2 }} endIcon={<ArrowForwardIcon />}>
             <p >Continue</p>
           </Button>
+          </div>
         </form>
         <br />
 
+      </div>
       </div>
     </>
   )
