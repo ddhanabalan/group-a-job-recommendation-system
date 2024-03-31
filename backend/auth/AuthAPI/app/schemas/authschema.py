@@ -32,8 +32,9 @@ class UserBase(BaseModel):
     class Config:
         from_attributes = True
 
+
 class User(UserBase):
-    pass
+    id: int
 
 
 class UserInDB(UserBase):
@@ -41,6 +42,7 @@ class UserInDB(UserBase):
 
     class Config:
         from_attributes = True
+
 
 class UserIn(BaseModel):
     username: str

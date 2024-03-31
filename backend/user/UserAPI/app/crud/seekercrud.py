@@ -1,5 +1,6 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
+from typing import List
 
 from ..models import seekermodel
 from ..schemas import seekerschema
@@ -94,7 +95,7 @@ def get_seeker_details(db: Session, user_id: int):
     )
 
 
-def get_seeker_poi(db: Session, user_id: int):
+def get_seeker_poi(db: Session, user_id: int) -> List[seekermodel.SeekersPOI]:
     """
     Retrieve Point of Interest (POI) details of a seeker.
 
@@ -108,11 +109,11 @@ def get_seeker_poi(db: Session, user_id: int):
     return (
         db.query(seekermodel.SeekersPOI)
         .filter(seekermodel.SeekersPOI.user_id == user_id)
-        .first()
+        .all()
     )
 
 
-def get_seeker_skills(db: Session, user_id: int):
+def get_seeker_skills(db: Session, user_id: int) -> List[seekermodel.SeekersSkill]:
     """
     Retrieve skills of a seeker.
 
@@ -125,12 +126,14 @@ def get_seeker_skills(db: Session, user_id: int):
     """
     return (
         db.query(seekermodel.SeekersSkill)
-        .filter(seekermodel.SeekersSkill.userID == user_id)
-        .first()
+        .filter(seekermodel.SeekersSkill.user_id == user_id)
+        .all()
     )
 
 
-def get_seeker_former_job(db: Session, user_id: int):
+def get_seeker_former_job(
+    db: Session, user_id: int
+) -> List[seekermodel.SeekersFormerJob]:
     """
     Retrieve former job details of a seeker.
 
@@ -144,11 +147,11 @@ def get_seeker_former_job(db: Session, user_id: int):
     return (
         db.query(seekermodel.SeekersFormerJob)
         .filter(seekermodel.SeekersFormerJob.user_id == user_id)
-        .first()
+        .all()
     )
 
 
-def get_seeker_loc_type(db: Session, user_id: int):
+def get_seeker_loc_type(db: Session, user_id: int) -> List[seekermodel.SeekersLocType]:
     """
     Retrieve location type details of a seeker.
 
@@ -162,11 +165,11 @@ def get_seeker_loc_type(db: Session, user_id: int):
     return (
         db.query(seekermodel.SeekersLocType)
         .filter(seekermodel.SeekersLocType.user_id == user_id)
-        .first()
+        .all()
     )
 
 
-def get_seeker_emp_type(db: Session, user_id: int):
+def get_seeker_emp_type(db: Session, user_id: int) -> List[seekermodel.SeekersEmpType]:
     """
     Retrieve employment type details of a seeker.
 
@@ -180,11 +183,13 @@ def get_seeker_emp_type(db: Session, user_id: int):
     return (
         db.query(seekermodel.SeekersEmpType)
         .filter(seekermodel.SeekersEmpType.user_id == user_id)
-        .first()
+        .all()
     )
 
 
-def get_seeker_education(db: Session, user_id: int):
+def get_seeker_education(
+    db: Session, user_id: int
+) -> List[seekermodel.SeekersEducation]:
     """
     Retrieve education details of a seeker.
 
@@ -198,7 +203,7 @@ def get_seeker_education(db: Session, user_id: int):
     return (
         db.query(seekermodel.SeekersEducation)
         .filter(seekermodel.SeekersEducation.user_id == user_id)
-        .first()
+        .all()
     )
 
 
@@ -243,7 +248,6 @@ def update_seeker_details(
         db.commit()
         return True
     except SQLAlchemyError as e:
-
         db.rollback()
         return False
 

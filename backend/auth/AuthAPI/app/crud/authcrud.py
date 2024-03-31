@@ -89,7 +89,8 @@ def get_auth_user_by_email(db: Session, username: EmailStr):
     except SQLAlchemyError as e:
         return None
 
-def get_user_verified_by_username(db:Session,username:str):
+
+def get_user_verified_by_username(db: Session, username: str):
     try:
         return (
             db.query(authmodel.UserAuth)
@@ -99,6 +100,7 @@ def get_user_verified_by_username(db:Session,username:str):
         )
     except SQLAlchemyError as e:
         return None
+
 
 def update_auth_user(db: Session, user_id: int, user_update: authschema.UserInDB):
     """

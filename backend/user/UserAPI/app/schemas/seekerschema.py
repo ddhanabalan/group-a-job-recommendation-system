@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr, PastDate
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 
 
 class SeekersBase(BaseModel):
@@ -28,6 +28,9 @@ class SeekersDetails(SeekersBase):
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
 
+    class Config:
+        from_attributes = True
+
 
 class SeekersLocType(BaseModel):
     id: int
@@ -36,6 +39,9 @@ class SeekersLocType(BaseModel):
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
 
+    class Config:
+        from_attributes = True
+
 
 class SeekersEmpType(BaseModel):
     id: int
@@ -43,6 +49,9 @@ class SeekersEmpType(BaseModel):
     emp_type: str
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
+
+    class Config:
+        from_attributes = True
 
 
 class SeekersFormerJob(BaseModel):
@@ -55,6 +64,9 @@ class SeekersFormerJob(BaseModel):
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
 
+    class Config:
+        from_attributes = True
+
 
 class SeekersSkill(BaseModel):
     id: int
@@ -62,6 +74,9 @@ class SeekersSkill(BaseModel):
     skill: str
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
+
+    class Config:
+        from_attributes = True
 
 
 class SeekersEducation(BaseModel):
@@ -71,6 +86,9 @@ class SeekersEducation(BaseModel):
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
 
+    class Config:
+        from_attributes = True
+
 
 class SeekersPOI(BaseModel):
     id: int
@@ -78,3 +96,15 @@ class SeekersPOI(BaseModel):
     position: str
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
+
+    class Config:
+        from_attributes = True
+
+
+class SeekersProfile(SeekersDetails):
+    loc_type: Optional[List[SeekersLocType]]
+    emp_type: Optional[List[SeekersEmpType]]
+    prev_education: Optional[List[SeekersEducation]]
+    skill: Optional[List[SeekersSkill]]
+    former_jobs: Optional[List[SeekersFormerJob]]
+    poi: Optional[List[SeekersPOI]]

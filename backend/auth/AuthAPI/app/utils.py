@@ -11,7 +11,6 @@ from .schemas import authschema
 from .crud import authcrud
 
 
-
 async def send_verify(token: str, username: str, to_email: EmailStr):
     msg = EmailMessage()
     msg["Subject"] = "Career Go Account Verification Required"
@@ -37,20 +36,17 @@ contact us.
         Career Go
         """
     )
-    with smtplib.SMTP_SSL(SMTP_SERVER,SMTP_PORT) as smtp:
-        smtp.login(EMAIL_ADDRESS,EMAIL_PASSWORD)
+    with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT) as smtp:
+        smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
         smtp.send_message(msg)
 
 
-
-def validate_user_update( username: str,db:Session):
-        try:
-            user = authcrud.get_auth_user_by_username(db=db, username=username)
-            user_schema = authschema.UserInDB.from_orm(user)
-            user_schema.verified=True
-            authcrud.update_auth_user(
-                db=db, user_id=user.user_id, user_update=user_schema
-            )
-            return True
-        except SQLAlchemyError:
-            return False
+def validate_user_update(username: str, db: Session):
+    try:
+        user = authcrud.get_auth_user_by_username(db=db, username=username)
+        user_schema = authschema.UserInDB.from_orm(user)
+        user_schema.verified = True
+        authcrud.update_auth_user(db=db, user_id=user.user_id, user_update=user_schema)
+        return True
+    except SQLAlchemyError:
+        return False

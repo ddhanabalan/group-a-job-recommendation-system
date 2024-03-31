@@ -70,10 +70,69 @@ async def get_current_seeker_details(
     return user
 
 
-@router.get("/{username}")
-async def user_seeker_username_to_userid(username: str, db: Session = Depends(get_db)):
-    user_id = seekercrud.get_seeker_userid_from_username(db=db, username=username)
-    return {"user_id": user_id}
+@router.get("/profile", response_model=seekerschema.SeekersProfile)
+async def profile(authorization: str = Header(...), db: Session = Depends(get_db)):
+    username = await get_current_user(authorization=authorization)
+    user_details = seekerschema.SeekersDetails.from_orm(
+        seekercrud.get_seeker_details_username(db=db, username=username)
+    )
+    user_skill = seekercrud.get_seeker_skills(db=db, user_id=user_details.user_id)
+
+    user_education = seekercrud.get_seeker_education(
+        db=db, user_id=user_details.user_id
+    )
+
+    user_emp_type = seekercrud.get_seeker_emp_type(db=db, user_id=user_details.user_id)
+
+    user_loc_type = seekercrud.get_seeker_loc_type(db=db, user_id=user_details.user_id)
+
+    user_former_job = seekercrud.get_seeker_former_job(
+        db=db, user_id=user_details.user_id
+    )
+
+    user_poi = seekercrud.get_seeker_poi(db=db, user_id=user_details.user_id)
+    print('hi')
+    return seekerschema.SeekersProfile(
+        **user_details.dict(),
+        loc_type=user_loc_type,
+        emp_type=user_emp_type,
+        skill=user_skill,
+        prev_education=user_education,
+        former_jobs=user_former_job,
+        poi=user_poi,
+    )
+
+
+@router.get("/profile/{username}", response_model=seekerschema.SeekersDetails)
+async def profile_by_username(username: str, db: Session = Depends(get_db)):
+    user_details = seekerschema.SeekersDetails.from_orm(
+        seekercrud.get_seeker_details_username(db=db, username=username)
+    )
+    user_skill = seekercrud.get_seeker_skills(db=db, user_id=user_details.user_id)
+
+    user_education = seekercrud.get_seeker_education(
+        db=db, user_id=user_details.user_id
+    )
+
+    user_emp_type = seekercrud.get_seeker_emp_type(db=db, user_id=user_details.user_id)
+
+    user_loc_type = seekercrud.get_seeker_loc_type(db=db, user_id=user_details.user_id)
+
+    user_former_job = seekercrud.get_seeker_former_job(
+        db=db, user_id=user_details.user_id
+    )
+
+    user_poi = seekercrud.get_seeker_poi(db=db, user_id=user_details.user_id)
+    print('hi')
+    return seekerschema.SeekersProfile(
+        **user_details.dict(),
+        loc_type=user_loc_type,
+        emp_type=user_emp_type,
+        skill=user_skill,
+        prev_education=user_education,
+        former_jobs=user_former_job,
+        poi=user_poi,
+    )
 
 
 @router.get("/details/{username}", response_model=seekerschema.SeekersDetails)
