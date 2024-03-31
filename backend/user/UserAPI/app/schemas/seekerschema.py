@@ -33,7 +33,7 @@ class SeekersDetails(SeekersBase):
 
 
 class SeekersLocType(BaseModel):
-    id: int
+    id: Optional[int]
     user_id: int
     loc_type: str
     created_at: Optional[datetime]
@@ -44,7 +44,7 @@ class SeekersLocType(BaseModel):
 
 
 class SeekersEmpType(BaseModel):
-    id: int
+    id: Optional[int]
     user_id: int
     emp_type: str
     created_at: Optional[datetime]
@@ -55,7 +55,7 @@ class SeekersEmpType(BaseModel):
 
 
 class SeekersFormerJob(BaseModel):
-    id: int
+    id: Optional[int]
     user_id: int
     job_name: str
     job_company_name: str
@@ -69,7 +69,7 @@ class SeekersFormerJob(BaseModel):
 
 
 class SeekersSkill(BaseModel):
-    id: int
+    id: Optional[int]
     user_id: int
     skill: str
     created_at: Optional[datetime]
@@ -80,7 +80,7 @@ class SeekersSkill(BaseModel):
 
 
 class SeekersEducation(BaseModel):
-    id: int
+    id: Optional[int]
     user_id: int
     education: str
     created_at: Optional[datetime]
@@ -91,7 +91,7 @@ class SeekersEducation(BaseModel):
 
 
 class SeekersPOI(BaseModel):
-    id: int
+    id: Optional[int]
     user_id: int
     position: str
     created_at: Optional[datetime]

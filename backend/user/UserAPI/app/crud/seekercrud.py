@@ -6,7 +6,7 @@ from ..models import seekermodel
 from ..schemas import seekerschema
 
 
-def create_seeker_init(db: Session, user: seekerschema.SeekersBase):
+def create_seeker_init(db: Session, user: seekerschema.SeekersBase) -> bool:
     """
     Create a new seeker's details in the database.
 
@@ -15,11 +15,16 @@ def create_seeker_init(db: Session, user: seekerschema.SeekersBase):
         user (seekerschema.SeekersBase): Seeker details to be created.
 
     Returns:
-        None
+        bool: True if creation is successful, False otherwise.
     """
-    user_model = seekermodel.SeekersDetails(**user.dict())
-    db.add(user_model)
-    db.commit()
+    try:
+        user_model = seekermodel.SeekersDetails(**user.dict())
+        db.add(user_model)
+        db.commit()
+        return True
+    except SQLAlchemyError:
+        db.rollback()
+        return False
 
 
 def get_seeker_userid_from_username(db: Session, username: str):
@@ -31,17 +36,21 @@ def get_seeker_userid_from_username(db: Session, username: str):
         username (str): Username of the seeker.
 
     Returns:
-        tuple: Tuple containing SeekersDetails object and user ID if found, else None.
+        int: user ID if found, else None.
     """
-    return (
-        db.query(seekermodel.SeekersDetails)
-        .add_column(seekermodel.SeekersDetails.user_id)
-        .filter(seekermodel.SeekersDetails.username == username)
-        .first()
-    )
+    try:
+        return (
+            db.query(seekermodel.SeekersDetails)
+            .add_column(seekermodel.SeekersDetails.user_id)
+            .filter(seekermodel.SeekersDetails.username == username)
+            .first()
+        )
+    except SQLAlchemyError:
+        return None
 
-
-def get_seeker_details_username(db: Session, username: str):
+def get_seeker_details_username(
+    db: Session, username: str
+) -> seekermodel.SeekersDetails:
     """
     Retrieve seeker details based on username.
 
@@ -59,7 +68,7 @@ def get_seeker_details_username(db: Session, username: str):
     )
 
 
-def get_seeker_details_emails(db: Session, email: str):
+def get_seeker_details_emails(db: Session, email: str) -> seekermodel.SeekersDetails:
     """
     Retrieve seeker details based on email.
 
@@ -77,8 +86,11 @@ def get_seeker_details_emails(db: Session, email: str):
     )
 
 
-def get_seeker_details(db: Session, user_id: int):
-    """
+None
+
+
+def get_seeker_details(db: Session, user_id: int) -> seekermodel.SeekersDetails:
+    """None
     Retrieve seeker details based on user ID.
 
     Args:
@@ -104,7 +116,7 @@ def get_seeker_poi(db: Session, user_id: int) -> List[seekermodel.SeekersPOI]:
         user_id (int): User ID of the seeker.
 
     Returns:
-        seekermodel.SeekersPOI: POI details if found, else None.
+        List[seekermodel.SeekersPOI]: POI details if found, else empty list.
     """
     return (
         db.query(seekermodel.SeekersPOI)
@@ -122,7 +134,7 @@ def get_seeker_skills(db: Session, user_id: int) -> List[seekermodel.SeekersSkil
         user_id (int): User ID of the seeker.
 
     Returns:
-        seekermodel.SeekersSkill: Skills if found, else None.
+        List[seekermodel.SeekersSkill]: Skills if found, else empty list.
     """
     return (
         db.query(seekermodel.SeekersSkill)
@@ -142,7 +154,7 @@ def get_seeker_former_job(
         user_id (int): User ID of the seeker.
 
     Returns:
-        seekermodel.SeekersFormerJob: Former job details if found, else None.
+        List[seekermodel.SeekersFormerJob]: Former job details if found, else empty list.
     """
     return (
         db.query(seekermodel.SeekersFormerJob)
@@ -160,7 +172,7 @@ def get_seeker_loc_type(db: Session, user_id: int) -> List[seekermodel.SeekersLo
         user_id (int): User ID of the seeker.
 
     Returns:
-        seekermodel.SeekersLocType: Location type details if found, else None.
+        List[seekermodel.SeekersLocType]: Location type details if found, else empty list.
     """
     return (
         db.query(seekermodel.SeekersLocType)
@@ -178,7 +190,7 @@ def get_seeker_emp_type(db: Session, user_id: int) -> List[seekermodel.SeekersEm
         user_id (int): User ID of the seeker.
 
     Returns:
-        seekermodel.SeekersEmpType: Employment type details if found, else None.
+        List[seekermodel.SeekersEmpType]: Employment type details if found, else empty list.
     """
     return (
         db.query(seekermodel.SeekersEmpType)
@@ -198,7 +210,7 @@ def get_seeker_education(
         user_id (int): User ID of the seeker.
 
     Returns:
-        seekermodel.SeekersEducation: Education details if found, else None.
+        List[seekermodel.SeekersEducation]: Education details if found, else empty list.
     """
     return (
         db.query(seekermodel.SeekersEducation)
@@ -207,7 +219,9 @@ def get_seeker_education(
     )
 
 
-def create_seeker_details(db: Session, seeker_details: seekerschema.SeekersDetails):
+def create_seeker_details(
+    db: Session, seeker_details: seekerschema.SeekersDetails
+) -> bool:
     """
     Create a new seeker's details in the database.
 
@@ -216,20 +230,21 @@ def create_seeker_details(db: Session, seeker_details: seekerschema.SeekersDetai
         seeker_details (seekerschema.SeekersDetails): Seeker details to be created.
 
     Returns:
-        None
+        bool: True if creation is successful, False otherwise.
     """
     try:
         seeker_details_model = seekermodel.SeekersDetails(**seeker_details.dict())
         db.add(seeker_details_model)
         db.commit()
-    except SQLAlchemyError as e:
-
+        return True
+    except SQLAlchemyError:
         db.rollback()
+        return False
 
 
 def update_seeker_details(
     db: Session, user_id: int, updated_details: seekerschema.SeekersDetails
-):
+) -> bool:
     """
     Update seeker details in the database.
 
@@ -247,12 +262,12 @@ def update_seeker_details(
         ).update(updated_details.dict())
         db.commit()
         return True
-    except SQLAlchemyError as e:
+    except SQLAlchemyError:
         db.rollback()
         return False
 
 
-def delete_seeker_details(db: Session, user_id: int):
+def delete_seeker_details(db: Session, user_id: int) -> bool:
     """
     Delete seeker details from the database.
 
@@ -269,13 +284,12 @@ def delete_seeker_details(db: Session, user_id: int):
         ).delete()
         db.commit()
         return True
-    except SQLAlchemyError as e:
-
+    except SQLAlchemyError:
         db.rollback()
         return False
 
 
-def create_seeker_skill(db: Session, skill: seekerschema.SeekersSkill):
+def create_seeker_skill(db: Session, skill: seekerschema.SeekersSkill) -> bool:
     """
     Create a new skill record for a seeker in the database.
 
@@ -284,20 +298,21 @@ def create_seeker_skill(db: Session, skill: seekerschema.SeekersSkill):
         skill (seekerschema.SeekersSkill): Skill details to be created.
 
     Returns:
-        None
+        bool: True if creation is successful, False otherwise.
     """
     try:
         skill_model = seekermodel.SeekersSkill(**skill.dict())
         db.add(skill_model)
         db.commit()
-    except SQLAlchemyError as e:
-
+        return True
+    except SQLAlchemyError:
         db.rollback()
+        return False
 
 
 def update_seeker_skill(
     db: Session, user_id: int, updated_skill: seekerschema.SeekersSkill
-):
+) -> bool:
     """
     Update skill details of a seeker in the database.
 
@@ -315,12 +330,12 @@ def update_seeker_skill(
         ).update(updated_skill.dict())
         db.commit()
         return True
-    except SQLAlchemyError as e:
+    except SQLAlchemyError:
         db.rollback()
         return False
 
 
-def delete_seeker_skill(db: Session, user_id: int):
+def delete_seeker_skill(db: Session, user_id: int) -> bool:
     """
     Delete skill details of a seeker from the database.
 
@@ -337,12 +352,12 @@ def delete_seeker_skill(db: Session, user_id: int):
         ).delete()
         db.commit()
         return True
-    except SQLAlchemyError as e:
+    except SQLAlchemyError:
         db.rollback()
         return False
 
 
-def create_seeker_poi(db: Session, poi: seekerschema.SeekersPOI):
+def create_seeker_poi(db: Session, poi: seekerschema.SeekersPOI) -> bool:
     """
     Create a new Point of Interest (POI) for a seeker in the database.
 
@@ -351,18 +366,21 @@ def create_seeker_poi(db: Session, poi: seekerschema.SeekersPOI):
         poi (seekerschema.SeekersPOI): POI details to be created.
 
     Returns:
-        None
+        bool: True if creation is successful, False otherwise.
     """
     try:
         poi_model = seekermodel.SeekersPOI(**poi.dict())
         db.add(poi_model)
         db.commit()
-    except SQLAlchemyError as e:
-
+        return True
+    except SQLAlchemyError:
         db.rollback()
+        return False
 
 
-def update_seeker_poi(db: Session, user_id: int, updated_poi: seekerschema.SeekersPOI):
+def update_seeker_poi(
+    db: Session, user_id: int, updated_poi: seekerschema.SeekersPOI
+) -> bool:
     """
     Update Point of Interest (POI) details of a seeker in the database.
 
@@ -380,12 +398,12 @@ def update_seeker_poi(db: Session, user_id: int, updated_poi: seekerschema.Seeke
         ).update(updated_poi.dict())
         db.commit()
         return True
-    except SQLAlchemyError as e:
+    except SQLAlchemyError:
         db.rollback()
         return False
 
 
-def delete_seeker_poi(db: Session, user_id: int):
+def delete_seeker_poi(db: Session, user_id: int) -> bool:
     """
     Delete Point of Interest (POI) details of a seeker from the database.
 
@@ -402,13 +420,12 @@ def delete_seeker_poi(db: Session, user_id: int):
         ).delete()
         db.commit()
         return True
-    except SQLAlchemyError as e:
-
+    except SQLAlchemyError:
         db.rollback()
         return False
 
 
-def create_seeker_emp_type(db: Session, emp_type: seekerschema.SeekersEmpType):
+def create_seeker_emp_type(db: Session, emp_type: seekerschema.SeekersEmpType) -> bool:
     """
     Create a new employment type record for a seeker in the database.
 
@@ -417,20 +434,21 @@ def create_seeker_emp_type(db: Session, emp_type: seekerschema.SeekersEmpType):
         emp_type (seekerschema.SeekersEmpType): Employment type details to be created.
 
     Returns:
-        None
+        bool: True if creation is successful, False otherwise.
     """
     try:
         emp_type_model = seekermodel.SeekersEmpType(**emp_type.dict())
         db.add(emp_type_model)
         db.commit()
-    except SQLAlchemyError as e:
-
+        return True
+    except SQLAlchemyError:
         db.rollback()
+        return False
 
 
 def update_seeker_emp_type(
     db: Session, user_id: int, updated_emp_type: seekerschema.SeekersEmpType
-):
+) -> bool:
     """
     Update employment type details of a seeker in the database.
 
@@ -448,13 +466,12 @@ def update_seeker_emp_type(
         ).update(updated_emp_type.dict())
         db.commit()
         return True
-    except SQLAlchemyError as e:
-
+    except SQLAlchemyError:
         db.rollback()
         return False
 
 
-def delete_seeker_emp_type(db: Session, user_id: int):
+def delete_seeker_emp_type(db: Session, user_id: int) -> bool:
     """
     Delete employment type details of a seeker from the database.
 
@@ -471,13 +488,14 @@ def delete_seeker_emp_type(db: Session, user_id: int):
         ).delete()
         db.commit()
         return True
-    except SQLAlchemyError as e:
-
+    except SQLAlchemyError:
         db.rollback()
         return False
 
 
-def create_seeker_education(db: Session, education: seekerschema.SeekersEducation):
+def create_seeker_education(
+    db: Session, education: seekerschema.SeekersEducation
+) -> bool:
     """
     Create a new education record for a seeker in the database.
 
@@ -486,20 +504,21 @@ def create_seeker_education(db: Session, education: seekerschema.SeekersEducatio
         education (seekerschema.SeekersEducation): Education details to be created.
 
     Returns:
-        None
+        bool: True if creation is successful, False otherwise.
     """
     try:
         education_model = seekermodel.SeekersEducation(**education.dict())
         db.add(education_model)
         db.commit()
-    except SQLAlchemyError as e:
-
+        return True
+    except SQLAlchemyError:
         db.rollback()
+        return False
 
 
 def update_seeker_education(
     db: Session, user_id: int, updated_education: seekerschema.SeekersEducation
-):
+) -> bool:
     """
     Update education details of a seeker in the database.
 
@@ -517,13 +536,12 @@ def update_seeker_education(
         ).update(updated_education.dict())
         db.commit()
         return True
-    except SQLAlchemyError as e:
-
+    except SQLAlchemyError:
         db.rollback()
         return False
 
 
-def delete_seeker_education(db: Session, user_id: int):
+def delete_seeker_education(db: Session, user_id: int) -> bool:
     """
     Delete education details of a seeker from the database.
 
@@ -540,13 +558,12 @@ def delete_seeker_education(db: Session, user_id: int):
         ).delete()
         db.commit()
         return True
-    except SQLAlchemyError as e:
-
+    except SQLAlchemyError:
         db.rollback()
         return False
 
 
-def create_seeker_loc_type(db: Session, loc_type: seekerschema.SeekersLocType):
+def create_seeker_loc_type(db: Session, loc_type: seekerschema.SeekersLocType) -> bool:
     """
     Create a new location type record for a seeker in the database.
 
@@ -555,20 +572,21 @@ def create_seeker_loc_type(db: Session, loc_type: seekerschema.SeekersLocType):
         loc_type (seekerschema.SeekersLocType): Location type details to be created.
 
     Returns:
-        None
+        bool: True if creation is successful, False otherwise.
     """
     try:
         loc_type_model = seekermodel.SeekersLocType(**loc_type.dict())
         db.add(loc_type_model)
         db.commit()
-    except SQLAlchemyError as e:
-
+        return True
+    except SQLAlchemyError:
         db.rollback()
+        return False
 
 
 def update_seeker_loc_type(
     db: Session, user_id: int, updated_loc_type: seekerschema.SeekersLocType
-):
+) -> bool:
     """
     Update location type details of a seeker in the database.
 
@@ -586,13 +604,12 @@ def update_seeker_loc_type(
         ).update(updated_loc_type.dict())
         db.commit()
         return True
-    except SQLAlchemyError as e:
-
+    except SQLAlchemyError:
         db.rollback()
         return False
 
 
-def delete_seeker_loc_type(db: Session, user_id: int):
+def delete_seeker_loc_type(db: Session, user_id: int) -> bool:
     """
     Delete location type details of a seeker from the database.
 
@@ -609,7 +626,6 @@ def delete_seeker_loc_type(db: Session, user_id: int):
         ).delete()
         db.commit()
         return True
-    except SQLAlchemyError as e:
-
+    except SQLAlchemyError:
         db.rollback()
         return False

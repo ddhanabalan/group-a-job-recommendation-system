@@ -14,20 +14,19 @@ def create_auth_user(db: Session, user: authschema.UserInDB):
         user (authschema.UserInDB): User details to be created.
 
     Returns:
-        authmodel.UserAuth: Created user object.
+        bool: True if creation is successful, False otherwise.
     """
     try:
         user_db = authmodel.UserAuth(**user.dict())
         db.add(user_db)
         db.commit()
-        db.refresh(user_db)
-        return user_db
+        return True
     except SQLAlchemyError as e:
         db.rollback()
-        return None
+        return False
 
 
-def get_auth_user_by_id(db: Session, user_id: int):
+def get_auth_user_by_id(db: Session, user_id: int)->authmodel.UserAuth:
     """
     Retrieve an authentication user by user ID.
 
@@ -38,17 +37,13 @@ def get_auth_user_by_id(db: Session, user_id: int):
     Returns:
         authmodel.UserAuth: User object if found, None otherwise.
     """
-    try:
-        return (
-            db.query(authmodel.UserAuth)
-            .filter(authmodel.UserAuth.id == user_id)
-            .first()
-        )
-    except SQLAlchemyError as e:
-        return None
+    return (
+        db.query(authmodel.UserAuth)
+        .filter(authmodel.UserAuth.id == user_id)
+        .first()
+    )
 
-
-def get_auth_user_by_username(db: Session, username: str):
+def get_auth_user_by_username(db: Session, username: str)->authmodel.UserAuth:
     """
     Retrieve an authentication user by username.
 
@@ -59,17 +54,15 @@ def get_auth_user_by_username(db: Session, username: str):
     Returns:
         authmodel.UserAuth: User object if found, None otherwise.
     """
-    try:
-        return (
-            db.query(authmodel.UserAuth)
-            .filter(authmodel.UserAuth.username == username)
-            .first()
-        )
-    except SQLAlchemyError as e:
-        return None
+    return (
+        db.query(authmodel.UserAuth)
+        .filter(authmodel.UserAuth.username == username)
+        .first()
+    )
 
 
-def get_auth_user_by_email(db: Session, username: EmailStr):
+
+def get_auth_user_by_email(db: Session, username: EmailStr) -> authmodel.UserAuth:
     """
     Retrieve an authentication user by username.
 
@@ -80,29 +73,23 @@ def get_auth_user_by_email(db: Session, username: EmailStr):
     Returns:
         authmodel.UserAuth: User object if found, None otherwise.
     """
-    try:
-        return (
-            db.query(authmodel.UserAuth)
-            .filter(authmodel.UserAuth.email == username)
-            .first()
-        )
-    except SQLAlchemyError as e:
-        return None
+    return (
+        db.query(authmodel.UserAuth)
+        .filter(authmodel.UserAuth.email == username)
+        .first()
+    )
 
 
-def get_user_verified_by_username(db: Session, username: str):
-    try:
-        return (
-            db.query(authmodel.UserAuth)
-            .filter(authmodel.UserAuth.username == username)
-            .first()
-            .verified
-        )
-    except SQLAlchemyError as e:
-        return None
+def get_user_verified_by_username(db: Session, username: str) -> bool:
+    return (
+        db.query(authmodel.UserAuth)
+        .filter(authmodel.UserAuth.username == username)
+        .first()
+        .verified
+    )
 
 
-def update_auth_user(db: Session, user_id: int, user_update: authschema.UserInDB):
+def update_auth_user(db: Session, user_id: int, user_update: authschema.UserInDB) -> bool:
     """
     Update an authentication user in the database.
 
@@ -112,24 +99,20 @@ def update_auth_user(db: Session, user_id: int, user_update: authschema.UserInDB
         user_update (authschema.UserInDB): Updated user details.
 
     Returns:
-        authmodel.UserAuth: Updated user object if successful, None otherwise.
+        bool: True if update is successful, False otherwise.
     """
     try:
-        user_db = get_auth_user_by_id(db, user_id)
-        if user_db:
-            for key, value in user_update.dict().items():
-                setattr(user_db, key, value)
-            db.commit()
-            db.refresh(user_db)
-            return user_db
-        else:
-            return None
-    except SQLAlchemyError as e:
+        db.query(authmodel.UserAuth).filter(
+            authmodel.UserAuth.user_id == user_id
+        ).update(user_update.dict())
+        db.commit()
+        return True
+    except SQLAlchemyError:
         db.rollback()
-        return None
+        return False
 
 
-def delete_auth_user(db: Session, user_id: int):
+def delete_auth_user(db: Session, user_id: int)->bool:
     """
     Delete an authentication user from the database.
 
@@ -141,13 +124,12 @@ def delete_auth_user(db: Session, user_id: int):
         bool: True if deletion was successful, False otherwise.
     """
     try:
-        user_db = get_auth_user_by_id(db, user_id)
-        if user_db:
-            db.delete(user_db)
-            db.commit()
-            return True
-        else:
-            return False
-    except SQLAlchemyError as e:
+        db.query(authmodel.UserAuth).filter(
+            authmodel.UserAuth.user_id == user_id
+        ).delete()
+        db.commit()
+        return True
+    except SQLAlchemyError:
         db.rollback()
         return False
+

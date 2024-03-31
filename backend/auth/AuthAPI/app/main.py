@@ -132,7 +132,7 @@ def validate_access_token(token):
 
 async def get_current_user(
     token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
-):
+)-> authmodel.UserAuth:
     credential_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -155,7 +155,7 @@ async def get_current_user(
 
 async def get_current_active_user(
     current_user: authschema.UserInDB = Depends(get_current_user),
-):
+) -> authschema.UserInDB:
     if current_user.disabled:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="Inactive user"
@@ -184,7 +184,7 @@ async def login_for_access_token(
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-@app.get("/me")
+@app.get("/me", response_model=str)
 async def users_info(current_user=Depends(get_current_active_user)):
     return current_user.username
 
@@ -235,7 +235,6 @@ async def email_verify(token: str, db: Session = Depends(get_db)):
         if username is None or data_type != "emailVerify":
             raise credential_exception
         verified = authcrud.get_user_verified_by_username(db=db, username=username)
-        print(verified)
         if verified:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST, detail="Already Verified"
@@ -289,7 +288,10 @@ async def register(
         }
     )
     if response.status_code == status.HTTP_201_CREATED:
-        authcrud.create_auth_user(db=db, user=user_db)
+        res = authcrud.create_auth_user(db=db, user=user_db)
+        if not res:
+            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
+                                ,detail="Data Creation Failed")
 
     await send_verify(
         token=create_access_token({"sub": user_db.username, "type": "emailVerify"}),
