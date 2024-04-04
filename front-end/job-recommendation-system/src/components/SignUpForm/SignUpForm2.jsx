@@ -1,6 +1,6 @@
 import './SignUpForm2.css'
 import { useForm } from 'react-hook-form'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Button, TextField, MenuItem } from '@mui/material'
 import { useLocation, useNavigate } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
@@ -36,15 +36,17 @@ function SignUpForm2() {
   const userType = location["pathname"].includes("employer") ? "employer" : "seeker";
 
   //error messages received after submitting form
-  const serverErrorMsgs= {"server": {"status": false, "message": "unable to reach server"},
-                    "formdata": {"status": false, "message": "Field unfilled.Please complete the form."},
-                    "phone": {"status": false, "message": "Invalid Phone number.Please retype."},
-                    "success": {"status": true, "message": "Account successfully created"}}
+  /*const serverErrorMsgs= {200: "Account creation request sent successfully",
+                          201: "Account successfully created",
+                          302: "Username already exists",
+                          401: "unable to reach server.Please try later.",
+                          500: "server error.Please try later."}*/
 
   //const userType = location.state.userType;
   const [loading, SetLoading] = useState(false)
-  const [success, SetSuccess] = useState(true)
+  const [success, SetSuccess] = useState(false)
   const [img, SetImg] = useState();
+  const [serverMsg, setServerMsg] = useState({});
   const handleChange = (e) => {
     console.log(e.target.files)
     const data = new FileReader();
@@ -63,42 +65,49 @@ function SignUpForm2() {
 
   async function subForm(data) {
     //form data submission and redirecting to login
+    
     SetLoading(true)
     console.log(location)
     const newdata = { ...data, ...location.state, 'profile_picture': img };
     delete newdata.userType
     console.log("full data", newdata);
     try {
-       await axios.post('/seeker/register', newdata, {
+        const res = await axios.post('/seeker/register', newdata, {
         headers: {
           'Content-Type': 'application/json'
         }
-      });
+      })
+      setServerMsg({...res});
 
     } catch (e) {
+      setServerMsg({...e.response});
       console.log(e)
       alert(e.message)
     }
+    
+    
+    
     SetLoading(false)
     SetSuccess(true);
     // setTimeout(()=>{setSuccess(false)},3000)
     // navigate("/login/" + userType);
 
   }
-
+  
+  
+  console.log("serverMessage",serverMsg)
   return (
     <>
       {/*SignUp Form part-2(Personal info from seekers/Company info from employers)*/}
       <div className='page-container'>
       {loading && <LoaderAnimation />}
-      {serverErrorMsgs && success==true? /*loads server error messages and displays at top*/
+      {Object.keys(serverMsg).length!==0? /*loads server error messages and displays at top*/
         <div className="alert-boxes">
           {
-          Object.keys(serverErrorMsgs).map((err) => {return serverErrorMsgs[err]["status"]?
-          <ConfBox message={serverErrorMsgs[err]["message"]} animation={greentick} bgcolor="#99FF99"/>
+          serverMsg.status===201?
+          <ConfBox message="Account successfully created" animation={greentick} bgcolor="#99FF99"/>
           :
-          <ConfBox message={serverErrorMsgs[err]["message"]} animation={failanim} bgcolor="#FFE5B4"/>})
-          }
+          <ConfBox message={serverMsg.data?.detail} animation={failanim} bgcolor="#FFE5B4"/>}
         </div> /*Final Registration confirmed message box*/
         :
         <></>
