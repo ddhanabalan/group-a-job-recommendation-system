@@ -9,7 +9,7 @@
 .qualification-add div{
     margin-bottom: .5rem;
 }
-.qualification-add input{
+.qualification-add input, .qualification-add div{
     padding: .1rem .5rem;
     width: 100%;
 }

@@ -43,7 +43,7 @@ function SignUpForm2() {
 
   //const userType = location.state.userType;
   const [loading, SetLoading] = useState(false)
-  const [success, SetSuccess] = useState(true)
+  const [success, SetSuccess] = useState(false)
   const [img, SetImg] = useState();
   const handleChange = (e) => {
     console.log(e.target.files)

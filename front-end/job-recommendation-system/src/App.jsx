@@ -38,7 +38,7 @@ function App() {
           <Route path="/employer/openings" element={<JobOpeningsSection />} />
           <Route path="/employer/job-vacancy" element={<CreateJobVacancy />} />
           <Route path="/profile" element={<ProfileSection  data={{
-            userName: "Amy Williams", userLocation: "Massachusetts, USA", userBio: "🚀 NASA Software Engineer | Mom | STEM Advocate 👩‍🔧✨Embarking on cosmic adventures at NASA by day, crafting precious family moments by night. Join me on this stellar journey! 🌌💖 #NASA #WomenInSTEM #MomEngineer "
+            userName: "AmyWilliams", first_name: "Amy", last_name: "Williams", location: "Massachusetts", country:"USA", bio: "🚀 NASA Software Engineer | Mom | STEM Advocate 👩‍🔧✨Embarking on cosmic adventures at NASA by day, crafting precious family moments by night. Join me on this stellar journey! 🌌💖 #NASA #WomenInSTEM #MomEngineer "
           }} />} />
           <Route path="/jobs" element={<JobSection />} />
           <Route path="/candidates" element={<CandidateSection />} />

@@ -112,7 +112,7 @@ function SignUpForm() {
               </Box>
             </Stack>
 
-            <Button variant="contained" type="submit" sx={{ backgroundColor: 'black', borderRadius: 2 }} endIcon={<ArrowForwardIcon />}>
+            <Button variant="contained" type="submit" sx={{ backgroundColor: 'black', borderRadius: 2 ,marginTop:'1rem'}} endIcon={<ArrowForwardIcon />}>
               <p>Continue</p>
             </Button>
             </form>
