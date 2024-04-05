@@ -1,0 +1,41 @@
+.WelcomeContainer {
+    width: 55rem;
+    height: 42rem;
+    background-color: white;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.redirect-to-role-h1 {
+    font-family: Inter-light-italic;
+    margin: 5rem 0;
+}
+
+h1>span {
+    font-family: Inter-b;
+}
+
+p {
+    margin: 0;
+    font-size: .75rem;
+}
+button{
+    font-family: Inter-md !important;
+    font-size: 1.6rem !important;
+}
+.btn{
+    width:100%
+}
+.btn-green {
+    background-color: #07F407;
+    border-color: #07F407;
+}
+.btn-green:hover,.btn-green:active{
+    background-color: #02bd02 !important;
+    border-color: #02bd02 !important;
+}
+.div-btn{
+    margin-bottom: 2rem;
+}

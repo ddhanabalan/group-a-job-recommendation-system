@@ -1,0 +1,10 @@
+.contact-medium{
+    display: flex;
+    align-items: center;
+}
+.contact-medium p{
+font-size: 1rem;
+}
+.contact-medium svg{
+    color: black;
+}

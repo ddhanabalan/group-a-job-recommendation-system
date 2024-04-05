@@ -1,0 +1,14 @@
+.skill {
+    margin: 4px 2px !important;
+    background-color: #D9D9D9 !important;
+    color: black !important;
+    font-size: 1rem !important;
+}
+
+.skill svg {
+    color: black !important;
+}
+
+.skill svg:hover {
+    color: rgb(54, 54, 54) !important;
+}
