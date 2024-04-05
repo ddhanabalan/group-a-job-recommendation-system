@@ -1,4 +1,4 @@
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, PastDate
 from datetime import datetime
 from typing import Optional
 
@@ -9,19 +9,21 @@ class SeekersBase(BaseModel):
     first_name: Optional[str] = None
     last_name: Optional[str] = None
     email: EmailStr
-    dob: Optional[datetime] = None
+    dob: Optional[PastDate] = None
+    gender: Optional[str] = None
+    profile_picture: Optional[str] = None
+    country: Optional[str] = None
+    phone: Optional[str] = None
 
 
 class SeekersDetails(SeekersBase):
     bio: Optional[str]
     address: Optional[str]
     city: Optional[str]
-    country: Optional[str]
     institution: Optional[str]
     experience: Optional[str]
     education: Optional[str]
     age: Optional[int]
-    gender: Optional[str]
     location: Optional[str]
     created_at: Optional[datetime]
     updated_at: Optional[datetime]

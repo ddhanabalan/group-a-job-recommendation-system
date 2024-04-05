@@ -2,9 +2,9 @@ from fastapi import FastAPI, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
 
-from crud import jobcrud
-from models import jobmodel
-from schemas import jobschema
+from .crud import jobcrud
+from .models import jobmodel
+from .schemas import jobschema
 from .database import SessionLocal, engine
 
 app = FastAPI()
