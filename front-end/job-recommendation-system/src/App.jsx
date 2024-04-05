@@ -12,6 +12,7 @@ import LoginPage from './pages/LoginPage/LoginPage';
 import SignUpPage from './pages/SignUp/SignUp';
 import SignUpPage2 from './pages/SignUp/SignUp2';
 import ProfileSection from './pages/profile page/ProfileSection';
+import EmployerProfileSection from './pages/profile page/EmployerProfileSection';
 function App() {
   const [redirect, SetRedirect] = useState();
   const updateState = (state) => {
@@ -39,6 +40,9 @@ function App() {
           <Route path="/employer/job-vacancy" element={<CreateJobVacancy />} />
           <Route path="/profile" element={<ProfileSection  data={{
             userName: "AmyWilliams", first_name: "Amy", last_name: "Williams", location: "Massachusetts", country:"USA", bio: "🚀 NASA Software Engineer | Mom | STEM Advocate 👩‍🔧✨Embarking on cosmic adventures at NASA by day, crafting precious family moments by night. Join me on this stellar journey! 🌌💖 #NASA #WomenInSTEM #MomEngineer "
+          }} />} />
+          <Route path="/employer-profile" element={<EmployerProfileSection  data={{
+            userName: "NASA - National Aeronautics and Space Administration", userLocation: "Washington, D.C, USA", userBio: "Explore the universe and discover our home planet with the official NASA page on <company name> . "
           }} />} />
           <Route path="/jobs" element={<JobSection />} />
           <Route path="/candidates" element={<CandidateSection />} />
