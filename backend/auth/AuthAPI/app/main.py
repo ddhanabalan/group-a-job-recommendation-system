@@ -132,7 +132,7 @@ def validate_access_token(token):
 
 async def get_current_user(
     token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
-)-> authmodel.UserAuth:
+) -> authmodel.UserAuth:
     credential_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -290,8 +290,10 @@ async def register(
     if response.status_code == status.HTTP_201_CREATED:
         res = authcrud.create_auth_user(db=db, user=user_db)
         if not res:
-            raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
-                                ,detail="Data Creation Failed")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Data Creation Failed",
+            )
 
     await send_verify(
         token=create_access_token({"sub": user_db.username, "type": "emailVerify"}),

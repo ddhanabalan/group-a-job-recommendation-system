@@ -26,7 +26,7 @@ def create_auth_user(db: Session, user: authschema.UserInDB):
         return False
 
 
-def get_auth_user_by_id(db: Session, user_id: int)->authmodel.UserAuth:
+def get_auth_user_by_id(db: Session, user_id: int) -> authmodel.UserAuth:
     """
     Retrieve an authentication user by user ID.
 
@@ -37,13 +37,10 @@ def get_auth_user_by_id(db: Session, user_id: int)->authmodel.UserAuth:
     Returns:
         authmodel.UserAuth: User object if found, None otherwise.
     """
-    return (
-        db.query(authmodel.UserAuth)
-        .filter(authmodel.UserAuth.id == user_id)
-        .first()
-    )
+    return db.query(authmodel.UserAuth).filter(authmodel.UserAuth.id == user_id).first()
 
-def get_auth_user_by_username(db: Session, username: str)->authmodel.UserAuth:
+
+def get_auth_user_by_username(db: Session, username: str) -> authmodel.UserAuth:
     """
     Retrieve an authentication user by username.
 
@@ -59,7 +56,6 @@ def get_auth_user_by_username(db: Session, username: str)->authmodel.UserAuth:
         .filter(authmodel.UserAuth.username == username)
         .first()
     )
-
 
 
 def get_auth_user_by_email(db: Session, username: EmailStr) -> authmodel.UserAuth:
@@ -89,7 +85,9 @@ def get_user_verified_by_username(db: Session, username: str) -> bool:
     )
 
 
-def update_auth_user(db: Session, user_id: int, user_update: authschema.UserInDB) -> bool:
+def update_auth_user(
+    db: Session, user_id: int, user_update: authschema.UserInDB
+) -> bool:
     """
     Update an authentication user in the database.
 
@@ -112,7 +110,7 @@ def update_auth_user(db: Session, user_id: int, user_update: authschema.UserInDB
         return False
 
 
-def delete_auth_user(db: Session, user_id: int)->bool:
+def delete_auth_user(db: Session, user_id: int) -> bool:
     """
     Delete an authentication user from the database.
 
@@ -132,4 +130,3 @@ def delete_auth_user(db: Session, user_id: int)->bool:
     except SQLAlchemyError:
         db.rollback()
         return False
-

@@ -48,6 +48,7 @@ def get_seeker_userid_from_username(db: Session, username: str):
     except SQLAlchemyError:
         return None
 
+
 def get_seeker_details_username(
     db: Session, username: str
 ) -> seekermodel.SeekersDetails:
@@ -311,14 +312,14 @@ def create_seeker_skill(db: Session, skill: seekerschema.SeekersSkill) -> bool:
 
 
 def update_seeker_skill(
-    db: Session, user_id: int, updated_skill: seekerschema.SeekersSkill
+    db: Session, id: int, updated_skill: seekerschema.SeekersSkill
 ) -> bool:
     """
     Update skill details of a seeker in the database.
 
     Args:
         db (Session): SQLAlchemy database session.
-        user_id (int): User ID of the seeker.
+        id (int): User ID of the seeker.
         updated_skill (seekerschema.SeekersSkill): Updated skill details.
 
     Returns:
@@ -326,7 +327,7 @@ def update_seeker_skill(
     """
     try:
         db.query(seekermodel.SeekersSkill).filter(
-            seekermodel.SeekersSkill.user_id == user_id
+            seekermodel.SeekersSkill.id == id
         ).update(updated_skill.dict())
         db.commit()
         return True
@@ -335,20 +336,20 @@ def update_seeker_skill(
         return False
 
 
-def delete_seeker_skill(db: Session, user_id: int) -> bool:
+def delete_seeker_skill(db: Session, id: int) -> bool:
     """
     Delete skill details of a seeker from the database.
 
     Args:
         db (Session): SQLAlchemy database session.
-        user_id (int): User ID of the seeker.
+        id (int): User ID of the seeker.
 
     Returns:
         bool: True if deletion is successful, False otherwise.
     """
     try:
         db.query(seekermodel.SeekersSkill).filter(
-            seekermodel.SeekersSkill.user_id == user_id
+            seekermodel.SeekersSkill.id == id
         ).delete()
         db.commit()
         return True
@@ -379,23 +380,23 @@ def create_seeker_poi(db: Session, poi: seekerschema.SeekersPOI) -> bool:
 
 
 def update_seeker_poi(
-    db: Session, user_id: int, updated_poi: seekerschema.SeekersPOI
+    db: Session, id: int, updated_poi: seekerschema.SeekersPOI
 ) -> bool:
     """
     Update Point of Interest (POI) details of a seeker in the database.
 
     Args:
         db (Session): SQLAlchemy database session.
-        user_id (int): User ID of the seeker.
+        id (int): User ID of the seeker.
         updated_poi (seekerschema.SeekersPOI): Updated POI details.
 
     Returns:
         bool: True if update is successful, False otherwise.
     """
     try:
-        db.query(seekermodel.SeekersPOI).filter(
-            seekermodel.SeekersPOI.user_id == user_id
-        ).update(updated_poi.dict())
+        db.query(seekermodel.SeekersPOI).filter(seekermodel.SeekersPOI.id == id).update(
+            updated_poi.dict()
+        )
         db.commit()
         return True
     except SQLAlchemyError:
@@ -403,20 +404,20 @@ def update_seeker_poi(
         return False
 
 
-def delete_seeker_poi(db: Session, user_id: int) -> bool:
+def delete_seeker_poi(db: Session, id: int) -> bool:
     """
     Delete Point of Interest (POI) details of a seeker from the database.
 
     Args:
         db (Session): SQLAlchemy database session.
-        user_id (int): User ID of the seeker.
+        id (int): User ID of the seeker.
 
     Returns:
         bool: True if deletion is successful, False otherwise.
     """
     try:
         db.query(seekermodel.SeekersPOI).filter(
-            seekermodel.SeekersPOI.user_id == user_id
+            seekermodel.SeekersPOI.id == id
         ).delete()
         db.commit()
         return True
@@ -447,14 +448,14 @@ def create_seeker_emp_type(db: Session, emp_type: seekerschema.SeekersEmpType) -
 
 
 def update_seeker_emp_type(
-    db: Session, user_id: int, updated_emp_type: seekerschema.SeekersEmpType
+    db: Session, id: int, updated_emp_type: seekerschema.SeekersEmpType
 ) -> bool:
     """
     Update employment type details of a seeker in the database.
 
     Args:
         db (Session): SQLAlchemy database session.
-        user_id (int): User ID of the seeker.
+        id (int): User ID of the seeker.
         updated_emp_type (seekerschema.SeekersEmpType): Updated employment type details.
 
     Returns:
@@ -462,7 +463,7 @@ def update_seeker_emp_type(
     """
     try:
         db.query(seekermodel.SeekersEmpType).filter(
-            seekermodel.SeekersEmpType.user_id == user_id
+            seekermodel.SeekersEmpType.id == id
         ).update(updated_emp_type.dict())
         db.commit()
         return True
@@ -471,20 +472,20 @@ def update_seeker_emp_type(
         return False
 
 
-def delete_seeker_emp_type(db: Session, user_id: int) -> bool:
+def delete_seeker_emp_type(db: Session, id: int) -> bool:
     """
     Delete employment type details of a seeker from the database.
 
     Args:
         db (Session): SQLAlchemy database session.
-        user_id (int): User ID of the seeker.
+        id (int): User ID of the seeker.
 
     Returns:
         bool: True if deletion is successful, False otherwise.
     """
     try:
         db.query(seekermodel.SeekersEmpType).filter(
-            seekermodel.SeekersEmpType.user_id == user_id
+            seekermodel.SeekersEmpType.id == id
         ).delete()
         db.commit()
         return True
@@ -517,14 +518,14 @@ def create_seeker_education(
 
 
 def update_seeker_education(
-    db: Session, user_id: int, updated_education: seekerschema.SeekersEducation
+    db: Session, id: int, updated_education: seekerschema.SeekersEducation
 ) -> bool:
     """
     Update education details of a seeker in the database.
 
     Args:
         db (Session): SQLAlchemy database session.
-        user_id (int): User ID of the seeker.
+        id (int): User ID of the seeker.
         updated_education (seekerschema.SeekersEducation): Updated education details.
 
     Returns:
@@ -532,7 +533,7 @@ def update_seeker_education(
     """
     try:
         db.query(seekermodel.SeekersEducation).filter(
-            seekermodel.SeekersEducation.user_id == user_id
+            seekermodel.SeekersEducation.id == id
         ).update(updated_education.dict())
         db.commit()
         return True
@@ -541,20 +542,20 @@ def update_seeker_education(
         return False
 
 
-def delete_seeker_education(db: Session, user_id: int) -> bool:
+def delete_seeker_education(db: Session, id: int) -> bool:
     """
     Delete education details of a seeker from the database.
 
     Args:
         db (Session): SQLAlchemy database session.
-        user_id (int): User ID of the seeker.
+        id (int): User ID of the seeker.
 
     Returns:
         bool: True if deletion is successful, False otherwise.
     """
     try:
         db.query(seekermodel.SeekersEducation).filter(
-            seekermodel.SeekersEducation.user_id == user_id
+            seekermodel.SeekersEducation.id == id
         ).delete()
         db.commit()
         return True
@@ -585,14 +586,14 @@ def create_seeker_loc_type(db: Session, loc_type: seekerschema.SeekersLocType) -
 
 
 def update_seeker_loc_type(
-    db: Session, user_id: int, updated_loc_type: seekerschema.SeekersLocType
+    db: Session, id: int, updated_loc_type: seekerschema.SeekersLocType
 ) -> bool:
     """
     Update location type details of a seeker in the database.
 
     Args:
         db (Session): SQLAlchemy database session.
-        user_id (int): User ID of the seeker.
+        id (int): User ID of the seeker.
         updated_loc_type (seekerschema.SeekersLocType): Updated location type details.
 
     Returns:
@@ -600,7 +601,7 @@ def update_seeker_loc_type(
     """
     try:
         db.query(seekermodel.SeekersLocType).filter(
-            seekermodel.SeekersLocType.user_id == user_id
+            seekermodel.SeekersLocType.id == id
         ).update(updated_loc_type.dict())
         db.commit()
         return True
@@ -609,21 +610,60 @@ def update_seeker_loc_type(
         return False
 
 
-def delete_seeker_loc_type(db: Session, user_id: int) -> bool:
+def delete_seeker_loc_type(db: Session, id: int) -> bool:
     """
     Delete location type details of a seeker from the database.
 
     Args:
         db (Session): SQLAlchemy database session.
-        user_id (int): User ID of the seeker.
+        id (int): User ID of the seeker.
 
     Returns:
         bool: True if deletion is successful, False otherwise.
     """
     try:
         db.query(seekermodel.SeekersLocType).filter(
-            seekermodel.SeekersLocType.user_id == user_id
+            seekermodel.SeekersLocType.id == id
         ).delete()
+        db.commit()
+        return True
+    except SQLAlchemyError:
+        db.rollback()
+        return False
+
+
+def create_seeker_former_job(
+    db: Session, former_job: seekerschema.SeekersFormerJob
+) -> bool:
+    try:
+        job_model = seekermodel.SeekersSkill(**former_job.dict())
+        db.add(job_model)
+        db.commit()
+        return True
+    except SQLAlchemyError:
+        db.rollback()
+        return False
+
+
+def delete_seeker_former_job(db: Session, id: int) -> bool:
+    try:
+        db.query(seekermodel.SeekersFormerJob).filter(
+            seekermodel.SeekersFormerJob.id == id
+        ).delete()
+        db.commit()
+        return True
+    except SQLAlchemyError:
+        db.rollback()
+        return False
+
+
+def update_seeker_former_job(
+    db: Session, id: int, job: seekerschema.SeekersFormerJob
+) -> bool:
+    try:
+        db.query(seekermodel.SeekersFormerJob).filter(
+            seekermodel.SeekersFormerJob.id == id
+        ).update(**job.dict())
         db.commit()
         return True
     except SQLAlchemyError:
