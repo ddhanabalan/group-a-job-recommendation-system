@@ -1,0 +1,19 @@
+.options-heading {
+    font-size: 15px;
+}
+
+.MuiFormControlLabel-root{
+    background-color: #D9D9D9;
+    width: fit-content;
+    height: 1.875rem;
+    border-radius: 14px;
+    padding-right: 1rem ;
+    margin: 5px;
+    
+}
+.MuiCheckbox-root{
+    border-radius: 50% !important;
+    color: black !important;
+}
+
+

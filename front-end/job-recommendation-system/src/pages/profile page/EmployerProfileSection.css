@@ -1,0 +1,40 @@
+#employer-profile-page {
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+}
+
+.employer-profile-body-section {
+    width: 100%;
+    height: fit-content;
+    display: flex;
+}
+
+.employer-profile-pane {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100%;
+}
+
+.employer-profile-left-pane {
+    display: flex;
+    flex-direction: column;
+    width: 25%;
+}
+
+.employer-profile-middle-pane {
+    width: 50%;
+}
+
+.employer-profile-right-pane {
+    width: 25%;
+}
+
+/* #employer-profile-section-skills div {
+    background-color: white !important;
+} */
+.spacer-div{
+    width: 100%;
+    height: 10rem;
+}

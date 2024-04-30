@@ -1,0 +1,14 @@
+.profile-edit-page{
+    position: absolute;
+    top: .5rem;
+    z-index:2
+}
+.profile-edit-box{
+    border: solid 1px black;
+}
+#item-8,.profile-edit-bio>div{
+    width: 100%;
+}
+.profile-edit-bio>div{
+    height: auto;
+}

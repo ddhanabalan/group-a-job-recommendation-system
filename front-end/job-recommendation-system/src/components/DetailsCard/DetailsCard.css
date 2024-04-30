@@ -1,0 +1,71 @@
+.details-box {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;  
+    position: relative;
+    margin: 2rem 0;
+    padding: .8rem;
+    width: 90%;
+    height: fit-content;
+    background-color: #D9D9D9;
+    border-radius: 19px;
+}
+
+.details-title {
+    font-size: 1rem;
+    width: 80%;
+}
+
+.details-actions {
+    position: absolute;
+    right: .5rem;
+    top: .4rem;
+}
+
+.details-actions svg {
+    color: black;
+}
+
+.stat-title{
+    font-family: "Inter-b";
+    font-size: 13px;
+}
+
+.stat-body{
+    margin-left: 12px;
+}
+
+.stat-body.company-tags{
+    display: grid;
+    grid-template-columns: repeat(4,auto);
+    gap: 5px;
+}
+
+.company-tags-child{
+    font-family: Inter-regular !important;
+    border-radius: 3px !important;
+    background-color:white !important;
+}
+
+.details-body div{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+@media only screen and (max-width: 1500px) {
+    .stat-body.company-tags{
+        grid-template-columns: repeat(3,auto);
+    }
+  }
+
+  @media only screen and (max-width: 1200px) {
+    .stat-body.company-tags{
+        grid-template-columns: repeat(2,auto);
+    }
+}
+    @media only screen and (max-width: 900px) {
+        .stat-body.company-tags{
+            grid-template-columns: repeat(1,auto);
+        }
+  }

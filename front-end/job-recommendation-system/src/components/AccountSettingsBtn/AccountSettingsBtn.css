@@ -1,0 +1,9 @@
+#basic-menu div{
+    background-color: transparent;
+    box-shadow: none;
+    border-radius: 8px;
+}
+#basic-menu ul{
+    background-color: rgba(255, 255, 255, 0.565);
+    backdrop-filter: blur(55px);
+}

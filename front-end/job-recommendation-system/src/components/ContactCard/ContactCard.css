@@ -1,10 +1,16 @@
-.contact-medium{
+.contact-medium {
     display: flex;
     align-items: center;
 }
-.contact-medium p{
-font-size: 1rem;
+
+.contact-medium p {
+    font-size: 1rem;
 }
-.contact-medium svg{
+
+.contact-medium svg {
     color: black;
+}
+
+.contact-card-textfield input {
+   padding: .5rem; 
 }

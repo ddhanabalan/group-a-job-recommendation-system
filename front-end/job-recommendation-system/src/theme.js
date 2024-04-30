@@ -5,7 +5,8 @@ const theme = createMuiTheme({
     button: {
       textTransform: 'none'
     }
-  }
+  },
+ 
 });
 
 export default theme;
