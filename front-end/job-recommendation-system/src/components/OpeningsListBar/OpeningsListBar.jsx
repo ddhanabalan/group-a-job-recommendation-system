@@ -16,15 +16,16 @@ function HighlightableJobCard({id, highlighted, data, onclick}){
     )
 }
 
-export default function OpeningsListBar({data, userType, chooseEntry, searchBar, preselectedEntry}) {
+export default function OpeningsListBar({data, userType, chooseEntry, searchBar, preselectedEntry, filterFunc}) {
     
+    //console.log("received data", data);
     const finalInfo = {...data}
     //console.log("opening bar data",data)
     //console.log("data passed to opening cards", finalInfo)
     const [highlightedId, setHighlightedId] = useState(preselectedEntry);
     //console.log("highlighted id=",highlightedId)
     const [searchVal, setSearch] = useState(null); //variable for storing earth star value
-    
+    const [filterStat, setFilter] = useState(false);
     
     function onSearch(searchValue){
         //function for updating searchvalue from searchbox
@@ -49,7 +50,11 @@ export default function OpeningsListBar({data, userType, chooseEntry, searchBar,
                     }
                     }, 
                     [highlightedId, searchVal])
-    
+
+    useEffect(() => {
+                    filterFunc(filterStat)
+                    }, 
+                    [filterStat])
     
     return (
         <>
@@ -65,8 +70,8 @@ export default function OpeningsListBar({data, userType, chooseEntry, searchBar,
                         <SearchBar toSearch={"Search jobs with tags"} searchHeight={33} onSearch={onSearch} searchColor="#D9D9D9"/>
                     </div>
                     <div className="sort-icon">
-                        <IconButton sx={{ borderRadius: 50, backgroundColor: '#E7E4E4',width:35,height:35}}>
-                            <SortIcon sx={{ color: 'black' }} />
+                        <IconButton onClick={()=>setFilter(!filterStat)} sx={{ borderRadius: 50, backgroundColor: (filterStat?'black':'#E7E4E4'),width:35,height:35, "&.MuiButtonBase-root:hover": {bgcolor: (filterStat?'black':'#E7E4E4')},}}>
+                            <SortIcon sx={{ color: (filterStat?'white':'black') }} />
                         </IconButton>
                     </div>
                 </div>

@@ -112,6 +112,7 @@ export default function JobVacancyForm({ data = {} }) {
         //Preview box 
         
         if (Object.keys(prefError).length === 0) {
+            data["salary"]=(data["salary"][1]==="")?data["salary"][0]:data["salary"].join("-");
             setData({ ...data, ...preferences, ...prefilleddata });
             { preview ? console.log(finalApplicationData) : setPreview(true) }
         }
@@ -121,6 +122,7 @@ export default function JobVacancyForm({ data = {} }) {
     function handlePostVacancy() {
         //Application submission data
         console.log(finalApplicationData);
+        
         setSubmit(true);
 
     }
@@ -236,7 +238,7 @@ export default function JobVacancyForm({ data = {} }) {
                                             <CreateFormTextFields inputPlaceholder="Title" wparam="100px"
                                                 defaultValue={dta.salary ? dta.salary[1] || null : null}
                                                 {...register("salary.1", {
-                                                    required: "Salary range is required",
+                
                                                     pattern: {
                                                         value: /^[0-9]+$/,
                                                         message: "Only numbers allowed"

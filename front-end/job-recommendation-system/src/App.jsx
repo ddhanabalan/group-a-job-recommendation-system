@@ -42,7 +42,7 @@ function App() {
             userName: "AmyWilliams", first_name: "Amy", last_name: "Williams", location: "Massachusetts", country:"USA", bio: "🚀 NASA Software Engineer | Mom | STEM Advocate 👩‍🔧✨Embarking on cosmic adventures at NASA by day, crafting precious family moments by night. Join me on this stellar journey! 🌌💖 #NASA #WomenInSTEM #MomEngineer "
           }} />} />
           <Route path="/employer-profile" element={<EmployerProfileSection  data={{
-            userName: "NASA - National Aeronautics and Space Administration", userLocation: "Washington, D.C, USA", userBio: "Explore the universe and discover our home planet with the official NASA page on <company name> . "
+            userName: "NASA",first_name: "NASA - National Aeronautics and Space Administration", location: "Washington, D.C", country:"USA", bio: "We search the Universe. "
           }} />} />
           <Route path="/jobs" element={<JobSection />} />
           <Route path="/candidates" element={<CandidateSection />} />

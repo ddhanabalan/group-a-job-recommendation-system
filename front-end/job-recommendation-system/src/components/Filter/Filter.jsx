@@ -3,10 +3,13 @@ import { useState } from 'react';
 import AddTags from '../AddTags/AddTags';
 import MultipleOptions from '../MultipleOptions/MultipleOptions';
 import filtersvg from '../../images/filter.svg';
+import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
+import { Button } from '@mui/material';
 import { v4 as uuid } from 'uuid';
-export default function Filter({ title }) {
+export default function Filter({ title, passFilteredDataFn=null}) {
     const [googleLocationAutoField, SetGoogleLocationAutoField] = useState(null);
     const [domain, SetDomain] = useState('');
+    const[preferences,SetPreferences] = useState({});
     const [domains, SetDomains] = useState([{ tag: "software", id: uuid() }, { tag: "data science", id: uuid() }]);
     const [location, SetLocation] = useState('');
     const [locations, SetLocations] = useState([{ tag: "Bangalore", id: uuid() }, { tag: "Chennai", id: uuid() }]);
@@ -54,6 +57,20 @@ export default function Filter({ title }) {
             SetGoogleLocationAutoField(null)
         }
     };
+    
+    const handleCheckboxChange = (checkedItems, checkLimit, dataType) => {
+        //checks multioptions checkbox groups and passes form data only if options selected are below specified checkLimit(employment Type and experience fields)
+        const numChecked = Object.values(checkedItems).filter(Boolean).length;  
+        //console.log("datatype:", dataType);
+        SetPreferences({ ...preferences, [dataType]: Object.entries(checkedItems).filter(([key, value]) => value === true).map(([key]) => key) });
+    }
+
+    const startFilter = () =>{
+        const userDomains = domains.map(e=>e.tag);
+        const userLocations = locations.map(e=>e.tag);
+        const finalFilterData={userDomains,...preferences,userLocations};
+        if(passFilteredDataFn)passFilteredDataFn(finalFilterData);
+    }
     return (
         <div className="FilterContainer">
             <div className="heading">
@@ -61,11 +78,14 @@ export default function Filter({ title }) {
                 <span>{title}</span>
             </div>
             <AddTags value={domain} tags={domains} deleteFn={handleDeleteDomain} changeFn={handleChangeDomain} updateFn={handleDomain} data={{ heading: "interested domains", inputPlaceholder: "Marketing", isLocation: false }} />
-            <MultipleOptions heading={"job location"} options={["On-site", "Hybrid", "Work from home"]} />
-            <MultipleOptions heading={"working days"} options={["Monday - Friday", "Monday - Saturday"]} />
+            <MultipleOptions heading={"job location"} options={["On-site", "Hybrid", "Work from home"]} dataType="workEnvironment"   onChange={handleCheckboxChange}/>
+            <MultipleOptions heading={"working days"} options={["Monday - Friday", "Monday - Saturday"]} dataType="workTime"   onChange={handleCheckboxChange}/>
             <AddTags locationFieldAutoValue={googleLocationAutoField} updatelocationFieldAutoValue={setGoogleAutoField} value={location} tags={locations} deleteFn={handleDeleteLocation} changeFn={handleChangeLocation} updateFn={handleLocation} data={{ heading: "preferred job locations", inputPlaceholder: "Kerala", isLocation: true }} />
-            <MultipleOptions heading={"Experience"} options={["Fresher", "1-5 years", "5-10 years", "10+ years"]} />
-            <MultipleOptions heading={"Employment Type"} options={["Full-time", "Internship", "Temporary"]} />
+            <MultipleOptions heading={"Experience"} options={["Fresher", "1-5 years", "5-10 years", "10+ years"]} dataType="exp"   onChange={handleCheckboxChange}/>
+            <MultipleOptions heading={"Employment Type"} options={["Full-time", "Internship", "Temporary"]} dataType="empType"   onChange={handleCheckboxChange}/>
+            <Button variant="outlined" type="submit" onClick={startFilter} sx={{border: 2, borderColor: "gray",color: "black", borderRadius: 2 ,marginTop:'1rem'}} endIcon={<ArrowForwardIcon />}>
+              <p>Filter</p>
+            </Button>
         </div>
     )
 }

@@ -1,8 +1,10 @@
 .FilterContainer{
     height: 100vh;
-    width: 25%;
+    width: auto;
     background-color: white;
     align-self: start;
+    display: flex;
+    flex-direction: column;
     padding: 20px;
     overflow-y: auto;
 }
@@ -13,4 +15,8 @@
     align-items: baseline;
     gap: 5px;
     margin: 3rem 0;
+}
+
+button{
+    align-self: center;
 }

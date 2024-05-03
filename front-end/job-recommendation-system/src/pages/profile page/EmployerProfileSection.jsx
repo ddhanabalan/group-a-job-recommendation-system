@@ -15,6 +15,10 @@ export default function EmployerProfileSection({ data }) {
 
     const [skill, SetSkill] = useState('');
     const [skills, SetSkills] = useState([{ tag: "software", id: uuid() }, { tag: "data science", id: uuid() }]);
+    const [isBodyBlur, SetIsBodyBlur] = useState(false)
+    const blurBody = (state) => {
+        state ? SetIsBodyBlur(true) : SetIsBodyBlur(false)
+    }
 
     const handleDeleteSkill = (id) => {
         //accepts id of Domain tag and delete them from the array 
@@ -38,7 +42,7 @@ export default function EmployerProfileSection({ data }) {
 
     return (
         <div id="employer-profile-page">
-            <ProfileHead data={data} />
+            <ProfileHead data={data} blurFn={blurBody} />
             <NavigationBar active="employer-profile" />
             <div className="employer-profile-body-section">
                 <div className="employer-profile-pane employer-profile-left-pane">
