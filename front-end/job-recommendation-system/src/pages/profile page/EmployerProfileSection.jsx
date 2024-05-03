@@ -11,14 +11,14 @@ import FeatureBoxMiddlePaneText from '../../components/FeatureBoxMiddlePane/Feat
 import FeatureBoxMiddlePaneOpenings from '../../components/FeatureBoxMiddlePane/FeatureBoxMiddlePaneOpenings';
 import FeatureBoxMiddlePaneReview from '../../components/FeatureBoxMiddlePane/FeatureBoxMiddlePaneReview';
 import './EmployerProfileSection.css';
-export default function EmployerProfileSection({ data }) {
-
-    const [skill, SetSkill] = useState('');
-    const [skills, SetSkills] = useState([{ tag: "software", id: uuid() }, { tag: "data science", id: uuid() }]);
+export default function EmployerProfileSection({ data}) {
     const [isBodyBlur, SetIsBodyBlur] = useState(false)
     const blurBody = (state) => {
         state ? SetIsBodyBlur(true) : SetIsBodyBlur(false)
     }
+    const [skill, SetSkill] = useState('');
+    const [skills, SetSkills] = useState([{ tag: "software", id: uuid() }, { tag: "data science", id: uuid() }]);
+    
 
     const handleDeleteSkill = (id) => {
         //accepts id of Domain tag and delete them from the array 

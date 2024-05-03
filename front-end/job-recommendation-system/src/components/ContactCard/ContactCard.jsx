@@ -11,19 +11,28 @@ import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import PublicIcon from '@mui/icons-material/Public';
 import '../FeatureBox/FeatureBox.css';
 import './ContactCard.css';
-export default function ContactCard({ data, contactInfo }) {
+export default function ContactCard({ data, contactData }) {
     const [isNotEditing, SetIsNotEditing] = useState(true);
-    const { register, formState: { errors }, handleSubmit } = useForm({ mode: 'onTouched' | 'onSubmit' });
+    const [contactInfo, SetContactInfo] = useState({ ...contactData })
+    const { register, formState: { errors }, getValues } = useForm({ mode: 'onTouched' | 'onSubmit' });
+    function updateContact(data) {
+        SetContactInfo(data)
+        SetIsNotEditing(true)
+    }
     return (
-        <form className="feature-box">
-            {console.log(data.editIcon)}
+        <form className="feature-box" >
             < h4 className="feature-title" > {data.title}</h4 >
             <Stack direction="row" spacing={0} className='feature-actions'>
-                {isNotEditing?[data.editIcon] &&
-                    <IconButton aria-label="edit" onClick={()=>SetIsNotEditing(false)}>
+                {isNotEditing ? [data.editIcon] &&
+                    <IconButton aria-label="edit" onClick={() => SetIsNotEditing(false)}>
                         <EditIcon />
                     </IconButton> :
-                    <IconButton aria-label="check" onClick={() => SetIsNotEditing(true)}>
+                    <IconButton aria-label="check" onClick={() => {
+                        SetIsNotEditing(false)
+                        const data = getValues();
+                        console.log(data)
+                        updateContact(data)
+                    }}>
                         <CheckRoundedIcon />
                     </IconButton>}
                 {/* {data.addIcon &&
