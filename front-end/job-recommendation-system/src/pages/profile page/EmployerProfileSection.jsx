@@ -11,8 +11,11 @@ import FeatureBoxMiddlePaneText from '../../components/FeatureBoxMiddlePane/Feat
 import FeatureBoxMiddlePaneOpenings from '../../components/FeatureBoxMiddlePane/FeatureBoxMiddlePaneOpenings';
 import FeatureBoxMiddlePaneReview from '../../components/FeatureBoxMiddlePane/FeatureBoxMiddlePaneReview';
 import './EmployerProfileSection.css';
-export default function EmployerProfileSection({ data }) {
-
+export default function EmployerProfileSection({ data}) {
+    const [isBodyBlur, SetIsBodyBlur] = useState(false)
+    const blurBody = (state) => {
+        state ? SetIsBodyBlur(true) : SetIsBodyBlur(false)
+    }
     const [skill, SetSkill] = useState('');
     const [skills, SetSkills] = useState([{ tag: "software", id: uuid() }, { tag: "data science", id: uuid() }]);
 
@@ -38,7 +41,7 @@ export default function EmployerProfileSection({ data }) {
 
     return (
         <div id="employer-profile-page">
-            <ProfileHead data={data} />
+            <ProfileHead data={data} blurFn={blurBody} />
             <NavigationBar active="employer-profile" />
             <div className="employer-profile-body-section">
                 <div className="employer-profile-pane employer-profile-left-pane">
