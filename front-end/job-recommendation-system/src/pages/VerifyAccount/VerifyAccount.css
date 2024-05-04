@@ -1,0 +1,41 @@
+.verify-btn {
+    text-transform: none !important;
+    font-family: Inter-regular !important;
+}
+
+.verification-header {
+    position: absolute;
+    top: 0;
+    height: 3rem;
+    display: flex;
+    width: 100%;
+    align-items: center;
+}
+
+.verification-header button {
+    font-family: Inter-b !important;
+    font-size: 1.5rem !important;
+    margin: 0 1rem;
+    color: black;
+    text-transform: none;
+    border-radius: 8px;
+    height: min-content;
+    padding: 0 .2rem;
+}
+
+.verification-body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.verification-body h2{
+    font-family: Inter-md;
+}
+.verification-body p {
+    font-size: 1rem;
+    margin-top: 2rem;
+}
+
+.verification-body p>a {
+    color: blue !important;
+}

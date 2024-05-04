@@ -13,6 +13,7 @@ import SignUpPage from './pages/SignUp/SignUp';
 import SignUpPage2 from './pages/SignUp/SignUp2';
 import ProfileSection from './pages/profile page/ProfileSection';
 import EmployerProfileSection from './pages/profile page/EmployerProfileSection';
+import VerifyAccount from './pages/VerifyAccount/VerifyAccount';
 function App() {
   const [redirect, SetRedirect] = useState();
   const updateState = (state) => {
@@ -44,17 +45,13 @@ function App() {
           <Route path="/employer-profile" element={<EmployerProfileSection  data={{
             userName: "NASA",first_name: "NASA - National Aeronautics and Space Administration", location: "Washington, D.C", country:"USA", bio: "We search the Universe. "
           }} />} />
-          <Route path="/jobs" element={<JobSection />} />
+          <Route path="/jobs" element={<JobSection/>} />
           <Route path="/candidates" element={<CandidateSection />} />
+          <Route path="/verify/:accessToken" element={<VerifyAccount/>} />
           <Route path="*" element={<Error />} />
           <Route path="/login" element={redirect ? <Navigate to="/profile" /> : <LoginPage updateState={updateState} />} />
         </Routes>
       </BrowserRouter>
-      {/* <JobSection /> */}
-      {/* <Error/> */}
-      {/* <CandidateSection/> */}
-
-
     </>
   )
 }
