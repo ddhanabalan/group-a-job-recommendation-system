@@ -30,8 +30,9 @@ export default function JobOpeningsSection() {
     const [filterstat, setFilter] = useState(false);
     const [filterparam, setParam] = useState({});
     const filtered = demoInfo.filter(id => id["skills"].map((tag)=>(tag.toLowerCase().includes(searchVal.toLowerCase()))).filter(Boolean).length?id:false)
-    
+    const [selectedJobEntry,setJobEntry] = useState(demoInfo.filter(e=>(e["id"]===selectedEntry?e:false))[0]);
     //console.log("filtered", filtered);
+    
     const filterStateSet=(fstate)=>{
         setFilter(fstate);
     }
@@ -42,12 +43,21 @@ export default function JobOpeningsSection() {
     const chooseEntry =(entry)=>{
         //function for passing selected job opening card from child component to parent componenet
         setEntry(entry);
+        
     }
 
     const searchBar =(searchValue)=>{
         setSearch(searchValue);
     }
-
+    const expJob=(selection)=>{
+        //console.log("select", selection);
+        const expEntry = demoInfo.filter(e=>(e["id"]===selection?e:false));
+        setJobEntry(expEntry[0]);
+        
+    }
+    
+    //console.log("selected entry", selectedEntry);
+    useEffect(()=>expJob(selectedEntry),[selectedEntry]);
     /*const resultGen=()=>{
         
             let result = demoInfo.filter(id => id["skills"].map((tag)=>(tag.includes(searchVal))).filter(Boolean).length?id:false)
@@ -75,7 +85,9 @@ export default function JobOpeningsSection() {
    
     return (
         <div id="page">
+            <div className="openings-left-side-bar">
             <OpeningsListBar data={filtered} userType={userType} chooseEntry={chooseEntry} searchBar={searchBar} preselectedEntry={selectedEntry} filterFunc={filterStateSet}/>
+            </div>
             {filterstat?
             <div className="filter">
                 <Filter title="Filter" passFilteredDataFn={filterDataSet}/>
@@ -86,7 +98,7 @@ export default function JobOpeningsSection() {
             }
             
             <div className={`job-desc-box${filterstat?" blur":""}`}>
-            {selectedEntry!=null && filtered.length!=0?<JobDesciptionForm data={{...demoInfo[selectedEntry]}} userData={userData}/>:<></>}
+            {selectedEntry!=null && filtered.length!=0?<JobDesciptionForm data={selectedJobEntry} userData={userData}/>:<></>}
             </div>
         </div>
     )

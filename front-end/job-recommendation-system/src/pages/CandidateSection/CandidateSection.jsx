@@ -6,7 +6,9 @@ import './CandidateSection.css';
 export default function CandidateSection() {
     return (
         <div id="page">
-            <Filter title="Filter Applicants"/>
+            <div className="job-filter">
+                <Filter title="Filter Applicants"/>
+            </div>
             <StatsAI value="candidates"/>
             <div className="candidate-search">
                 <SearchBar toSearch="Search candidates" />

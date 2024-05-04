@@ -5,6 +5,7 @@ import StatsAI from "../../components/StatsAI/StatsAI";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import Jobs from "../../components/Jobs/Jobs";
 import NavigationBar from "../../components/NavigationBar/NavigationBar";
+import BackBtn from '../../components/BackBtn/BackBtn';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { IconButton} from '@mui/material';
 

@@ -17,7 +17,7 @@
 }
 
 .opening-card.highlighted{
-    background-color: #a0a0a0;
+    background-color: #a6a6a6;
 }
 
 .opening-card-h1{
@@ -60,6 +60,42 @@ flex-direction: column;
 align-items: center;
 
 }
+
+
+.opening-card-div2 .feature-side,.opening-card-div2.review .feature-side{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+}
+
+.application-indicator{
+    align-self: end;
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 50%;
+    background-color: #1565c0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.application-indicator p{
+    color: white;
+    font-size: 0.9rem;
+    font-weight: 700;
+}
+.opening-card-div2.review{
+    width: 32%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+    }
 .opening-card-div1{
 width: 80%;
 }
@@ -71,9 +107,11 @@ width: 80%;
     gap: 10px;
     align-items: center;
 }
+
 .opening-vacancy-buttons p{
     font-size: 11px;
-    margin-right: -5px;   
+    margin-right: -5px;
+    
 }
 
 @media only screen and (max-width: 960px) {

@@ -8,11 +8,11 @@ import { Button } from '@mui/material';
 import { useState, useEffect } from 'react';
 
 export default function JobDesciptionForm({ data, userData }) {
-    
+    //console.log("data received by form", data)
     //console.log(userData.appliedJobs.includes("4"))
     const [submit, setSubmit] = useState(false);
     //const [tag_state,setTagState] = useState(false);
-    const userSkills = (userData.type=="employer"?null:data.skills.map(skill => userData.skills.includes(skill)?true:false).filter(Boolean).length)
+    const userSkills = (userData.type==="employer"?null:data.skills.map(skill => userData.skills.includes(skill)?true:false).filter(Boolean).length)
     //console.log(userSkills)
     //function for senting applicant details from the form to company
 

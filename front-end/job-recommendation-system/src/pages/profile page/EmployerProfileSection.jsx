@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { v4 as uuid } from 'uuid';
+import getStorage from '../../storage/storage';
+import authAPI from '../../api/axios';
 import FeatureBox from '../../components/FeatureBox/FeatureBox';
 import FeatureBoxMiddlePane from '../../components/FeatureBoxMiddlePane/FeatureBoxMiddlePane';
 import ProfileHead from '../../components/ProfileHead/ProfileHead';
@@ -12,6 +14,26 @@ import FeatureBoxMiddlePaneOpenings from '../../components/FeatureBoxMiddlePane/
 import FeatureBoxMiddlePaneReview from '../../components/FeatureBoxMiddlePane/FeatureBoxMiddlePaneReview';
 import './EmployerProfileSection.css';
 export default function EmployerProfileSection({ data}) {
+    const redirectFn = (response) => {
+        console.log(response.data)
+    }
+    const callAPI = async () => {
+        console.log(Object.keys(getStorage("userToken").access_token))
+        try {
+            const response = await authAPI.get('/me', {
+                headers: {
+                    'Authorization': `Bearer ${getStorage("userToken").access_token}`
+                }
+            });
+            redirectFn(response)
+        } catch (e) {
+            console.log(e)
+            
+            alert(e.message)
+        }
+    }
+    useEffect(()=>callAPI, []);
+    
     const [isBodyBlur, SetIsBodyBlur] = useState(false)
     const blurBody = (state) => {
         state ? SetIsBodyBlur(true) : SetIsBodyBlur(false)

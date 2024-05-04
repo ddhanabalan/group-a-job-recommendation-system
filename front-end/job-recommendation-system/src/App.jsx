@@ -13,6 +13,7 @@ import SignUpPage from './pages/SignUp/SignUp';
 import SignUpPage2 from './pages/SignUp/SignUp2';
 import ProfileSection from './pages/profile page/ProfileSection';
 import EmployerProfileSection from './pages/profile page/EmployerProfileSection';
+import ReviewApplications from './pages/ReviewApplications/ReviewApplications';
 function App() {
   const [redirect, SetRedirect] = useState();
   const updateState = (state) => {
@@ -26,8 +27,8 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route index element={<LandingPage />} />
-          <Route path="/login/seeker" element={<LoginPage />} />
-          <Route path="/login/employer" element={<LoginPage />} />
+          <Route path="/login/seeker"  element={redirect ? <Navigate to="/profile" /> : <LoginPage updateState={updateState}/>} />
+          <Route path="/login/employer"  element={redirect ? <Navigate to="/employer-profile" /> : <LoginPage updateState={updateState}/>} />
           <Route path="/signup/seeker" element={<SignUpPage />} />
           <Route path="/signup/employer" element={<SignUpPage />} />
           <Route path="/signup2/seeker" element={<SignUpPage2 />} />
@@ -35,9 +36,11 @@ function App() {
           <Route path="/jobs" element={<JobSection />} />
           <Route path="/error" element={<Error />} />
           <Route path="/candidates" element={<CandidateSection />} />
-          <Route path="/seeker/openings" element={<JobOpeningsSection />} />
+          <Route path="/seeker/openings" element={<ReviewApplications />} />
           <Route path="/employer/openings" element={<JobOpeningsSection />} />
           <Route path="/employer/job-vacancy" element={<CreateJobVacancy />} />
+          <Route path="/employer/review-applications" element={<ReviewApplications />} />
+          
           <Route path="/profile" element={<ProfileSection  data={{
             userName: "AmyWilliams", first_name: "Amy", last_name: "Williams", location: "Massachusetts", country:"USA", bio: "🚀 NASA Software Engineer | Mom | STEM Advocate 👩‍🔧✨Embarking on cosmic adventures at NASA by day, crafting precious family moments by night. Join me on this stellar journey! 🌌💖 #NASA #WomenInSTEM #MomEngineer "
           }} />} />

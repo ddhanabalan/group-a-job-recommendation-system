@@ -1,3 +1,8 @@
+.openings-left-side-bar{
+    width: 34%;
+    height: 100vh;
+    align-self: start;
+}
 .job-desc-box{
     width: 65%;
     height: 95vh;
