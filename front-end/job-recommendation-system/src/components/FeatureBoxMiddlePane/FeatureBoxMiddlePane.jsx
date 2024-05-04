@@ -9,7 +9,7 @@ import QualificationAdd from '../QualificationAdd/QualificationAdd';
 import LanguageCard from '../LanguageCard/LanguageCard';
 import './FeatureBoxMiddlePane.css';
 export default function FeatureBoxMiddlePane({ data, childData }) {
-    const [qdata, SetQdata] = useState(childData);
+    const [qdata, SetQdata] = useState(childData); 
     const [newQual,SetNewQual]=useState(false)
     const addQualification = (e) => {
         //accepts new qualification data and adds it into existing array of qualifications
@@ -55,9 +55,10 @@ export default function FeatureBoxMiddlePane({ data, childData }) {
                 </IconButton>
             </Stack>
             <div className="feature-box-container">
+                {(qdata.length===0 && !newQual)  && <div className='qualification-card-h3 data-exception-featurebox' style={{ fontFamily:'Inter-light-italic'}}>It seems you haven't entered any information yet, so there's nothing to display at the moment.</div>}
                 {newQual && (data.isLanguage ? <LanguageAdd submitFn={addQualification} cancelFn={cancelQual} />:<QualificationAdd submitFn={addQualification} cancelFn={cancelQual } />)}
                 {
-                    qdata.map(e => {
+                    childData&&qdata.map(e => {
 
                         return (
                             data.isLanguage === true ?
