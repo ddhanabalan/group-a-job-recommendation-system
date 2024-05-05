@@ -30,7 +30,7 @@ export default function ProfileHead({ data, blurFn, subForm,isNotEditing,setIsNo
                         <IconButton aria-label="check" onClick={() => {
                             setIsNotEditing(true)
                             blurFn(false)
-                            subForm(getValues())
+                            subForm({...data, ...getValues() })
                          }}>
                             <CheckRoundedIcon />
                         </IconButton>}
@@ -38,7 +38,7 @@ export default function ProfileHead({ data, blurFn, subForm,isNotEditing,setIsNo
             </div>
             <div className="profile-head-info">
                 <div className="profile-head-info-div profile-head-info-div1">
-                    <div className='profile-img-container'>
+                    <div className='profile-img-container p-image'>
                         <img src={data.profile_picture ? data.profile_picture : profilePlaceholder} alt="profile picture" />
                     </div>
                 </div>

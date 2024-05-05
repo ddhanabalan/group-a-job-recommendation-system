@@ -78,13 +78,19 @@ function SignUpForm2() {
         }
       })
       setServerMsg({...res});
+      setTimeout(() => {
+        navigate('/login/seeker')
+      }, 5000)
 
     } catch (e) {
       setServerMsg({...e.response});
       console.log(e)
+      setTimeout(() => {
+        navigate('/login/seeker')
+      }, 5000)
       // alert(e.message)
     }
-    
+   
     
     
     SetLoading(false)
