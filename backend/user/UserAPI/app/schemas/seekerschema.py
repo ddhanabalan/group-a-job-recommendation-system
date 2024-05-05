@@ -22,7 +22,7 @@ class SeekersBaseIn(SeekersBase):
 
 class SeekersDetails(SeekersBase):
     bio: Optional[str]
-    contact_email: EmailStr
+    contact_email: Optional[EmailStr]
     address: Optional[str]
     institution: Optional[str]
     experience: Optional[str]

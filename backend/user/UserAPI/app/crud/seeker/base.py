@@ -42,5 +42,6 @@ def get_userid_from_username(db: Session, username: str) -> int | None:
             .filter(seekermodel.SeekersDetails.username == username)
             .first()
         )
-    except SQLAlchemyError:
+    except SQLAlchemyError as e:
+        print(e)
         return None

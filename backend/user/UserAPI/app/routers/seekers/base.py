@@ -38,9 +38,11 @@ async def user_seeker_init(
 async def profile(authorization: str = Header(...), db: Session = Depends(get_db)):
     username = await get_current_user(authorization=authorization)
     username = username["user"]
+    print(username)
     details = crud.seeker.details.get_by_username(db=db, username=username)
-    profile_picture = details.profile_picture
-    if profile_picture is not None:
+    print(details)
+    if details.profile_picture is not None:
+        profile_picture = details.profile_picture
         profile_picture64 = base64.b64encode(profile_picture).decode("utf-8")
         print(profile_picture64)
         profile_picture64 = (
