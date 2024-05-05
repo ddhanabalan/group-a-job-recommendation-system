@@ -13,6 +13,7 @@ class SeekersBase(BaseModel):
     gender: Optional[str] = None
     country: Optional[str] = None
     phone: Optional[str] = None
+    city: Optional[str]
 
 
 class SeekersBaseIn(SeekersBase):
@@ -22,7 +23,6 @@ class SeekersBaseIn(SeekersBase):
 class SeekersDetails(SeekersBase):
     bio: Optional[str]
     address: Optional[str]
-    city: Optional[str]
     institution: Optional[str]
     experience: Optional[str]
     education: Optional[str]

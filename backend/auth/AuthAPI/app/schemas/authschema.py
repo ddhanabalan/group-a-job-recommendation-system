@@ -56,6 +56,7 @@ class UserInSeeker(UserIn):
     gender: Optional[str] = None
     profile_picture: Optional[str] = None
     country: Optional[str] = None
+    city: Optional[str] = None
     phone: Optional[str] = None
     dob: Optional[str] = None
 
