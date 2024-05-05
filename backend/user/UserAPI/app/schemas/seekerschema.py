@@ -14,8 +14,10 @@ class SeekersBase(BaseModel):
     country: Optional[str] = None
     phone: Optional[str] = None
 
+
 class SeekersBaseIn(SeekersBase):
     profile_picture: Optional[str] = None
+
 
 class SeekersDetails(SeekersBase):
     bio: Optional[str]

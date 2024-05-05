@@ -1,12 +1,20 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from typing import Type, List
-from .. import get_db, Session, jobschema, jobmodel, jobcrud, check_authorization
+from .. import (
+    get_db,
+    Session,
+    jobschema,
+    jobmodel,
+    jobcrud,
+    check_authorization,
+    get_current_user,
+)
 
 job_vacancy_router = APIRouter(prefix="/job_vacancy")
 
 
 @job_vacancy_router.post("/", status_code=status.HTTP_201_CREATED)
-def create_job_vacancy(
+async def create_job_vacancy(
     job_vacancy: jobschema.JobVacancyCreate, db: Session = Depends(get_db)
 ):
     data = job_vacancy.dict()
@@ -31,7 +39,7 @@ def create_job_vacancy(
 
 # Read job vacancy by ID
 @job_vacancy_router.get("/{job_vacancy_id}", response_model=jobschema.JobVacancy)
-def read_job_vacancy(job_vacancy_id: int, db: Session = Depends(get_db)):
+async def read_job_vacancy(job_vacancy_id: int, db: Session = Depends(get_db)):
     db_job_vacancy = jobcrud.vacancy.get(db, job_vacancy_id)
     if db_job_vacancy is None:
         raise HTTPException(
@@ -42,7 +50,7 @@ def read_job_vacancy(job_vacancy_id: int, db: Session = Depends(get_db)):
 
 # Update job vacancy by ID
 @job_vacancy_router.put("/{job_vacancy_id}")
-def update_job_vacancy(
+async def update_job_vacancy(
     job_vacancy_id: int,
     job_vacancy: jobschema.JobVacancyCreate,
     db: Session = Depends(get_db),
@@ -73,7 +81,7 @@ def update_job_vacancy(
 
 # Delete job vacancy by ID
 @job_vacancy_router.delete("/{job_vacancy_id}")
-def delete_job_vacancy(job_vacancy_id: int, db: Session = Depends(get_db)):
+async def delete_job_vacancy(job_vacancy_id: int, db: Session = Depends(get_db)):
     db_job_vacancy = jobcrud.vacancy.get(db, job_vacancy_id)
     if db_job_vacancy is None:
         raise HTTPException(
@@ -85,7 +93,9 @@ def delete_job_vacancy(job_vacancy_id: int, db: Session = Depends(get_db)):
 
 # Get job vacancies by company ID
 @job_vacancy_router.get("/company/{company_id}")
-def read_job_vacancies_by_company_id(company_id: int, db: Session = Depends(get_db)):
+async def read_job_vacancies_by_company_id(
+    company_id: int, db: Session = Depends(get_db)
+):
     job_vacancy = jobcrud.vacancy.get_all(db, company_id)
     for job in job_vacancy:
         job.skills = jobcrud.skill.get_all(db, job.job_id)

@@ -187,7 +187,11 @@ async def login_for_access_token(
 
 @app.get("/me")
 async def users_info(current_user=Depends(get_current_active_user)):
-    return {"user": current_user.username, "type": current_user.user_type}
+    return {
+        "user_id": current_user.user_id,
+        "user": current_user.username,
+        "type": current_user.user_type,
+    }
 
 
 @app.get("/google")

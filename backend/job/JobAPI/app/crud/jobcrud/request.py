@@ -60,13 +60,13 @@ def get(db: Session, job_request_id: int) -> Type[jobmodel.JobRequest] | None:
         return None
 
 
-def create(db: Session, job_request: jobschema.JobRequestCreate) -> bool:
+def create(db: Session, job_request: jobschema.JobRequest) -> bool:
     """
     Create a new job request in the database.
 
     Args:
         db (Session): SQLAlchemy database session.
-        job_request (jobschema.JobRequestCreate): Details of the job request to create.
+        job_request (jobschema.JobRequest): Details of the job request to create.
 
     Returns:
         jobmodel.JobRequest: Created job request object.

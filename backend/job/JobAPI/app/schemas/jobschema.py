@@ -70,9 +70,8 @@ class JobSkill(JobSkillBase):
 
 
 class JobRequestBase(BaseModel):
-    job_id: Optional[int]
-    user_id: Optional[int]
-    status: Optional[str]
+    job_id: int
+    status: Optional[str] = "Applied"
 
 
 class JobRequestCreate(JobRequestBase):
@@ -81,6 +80,7 @@ class JobRequestCreate(JobRequestBase):
 
 class JobRequest(JobRequestBase):
     id: Optional[int]
+    user_id: Optional[int]
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
 
