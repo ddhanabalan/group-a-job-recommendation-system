@@ -28,7 +28,7 @@ valid for 30 minutes. If the link expires, please log in again to generate a new
         If you believe you received this email in error or did not initiate this request, please don't hesitate to \
 contact us.
         
-        http://localhost:8000/email/verify/{token}
+        http://localhost:5173/verify/{token}
         
         Thank you for your attention to this matter.
         
