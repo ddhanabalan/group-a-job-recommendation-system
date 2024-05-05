@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { TextField } from '@mui/material';
+import { userAPI } from '../../api/axios';
+import getStorage from '../../storage/storage';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import EmailIcon from '@mui/icons-material/Email';
@@ -14,9 +16,9 @@ import './ContactCard.css';
 export default function ContactCard({ data, contactData ,subForm}) {
     const [isNotEditing, SetIsNotEditing] = useState(true);
     const { register, formState: { errors }, getValues } = useForm({ mode: 'onTouched' | 'onSubmit' });
-    function updateContact(data) {
-        SetContactInfo(data)
+    async function updateContact(data) {
         SetIsNotEditing(true)
+        subForm({ ...contactData, ...data })
     }
 
     console.log("data",contactData)
@@ -31,7 +33,6 @@ export default function ContactCard({ data, contactData ,subForm}) {
                     <IconButton aria-label="check" onClick={() => {
                         SetIsNotEditing(false)
                         const data = getValues();
-                        console.log(data)
                         updateContact(data)
                     }}>
                         <CheckRoundedIcon />
@@ -72,7 +73,7 @@ export default function ContactCard({ data, contactData ,subForm}) {
                                 <EmailIcon />
                             </IconButton>
                             <TextField className="personal-details-input profile-edit-bio contact-card-textfield" variant="outlined"
-                                defaultValue={contactData.mail}
+                                defaultValue={contactData.email}
                                 placeholder='example@mail.com'
                                 error={'mail' in errors}
                                 {...register("mail",
