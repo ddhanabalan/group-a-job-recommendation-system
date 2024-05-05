@@ -41,7 +41,8 @@ async def profile(authorization: str = Header(...), db: Session = Depends(get_db
     details = crud.seeker.details.get_by_username(db=db, username=username)
     profile_picture = details.profile_picture
     if profile_picture is not None:
-        profile_picture64 = base64.b64encode(profile_picture).decode("utf-8")
+        profile_picture64 = base64.urlsafe_b64encode(profile_picture)
+        print(profile_picture64)
         profile_picture64 = f"data:image/png;base64,{profile_picture64.split('base64')[1]}"
     user_details = seekerschema.SeekersDetails.from_orm(details)
     user_skill = crud.seeker.skill.get_all(db=db, user_id=user_details.user_id)
@@ -73,7 +74,8 @@ async def profile_by_username(username: str, db: Session = Depends(get_db)):
     profile_picture = details.profile_picture
     user_details = seekerschema.SeekersDetails.from_orm(details)
     if profile_picture is not None:
-        profile_picture64 = base64.b64encode(profile_picture).decode("utf-8")
+        profile_picture64 = base64.urlsafe_b64encode(profile_picture).decode('utf-8')
+        print(profile_picture64)
         profile_picture64 = f"data:image/png;base64,{profile_picture64.split('base64')[1]}"
     user_skill = crud.seeker.skill.get_all(db=db, user_id=user_details.user_id)
 

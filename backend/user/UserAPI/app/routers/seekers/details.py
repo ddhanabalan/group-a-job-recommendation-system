@@ -21,7 +21,7 @@ async def get_seeker_details(
     db: Session = Depends(get_db), authorization: str = Header(...)
 ):
     username = await get_current_user(authorization=authorization)
-    user_details = crud.details.get_by_username(db=db, username=username)
+    user_details = crud.details.get_by_username(db=db, username=username['user'])
     return user_details
 
 
@@ -42,7 +42,7 @@ async def update_seeker_details(
     authorization: str = Header(...),
 ):
     username = await get_current_user(authorization=authorization)
-    existing_user = crud.details.get_by_username(db=db, username=username)
+    existing_user = crud.details.get_by_username(db=db, username=username['user'])
     if not existing_user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
