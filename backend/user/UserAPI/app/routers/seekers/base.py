@@ -12,7 +12,7 @@ async def user_seeker_init(
     user: seekerschema.SeekersBaseIn, db: Session = Depends(get_db)
 ):
     try:
-        contents = base64.b64decode(user.profile_picture+"==")
+        contents = base64.b64decode(user.profile_picture + "==")
     except TypeError:
         contents = None
     username = user.username
@@ -43,7 +43,9 @@ async def profile(authorization: str = Header(...), db: Session = Depends(get_db
     if profile_picture is not None:
         profile_picture64 = base64.urlsafe_b64encode(profile_picture)
         print(profile_picture64)
-        profile_picture64 = f"data:image/png;base64,{profile_picture64.split('base64')[1]}"
+        profile_picture64 = (
+            f"data:image/png;base64,{profile_picture64.split('base64')[1]}"
+        )
     user_details = seekerschema.SeekersDetails.from_orm(details)
     user_skill = crud.seeker.skill.get_all(db=db, user_id=user_details.user_id)
 
@@ -74,9 +76,11 @@ async def profile_by_username(username: str, db: Session = Depends(get_db)):
     profile_picture = details.profile_picture
     user_details = seekerschema.SeekersDetails.from_orm(details)
     if profile_picture is not None:
-        profile_picture64 = base64.urlsafe_b64encode(profile_picture).decode('utf-8')
+        profile_picture64 = base64.urlsafe_b64encode(profile_picture).decode("utf-8")
         print(profile_picture64)
-        profile_picture64 = f"data:image/png;base64,{profile_picture64.split('base64')[1]}"
+        profile_picture64 = (
+            f"data:image/png;base64,{profile_picture64.split('base64')[1]}"
+        )
     user_skill = crud.seeker.skill.get_all(db=db, user_id=user_details.user_id)
 
     user_education = crud.seeker.education.get_all(db=db, user_id=user_details.user_id)

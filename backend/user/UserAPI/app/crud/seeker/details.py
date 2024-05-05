@@ -89,9 +89,7 @@ def create(db: Session, seeker_details: seekerschema.SeekersDetails) -> bool:
         return False
 
 
-def update(
-    db: Session, user_id: int, updated_details: seekerschema.SeekersDetails
-) -> bool:
+def update(db: Session, user_id: int, updated_details: dict) -> bool:
     """
     Update seeker details in the database.
 
@@ -104,9 +102,14 @@ def update(
         bool: True if update is successful, False otherwise.
     """
     try:
-        db.query(seekermodel.SeekersDetails).filter(
-            seekermodel.SeekersDetails.user_id == user_id
-        ).update(updated_details.dict())
+        data = (
+            db.query(seekermodel.SeekersDetails)
+            .filter(seekermodel.SeekersDetails.user_id == user_id)
+            .first()
+        )
+        if data:
+            for key, value in updated_details.items():
+                setattr(data, key, value)
         db.commit()
         return True
     except SQLAlchemyError:

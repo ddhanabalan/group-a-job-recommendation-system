@@ -30,6 +30,7 @@ class SeekersDetails(Base):
     institution = Column(String(256))
     experience = Column(String(256))
     education = Column(String(256))
+    contact_email = Column(String(32), default=email)
     dob = Column(Date)
     age = Column(Integer)
     gender = Column(String(16))
