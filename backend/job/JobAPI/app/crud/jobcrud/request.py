@@ -26,6 +26,19 @@ def get_all(db: Session, user_id: int) -> List[Type[jobschema.JobRequest]]:
         return []
 
 
+def get_all_by_job_id(
+    db: Session, job_id: int
+) -> List[Type[jobmodel.JobRequest]] | None:
+    try:
+        return (
+            db.query(jobmodel.JobRequest)
+            .filter(jobmodel.JobRequest.job_id == job_id)
+            .all()
+        )
+    except SQLAlchemyError as e:
+        return []
+
+
 def get(db: Session, job_request_id: int) -> Type[jobmodel.JobRequest] | None:
     """
     Retrieve a job request from the database by ID.

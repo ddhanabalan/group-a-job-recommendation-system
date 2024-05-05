@@ -111,5 +111,6 @@ class SeekersProfile(SeekersDetails):
     former_jobs: Optional[List[SeekersFormerJob]]
     poi: Optional[List[SeekersPOI]]
 
+
 class JobUserDetailsIn(BaseModel):
     user_ids: List[int]

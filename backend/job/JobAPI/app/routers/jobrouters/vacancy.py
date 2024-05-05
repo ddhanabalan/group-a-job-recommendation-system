@@ -90,4 +90,5 @@ def read_job_vacancies_by_company_id(company_id: int, db: Session = Depends(get_
     for job in job_vacancy:
         job.skills = jobcrud.skill.get_all(db, job.job_id)
         job.tags = jobcrud.tags.get_all(db, job.job_id)
+        job.job_seekers = jobcrud.request.get_all_by_job_id(db, job.job_id)
     return job_vacancy

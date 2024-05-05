@@ -91,3 +91,4 @@ class JobRequest(JobRequestBase):
 class JobVacancyUpdate(JobVacancyBase):
     tags: Optional[List[JobTags]]
     skill: Optional[List[JobSkill]]
+    job_seekers: Optional[List[JobRequest]]
