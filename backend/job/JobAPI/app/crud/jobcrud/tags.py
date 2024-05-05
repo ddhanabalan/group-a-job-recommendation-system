@@ -5,9 +5,7 @@ from typing import List, Type
 from .. import jobschema, jobmodel
 
 
-def get_all(
-    db: Session, job_id: int
-) -> List[Type[jobschema.JobTags]]:
+def get_all(db: Session, job_id: int) -> List[Type[jobschema.JobTags]]:
     """
     Retrieve job tags associated with a user ID from the database.
 
@@ -20,17 +18,13 @@ def get_all(
     """
     try:
         return (
-            db.query(jobmodel.JobTags)
-            .filter(jobmodel.JobTags.job_id == job_id)
-            .all()
+            db.query(jobmodel.JobTags).filter(jobmodel.JobTags.job_id == job_id).all()
         )
     except SQLAlchemyError:
         return []
 
 
-def get(
-    db: Session, job_tags_id: int
-) -> Type[jobmodel.JobTags] | None:
+def get(db: Session, job_tags_id: int) -> Type[jobmodel.JobTags] | None:
     """
     Retrieve a job tags from the database by ID.
 
@@ -75,9 +69,7 @@ def create(db: Session, job_tags: jobschema.JobTagsCreate) -> bool:
 # Update
 
 
-def update(
-    db: Session, job_tags_id: int, job_tags: jobschema.JobTagsCreate
-):
+def update(db: Session, job_tags_id: int, job_tags: jobschema.JobTagsCreate):
     """
     Update a job tags in the database.
 
@@ -114,9 +106,7 @@ def delete(db: Session, job_tags_id: int):
         None
     """
     try:
-        db.query(jobmodel.JobTags).filter(
-            jobmodel.JobTags.id == job_tags_id
-        ).delete()
+        db.query(jobmodel.JobTags).filter(jobmodel.JobTags.id == job_tags_id).delete()
         db.commit()
         return True
     except SQLAlchemyError:

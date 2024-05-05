@@ -30,6 +30,7 @@ from .utils import validate_user_update, send_verify
 
 authmodel.Base.metadata.create_all(bind=engine)
 origins = [
+    "*",
     "http://localhost.tiangolo.com",
     "https://localhost.tiangolo.com",
     "http://localhost",
@@ -184,9 +185,9 @@ async def login_for_access_token(
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-@app.get("/me", response_model=str)
+@app.get("/me")
 async def users_info(current_user=Depends(get_current_active_user)):
-    return current_user.username
+    return {"user": current_user.username, "type": current_user.user_type}
 
 
 @app.get("/google")

@@ -5,9 +5,7 @@ from typing import List, Type
 from .. import jobschema, jobmodel
 
 
-def get_all(
-    db: Session, job_id: int
-) -> List[Type[jobschema.JobSkill]]:
+def get_all(db: Session, job_id: int) -> List[Type[jobschema.JobSkill]]:
     """
     Retrieve job skill associated with a user ID from the database.
 
@@ -20,17 +18,13 @@ def get_all(
     """
     try:
         return (
-            db.query(jobmodel.JobSkill)
-            .filter(jobmodel.JobSkill.job_id == job_id)
-            .all()
+            db.query(jobmodel.JobSkill).filter(jobmodel.JobSkill.job_id == job_id).all()
         )
     except SQLAlchemyError:
         return []
 
 
-def get(
-    db: Session, job_skill_id: int
-) -> Type[jobmodel.JobSkill] | None:
+def get(db: Session, job_skill_id: int) -> Type[jobmodel.JobSkill] | None:
     """
     Retrieve a job skill from the database by ID.
 
@@ -75,9 +69,7 @@ def create(db: Session, job_skill: jobschema.JobSkillCreate) -> bool:
 # Update
 
 
-def update(
-    db: Session, job_skill_id: int, job_skill: jobschema.JobSkillCreate
-):
+def update(db: Session, job_skill_id: int, job_skill: jobschema.JobSkillCreate):
     """
     Update a job skill in the database.
 

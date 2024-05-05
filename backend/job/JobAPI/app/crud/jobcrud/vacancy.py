@@ -5,9 +5,7 @@ from typing import List, Type
 from .. import jobschema, jobmodel
 
 
-def get_all(
-    db: Session, company_id: int
-) -> List[Type[jobschema.JobVacancy]]:
+def get_all(db: Session, company_id: int) -> List[Type[jobschema.JobVacancy]]:
     """
     Retrieve job vacancies associated with a company ID from the database.
 
@@ -28,9 +26,7 @@ def get_all(
         return []
 
 
-def get(
-    db: Session, job_vacancy_id: int
-) -> Type[jobmodel.JobVacancy] | None:
+def get(db: Session, job_vacancy_id: int) -> Type[jobmodel.JobVacancy] | None:
     """
     Retrieve a job vacancy from the database by ID.
 

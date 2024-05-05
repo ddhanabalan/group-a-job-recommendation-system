@@ -24,6 +24,8 @@ class SeekersDetails(SeekersBase):
     experience: Optional[str]
     education: Optional[str]
     age: Optional[int]
+    github: Optional[str]
+    website: Optional[str]
     location: Optional[str]
     created_at: Optional[datetime]
     updated_at: Optional[datetime]

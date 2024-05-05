@@ -25,6 +25,8 @@ class SeekersDetails(Base):
     age = Column(Integer)
     gender = Column(String(16))
     location = Column(String(512))
+    github = Column(String(32))
+    website = Column(String(32))
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

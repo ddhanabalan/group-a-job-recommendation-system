@@ -1,6 +1,6 @@
-from fastapi import APIRouter,Depends, HTTPException,status
-from typing import Type,List
-from .. import get_db,Session,jobschema,jobmodel,jobcrud, check_authorization
+from fastapi import APIRouter, Depends, HTTPException, status
+from typing import Type, List
+from .. import get_db, Session, jobschema, jobmodel, jobcrud, check_authorization
 
 job_vacancy_router = APIRouter(prefix="/job_vacancy")
 
@@ -15,10 +15,13 @@ def create_job_vacancy(
 
     job_vacancy_instance = jobmodel.JobVacancy(**data)
     if not jobcrud.vacancy.create(db, job_vacancy_instance):
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Data not updated to Database")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Data not updated to Database",
+        )
     job_id = job_vacancy_instance.job_id
     for tag in tags:
-        job_tag_data = jobschema.JobTagsCreate(job_id=job_id, tags  =tag)
+        job_tag_data = jobschema.JobTagsCreate(job_id=job_id, tags=tag)
         jobcrud.tags.create(db, job_tag_data)
 
     for _ in skill:
@@ -52,8 +55,13 @@ def update_job_vacancy(
     tags = data.pop("tags", [])
     skills = data.pop("skill", [])
 
-    if not jobcrud.vacancy.update(db, job_vacancy_id, jobschema.JobVacancyCreate(**data)):
-        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Data not updated to Database")
+    if not jobcrud.vacancy.update(
+        db, job_vacancy_id, jobschema.JobVacancyCreate(**data)
+    ):
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Data not updated to Database",
+        )
     for tag in tags:
         jobcrud.tags.update(db, tag.id, tag)
 

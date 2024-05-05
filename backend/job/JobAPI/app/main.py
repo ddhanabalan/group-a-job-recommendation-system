@@ -6,7 +6,7 @@ from .models import jobmodel
 from .routers import router
 
 origins = [
-"*",
+    "*",
     "http://localhost.tiangolo.com",
     "https://localhost.tiangolo.com",
     "http://localhost",

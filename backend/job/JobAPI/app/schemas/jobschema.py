@@ -1,5 +1,5 @@
 from pydantic import BaseModel, FutureDatetime, PastDatetime
-from typing import Optional,List
+from typing import Optional, List
 from datetime import datetime
 
 
@@ -22,7 +22,6 @@ class JobVacancyBase(BaseModel):
 class JobVacancyCreate(JobVacancyBase):
     tags: Optional[List[str]]
     skill: Optional[List[str]]
-
 
 
 class JobVacancy(JobVacancyBase):
@@ -87,6 +86,7 @@ class JobRequest(JobRequestBase):
 
     class Config:
         from_attributes = True
+
 
 class JobVacancyUpdate(JobVacancyBase):
     tags: Optional[List[JobTags]]

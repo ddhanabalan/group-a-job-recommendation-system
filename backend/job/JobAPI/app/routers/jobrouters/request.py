@@ -1,6 +1,6 @@
-from fastapi import APIRouter,Depends, HTTPException,status
-from typing import Type,List
-from .. import get_db,Session,jobschema,jobcrud, check_authorization
+from fastapi import APIRouter, Depends, HTTPException, status
+from typing import Type, List
+from .. import get_db, Session, jobschema, jobcrud, check_authorization
 
 
 job_request_router = APIRouter(prefix="/job_request")
