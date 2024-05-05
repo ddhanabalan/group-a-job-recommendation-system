@@ -15,12 +15,12 @@ job_request_router = APIRouter(prefix="/job_request")
 
 @job_request_router.post("/", response_model=jobschema.JobRequest)
 async def create_job_request(
-    job_request: jobschema.JobRequestCreate,
+    job_request: jobschema.JobRequest,
     authorization: str = Header(...),
     db: Session = Depends(get_db),
 ):
     data = await get_current_user(authorization=authorization)
-    job_req = jobschema.JobRequest(**job_request.dict(), user_id=data["user_id"])
+    job_req = jobschema.JobRequestCreate(**job_request.dict(), user_id=data["user_id"])
     return jobcrud.request.create(db, job_req)
 
 

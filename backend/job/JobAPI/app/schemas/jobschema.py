@@ -75,12 +75,11 @@ class JobRequestBase(BaseModel):
 
 
 class JobRequestCreate(JobRequestBase):
-    pass
+    user_id: Optional[int]
 
 
 class JobRequest(JobRequestBase):
     id: Optional[int]
-    user_id: Optional[int]
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
 

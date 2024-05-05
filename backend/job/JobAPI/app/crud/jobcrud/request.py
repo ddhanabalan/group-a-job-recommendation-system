@@ -60,7 +60,7 @@ def get(db: Session, job_request_id: int) -> Type[jobmodel.JobRequest] | None:
         return None
 
 
-def create(db: Session, job_request: jobschema.JobRequest) -> bool:
+def create(db: Session, job_request: jobschema.JobRequestCreate) -> bool:
     """
     Create a new job request in the database.
 
