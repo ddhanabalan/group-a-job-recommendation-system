@@ -11,7 +11,10 @@ router = APIRouter()
 async def user_seeker_init(
     user: seekerschema.SeekersBaseIn, db: Session = Depends(get_db)
 ):
-    contents = base64.b64decode(user.profile_picture+"==")
+    try:
+        contents = base64.b64decode(user.profile_picture+"==")
+    except TypeError:
+        contents = None
     username = user.username
     user_details = crud.seeker.base.get_userid_from_username(db=db, username=username)
     if user_details is not None:
@@ -37,8 +40,9 @@ async def profile(authorization: str = Header(...), db: Session = Depends(get_db
     username = username["user"]
     details = crud.seeker.details.get_by_username(db=db, username=username)
     profile_picture = details.profile_picture
+    if profile_picture is not None:
+        profile_picture64 = base64.b64encode(profile_picture).decode("utf-8")
     user_details = seekerschema.SeekersDetails.from_orm(details)
-    profile_picture64 = base64.b64encode(profile_picture).decode("utf-8")
     user_skill = crud.seeker.skill.get_all(db=db, user_id=user_details.user_id)
 
     user_education = crud.seeker.education.get_all(db=db, user_id=user_details.user_id)
