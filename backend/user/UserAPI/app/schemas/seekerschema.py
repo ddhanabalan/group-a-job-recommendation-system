@@ -11,10 +11,11 @@ class SeekersBase(BaseModel):
     email: EmailStr
     dob: Optional[PastDate] = None
     gender: Optional[str] = None
-    profile_picture: Optional[str] = None
     country: Optional[str] = None
     phone: Optional[str] = None
 
+class SeekersBaseIn(SeekersBase):
+    profile_picture: Optional[str] = None
 
 class SeekersDetails(SeekersBase):
     bio: Optional[str]
@@ -104,6 +105,7 @@ class SeekersPOI(BaseModel):
 
 
 class SeekersProfile(SeekersDetails):
+    profile_picture: Optional[str] = None
     loc_type: Optional[List[SeekersLocType]]
     emp_type: Optional[List[SeekersEmpType]]
     prev_education: Optional[List[SeekersEducation]]

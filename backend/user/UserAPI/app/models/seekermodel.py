@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, Date, DateTime, ForeignKey, Text
+from sqlalchemy import Column, String, Integer, Date, DateTime, ForeignKey, Text,LargeBinary
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from ..database import Base
@@ -17,7 +17,7 @@ class SeekersDetails(Base):
     address = Column(String(256))
     city = Column(String(128))
     country = Column(String(128))
-    profile_picture = Column(Text)
+    profile_picture = Column(LargeBinary)
     institution = Column(String(256))
     experience = Column(String(256))
     education = Column(String(256))
