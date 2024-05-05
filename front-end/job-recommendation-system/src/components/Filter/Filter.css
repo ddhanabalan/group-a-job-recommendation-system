@@ -2,6 +2,7 @@
     height: 100vh;
     width: auto;
     background-color: white;
+    align-items:initial;
     align-self: start;
     display: flex;
     flex-direction: column;

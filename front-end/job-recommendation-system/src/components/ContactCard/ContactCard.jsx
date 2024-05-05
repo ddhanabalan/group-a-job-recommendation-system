@@ -11,14 +11,15 @@ import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import PublicIcon from '@mui/icons-material/Public';
 import '../FeatureBox/FeatureBox.css';
 import './ContactCard.css';
-export default function ContactCard({ data, contactData }) {
+export default function ContactCard({ data, contactData ,subForm}) {
     const [isNotEditing, SetIsNotEditing] = useState(true);
-    const [contactInfo, SetContactInfo] = useState({ ...contactData })
     const { register, formState: { errors }, getValues } = useForm({ mode: 'onTouched' | 'onSubmit' });
     function updateContact(data) {
         SetContactInfo(data)
         SetIsNotEditing(true)
     }
+
+    console.log("data",contactData)
     return (
         <form className="feature-box" >
             < h4 className="feature-title" > {data.title}</h4 >
@@ -47,19 +48,19 @@ export default function ContactCard({ data, contactData }) {
                             <IconButton aria-label="email" disabled>
                                 <EmailIcon />
                             </IconButton>
-                            <p className="contact-p">{contactInfo.mail ? contactInfo.mail : <span className='data-not-present-handle'>not linked</span>}</p>
+                            <p className="contact-p">{contactData.email ? contactData.email : <span className='data-not-present-handle'>not linked</span>}</p>
                         </Stack>
                         <Stack direction="row" spacing={1} className='contact-medium'>
                             <IconButton aria-label="github" disabled>
                                 <GitHubIcon />
                             </IconButton>
-                            <p className="contact-p">{contactInfo.github ? contactInfo.github : <span className='data-not-present-handle'>not linked</span>}</p>
+                            <p className="contact-p">{contactData.github ? contactData.github : <span className='data-not-present-handle'>not linked</span>}</p>
                         </Stack>
                         <Stack direction="row" spacing={1} className='contact-medium'>
                             <IconButton aria-label="website" disabled>
                                 <PublicIcon />
                             </IconButton>
-                            <p className="contact-p">{contactInfo.website ? contactInfo.website : <span className='data-not-present-handle'>not linked</span>}</p>
+                            <p className="contact-p">{contactData.website ? contactData.website : <span className='data-not-present-handle'>not linked</span>}</p>
                         </Stack>
                     </Stack>
 
@@ -71,7 +72,7 @@ export default function ContactCard({ data, contactData }) {
                                 <EmailIcon />
                             </IconButton>
                             <TextField className="personal-details-input profile-edit-bio contact-card-textfield" variant="outlined"
-                                defaultValue={contactInfo.mail}
+                                defaultValue={contactData.mail}
                                 placeholder='example@mail.com'
                                 error={'mail' in errors}
                                 {...register("mail",
@@ -85,7 +86,7 @@ export default function ContactCard({ data, contactData }) {
                                 <GitHubIcon />
                             </IconButton>
                             <TextField className="personal-details-input profile-edit-bio contact-card-textfield" variant="outlined"
-                                defaultValue={contactInfo.github}
+                                defaultValue={contactData.github}
                                 placeholder='github username'
                                 error={'github' in errors}
                                 {...register("github",
@@ -99,7 +100,7 @@ export default function ContactCard({ data, contactData }) {
                                 <PublicIcon />
                             </IconButton>
                             <TextField className="personal-details-input profile-edit-bio contact-card-textfield" variant="outlined"
-                                defaultValue={contactInfo.website}
+                                defaultValue={contactData.website}
                                 placeholder='website url'
                                 error={'website' in errors}
                                 {...register("website",

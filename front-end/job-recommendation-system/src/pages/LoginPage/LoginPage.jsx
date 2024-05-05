@@ -13,7 +13,7 @@ export default function LoginPage({ updateState }) {
     const [serverMsg, SetServerMsg] = useState(null);
     const redirectFn = (response) => {
         console.log(response.data)
-        setStorage("userToken",response.data);
+        setStorage("userToken",response.data.access_token);
         response.status === 200 && updateState(true)
     }
     const callAPI = async (data) => {
@@ -28,7 +28,7 @@ export default function LoginPage({ updateState }) {
         } catch (e) {
             console.log(e)
             SetLoading(false)
-            alert(e.message)
+            // alert(e.message)
             SetServerMsg(e.response.data.detail);
         }
     }

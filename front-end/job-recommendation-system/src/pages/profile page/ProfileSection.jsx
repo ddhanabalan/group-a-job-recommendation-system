@@ -1,5 +1,8 @@
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import { v4 as uuid } from 'uuid';
+import { useParams } from 'react-router-dom';
+import getStorage from '../../storage/storage';
+import { userAPI } from '../../api/axios';
 import FeatureBox from '../../components/FeatureBox/FeatureBox';
 import FeatureBoxMiddlePane from '../../components/FeatureBoxMiddlePane/FeatureBoxMiddlePane';
 import ProfileHead from '../../components/ProfileHead/ProfileHead';
@@ -9,6 +12,51 @@ import NavigationBar from '../../components/NavigationBar/NavigationBar';
 import LoaderAnimation from '../../components/LoaderAnimation/LoaderAnimation';
 import './ProfileSection.css';
 export default function ProfileSection({ data }) {
+    const [newData, SetnewData] = useState(data);
+    const [isNotEditing, SetIsNotEditing] = useState(true)
+    const updateEditStatus = (value) => {
+        SetIsNotEditing(value)
+    }
+    const redirectFn = (data) => {
+        console.log(data)
+        SetnewData(data)
+    }
+    const params = useParams();
+    const user = params.username;
+    console.log(user)
+    const callAPI = async () => {
+        try {
+            const response = (user === undefined) ?
+                await userAPI.get(`/seeker/profile`,{
+                    headers: {
+                        'Authorization': `Bearer ${getStorage("userToken")}`
+                    }
+                }):
+                await userAPI.get(`/seeker/profile/${user}`);
+            redirectFn(response.data)
+        } catch (e) {
+            console.log(e)
+
+            alert(e.message)
+        }
+    }
+    useEffect(() => callAPI, []);
+    const subForm = async (data) => {
+        SetnewData(data)
+        console.log( data);
+        // try {
+        //     await axios.post('/seeker/register', newdata, {
+        //         headers: {
+        //             'Content-Type': 'application/json'
+        //         }
+        //     });
+
+        // } catch (e) {
+        //     console.log(e)
+        //     alert(e.message)
+        // }
+    }
+  
     const [isBodyBlur, SetIsBodyBlur] = useState(false)
     const blurBody = (state) => {
         state ? SetIsBodyBlur(true) : SetIsBodyBlur(false)
@@ -40,14 +88,14 @@ export default function ProfileSection({ data }) {
         <>
             {data ?
                 <div id="profile-page">
-                    <ProfileHead data={data} blurFn={blurBody} />
+                    <ProfileHead data={newData} blurFn={blurBody} subForm={subForm} isNotEditing={isNotEditing} setIsNotEditing={updateEditStatus} />
                     <NavigationBar active="profile" />
                     <div className={profileBodyClass}>
                         <div className="profile-pane profile-left-pane">
                             {/* <FeatureBox data={{ title: "At a Glance" }} /> */}
                             <ContactCard data={{
                                 title: "Contacts and Profiles", addIcon: false, editIcon: true
-                            }} contactData={{ mail: "amywilliams@gmail.com", github: "amywilliams", website: null }} />
+                            }} contactData={newData} subForm={subForm} />
                         </div>
                         <div className="profile-pane profile-middle-pane">
                             <FeatureBoxMiddlePane data={{ title: "Professional Experience", edit: true, isLanguage: false }}

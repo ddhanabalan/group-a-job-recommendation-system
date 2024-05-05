@@ -82,7 +82,7 @@ function SignUpForm2() {
     } catch (e) {
       setServerMsg({...e.response});
       console.log(e)
-      alert(e.message)
+      // alert(e.message)
     }
     
     

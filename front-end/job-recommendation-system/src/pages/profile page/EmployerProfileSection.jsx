@@ -18,11 +18,11 @@ export default function EmployerProfileSection({ data}) {
         console.log(response.data)
     }
     const callAPI = async () => {
-        console.log(Object.keys(getStorage("userToken").access_token))
+        console.log(Object.keys(getStorage("userToken")))
         try {
             const response = await authAPI.get('/me', {
                 headers: {
-                    'Authorization': `Bearer ${getStorage("userToken").access_token}`
+                    'Authorization': `Bearer ${getStorage("userToken")}`
                 }
             });
             redirectFn(response)

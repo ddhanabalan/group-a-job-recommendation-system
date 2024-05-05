@@ -32,7 +32,7 @@ function LoginForm({ callAPI }) {
 
           <div className="login-details">
           {/*<Box sx={{ boxShadow: 2, paddingBottom: 4, paddingTop: 3, paddingX: 3, borderRadius: 5, width: '90%', display: 'flex', flexDirection: 'column' }}>*/}
-          <form noValidate autoComplete='off' onSubmit={handleSubmit((data) => callAPI(data))}>
+          <form noValidate autoComplete='on' onSubmit={handleSubmit((data) => callAPI(data))}>
             <p className="lg">Login with Credentials</p><br />
             <Stack spacing={2}>
 
