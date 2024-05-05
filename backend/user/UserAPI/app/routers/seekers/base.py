@@ -30,6 +30,7 @@ async def user_seeker_init(
 @router.get("/profile", response_model=seekerschema.SeekersProfile)
 async def profile(authorization: str = Header(...), db: Session = Depends(get_db)):
     username = await get_current_user(authorization=authorization)
+    username = username['user']
     user_details = seekerschema.SeekersDetails.from_orm(
         crud.seeker.details.get_by_username(db=db, username=username)
     )
@@ -55,7 +56,7 @@ async def profile(authorization: str = Header(...), db: Session = Depends(get_db
     )
 
 
-@router.get("/profile/{username}", response_model=seekerschema.SeekersDetails)
+@router.get("/profile/{username}", response_model=seekerschema.SeekersProfile)
 async def profile_by_username(username: str, db: Session = Depends(get_db)):
     user_details = seekerschema.SeekersDetails.from_orm(
         crud.seeker.details.get_by_username(db=db, username=username)

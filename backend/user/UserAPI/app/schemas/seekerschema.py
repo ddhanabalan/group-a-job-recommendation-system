@@ -110,3 +110,6 @@ class SeekersProfile(SeekersDetails):
     skill: Optional[List[SeekersSkill]]
     former_jobs: Optional[List[SeekersFormerJob]]
     poi: Optional[List[SeekersPOI]]
+
+class JobUserDetailsIn(BaseModel):
+    user_ids: List[int]

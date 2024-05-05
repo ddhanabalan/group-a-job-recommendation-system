@@ -1,6 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Header
+from typing import List
 
-from .. import get_db, get_current_user, seekerschema, seekermodel, crud, Session
+from fastapi import APIRouter, Depends, HTTPException, status, Header, Body
+
+from .. import get_db, get_current_user, seekerschema, seekermodel, crud, Session,check_authorization
 
 
 router = APIRouter()
@@ -14,6 +16,14 @@ async def get_seeker_details(
     user_details = crud.details.get_by_username(db=db, username=username)
     return user_details
 
+@router.post("/details/list", response_model=List[seekerschema.SeekersDetails])
+async def get_seeker_details(
+    user_ids:seekerschema.JobUserDetailsIn,db: Session = Depends(get_db)
+):
+    user_details=[]
+    for user_id in user_ids.user_ids:
+        user_details.append(crud.details.get(db=db, user_id=user_id))
+    return user_details
 
 @router.put("/details", status_code=status.HTTP_200_OK)
 async def update_seeker_details(
