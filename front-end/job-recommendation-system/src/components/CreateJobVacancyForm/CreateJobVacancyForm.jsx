@@ -150,14 +150,14 @@ export default function JobVacancyForm({ data = {} }) {
                                 "job_desc": finalApplicationData['jobDesc'],
                                 "company_name": finalApplicationData['companyName'],
                                 "requirement": finalApplicationData['jobReq'],
-                                "salary": (finalApplicationData["salary"][1]==="")?finalApplicationData["salary"][0]:finalApplicationData["salary"].join("-"),
+                                "salary": finalApplicationData["currency"] + "-" + ((finalApplicationData["salary"][1]==="")?finalApplicationData["salary"][0]:finalApplicationData["salary"].join("-")),
                                 "experience": finalApplicationData["exp"][0],
                                 "job_position": finalApplicationData['jobTitle'],
                                 "location": finalApplicationData['location'],
                                 "emp_type": finalApplicationData['empType'][0],
                                 "last_date": "2222-12-12",
-                                "tags": finalApplicationData["tags"],
-                                "skill": finalApplicationData["skills"],
+                                "tags": finalApplicationData["tags"]?finalApplicationData["tags"]:[],
+                                "skill": finalApplicationData["skills"]?finalApplicationData["skills"]:[],
                             };
         //submissionData["salary"]=(submissionData["salary"][1]==="")?submissionData["salary"][0]:submissionData["salary"].join("-");
         

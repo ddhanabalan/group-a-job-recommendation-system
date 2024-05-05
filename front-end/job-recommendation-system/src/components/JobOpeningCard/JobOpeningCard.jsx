@@ -14,7 +14,7 @@ export default function JobOpeningCard({ data, type=null, highlighted, listToDes
                 <h1 className='opening-card-h1'>{data.jobTitle}</h1>
                 <p className='opening-card-company-name-p'>{data.companyName}</p>
 
-                <p className='opening-card-salary'>{data.currency} {data.salary[0]} - {data.salary[1]} per month</p>
+                <p className='opening-card-salary'>{data.currency} {data.salary[0]} {data.salary[1]?"- "+data.salary[1]:""} per month</p>
                 {data.userType == "employer" ?
                     <div className="opening-vacancy-buttons">
                         <Button variant="contained" className="opening-delete-button" sx={{ color: 'black', backgroundColor: 'red', width: 'fit-content', paddingY: "2px", paddingX: "10px", textTransform: "none" }} endIcon={<DeleteOutlineIcon />}>
