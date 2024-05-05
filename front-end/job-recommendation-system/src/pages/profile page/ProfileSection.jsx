@@ -47,17 +47,11 @@ export default function ProfileSection({ data }) {
                             {/* <FeatureBox data={{ title: "At a Glance" }} /> */}
                             <ContactCard data={{
                                 title: "Contacts and Profiles", addIcon: false, editIcon: true
-                            }} contactData={{ mail: "amywilliams@gmail.com", github: "amywilliams" ,website:null}} />
+                            }} contactData={{ mail: "amywilliams@gmail.com", github: "amywilliams", website: null }} />
                         </div>
                         <div className="profile-pane profile-middle-pane">
                             <FeatureBoxMiddlePane data={{ title: "Professional Experience", edit: true, isLanguage: false }}
-                                childData={[
-                                    { qualification: "Master of science - Computer Science", id: uuid(), qualification_provider: "Massachusetts Institute of Technology (MIT)", start_year: 2005, end_year: 2009 },
-                                    { qualification: "Master of science - Computer Science", id: uuid(), qualification_provider: "Massachusetts Institute of Technology (MIT)", start_year: 2005, end_year: 2009 }
-                                ]} />
-
-
-
+                                childData={[]} />
                             <FeatureBoxMiddlePane data={{ title: "Formal Education", edit: true, isLanguage: false }}
                                 childData={[
                                     { qualification: "Master of science - Computer Science", id: uuid(), qualification_provider: "Massachusetts Institute of Technology (MIT)", start_year: 2005, end_year: 2009 },
