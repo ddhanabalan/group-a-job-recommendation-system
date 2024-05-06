@@ -19,13 +19,13 @@ export default function ContactCard({ data, contactData ,subForm}) {
     async function updateContact(data) {
         SetIsNotEditing(true)
         console.log(data)
-        try {
-            await userAPI.put('/seeker/details', data);
+        // try {
+        //     await userAPI.put('/seeker/details', data);
 
-        } catch (e) {
-            console.log(e)
-            alert(e.message)
-        }
+        // } catch (e) {
+        //     console.log(e)
+        //     alert(e.message)
+        // }
         subForm({ ...contactData, ...data })
     }
 

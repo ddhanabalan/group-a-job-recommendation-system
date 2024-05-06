@@ -13,7 +13,12 @@ import FeatureBoxMiddlePaneText from '../../components/FeatureBoxMiddlePane/Feat
 import FeatureBoxMiddlePaneOpenings from '../../components/FeatureBoxMiddlePane/FeatureBoxMiddlePaneOpenings';
 import FeatureBoxMiddlePaneReview from '../../components/FeatureBoxMiddlePane/FeatureBoxMiddlePaneReview';
 import './EmployerProfileSection.css';
-export default function EmployerProfileSection({ data}) {
+export default function EmployerProfileSection({ data }) {
+    const [newData, SetnewData] = useState(data);
+    const [isNotEditing, SetIsNotEditing] = useState(true)
+    const updateEditStatus = (value) => {
+        SetIsNotEditing(value)
+    }
     const redirectFn = (response) => {
         console.log(response.data)
     }
@@ -61,10 +66,20 @@ export default function EmployerProfileSection({ data}) {
         }
     };
 
+    const subForm = async (data) => {
+        SetnewData(data)
+        console.log(data);
+        // try {
+        //     await userAPI.put('/seeker/details', data);
 
+        // } catch (e) {
+        //     console.log(e)
+        //     alert(e.message)
+        // }
+    }
     return (
         <div id="employer-profile-page">
-            <ProfileHead data={data} blurFn={blurBody} />
+            <ProfileHead data={newData} blurFn={blurBody} subForm={subForm} isNotEditing={isNotEditing} setIsNotEditing={updateEditStatus} />
             <NavigationBar active="employer-profile" />
             <div className="employer-profile-body-section">
                 <div className="employer-profile-pane employer-profile-left-pane">
@@ -75,7 +90,7 @@ export default function EmployerProfileSection({ data}) {
 
                     <ContactCard data={{
                         title: "Contacts and Profiles", addIcon: false, editIcon: true
-                    }} contactInfo={{website: "www.nasa.gov" }} />
+                    }} contactData={newData} subForm={subForm} />
 
                     
                 </div>

@@ -45,7 +45,7 @@ export default function ProfileHead({ data, blurFn, subForm,isNotEditing,setIsNo
                 {isNotEditing ?
                     <div className="profile-head-info-div profile-head-info-div2">
                         <h1 className="profile-name">{data.first_name} {data.last_name}</h1>
-                        <p className="profile-location">{data.location}, {data.country}</p>
+                        <p className="profile-location">{data.city}, {data.country}</p>
                         <p className="profile-bio">{data.bio?data.bio:"Tell the world about yourself"}</p>
                     </div>
                     :
