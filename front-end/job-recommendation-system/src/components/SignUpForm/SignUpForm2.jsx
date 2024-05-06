@@ -241,9 +241,26 @@ function SignUpForm2() {
               </TextField>
               <p className="error-message">{errors.country?.message || ""}</p>
             </div>
+            
+            {/*City*/}
+            <div id="item-6">
+              {
+                <div>
+                  <p className="text-head">City<span className="text-danger"> *</span></p>
+                  <TextField className="personal-details-input" variant="outlined"
+
+                    error={'city' in errors}
+                    {...register("city",
+                      {
+                        required: "please enter city",
+                      })} />
+                  <p className="error-message">{errors.city?.message || ""}</p>
+                </div>
+              }
+            </div>
 
             {/*Phone number*/}
-            <div id="item-6">
+            <div id="item-7">
               <p className="text-head">Phone Number<span className="text-danger"> *</span></p>
 
 
@@ -261,7 +278,7 @@ function SignUpForm2() {
               <p className="error-message">{errors.phone?.message || ""}</p>
             </div>
             
-            <div id="item-7">
+            <div id="item-8">
             {
               userType === "seeker" ?
                 /*Date of Birth*/
@@ -296,7 +313,7 @@ function SignUpForm2() {
             }
             </div>
 
-            <div id="item-8">
+            <div id="item-9">
             {
               userType === "seeker" ?
                 /*Gender*/
@@ -328,6 +345,9 @@ function SignUpForm2() {
                 </div>
             }
             </div>
+
+            
+            
 
           </div>
 

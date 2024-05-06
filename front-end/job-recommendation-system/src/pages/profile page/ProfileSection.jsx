@@ -1,7 +1,7 @@
 import { useState,useEffect } from 'react';
 import { v4 as uuid } from 'uuid';
 import { useParams } from 'react-router-dom';
-import getStorage from '../../storage/storage';
+import {getStorage, setStorage} from '../../storage/storage';
 import { userAPI } from '../../api/axios';
 import FeatureBox from '../../components/FeatureBox/FeatureBox';
 import FeatureBoxMiddlePane from '../../components/FeatureBoxMiddlePane/FeatureBoxMiddlePane';
@@ -18,7 +18,9 @@ export default function ProfileSection({ data }) {
         SetIsNotEditing(value)
     }
     const redirectFn = (data) => {
-        console.log(data)
+        setStorage("userID", data.user_id)
+        setStorage("username", data.username)
+        console.log("Users:", data)
         SetnewData(data)
     }
     const params = useParams();
@@ -54,6 +56,7 @@ export default function ProfileSection({ data }) {
     }
   
     const [isBodyBlur, SetIsBodyBlur] = useState(false)
+    const contacts = { mail: "amywilliams@gmail.com", github: "amywilliams", website: null }
     const blurBody = (state) => {
         state ? SetIsBodyBlur(true) : SetIsBodyBlur(false)
     }

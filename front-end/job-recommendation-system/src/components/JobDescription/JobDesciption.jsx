@@ -7,12 +7,12 @@ import DoneIcon from '@mui/icons-material/Done';
 import { Button } from '@mui/material';
 import { useState, useEffect } from 'react';
 
-export default function JobDesciptionForm({ data, userData }) {
-    //console.log("data received by form", data)
+export default function JobDesciptionForm({ data, createJobRequest=null, userData }) {
+    console.log("data received by form", data)
     //console.log(userData.appliedJobs.includes("4"))
     const [submit, setSubmit] = useState(false);
     //const [tag_state,setTagState] = useState(false);
-    const userSkills = (userData.type==="employer"?null:data.skills.map(skill => userData.skills.includes(skill)?true:false).filter(Boolean).length)
+    const userSkills = (userData.type==="employer"?null:data.skills?.map(skill => userData.skills.includes(skill)?true:false).filter(Boolean).length)
     //console.log(userSkills)
     //function for senting applicant details from the form to company
 
@@ -21,6 +21,7 @@ export default function JobDesciptionForm({ data, userData }) {
 
     function handleApplication(){
         setSubmit(true);
+        createJobRequest(data.id);
         console.log("sent", userData, "for application id", data.id )
     }
 
@@ -35,14 +36,14 @@ export default function JobDesciptionForm({ data, userData }) {
                     {data.tags?
                         <Stack className="job-desc-tags" direction="row" spacing={1}>
                             {data.tags.map(e => {
-                                return (<Chip key={uuid()} className="job-desc-tags-child" label={e} size='small' />)
+                                return (<Chip key={e.id} className="job-desc-tags-child" label={e.tags} size='small' />)
                             })}
 
                         </Stack>
                         :
                         <></>
                     }
-                    <p className='job-desc-salary'>{data.currency} {data.salary[0]} - {data.salary[1]} per month</p>
+                    <p className='job-desc-salary'>{data.currency} {data.salary[0]}  {data.salary[1]?"- "+data.salary[1]:""} per month</p>
                 </div>
                 <div className='job-desc-div2'>
                     <div className='job-desc-img-container'>
@@ -69,23 +70,27 @@ export default function JobDesciptionForm({ data, userData }) {
                     <p className='desc'>{data.jobReq}</p>
                 </div> 
 
-                <div className="job-skills">
-                    <h6>Skills&nbsp;{userData.type=="seeker"?<span className='skill-counter'>&nbsp;  You have {userSkills} out of {data.skills.length} skills required for the job</span>: <></>}</h6>
-                    {/*skill tags */}
-                    <div className='desc'><Stack className="job-desc-tags" direction="row" spacing={1}>
-                        {data.skills.map(e => {
-                            return (<div className="job-desc-skill-tags-child" key={uuid()}>
-                                    {e} {userData.type=="employer"?
-                                            <></>
-                                            :
-                                            <div className={userData.skills.map(skill => {return skill.toLowerCase()}).includes(e.toLowerCase())?"skill-status green":"skill-status red"}></div>
-                                         }
-                                    </div>)
-                        })}
+                {data.skills?
+                    <div className="job-skills">
+                        <h6>Skills&nbsp;{userData.type=="seeker"?<span className='skill-counter'>&nbsp;  You have {userSkills} out of {data.skills.length} skills required for the job</span>: <></>}</h6>
+                        {/*skill tags */}
+                        <div className='desc'><Stack className="job-desc-tags" direction="row" spacing={1}>
+                            {data.skills.map(e => {
+                                return (<div className="job-desc-skill-tags-child" key={e.id}>
+                                        {e.skill} {userData.type=="employer"?
+                                                <></>
+                                                :
+                                                <div className={userData.skills.map(skill => {return skill.toLowerCase()}).includes(e.skill.toLowerCase())?"skill-status green":"skill-status red"}></div>
+                                            }
+                                        </div>)
+                            })}
 
-                    </Stack>
+                        </Stack>
+                        </div>
                     </div>
-                </div>    
+                    :
+                    <></>
+                }    
             </div>
             {userData.type=="employer"?
                 <></>
