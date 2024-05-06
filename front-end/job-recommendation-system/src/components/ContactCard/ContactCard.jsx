@@ -13,9 +13,9 @@ import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import PublicIcon from '@mui/icons-material/Public';
 import '../FeatureBox/FeatureBox.css';
 import './ContactCard.css';
-export default function ContactCard({ data, contactData ,subForm}) {
+export default function ContactCard({ data, contactData, subForm }) {
     const [isNotEditing, SetIsNotEditing] = useState(true);
-    const { register, formState: { errors }, getValues } = useForm({ mode: 'onTouched' | 'onSubmit' });
+    const { register, formState: { errors }, getValues, trigger, setError } = useForm({ });
     async function updateContact(data) {
         SetIsNotEditing(true)
         console.log(data)
@@ -28,8 +28,12 @@ export default function ContactCard({ data, contactData ,subForm}) {
         // }
         subForm({ ...contactData, ...data })
     }
-
-    console.log("data",contactData)
+    const [shouldSubmit, setShouldSubmit] = useState(true)
+    const onTrigger = async () => {
+        const result = await trigger(["website", "contact_email"])
+        result ? setShouldSubmit(true) : setShouldSubmit(false)
+    }
+    console.log("data", contactData)
     return (
         <form className="feature-box" >
             < h4 className="feature-title" > {data.title}</h4 >
@@ -39,9 +43,12 @@ export default function ContactCard({ data, contactData ,subForm}) {
                         <EditIcon />
                     </IconButton> :
                     <IconButton aria-label="check" onClick={() => {
-                        SetIsNotEditing(false)
-                        const data = getValues();
-                        updateContact(data)
+                        if (shouldSubmit) {
+                            SetIsNotEditing(false)
+                            const data = getValues();
+                            updateContact(data)
+                        }
+
                     }}>
                         <CheckRoundedIcon />
                     </IconButton>}
@@ -57,7 +64,7 @@ export default function ContactCard({ data, contactData ,subForm}) {
                             <IconButton aria-label="email" disabled>
                                 <EmailIcon />
                             </IconButton>
-                            <p className="contact-p">{contactData.email ? contactData.email : <span className='data-not-present-handle'>not linked</span>}</p>
+                            <p className="contact-p">{contactData.contact_email ? contactData.contact_email : <span className='data-not-present-handle'>not linked</span>}</p>
                         </Stack>
                         <Stack direction="row" spacing={1} className='contact-medium'>
                             <IconButton aria-label="github" disabled>
@@ -83,10 +90,14 @@ export default function ContactCard({ data, contactData ,subForm}) {
                             <TextField className="personal-details-input profile-edit-bio contact-card-textfield" variant="outlined"
                                 defaultValue={contactData.contact_email}
                                 placeholder='example@mail.com'
-                                error={'mail' in errors}
+                                error={'contact_email' in errors}
                                 {...register("contact_email",
                                     {
-                                        required: ""
+                                        pattern: {
+                                            value: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                                            message: "Email not valid"
+                                        },
+                                        onChange: onTrigger
                                     })}>
                             </TextField>
                         </Stack>
@@ -96,7 +107,7 @@ export default function ContactCard({ data, contactData ,subForm}) {
                             </IconButton>
                             <TextField className="personal-details-input profile-edit-bio contact-card-textfield" variant="outlined"
                                 defaultValue={contactData.github}
-                                placeholder='github username'
+                                placeholder='username'
                                 error={'github' in errors}
                                 {...register("github",
                                     {
@@ -109,15 +120,21 @@ export default function ContactCard({ data, contactData ,subForm}) {
                                 <PublicIcon />
                             </IconButton>
                             <TextField className="personal-details-input profile-edit-bio contact-card-textfield" variant="outlined"
+                                onInput={onTrigger}
                                 defaultValue={contactData.website}
                                 placeholder='website url'
                                 error={'website' in errors}
                                 {...register("website",
                                     {
-                                        required: ""
+                                        pattern: {
+                                            value: /^(http(s)?:\/\/)?(www\.)?[a-zA-Z0-9_\-.]+\.[a-zA-Z]{2,5}(\/\S*)?$/,
+                                            message: "invalid website"
+                                        },
+                                        onChange: onTrigger
                                     })}>
                             </TextField>
                         </Stack>
+                        <p className="error-message">{errors.website?.message || ""}</p>
                     </Stack>
 
             }

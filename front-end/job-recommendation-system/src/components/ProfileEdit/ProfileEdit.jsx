@@ -78,11 +78,11 @@ export default function ProfileEdit({ data ,register,errors}) {
 
                             {/*location*/}
                             <div id="item-6">
-                                <p className="text-head">Location<span className="text-danger"> *</span></p>
+                                <p className="text-head">City<span className="text-danger"> *</span></p>
                                 <TextField className="personal-details-input" variant="outlined"
-                                    defaultValue={data.location}
-                                    error={'location' in errors}
-                                    {...register("location",
+                                    defaultValue={data.city}
+                                    error={'city' in errors}
+                                    {...register("city",
                                         {
                                             required: "",
                                             pattern: {
@@ -91,7 +91,7 @@ export default function ProfileEdit({ data ,register,errors}) {
                                             }
                                         })} />
 
-                                <p className="error-message">{errors.location?.message || ""}</p>
+                                <p className="error-message">{errors.city?.message || ""}</p>
                             </div>
                             
                         </div>

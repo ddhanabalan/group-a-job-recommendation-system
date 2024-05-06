@@ -25,7 +25,6 @@ export default function ProfileSection({ data }) {
     }
     const params = useParams();
     const user = params.username;
-    console.log(user)
     const callAPI = async () => {
         try {
             const response = (user === undefined) ?
