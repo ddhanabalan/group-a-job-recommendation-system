@@ -44,13 +44,13 @@ export default function ProfileSection({ data }) {
     const subForm = async (data) => {
         SetnewData(data)
         console.log( data);
-        try {
-            await userAPI.put('/seeker/details', data);
+        // try {
+        //     await userAPI.put('/seeker/details', data);
 
-        } catch (e) {
-            console.log(e)
-            alert(e.message)
-        }
+        // } catch (e) {
+        //     console.log(e)
+        //     alert(e.message)
+        // }
     }
   
     const [isBodyBlur, SetIsBodyBlur] = useState(false)

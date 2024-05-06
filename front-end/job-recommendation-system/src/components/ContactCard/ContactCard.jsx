@@ -18,6 +18,14 @@ export default function ContactCard({ data, contactData ,subForm}) {
     const { register, formState: { errors }, getValues } = useForm({ mode: 'onTouched' | 'onSubmit' });
     async function updateContact(data) {
         SetIsNotEditing(true)
+        console.log(data)
+        try {
+            await userAPI.put('/seeker/details', data);
+
+        } catch (e) {
+            console.log(e)
+            alert(e.message)
+        }
         subForm({ ...contactData, ...data })
     }
 
@@ -73,10 +81,10 @@ export default function ContactCard({ data, contactData ,subForm}) {
                                 <EmailIcon />
                             </IconButton>
                             <TextField className="personal-details-input profile-edit-bio contact-card-textfield" variant="outlined"
-                                defaultValue={contactData.email}
+                                defaultValue={contactData.contact_email}
                                 placeholder='example@mail.com'
                                 error={'mail' in errors}
-                                {...register("mail",
+                                {...register("contact_email",
                                     {
                                         required: ""
                                     })}>
