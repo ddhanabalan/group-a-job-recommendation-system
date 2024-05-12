@@ -1,5 +1,6 @@
 import { useState,useEffect } from 'react';
 import { v4 as uuid } from 'uuid';
+import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import {getStorage, setStorage} from '../../storage/storage';
 import { userAPI } from '../../api/axios';
@@ -23,6 +24,28 @@ export default function ProfileSection({ data }) {
         console.log("Users:", data)
         SetnewData(data)
     }
+  
+    const [languages, setLanguages] = useState(null)
+    const options = {
+        method: 'GET',
+        url: 'https://list-of-all-countries-and-languages-with-their-codes.p.rapidapi.com/languages',
+        headers: {
+            'X-RapidAPI-Key': 'fbf4a61bebmsh2d5b7c851ba83aep15f113jsn0c59c53fddca',
+            'X-RapidAPI-Host': 'list-of-all-countries-and-languages-with-their-codes.p.rapidapi.com'
+        }
+    };
+
+    const languageAPI = async () => {
+        try {
+            const response = await axios.request(options);
+            console.log(response.data);
+            setLanguages(response.data);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+    useEffect(() => languageAPI, [])
+
     const params = useParams();
     const user = params.username;
     const callAPI = async () => {
@@ -111,9 +134,10 @@ export default function ProfileSection({ data }) {
                             {/* <FeatureBoxMiddlePane data={{ title: "Skills",editIcon:false }} /> */}
                             <AddSkills id="profile-section-skills" value={skill} tags={skills} deleteFn={handleDeleteSkill} changeFn={handleChangeSkill} updateFn={handleSkill} data={{ title: "Skills", inputPlaceholder: "HTML" }} />
                             <FeatureBoxMiddlePane data={{ title: "Languages", editIcon: true, isLanguage: true }}
+                                languages={languages}
                                 childData={[
-                                    { language: "English", language_proficiency: "Professional working proficiency", id: uuid() },
-                                    { language: "English", language_proficiency: "Professional working proficiency", id: uuid() }
+                                    { language: "Malayalam", language_proficiency: "Proficient", id: uuid() },
+                                    { language: "English", language_proficiency: "Native or Bilingual Proficiency", id: uuid() }
                                 ]} />
                             <div className="spacer-div" ></div>
                         </div>
