@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
@@ -14,12 +14,14 @@ import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import './LanguageCard.css';
 export default function LanguageCard({  languages,data, deleteFn ,submitFn}) {
-    const { register, formState: { errors }, handleSubmit, getValues } = useForm({ mode: 'onTouched' });
+    const { register, formState: { errors }, handleSubmit, getValues,setValue} = useForm({ mode: 'onTouched' });
     const [isNotEditing, SetIsNotEditing] = useState(true)
+    useEffect(()=>setValue('language',data.language),[])
     const [proficiency, setProficiency] = useState(data.language_proficiency)
     const editData = () => {
         //passing the edited values along with id of the data
         let values = getValues();
+        console.log(values)
         values = { ...values, id: data.id }
         submitFn(values)
         SetIsNotEditing(true)
@@ -48,23 +50,13 @@ export default function LanguageCard({  languages,data, deleteFn ,submitFn}) {
                    
                     <div className="qualification-card-content">
                         <div className='language-div'>
-                            {/* <TextField className='qualification-add qualification-add-h3 language' defaultValue={data.language} placeholder="English" variant="filled"
-                                error={'language' in errors}
-                                {...register("language", {
-                                    required: "cannot be empty"
-                                })} />
-                            <p>-</p>
-                            <TextField className='qualification-add qualification-add-h3 language-pro' defaultValue={data.language_proficiency}  variant="filled"
-                                error={'language_proficiency' in errors}
-                                {...register("language_proficiency", {
-                                    required: "cannot be empty"
-                                })} /> */}
                             <Autocomplete
                                 sx={{ width: 300 }}
                                 options={languages}
                                 autoHighlight
                                 getOptionLabel={(option) => option.name}
-                                defaultValue={{name:data.language}}
+                                defaultValue={{ name:data.language }}
+                                isOptionEqualToValue={()=>languages.some(e=>e.name===data.language)}
                                 componentsProps={{
                                     popper: {
                                         modifiers: [
