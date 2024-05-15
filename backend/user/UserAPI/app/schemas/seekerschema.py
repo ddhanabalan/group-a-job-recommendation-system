@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr, PastDate
 from datetime import datetime
-from typing import Optional
+from typing import Optional, List
 
 
 class SeekersBase(BaseModel):
@@ -11,42 +11,57 @@ class SeekersBase(BaseModel):
     email: EmailStr
     dob: Optional[PastDate] = None
     gender: Optional[str] = None
-    profile_picture: Optional[str] = None
     country: Optional[str] = None
     phone: Optional[str] = None
+    city: Optional[str]
+
+
+class SeekersBaseIn(SeekersBase):
+    profile_picture: Optional[str] = None
 
 
 class SeekersDetails(SeekersBase):
     bio: Optional[str]
+    contact_email: Optional[EmailStr]
     address: Optional[str]
-    city: Optional[str]
     institution: Optional[str]
     experience: Optional[str]
     education: Optional[str]
     age: Optional[int]
+    github: Optional[str]
+    website: Optional[str]
     location: Optional[str]
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
 
+    class Config:
+        from_attributes = True
+
 
 class SeekersLocType(BaseModel):
-    id: int
+    id: Optional[int]
     user_id: int
     loc_type: str
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
 
+    class Config:
+        from_attributes = True
+
 
 class SeekersEmpType(BaseModel):
-    id: int
+    id: Optional[int]
     user_id: int
     emp_type: str
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
 
+    class Config:
+        from_attributes = True
+
 
 class SeekersFormerJob(BaseModel):
-    id: int
+    id: Optional[int]
     user_id: int
     job_name: str
     job_company_name: str
@@ -55,26 +70,52 @@ class SeekersFormerJob(BaseModel):
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
 
+    class Config:
+        from_attributes = True
+
 
 class SeekersSkill(BaseModel):
-    id: int
+    id: Optional[int]
     user_id: int
     skill: str
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
 
+    class Config:
+        from_attributes = True
+
 
 class SeekersEducation(BaseModel):
-    id: int
+    id: Optional[int]
     user_id: int
     education: str
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
 
+    class Config:
+        from_attributes = True
+
 
 class SeekersPOI(BaseModel):
-    id: int
+    id: Optional[int]
     user_id: int
     position: str
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
+
+    class Config:
+        from_attributes = True
+
+
+class SeekersProfile(SeekersDetails):
+    profile_picture: Optional[str] = None
+    loc_type: Optional[List[SeekersLocType]]
+    emp_type: Optional[List[SeekersEmpType]]
+    prev_education: Optional[List[SeekersEducation]]
+    skill: Optional[List[SeekersSkill]]
+    former_jobs: Optional[List[SeekersFormerJob]]
+    poi: Optional[List[SeekersPOI]]
+
+
+class JobUserDetailsIn(BaseModel):
+    user_ids: List[int]

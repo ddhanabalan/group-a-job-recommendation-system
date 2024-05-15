@@ -32,8 +32,9 @@ class UserBase(BaseModel):
     class Config:
         from_attributes = True
 
+
 class User(UserBase):
-    pass
+    id: int
 
 
 class UserInDB(UserBase):
@@ -41,6 +42,7 @@ class UserInDB(UserBase):
 
     class Config:
         from_attributes = True
+
 
 class UserIn(BaseModel):
     username: str
@@ -54,6 +56,7 @@ class UserInSeeker(UserIn):
     gender: Optional[str] = None
     profile_picture: Optional[str] = None
     country: Optional[str] = None
+    city: Optional[str] = None
     phone: Optional[str] = None
     dob: Optional[str] = None
 

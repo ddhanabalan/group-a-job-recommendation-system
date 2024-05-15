@@ -30,6 +30,7 @@ from .utils import validate_user_update, send_verify
 
 authmodel.Base.metadata.create_all(bind=engine)
 origins = [
+    "*",
     "http://localhost.tiangolo.com",
     "https://localhost.tiangolo.com",
     "http://localhost",
@@ -82,7 +83,9 @@ def get_password_hashed(password):
     return pwd_context.hash(password)
 
 
-async def authenticate_user(username: str, password: str, db: Session = Depends(get_db)):
+async def authenticate_user(
+    username: str, password: str, db: Session = Depends(get_db)
+):
     user = authcrud.get_auth_user_by_email(db=db, username=username)
     if not user:
         return False
@@ -94,9 +97,7 @@ async def authenticate_user(username: str, password: str, db: Session = Depends(
         )
     if not user.verified:
         await send_verify(
-            token=create_access_token(
-                {"sub": user.username, "type": "emailVerify"}
-            ),
+            token=create_access_token({"sub": user.username, "type": "emailVerify"}),
             username=user.username,
             to_email=user.email,
         )
@@ -127,20 +128,20 @@ def validate_access_token(token):
             detail="Could not validate",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    return username,data_type
+    return username, data_type
 
 
 async def get_current_user(
     token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
-):
+) -> authmodel.UserAuth:
     credential_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        username,data_type = validate_access_token(token)
-        if username is None or data_type!="password":
+        username, data_type = validate_access_token(token)
+        if username is None or data_type != "password":
             raise credential_exception
         token_data = authschema.TokenData(username=username)
     except JWTError:
@@ -155,7 +156,7 @@ async def get_current_user(
 
 async def get_current_active_user(
     current_user: authschema.UserInDB = Depends(get_current_user),
-):
+) -> authschema.UserInDB:
     if current_user.disabled:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="Inactive user"
@@ -186,7 +187,11 @@ async def login_for_access_token(
 
 @app.get("/me")
 async def users_info(current_user=Depends(get_current_active_user)):
-    return current_user.username
+    return {
+        "user_id": current_user.user_id,
+        "user": current_user.username,
+        "type": current_user.user_type,
+    }
 
 
 @app.get("/google")
@@ -224,30 +229,29 @@ async def auth(request: Request, db: Session = Depends(get_db)):
 async def verify_token(current_user=Depends(get_current_active_user)):
     return {"status": "Successful"}
 
+
 @app.get("/email/verify/{token}")
-async def email_verify(token: str,db:Session=Depends(get_db)):
+async def email_verify(token: str, db: Session = Depends(get_db)):
     credential_exception = HTTPException(
-        status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Invalid Verification"
+        status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Verification"
     )
     try:
         username, data_type = validate_access_token(token)
         if username is None or data_type != "emailVerify":
             raise credential_exception
-        verified = authcrud.get_user_verified_by_username(db=db,username=username)
-        print(verified)
+        verified = authcrud.get_user_verified_by_username(db=db, username=username)
         if verified:
             raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Already Verified"
+                status_code=status.HTTP_400_BAD_REQUEST, detail="Already Verified"
             )
-        validate_user_update(username=username,db=db)
+        validate_user_update(username=username, db=db)
     except JWTError:
         raise credential_exception
 
+
 @app.post("/{user_type}/register", status_code=status.HTTP_201_CREATED)
 async def register(
-    user: Union[authschema.UserInSeeker,authschema.UserInRecruiter],
+    user: Union[authschema.UserInSeeker, authschema.UserInRecruiter],
     user_type: authschema.UserTypeEnum,
     db: Session = Depends(get_db),
 ):
@@ -289,12 +293,15 @@ async def register(
         }
     )
     if response.status_code == status.HTTP_201_CREATED:
-        authcrud.create_auth_user(db=db, user=user_db)
+        res = authcrud.create_auth_user(db=db, user=user_db)
+        if not res:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Data Creation Failed",
+            )
 
     await send_verify(
-        token=create_access_token(
-            {"sub": user_db.username, "type": "emailVerify"}
-        ),
+        token=create_access_token({"sub": user_db.username, "type": "emailVerify"}),
         username=user_db.username,
         to_email=user_db.email,
     )
