@@ -20,4 +20,4 @@ user/UserAPI/app/schemas/__pycache__/
 
 user/UserAPI/.env
 auth/AuthAPI/.env
-job/JobAPI/.enc
+job/JobAPI/.env
