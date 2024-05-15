@@ -10,22 +10,24 @@ import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import JobDesciptionForm from '../JobDescription/JobDesciption';
 
-function HighlightableJobCard({id, highlighted, type, data, listToDescFunc, onclick}){
+function HighlightableJobCard({id, highlighted, type, data, listToDescFunc, deleteJobFunc, onclick}){
+    //console.log("highlighted ", id, " : ", highlighted)
     return(
     <div className="card-holder" onClick={()=>onclick(id)}>
-        <JobOpeningCard data={data} type={type} listToDescFunc={listToDescFunc} highlighted={highlighted}/>
+        <JobOpeningCard data={data} type={type} listToDescFunc={listToDescFunc} deleteJobFunc={deleteJobFunc} highlighted={highlighted}/>
     </div>
     )
 }
 
-export default function OpeningsListBar({data, userType, chooseEntry, searchBar, preselectedEntry, filterFunc, pageType, listToDescParentFunc=null}) {
+export default function OpeningsListBar({data, userType, chooseEntry, searchBar, preselectedEntry, filterFunc, pageType, listToDescParentFunc=null, deleteJobFunc=null}) {
     
-    //console.log("received data", data);
+    //console.log("received jobs in data", data);
     const finalInfo = {...data}
     //console.log("opening bar data",data)
     //console.log("data passed to opening cards", finalInfo)
     const [highlightedId, setHighlightedId] = useState(preselectedEntry);
-    //console.log("highlighted id=",highlightedId)
+    
+    //console.log("highlighted id=",preselectedEntry)
     const [searchVal, setSearch] = useState(null); //variable for storing earth star value
     const [filterStat, setFilter] = useState(false);
     const [sidebarDesc, setSideBar] = useState(false);
@@ -66,6 +68,11 @@ export default function OpeningsListBar({data, userType, chooseEntry, searchBar,
         if(listToDescParentFunc && sidebarDesc===true)listToDescParentFunc();
         }, 
         [sidebarDesc])
+
+    useEffect(() => {
+            setHighlightedId(preselectedEntry)
+            }, 
+            [preselectedEntry])
     
     return (
         <>
@@ -96,7 +103,7 @@ export default function OpeningsListBar({data, userType, chooseEntry, searchBar,
             </div>
             
             <div className="openings-container">
-                {Object.keys(finalInfo).map((card) => (<HighlightableJobCard key={finalInfo[card]["id"]} id={finalInfo[card]["id"]} onclick={highlightDiv} highlighted={highlightedId == finalInfo[card]["id"]} type={userType=="employer"?pageType:null} listToDescFunc={listToDescFunc} data={{...finalInfo[card],'userType':userType, 'highlightedId': highlightedId}} />))}   
+                {Object.keys(finalInfo).map((card) => (<HighlightableJobCard key={finalInfo[card]["id"]} id={finalInfo[card]["id"]} onclick={highlightDiv} highlighted={highlightedId == finalInfo[card]["id"]} type={userType=="employer"?pageType:null} deleteJobFunc={deleteJobFunc} listToDescFunc={listToDescFunc} data={{...finalInfo[card],'userType':userType, 'highlightedId': highlightedId}} />))}   
             </div>
             
         </div>

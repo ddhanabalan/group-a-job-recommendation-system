@@ -22,7 +22,9 @@ export default function JobVacancyForm({ data = {} }) {
     const locating = useLocation();
     const navigate = useNavigate();
     const dta = (locating.state ? locating.state : {})
-    const { register, formState: { errors }, handleSubmit, setValue} = useForm({ mode: 'onTouched' });
+    //console.log("received state data for edit", dta, "pre", prefilleddata)
+    const salary_threshold = 5000;
+    const { register, formState: { errors }, handleSubmit, setValue, watch} = useForm({ mode: 'onTouched' });
     
     const [submit, setSubmit] = useState(false);
     const [prefError, setPrefErrors] = useState({});
@@ -32,24 +34,34 @@ export default function JobVacancyForm({ data = {} }) {
     const [location, SetLocation] = useState(dta.location || 'kerala');
     const [skill, SetSkill] = useState('');
     const [tag, setTag] = useState('');
-    const [skills, SetSkills] = useState(dta.skills ? dta.skills.map(label => ({ tag: label, id: uuid() })) : []);
-    const [tags, setTags] = useState(dta.tags ? dta.tags.map(label => ({ tag: label, id: uuid() })) : []);
-    const [preferences, setPreferences] = useState({"skills": dta.skills,"tags": dta.tags, "empType": dta.empType, "exp": dta.exp});
+    const [skills, SetSkills] = useState(dta.skills ? dta.skills.map(label => ({ tag: label.skill, id: label.id })) : []);
+    const [tags, setTags] = useState(dta.tags ? dta.tags.map(label => ({ tag: label.tags, id: label.id })) : []);
+    const [preferences, setPreferences] = useState({"skills": skills,"tags": tags, "empType": dta.empType, "exp": dta.exp});
     const [preview, setPreview] = useState(false);
     const [finalApplicationData, setData] = useState({});
 
     const redirectFn = (response) => {
         console.log(response.data)
     }
-    const callJobAPI = async (rec_data) => {
-        
+    const callJobAPI = async (rec_data, edit=false) => {
+        console.log("data to submit to server ", rec_data)
         try {
-            const response = await jobAPI.post('/job_vacancy/', rec_data, {
+            if(!edit)
+            {const response = await jobAPI.post('/job_vacancy/', rec_data, {
             headers:{
                 'Content-Type': 'application/json'
             }         
             }
             );
+            }
+            else
+            {const response = await jobAPI.put(`/job_vacancy/${dta.id}`, rec_data, {
+                headers:{
+                    'Content-Type': 'application/json'
+                }         
+                }
+                );
+            }
             redirectFn(response)
         } catch (e) {
             console.log(e)
@@ -115,6 +127,7 @@ export default function JobVacancyForm({ data = {} }) {
         if (numChecked <= checkLimit && numChecked > 0) {
             setPreferences({ ...preferences, [dataType]: Object.entries(checkedItems).filter(([key, value]) => value === true).map(([key]) => key) });
             (errorObj[dataType] ? delete errorObj[dataType] : {})
+            
         }
         else {
             errorObj[dataType] = { 'message': "please check one item" };
@@ -125,8 +138,23 @@ export default function JobVacancyForm({ data = {} }) {
 
     const handleSkillData = (tags, tagType) => {
         //function for adding selected skill tags into submitting form data
+        //console.log("skills and tags", tags, "tagtype: ", tagType)
+        //console.log("preferences befre changing", preferences)
         setPreferences({ ...preferences, [tagType]: tags.map(tagObj => { return (tagObj['tag']) }) });
         
+    }
+
+    const checkPref = (tagType)=>{
+        if(preferences[tagType].length!=0)
+        {
+            if(typeof(preferences[tagType][0])!=="string")
+            {   let mod_pref = preferences;
+                //console.log("before mod", mod_pref)
+                mod_pref[tagType] = preferences.skills.map(label => {return (label['tag']!="")? label['tag']:false}).filter(Boolean);
+                //console.log("modded pref", mod_pref)
+                setPreferences(mod_pref);
+            }
+        }
     }
     
     //console.log("prefernces = ", preferences)
@@ -134,7 +162,11 @@ export default function JobVacancyForm({ data = {} }) {
 
     function handlePreview(data) {
         //Preview box 
-        
+        checkPref("skills");
+        checkPref("tags");
+        //console.log("prefilled data to load into frontend", prefilleddata);
+        //console.log("preferences", preferences)
+        //console.log("form data", data)
         if (Object.keys(prefError).length === 0) {
             setData({ ...data, ...preferences, ...prefilleddata });
             { preview ? console.log(finalApplicationData) : setPreview(true) }
@@ -155,14 +187,14 @@ export default function JobVacancyForm({ data = {} }) {
                                 "job_position": finalApplicationData['jobTitle'],
                                 "location": finalApplicationData['location'],
                                 "emp_type": finalApplicationData['empType'][0],
-                                "last_date": "2222-12-12",
+                                "last_date": "2025-12-12",
                                 "tags": finalApplicationData["tags"]?finalApplicationData["tags"]:[],
                                 "skill": finalApplicationData["skills"]?finalApplicationData["skills"]:[],
                             };
         //submissionData["salary"]=(submissionData["salary"][1]==="")?submissionData["salary"][0]:submissionData["salary"].join("-");
         
         
-        callJobAPI(submissionData);
+        callJobAPI(submissionData, dta.edit);
         console.log("successfully submitted", submissionData);
         setSubmit(true);
 
@@ -220,7 +252,7 @@ export default function JobVacancyForm({ data = {} }) {
                         <div className="create-job-vacancy-body">
                             <div className="create-job-vacancy-details">
                                 <div className="detail-divs">
-                                    <span className='details-header'>Location:</span>
+                                    <span className={`details-header${errors.location?"-error":""}`}>Location:</span>
                                     <div className='option-divs'>
                                         <GoogleLocationSearch data={{ heading: "preferred job locations", inputPlaceholder: "Kerala", isLocation: true }}
                                             changeFn={handleChangeLocation}
@@ -240,27 +272,27 @@ export default function JobVacancyForm({ data = {} }) {
                                     </div>
                                 </div>
                                 <div className="detail-divs">
-                                    <p><span className='details-header'>Employment type:</span></p>
+                                    <p><span className={`details-header${prefError.empType?"-error":""}`}>Employment type:</span></p>
                                     <div className="option-divs">
                                         <MultipleOptions fSize="14px" margY="0px" options={["Full-time", "Internship", "Temporary"]} preselected={dta.empType || null} dataType="empType" checkLimit={1} onChange={handleCheckboxChange} />
                                         <p className="error-message">{prefError.empType?.message}</p>
                                     </div>
                                 </div>
                                 <div className="detail-divs">
-                                    <p><span className='details-header'>Experience:</span></p>
+                                    <p><span className={`details-header${prefError.exp?"-error":""}`}>Experience:</span></p>
                                     <div className="option-divs">
                                         <MultipleOptions fSize="14px" margY="0px" options={["Fresher", "1-5 years", "5-10 years", "10+ years"]} preselected={dta.exp || null} dataType="exp" checkLimit={1} onChange={handleCheckboxChange} />
                                         <p className="error-message">{prefError.exp?.message}</p>
                                     </div>
                                 </div>
                                 <div className="skill-divs">
-                                    <p><span>Skills</span></p>
+                                    <p><span>Skills:</span></p>
                                     <div className='create-job-skill-field'>
                                         <AddTags value={skill} tags={skills} deleteFn={handleDeleteSkill} changeFn={handleChangeSkill} updateFn={handleSkill} onChange={handleSkillData} tagType="skills" data={{ heading: "", inputPlaceholder: "Marketing", isLocation: false }} fSize="14px" />
                                     </div>
                                 </div>
                                 <div className='salary-div'>
-                                    <p><span className='details-header'>Salary:</span></p>
+                                    <p><span className={`details-header${errors.salary?"-error":""/*console.log("salary erros", errors.salary)*/}`}>Salary:</span></p>
                                     <div className='option-div'>
                                         <div className="salary-fields">
                                             <CreateFormTextFields inputPlaceholder="Title" wparam="80px" fontsz="14px" select={true} defaultValue="RS" items={['RS', 'DLR', 'YEN']} {...register("currency", { required: "Currency is required" })} />
@@ -272,17 +304,19 @@ export default function JobVacancyForm({ data = {} }) {
                                                     pattern: {
                                                         value: /^[0-9]+$/,
                                                         message: "Only numbers allowed"
-                                                    }
+                                                    },
+                                                    validate: (val) => val > salary_threshold || `Enter salary greater than ${salary_threshold}`,
                                                 })} />
                                             <span>to</span>
-                                            <CreateFormTextFields inputPlaceholder="Title" wparam="100px"
+                                            <CreateFormTextFields disabled={watch("salary.0") != null?(watch("salary.0").length?false:true): true} inputPlaceholder="Title" wparam="100px"
                                                 defaultValue={dta.salary ? dta.salary[1] || null : null}
                                                 {...register("salary.1", {
                 
                                                     pattern: {
                                                         value: /^[0-9]+$/,
                                                         message: "Only numbers allowed"
-                                                    }
+                                                    },
+                                                    validate: (val) => {if(val)(val > watch("salary.0") || (val.length == 0 )) || "Enter salary greater than lower limit"},
                                                 })} />
                                         </div>
                                         <p className="error-message">{errors.salary ? errors.salary[0]?.message || errors.salary[1]?.message || errors.currency?.message || "" : errors.currency?.message || ""}</p>

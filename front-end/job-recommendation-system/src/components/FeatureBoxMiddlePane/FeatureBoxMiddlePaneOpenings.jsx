@@ -28,7 +28,7 @@ export default function FeatureBoxMiddlePaneOpenings({data, childData}) {
                 <JobCard data={demoInfo}/>
                 <hr className="line-separator"/>
                 <div>
-                    <a className="openings-redirect-button" href="/employer/openings">See all openings<ArrowForwardIcon/></a>
+                    <a className="openings-redirect-button" href="/employer/review-applications">See all openings<ArrowForwardIcon/></a>
                 </div> 
             </div>
         </div>

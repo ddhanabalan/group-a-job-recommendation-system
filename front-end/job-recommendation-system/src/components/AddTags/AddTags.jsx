@@ -37,12 +37,12 @@ export default function AddTags({ data, updateFn, changeFn, deleteFn, value, tag
             {/*final tags layout*/}
                 <Box className='tags-stack' >
                     {
-                        tags.map(e => {
-                            return (
+                        tags.map(e => {if(e.tag!=="")
+                            {return (
                                 <Chip key={e.id} label={e.tag} color="primary" className='tag' sx={{'& .MuiChip-label': {fontSize: fSize}}}
                                  onDelete={() => {deleteFn(e.id)}} />
                             )
-                        })
+                        }})
                     }
                 </Box>
             </div>

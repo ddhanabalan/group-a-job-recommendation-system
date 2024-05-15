@@ -135,7 +135,10 @@ padding-left: 2rem;
     align-items: center;
     gap: 20px;
 }
-
+.details-header-error{
+    position:relative;
+    bottom: 0.7rem;
+}
 .create-job-vacancy-details .detail-divs .option-divs{
     display: flex;
     flex-direction: column;

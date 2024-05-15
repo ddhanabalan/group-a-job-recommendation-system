@@ -65,10 +65,6 @@ function LoginForm({ callAPI }) {
                   {...register("password",
                     {
                       required: "password is required",
-                      pattern: {
-                        value: /^.{8,}$/,
-                        message: "password must be atleast 8 characters long"
-                      }
                     })}
                 />
                 <Box onClick={handleVisibility}>{visible ? <VisibilityIcon sx={{ fontSize: 'medium', position: 'relative', top: -2 }} /> : <VisibilityOffIcon sx={{ fontSize: 'medium', position: 'relative', top: -2 }} />}</Box>

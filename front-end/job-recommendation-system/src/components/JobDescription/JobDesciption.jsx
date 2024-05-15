@@ -7,24 +7,28 @@ import DoneIcon from '@mui/icons-material/Done';
 import { Button } from '@mui/material';
 import { useState, useEffect } from 'react';
 
-export default function JobDesciptionForm({ data, createJobRequest=null, userData }) {
-    console.log("data received by form", data)
+export default function JobDesciptionForm({ data, createJobRequest=null, userData, handleSub=null }) {
+    console.log("data received by form", userData, "jobdata",data)
+   
     //console.log(userData.appliedJobs.includes("4"))
     const [submit, setSubmit] = useState(false);
     //const [tag_state,setTagState] = useState(false);
     const userSkills = (userData.type==="employer"?null:data.skills?.map(skill => userData.skills.includes(skill)?true:false).filter(Boolean).length)
+    const [skillIndicator, setSkillIndicator] = useState(true);
     //console.log(userSkills)
     //function for senting applicant details from the form to company
 
-    useEffect(()=>{if(userData.type=="seeker")setSubmit(userData.appliedJobs.includes(data.id))})
-    //console.log(data.id, "applied=", submit, userData.appliedJobs)
+    useEffect(()=>{if(userData.type=="seeker")setSubmit(((data.applicationsReceived).map(e=>e.user_id)).includes(userData.id))})
+    //console.log(userData.id, "applied=", submit, (data.applicationsReceived)?.map(e=>e.user_id) || "", "status", ((data.applicationsReceived)?.map(e=>e.user_id)).includes(userData.id))
 
     function handleApplication(){
         setSubmit(true);
         createJobRequest(data.id);
         console.log("sent", userData, "for application id", data.id )
+        
     }
 
+    useEffect(() => setSkillIndicator(true), [data])
     return (
         <>
         
@@ -36,7 +40,7 @@ export default function JobDesciptionForm({ data, createJobRequest=null, userDat
                     {data.tags?
                         <Stack className="job-desc-tags" direction="row" spacing={1}>
                             {data.tags.map(e => {
-                                return (<Chip key={e.id} className="job-desc-tags-child" label={e.tags} size='small' />)
+                                return (<Chip key={typeof(e)=="string"?uuid():e.id} className="job-desc-tags-child" label={typeof(e)=="string"?e:e.tags} size='small' />)
                             })}
 
                         </Stack>
@@ -70,19 +74,22 @@ export default function JobDesciptionForm({ data, createJobRequest=null, userDat
                     <p className='desc'>{data.jobReq}</p>
                 </div> 
 
-                {data.skills?
+                {data.skills && skillIndicator?
                     <div className="job-skills">
                         <h6>Skills&nbsp;{userData.type=="seeker"?<span className='skill-counter'>&nbsp;  You have {userSkills} out of {data.skills.length} skills required for the job</span>: <></>}</h6>
                         {/*skill tags */}
                         <div className='desc'><Stack className="job-desc-tags" direction="row" spacing={1}>
-                            {data.skills.map(e => {
-                                return (<div className="job-desc-skill-tags-child" key={e.id}>
-                                        {e.skill} {userData.type=="employer"?
+                            {data.skills.map(e => {if(e.skill != "" && e.skill !="")
+                                {return (<div className="job-desc-skill-tags-child" key={typeof(e)=="string"?uuid():e.id}>
+                                        {typeof(e)=="string"?e:e.skill} {userData.type=="employer"?
                                                 <></>
                                                 :
-                                                <div className={userData.skills.map(skill => {return skill.toLowerCase()}).includes(e.skill.toLowerCase())?"skill-status green":"skill-status red"}></div>
+                                                <div className={userData.skills.map(skill => {return skill.toLowerCase()}).includes(typeof(e)=="string"?e.toLowerCase():e.skill.toLowerCase())?"skill-status green":"skill-status red"}></div>
                                             }
-                                        </div>)
+                                        </div>)}
+                                else{
+                                    setSkillIndicator(false);
+                                }
                             })}
 
                         </Stack>
