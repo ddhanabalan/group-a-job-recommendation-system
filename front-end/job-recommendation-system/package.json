@@ -21,6 +21,7 @@
     "axios": "^1.6.8",
     "bootstrap": "^5.3.3",
     "dayjs": "^1.11.10",
+    "fast-average-color": "^9.4.0",
     "lottie-react": "^2.4.0",
     "qs": "^6.12.0",
     "react": "^18.2.0",

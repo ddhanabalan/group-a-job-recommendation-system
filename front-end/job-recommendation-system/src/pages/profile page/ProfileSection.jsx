@@ -66,15 +66,22 @@ export default function ProfileSection({ data }) {
     }
     useEffect(() => callAPI, []);
     const subForm = async (data) => {
-        SetnewData(data)
-        console.log( data);
-        // try {
-        //     await userAPI.put('/seeker/details', data);
+        SetnewData({...newData, city: data.city,first_name:data.first_name,last_name:data.last_name,country:data.country,bio:data.bio})
+        console.log("data", data);
+        try {
+            await userAPI.put('/seeker/details', data,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${getStorage("userToken")}`
+                    }
+                }
+            );
 
-        // } catch (e) {
-        //     console.log(e)
-        //     alert(e.message)
-        // }
+        } catch (e) {
+            console.log(e)
+            callAPI()
+            alert(e.message)
+        }
     }
   
     const [isBodyBlur, SetIsBodyBlur] = useState(false)
@@ -121,12 +128,12 @@ export default function ProfileSection({ data }) {
                         <div className="profile-pane profile-middle-pane">
                             <FeatureBoxMiddlePane data={{ title: "Professional Experience", edit: true, isLanguage: false }}
                                 childData={[]} />
-                            <FeatureBoxMiddlePane data={{ title: "Formal Education", edit: true, isLanguage: false }}
+                            <FeatureBoxMiddlePane data={{ title: "Formal Education", edit: true, isLanguage: false,cardData:{qualification_label:"Degree",qualification_provider:"School/College"} }}
                                 childData={[
                                     { qualification: "Master of science - Computer Science", id: uuid(), qualification_provider: "Massachusetts Institute of Technology (MIT)", start_year: 2005, end_year: 2009 },
                                     { qualification: "Master of science - Computer Science", id: uuid(), qualification_provider: "Massachusetts Institute of Technology (MIT)", start_year: 2005, end_year: 2009 }
                                 ]} />
-                            <FeatureBoxMiddlePane data={{ title: "Licenses and certifications ", edit: true, isLanguage: false }}
+                            <FeatureBoxMiddlePane data={{ title: "Licenses and certifications ", edit: true, isLanguage: false, cardData: { qualification_label: "Name", qualification_provider: "Issuing organization" } }}
                                 childData={[
                                     { qualification: "Master of science - Computer Science", id: uuid(), qualification_provider: "Massachusetts Institute of Technology (MIT)", start_year: 2005, end_year: 2009 },
                                     { qualification: "Master of science - Computer Science", id: uuid(), qualification_provider: "Massachusetts Institute of Technology (MIT)", start_year: 2005, end_year: 2009 }

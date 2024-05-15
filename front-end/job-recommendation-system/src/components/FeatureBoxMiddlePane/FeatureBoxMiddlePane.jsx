@@ -7,9 +7,11 @@ import QualificationCard from '../QualificationCard/QualificationCard';
 import LanguageAdd from '../LanguageAdd/LanguageAdd';
 import QualificationAdd from '../QualificationAdd/QualificationAdd';
 import LanguageCard from '../LanguageCard/LanguageCard';
+import Lottie from "lottie-react";
+import Turtle from '../../images/Turtle-in-space.json'
 import './FeatureBoxMiddlePane.css';
-export default function FeatureBoxMiddlePane({ languages,data, childData }) {
- 
+export default function FeatureBoxMiddlePane({ languages, data, childData }) {
+
 
     const [qdata, SetQdata] = useState(childData);
     const [newQual, SetNewQual] = useState(false)
@@ -57,15 +59,25 @@ export default function FeatureBoxMiddlePane({ languages,data, childData }) {
                 </IconButton>
             </Stack>
             <div className="feature-box-container">
-                {(qdata.length === 0 && !newQual) && <div className='qualification-card-h3 data-exception-featurebox' style={{ fontFamily: 'Inter-light-italic' }}>It seems you haven't entered any information yet, so there's nothing to display at the moment.</div>}
-                {newQual && (data.isLanguage ? <LanguageAdd languages={languages} submitFn={addQualification} cancelFn={cancelQual} /> : <QualificationAdd submitFn={addQualification} cancelFn={cancelQual} />)}
+                {
+                    (qdata.length === 0 && !newQual) &&
+                    <div className='qualification-card-h3 data-exception-featurebox' style={{ fontFamily: 'Inter-light-italic' }}>
+                            <Lottie className="data-exception-ani" animationData={Turtle} loop={true} />
+                            <p>Your profile is like the vast expanse of space let's add some stars! 🌟</p></div>
+                }
+
+                {
+                    newQual && (data.isLanguage ? <LanguageAdd languages={languages} submitFn={addQualification} cancelFn={cancelQual} />
+                        : <QualificationAdd cardData={data.cardData} submitFn={addQualification} cancelFn={cancelQual} />)
+                }
+
                 {
                     childData && qdata.map(e => {
 
                         return (
                             data.isLanguage === true ?
                                 <LanguageCard languages={languages} data={e} key={uuid()} deleteFn={deleteQual} submitFn={updateQual} />
-                                : <QualificationCard data={e} key={uuid()} deleteFn={deleteQual} submitFn={updateQual} cancelFn={cancelQual} />)
+                                : <QualificationCard cardData={data.cardData} data={e} key={uuid()} deleteFn={deleteQual} submitFn={updateQual} cancelFn={cancelQual} />)
 
                     })
                 }
