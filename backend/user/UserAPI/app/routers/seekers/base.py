@@ -21,7 +21,7 @@ async def user_seeker_init(
     user: seekerschema.SeekersBaseIn, db: Session = Depends(get_db)
 ):
     if user.profile_picture is not None:
-        contents = decode64_image(user.profile_picture)
+        contents =await decode64_image(user.profile_picture)
     username = user.username
     user_details = crud.seeker.base.get_userid_from_username(db=db, username=username)
     if user_details is not None:
@@ -45,9 +45,11 @@ async def profile(authorization: str = Header(...), db: Session = Depends(get_db
     username = username["user"]
     details = crud.seeker.details.get_by_username(db=db, username=username)
     if details.profile_picture is not None:
-        profile_picture64 = encode64_image(details.profile_picture)
+        profile_pic=details.profile_picture
+        profile_picture64 = await encode64_image(profile_pic)
     else:
         profile_picture64 = None
+
     user_details = seekerschema.SeekersDetails.from_orm(details)
     user_skill = crud.seeker.skill.get_all(db=db, user_id=user_details.user_id)
 

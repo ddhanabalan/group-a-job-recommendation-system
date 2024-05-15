@@ -51,7 +51,7 @@ async def update_seeker_details(
         )
     profile_pic = user_details.get("profile_picture", None)
     if profile_pic is not None:
-        user_details.update({"profile_picture": decode64_image(profile_pic)})
+        user_details.update({"profile_picture": await decode64_image(profile_pic)})
     updated_user = crud.details.update(
         db=db, user_id=existing_user.user_id, updated_details=user_details
     )
