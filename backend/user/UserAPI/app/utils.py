@@ -1,3 +1,5 @@
+import base64
+
 import httpx
 from fastapi import Header, status, HTTPException
 
@@ -36,3 +38,12 @@ async def get_current_user(authorization: str = Header(...)):
                 status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid access token"
             )
         return response.json()
+
+
+async def decode64_image(image: str):
+    return base64.b64decode(image + "==")
+
+
+async def encode64_image(image):
+    profile_picture64 = base64.b64encode(image).decode("utf-8")
+    return f"data:image/png;base64,{profile_picture64.split('base64')[1]}"

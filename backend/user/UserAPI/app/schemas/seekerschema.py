@@ -4,20 +4,21 @@ from typing import Optional, List
 
 
 class SeekersBase(BaseModel):
-    user_id: Optional[int] = None
+    user_id: Optional[int]
     username: str
-    first_name: Optional[str] = None
-    last_name: Optional[str] = None
+    first_name: Optional[str]
+    last_name: Optional[str]
     email: EmailStr
-    dob: Optional[PastDate] = None
-    gender: Optional[str] = None
-    country: Optional[str] = None
-    phone: Optional[str] = None
+    dob: Optional[PastDate]
+    gender: Optional[str]
+    country: Optional[str]
+    profile_banner_color: Optional[str]
+    phone: Optional[str]
     city: Optional[str]
 
 
 class SeekersBaseIn(SeekersBase):
-    profile_picture: Optional[str] = None
+    profile_picture: Optional[str]
 
 
 class SeekersDetails(SeekersBase):
@@ -108,7 +109,7 @@ class SeekersPOI(BaseModel):
 
 
 class SeekersProfile(SeekersDetails):
-    profile_picture: Optional[str] = None
+    profile_picture: Optional[str]
     loc_type: Optional[List[SeekersLocType]]
     emp_type: Optional[List[SeekersEmpType]]
     prev_education: Optional[List[SeekersEducation]]

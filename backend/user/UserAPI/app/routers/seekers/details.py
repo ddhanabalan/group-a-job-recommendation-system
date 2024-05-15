@@ -10,6 +10,8 @@ from .. import (
     crud,
     Session,
     check_authorization,
+    encode64_image,
+    decode64_image,
 )
 
 
@@ -47,6 +49,9 @@ async def update_seeker_details(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
         )
+    profile_pic = user_details.get("profile_picture", None)
+    if profile_pic is not None:
+        user_details.update({"profile_picture": decode64_image(profile_pic)})
     updated_user = crud.details.update(
         db=db, user_id=existing_user.user_id, updated_details=user_details
     )

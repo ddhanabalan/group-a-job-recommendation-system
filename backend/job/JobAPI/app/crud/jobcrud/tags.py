@@ -112,3 +112,15 @@ def delete(db: Session, job_tags_id: int):
     except SQLAlchemyError:
         db.rollback()
         return False
+
+
+def delete_by_vacancy_id(db: Session, vacancy_id: int):
+    try:
+        db.query(jobmodel.JobTags).filter(
+            jobmodel.JobTags.job_id == vacancy_id
+        ).delete()
+        db.commit()
+        return True
+    except SQLAlchemyError:
+        db.rollback()
+        return False

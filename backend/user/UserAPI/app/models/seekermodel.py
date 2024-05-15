@@ -23,6 +23,7 @@ class SeekersDetails(Base):
     email = Column(String(32), unique=True)
     bio = Column(String(512))
     phone = Column(String(16))
+    profile_banner_color = Column(String(10))
     address = Column(String(256))
     city = Column(String(128))
     country = Column(String(128))

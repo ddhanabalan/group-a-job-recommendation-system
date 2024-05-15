@@ -36,7 +36,7 @@ async def read_job_request(job_request_id: int, db: Session = Depends(get_db)):
 
 
 # Update job request by ID
-@job_request_router.put("/{job_request_id}", response_model=jobschema.JobRequest)
+@job_request_router.put("/{job_request_id}")
 async def update_job_request(
     job_request_id: int,
     job_request: jobschema.JobRequestCreate,

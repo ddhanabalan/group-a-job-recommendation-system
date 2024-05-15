@@ -5,9 +5,16 @@ from .. import crud
 from ..schemas import seekerschema
 from ..models import seekermodel
 from ..config import PORT, JOB_API_HOST, AUTH_API_HOST
-from ..utils import get_db, check_authorization, get_current_user
+from ..utils import (
+    get_db,
+    check_authorization,
+    get_current_user,
+    decode64_image,
+    encode64_image,
+)
 
 from .seekers import base, details, skill, emptype, loctype, poi, formerjob, education
+
 
 
 seeker_router = APIRouter(prefix="/seeker")

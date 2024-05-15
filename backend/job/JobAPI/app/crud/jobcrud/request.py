@@ -84,7 +84,9 @@ def create(db: Session, job_request: jobschema.JobRequestCreate) -> bool:
 # Update
 
 
-def update(db: Session, job_request_id: int, job_request: jobschema.JobRequestCreate):
+def update(
+    db: Session, job_request_id: int, job_request: jobschema.JobRequestCreate
+) -> bool:
     """
     Update a job request in the database.
 
@@ -109,7 +111,7 @@ def update(db: Session, job_request_id: int, job_request: jobschema.JobRequestCr
         return False
 
 
-def delete(db: Session, job_request_id: int):
+def delete(db: Session, job_request_id: int) -> bool:
     """
     Delete a job request from the database.
 

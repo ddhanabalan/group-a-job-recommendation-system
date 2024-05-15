@@ -82,13 +82,25 @@ async def update_job_vacancy(
 # Delete job vacancy by ID
 @job_vacancy_router.delete("/{job_vacancy_id}")
 async def delete_job_vacancy(job_vacancy_id: int, db: Session = Depends(get_db)):
+    # Retrieve the job vacancy to ensure it exists
     db_job_vacancy = jobcrud.vacancy.get(db, job_vacancy_id)
     if db_job_vacancy is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Job Vacancy not found"
         )
+
+    # Delete associated skills
+    jobcrud.skill.delete_by_vacancy_id(db, job_vacancy_id)
+
+    # Delete associated tags
+    jobcrud.tags.delete_by_vacancy_id(db, job_vacancy_id)
+
+    # Finally, delete the job vacancy
     jobcrud.vacancy.delete(db, job_vacancy_id)
-    return {"details": "Job Vacancy deleted successfully"}
+
+    return {
+        "details": "Job Vacancy and all associated skills and tags deleted successfully"
+    }
 
 
 # Get job vacancies by company ID
