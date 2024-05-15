@@ -14,7 +14,7 @@ export default function JobCard({ data }) {
                     })}
 
                 </Stack>
-                <p className='card-salary'>{data.currency} {data.salary} per month</p>
+                <p className='card-salary'>{data.currency}{data.salary[0]} - {data.salary[1]} per month</p>
             </div>
             <div className='card-div2'>
                 <div className='card-img-container'>
