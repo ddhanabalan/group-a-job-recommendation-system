@@ -1,0 +1,16 @@
+.cards-container{
+    width: 49%;
+    height: 90vh;
+    top: 10vh;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+}
+
+.clickable-job-card{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}

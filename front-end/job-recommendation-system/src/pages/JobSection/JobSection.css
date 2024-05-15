@@ -1,0 +1,16 @@
+.job-search{
+    width: 40%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+.job-filter{
+    width: 25%;
+    align-self: start;
+}
+.back-icon{
+    position: absolute;
+    top: 3%;
+    left: 27%;
+}

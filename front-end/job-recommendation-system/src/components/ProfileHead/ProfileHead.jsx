@@ -1,34 +1,59 @@
+import { useForm } from 'react-hook-form';
+import { useState } from 'react';
+import ProfileEdit from '../ProfileEdit/ProfileEdit';
+import AccountSettingsBtn from '../AccountSettingsBtn/AccountSettingsBtn';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import EditIcon from '@mui/icons-material/Edit';
-import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
+import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
+import profilePlaceholder from '../../images/profile_placeholder.svg';
 import './ProfileHead.css'
-export default function ProfileHead({ data }) {
+export default function ProfileHead({ data, blurFn, subForm, isNotEditing, setIsNotEditing }) {
+
+    const { register, formState: { errors }, getValues } = useForm({ mode: 'onTouched' | 'onSubmit' });
+
+   
     return (
-        <div className="profile-head-section">
-            <div className="banner">
+        <form noValidate autoComplete='on' className="profile-head-section"  >
+            <div className="banner" style={{backgroundColor:data.profile_banner_color}}>
                 <Stack direction="column" spacing={7} className='feature-actions'>
-                    <IconButton aria-label="settings">
-                        <SettingsRoundedIcon />
-                    </IconButton>
-                    <IconButton aria-label="edit">
-                        <EditIcon />
-                    </IconButton>
+                    <AccountSettingsBtn />
+                    {isNotEditing ?
+                        <IconButton aria-label="edit" onClick={() => {
+                            setIsNotEditing(false)
+                            blurFn(true)
+                        }}>
+                            <EditIcon />
+                        </IconButton>
+                        :
+                        <IconButton aria-label="check" onClick={() => {
+                            setIsNotEditing(true)
+                            blurFn(false)
+                            subForm({...getValues() })
+                        }}>
+                            <CheckRoundedIcon />
+                        </IconButton>}
                 </Stack>
             </div>
             <div className="profile-head-info">
                 <div className="profile-head-info-div profile-head-info-div1">
-                    <div className='profile-img-container'>
-                        {/* <img src="" alt="" /> */}
+                    <div className='profile-img-container p-image'>
+                        <img src={data.profile_picture ? data.profile_picture : profilePlaceholder} alt="profile picture" />
                     </div>
                 </div>
-                <div className="profile-head-info-div profile-head-info-div2">
-                    <h1 className="profile-name">{data.userName}</h1>
-                    <p className="profile-location">{data.userLocation}</p>
-                    <p className="profile-bio">{data.userBio}</p>
-                </div>
+                {isNotEditing ?
+                    <div className="profile-head-info-div profile-head-info-div2">
+                        <h1 className="profile-name">{data.first_name} {data.last_name}</h1>
+                        <p className="profile-location">{data.city}, {data.country}</p>
+                        <p className="profile-bio">{data.bio ? data.bio : "Tell the world about yourself"}</p>
+                    </div>
+                    :
+                    <div className="profile-head-info-div profile-head-info-div2">
+                        <ProfileEdit data={data} register={register} errors={errors} />
+                    </div>
+                }
                 <div className="profile-head-info-div profile-head-info-div3"></div>
             </div>
-        </div>
+        </form>
     )
 }

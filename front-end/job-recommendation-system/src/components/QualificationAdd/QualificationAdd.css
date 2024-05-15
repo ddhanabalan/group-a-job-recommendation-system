@@ -1,0 +1,32 @@
+.qualification-card-content {
+    display: flex;
+    flex-direction: column;
+}
+
+.qualification-add-form {
+    flex-direction: row;
+}
+.qualification-add div{
+    margin-bottom: .5rem;
+}
+.qualification-add input, .qualification-add div{
+    padding: .25rem .5rem;
+    width: 100%;
+}
+.qualification-add-h2 input {
+    font-size: 1.25rem;
+    font-family: Inter-md;
+}
+
+.qualification-add-h3 input {
+    font-size: .938rem;
+}
+
+.qualification-add-p input {
+    font-size: .875rem;
+}
+.qualification-year,.language-div{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}

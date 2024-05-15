@@ -15,3 +15,7 @@ SQL_PORT = int(os.environ.get("SQL_PORT"))
 SQL_USER = os.environ.get("SQL_USER")
 SQL_PASSWORD = os.environ.get("SQL_PASSWORD")
 DATABASE_NAME = os.environ.get("DATABASE_NAME")
+
+# Retrieving Host Auth and User
+AUTH_API_HOST = os.environ.get("AUTH_API_HOST")
+USER_API_HOST = os.environ.get("USER_API_HOST")

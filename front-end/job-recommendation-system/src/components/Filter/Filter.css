@@ -1,0 +1,23 @@
+.FilterContainer{
+    height: 100vh;
+    width: auto;
+    background-color: white;
+    align-items:initial;
+    align-self: start;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    overflow-y: auto;
+}
+.heading{
+    display: flex;
+   justify-content: center;
+    font-size: 1.5rem;
+    align-items: baseline;
+    gap: 5px;
+    margin: 3rem 0;
+}
+
+button{
+    align-self: center;
+}

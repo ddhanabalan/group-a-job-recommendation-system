@@ -1,44 +1,57 @@
-// import React, { useState } from 'react'
-import { useForm } from 'react-hook-form';
-import { Box, IconButton, TextField, Stack } from '@mui/material'
+import { useState } from 'react'
+import './LoginForm.css'
+import { useForm } from 'react-hook-form'
 import Mail from '@mui/icons-material/Mail'
 import Lock from '@mui/icons-material/Lock'
 import ArrowForwardRoundedIcon from '@mui/icons-material/ArrowForwardRounded'
-import './LoginForm.css'
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+import { Box, IconButton, TextField, Stack } from '@mui/material';
+import { useLocation, Link } from 'react-router-dom';
 
-function LoginForm({callAPI}) {
+function LoginForm({ callAPI }) {
 
-  const { register, formState: { errors },handleSubmit } = useForm();
- 
+  const { register, formState: { errors }, handleSubmit } = useForm();
+  const [visible, setVisible] = useState(false);
+  const location = useLocation();
+  const userType = location["pathname"].includes("employer") ? "employer" : "seeker";
+  function handleVisibility() {
+    setVisible(!visible);
+  }
+
+  // const { info, setInfo } = useState(); 
+
+  // console.log("errors", { errors })
   return (
     <>
       {/*Login Form*/}
       <div className="login_container">
 
-        <form noValidate autoComplete='off' onSubmit={handleSubmit((data)=>callAPI(data))}>
-          <h3 className="text-center login-header">Login</h3>
-          <br />
-          <Box sx={{ boxShadow: 2, paddingBottom: 4, paddingTop: 3, paddingX: 3, borderRadius: 5, width: 340 ,display:'flex',flexDirection:'column'}}>
+        
+          <h3 className="login-header">Login</h3>
+
+          <div className="login-details">
+          {/*<Box sx={{ boxShadow: 2, paddingBottom: 4, paddingTop: 3, paddingX: 3, borderRadius: 5, width: '90%', display: 'flex', flexDirection: 'column' }}>*/}
+          <form noValidate autoComplete='on' onSubmit={handleSubmit((data) => callAPI(data))}>
             <p className="lg">Login with Credentials</p><br />
             <Stack spacing={2}>
 
-              {/*email box validation checking*/}
-              <Box sx={{ display: 'flex', alignItems: 'email' in errors ? 'center' : 'flex-end', gap: 1 }}>
+              {/*username box validation checking*/}
+              <Box sx={{ display: 'flex', alignItems: 'username' in errors ? 'center' : 'flex-end', gap: 1 }}>
                 <Mail />
                 <TextField variant="standard"
                   label="Email"
                   type='email'
-                  helperText={'email' in errors ? errors.email?.message : ""}
-                  error={'email' in errors}
+                  helperText={'username' in errors ? errors.username?.message : ""}
+                  error={'username' in errors}
                   {...register("username",
                     {
-                      required: "please enter email",
+                      required: "email cannot be empty",
                       pattern: {
                         value: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-                        message: "Email not valid"
+                        message: "invalid email"
                       }
                     })} />
-
               </Box>
 
               {/*password box validation checking*/}
@@ -46,29 +59,34 @@ function LoginForm({callAPI}) {
                 <Lock sx={{ position: 'relative', top: 0 }} />
                 <TextField variant="standard"
                   label="Password"
-                  type='password'
+                  type={visible ? "text" : "password"}
                   helperText={'password' in errors ? errors.password?.message : ""}
                   error={'password' in errors}
                   {...register("password",
                     {
                       required: "password is required",
-                      // pattern: {
-                      //   value: /^(?=.*[0-9])(?=.*[!@#$%^&*.,])[a-zA-Z0-9!@#$%^&*.,]{6,16}$/,
-                      //   message: "password must be atleast 8 characters long"
-                      // }
-                    })} />
+                      pattern: {
+                        value: /^.{8,}$/,
+                        message: "password must be atleast 8 characters long"
+                      }
+                    })}
+                />
+                <Box onClick={handleVisibility}>{visible ? <VisibilityIcon sx={{ fontSize: 'medium', position: 'relative', top: -2 }} /> : <VisibilityOffIcon sx={{ fontSize: 'medium', position: 'relative', top: -2 }} />}</Box>
               </Box>
+
             </Stack>
-            <IconButton type="submit" sx={{ borderRadius: 50, backgroundColor: '#E7E4E4', position: 'relative', top: 20 , alignSelf:'center',width:45,height:45}}>
+            <IconButton type="submit" sx={{ borderRadius: 50, backgroundColor: '#E7E4E4', position: 'relative', top: 20, alignSelf: 'center', width: 45, height: 45 }}>
               <ArrowForwardRoundedIcon sx={{ color: 'black' }} />
             </IconButton>
-          </Box>
+          </form>
+          </div>
 
-        </form>
+        
 
 
-        <br /><a href="" className="lk">forgot your password?</a><br />
-        <a href="" className="sigup-redirect">New User? SignUp</a>
+        <a href="" className="lk">forgot your password?</a>
+        <a className="sigup-redirect" href={`/signup/${userType}`}>New User? SignUp</a>
+        {/* <Link to={'../signup/' + userType} state={{ "userType": userType }}></Link> */}
 
 
 

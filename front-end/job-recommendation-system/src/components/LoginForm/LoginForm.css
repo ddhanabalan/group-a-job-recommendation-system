@@ -1,47 +1,59 @@
 .login_container {
-    width: 22rem;
-    height: fit-content;
+    position: relative;
+    width: fit-content;
+    height: 42rem;
     align-self: flex-start;
-    margin: 0 100px;
-    padding: 20px 0;
+    margin-left:100px;
+    padding: 20px 40px 250px 40px;
     border: none;
     border-radius: 20px;
     display: flex;
     flex-direction: column;
-    align-items: center; 
+    align-items: center;
     font-family: Inter-regular;
     background: white;
 }
+
+.login-details{
+    box-shadow: 0px 5px 12px 0px rgba(0, 0, 0, 0.2);  
+    height: max-content;
+    border-radius: 10px; 
+    width: fit-content ; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center;
+    background-color: white;
+    padding: 20px 20px 30px 20px;
+}
+
 .login-header {
     font-size: 30px;
     font-family: Inter-black;
+    margin-bottom: 1rem;
 }
 
-.form_container {
-    box-shadow: 2px;
-}
 
 
 .lk {
+    align-self: center;
     margin-top: 20px;
-    margin-bottom: 100px;    
     font-size: 14px;
-    font-family: Inter-regular;
-    color: #0D63B2;
-    text-decoration: underline;
+    font-family: Inter-b;
+    color: #2299F8 !important; 
 }
 
 .lg {
+    align-self: start;
     font-size: 12px;
     font-family: Inter-b;
-
+    margin:0 0 .4em 0;
 }
 
 .sigup-redirect {
-    margin-top: 100px;
-    margin-bottom: 10px;
+    align-self: center;
+    position: absolute;
+    bottom: 1rem;
     font-family: Inter-b;
-    color: #2299F8;
-    font-size:14px;
-    text-decoration: underline;
+    color: #2299F8 !important;
+    font-size: 14px ;
 }

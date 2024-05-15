@@ -8,8 +8,10 @@
     width: 100%;
     height: fit-content;
     display: flex;
+   }
+.body-blur{
+filter: blur(3px);
 }
-
 .profile-pane {
     display: flex;
     flex-direction: column;
@@ -20,7 +22,10 @@
 .profile-left-pane {
     width: 25%;
 }
-
+.data-not-present-handle{
+    font-family: Inter-light-italic;
+    color: gray;
+}
 .profile-middle-pane {
     width: 50%;
 }

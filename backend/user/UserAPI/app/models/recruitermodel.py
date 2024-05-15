@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, Date, DateTime, ForeignKey
+from sqlalchemy import Column, String, Integer, Date, DateTime, ForeignKey, Text
 from sqlalchemy.orm import relationship
 from sqlalchemy import event
 from datetime import datetime
@@ -11,11 +11,14 @@ class RecruiterDetails(Base):
     user_id = Column(Integer, primary_key=True, index=True)
     username = Column(String(32), unique=True)
     company_name = Column(String(128))
+    profile_picture = Column(Text)
     email = Column(String(32), unique=True)
     bio = Column(String(512))
     address = Column(String(256))
+    pincode = Column(String(8))
     city = Column(String(128))
     country = Column(String(128))
+    phone = Column(String(16))
     industry = Column(String(256))
     company_size = Column(String(256))
     headquarters = Column(String(256))

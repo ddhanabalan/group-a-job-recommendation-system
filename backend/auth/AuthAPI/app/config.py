@@ -19,3 +19,15 @@ SQL_PORT = int(os.environ.get("SQL_PORT"))
 SQL_USER = os.environ.get("SQL_USER")
 SQL_PASSWORD = os.environ.get("SQL_PASSWORD")
 DATABASE_NAME = os.environ.get("DATABASE_NAME")
+
+# Retrieving Host for User and Job API
+USER_API_HOST = os.environ.get("USER_API_HOST")
+JOB_API_HOST = os.environ.get("JOB_API_HOST")
+
+GOOGLE_OAUTH_CLIENT_ID = os.environ.get("GOOGLE_OAUTH_CLIENT_ID")
+GOOGLE_OAUTH_CLIENT_SECRET = os.environ.get("GOOGLE_OAUTH_CLIENT_SECRET")
+
+SMTP_SERVER = os.environ.get("SMTP_SERVER")
+SMTP_PORT = os.environ.get("SMTP_PORT")
+EMAIL_ADDRESS = os.environ.get("EMAIL_ADDRESS")
+EMAIL_PASSWORD = os.environ.get("EMAIL_PASSWORD")

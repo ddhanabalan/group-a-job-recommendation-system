@@ -1,4 +1,13 @@
-from sqlalchemy import Column, String, Integer, Date, DateTime, ForeignKey
+from sqlalchemy import (
+    Column,
+    String,
+    Integer,
+    Date,
+    DateTime,
+    ForeignKey,
+    Text,
+    LargeBinary,
+)
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from ..database import Base
@@ -13,16 +22,21 @@ class SeekersDetails(Base):
     last_name = Column(String(32))
     email = Column(String(32), unique=True)
     bio = Column(String(512))
+    phone = Column(String(16))
     address = Column(String(256))
     city = Column(String(128))
     country = Column(String(128))
+    profile_picture = Column(LargeBinary)
     institution = Column(String(256))
     experience = Column(String(256))
     education = Column(String(256))
+    contact_email = Column(String(32), default=email)
     dob = Column(Date)
     age = Column(Integer)
     gender = Column(String(16))
     location = Column(String(512))
+    github = Column(String(32))
+    website = Column(String(32))
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

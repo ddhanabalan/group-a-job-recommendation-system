@@ -1,0 +1,75 @@
+version: '3'
+
+services:
+  mysql_server:
+    build:
+      context: ./mysqldb
+      dockerfile: Dockerfile
+    restart: always
+    environment:
+      AUTHAPI_HOST: authapi
+    networks:
+      app_network:
+        ipv4_address: 172.20.0.2
+
+  authapi:
+    build:
+      context: ./auth
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    depends_on:
+      - mysql_server
+    volumes:
+      - ./auth/AuthAPI:/app
+    environment:
+      SQL_HOST: mysql_server
+      USER_API_HOST: userapi
+      JOB_API_HOST: jobapi
+    networks:
+      app_network:
+        ipv4_address: 172.20.0.3
+
+  userapi:
+    build:
+      context: ./user
+      dockerfile: Dockerfile
+    ports:
+      - "8001:8000"
+    depends_on:
+      - mysql_server
+    volumes:
+      - ./user/UserAPI:/app
+    environment:
+      SQL_HOST: mysql_server
+      AUTH_API_HOST: authapi
+      JOB_API_HOST: jobapi
+    networks:
+      app_network:
+        ipv4_address: 172.20.0.4
+
+  jobapi:
+    build:
+      context: ./job
+      dockerfile: Dockerfile
+    ports:
+      - "8002:8000"
+    depends_on:
+      - mysql_server
+    volumes:
+      - ./job/JobAPI:/app
+    environment:
+      SQL_HOST: mysql_server
+      AUTH_API_HOST: authapi
+      USER_API_HOST: userapi
+    networks:
+      app_network:
+        ipv4_address: 172.20.0.5
+
+networks:
+  app_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
+
