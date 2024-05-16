@@ -32,5 +32,5 @@ async def get_skills(q: Optional[str]=None):
     df = df[['Skill Name','Skill Category']]# Remove duplicate entries
     print(df)
     if q is not None:
-        df = df[df.str.lower().str.startswith(q.lower())]
+        df = df[df['Skill Name'].str.lower().str.startswith(q.lower())]
     return df[:100].to_dict(orient="records")

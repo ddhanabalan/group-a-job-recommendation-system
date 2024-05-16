@@ -15,6 +15,7 @@ from .config import (
     SECRET_KEY,
     ALGORITHM,
     ACCESS_TOKEN_EXPIRE_MINUTES,
+    REFRESH_TOKEN_EXPIRE_MINUTES,
     GOOGLE_OAUTH_CLIENT_ID,
     GOOGLE_OAUTH_CLIENT_SECRET,
     JOB_API_HOST,
@@ -86,6 +87,7 @@ def get_password_hashed(password):
 async def authenticate_user(
     username: str, password: str, db: Session = Depends(get_db)
 ):
+    print("in")
     user = authcrud.get_auth_user_by_email(db=db, username=username)
     if not user:
         return False
@@ -97,7 +99,7 @@ async def authenticate_user(
         )
     if not user.verified:
         await send_verify(
-            token=create_access_token({"sub": user.username, "type": "emailVerify"}),
+            token=create_token({"sub": user.username, "type": "emailVerify"}),
             username=user.username,
             to_email=user.email,
         )
@@ -107,7 +109,7 @@ async def authenticate_user(
     return user
 
 
-def create_access_token(data: dict, expires_delta: timedelta or None = None):
+def create_token(data: dict, expires_delta: timedelta or None = None):
     to_encode = data.copy()
     if expires_delta:
         expires = datetime.utcnow() + expires_delta
@@ -141,7 +143,7 @@ async def get_current_user(
     )
     try:
         username, data_type = validate_access_token(token)
-        if username is None or data_type != "password":
+        if username is None or data_type != "access_token":
             raise credential_exception
         token_data = authschema.TokenData(username=username)
     except JWTError:
@@ -163,6 +165,29 @@ async def get_current_active_user(
         )
     return current_user
 
+async def get_refresh_user(
+    token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
+) -> authmodel.UserAuth:
+    credential_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        username, data_type = validate_access_token(token)
+        if username is None or data_type != "refresh_token":
+            raise credential_exception
+        token_data = authschema.TokenData(username=username)
+    except JWTError:
+        raise credential_exception
+
+    user = authcrud.get_auth_user_by_username(db, token_data.username)
+    if user is None:
+        raise credential_exception
+    if user.refresh_token != token or user.disabled:
+        raise credential_exception
+    return user
+
 
 @app.post("/token", response_model=authschema.Token)
 async def login_for_access_token(
@@ -175,15 +200,50 @@ async def login_for_access_token(
             detail="Invalid Username or Password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": user.username, "type": "password"},
+    refresh_token_expires = timedelta(minutes=REFRESH_TOKEN_EXPIRE_MINUTES)
+    access_token = create_token(
+        data={"sub": user.username, "type": "access_token"},
         expires_delta=access_token_expires,
     )
+    refresh_token = create_token(
+        data={"sub": user.username, "type": "refresh_token"},
+        expires_delta=refresh_token_expires,
+    )
+    authcrud.update_auth_user(db,user.user_id,{"refresh_token":refresh_token})
+    return {
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+        "token_type": "bearer",
+    }
 
-    return {"access_token": access_token, "token_type": "bearer"}
 
+@app.get("/refresh_token")
+async def refresh_token(user=Depends(get_refresh_user),db:Session=Depends(get_db)):
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid Username or Password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    refresh_token_expires = timedelta(minutes=REFRESH_TOKEN_EXPIRE_MINUTES)
+    access_token = create_token(
+        data={"sub": user.username, "type": "access_token"},
+        expires_delta=access_token_expires,
+    )
+    refresh_token = create_token(
+        data={"sub": user.username, "type": "refresh_token"},
+        expires_delta=refresh_token_expires,
+    )
+    authcrud.update_auth_user(db,user.user_id,{"refresh_token":refresh_token})
+
+    return {
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+        "token_type": "bearer",
+    }
 
 @app.get("/me")
 async def users_info(current_user=Depends(get_current_active_user)):
@@ -219,7 +279,7 @@ async def auth(request: Request, db: Session = Depends(get_db)):
             status_code=status.HTTP_404_NOT_FOUND, detail="User Not Found"
         )
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
+    access_token = create_token(
         data={"sub": user.username}, expires_delta=access_token_expires
     )
     return {"access_token": access_token, "token_type": "bearer"}
@@ -301,7 +361,7 @@ async def register(
             )
 
     await send_verify(
-        token=create_access_token({"sub": user_db.username, "type": "emailVerify"}),
+        token=create_token({"sub": user_db.username, "type": "emailVerify"}),
         username=user_db.username,
         to_email=user_db.email,
     )
