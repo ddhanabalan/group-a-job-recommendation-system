@@ -14,7 +14,9 @@ export const userAPI=axios.create({
 export const jobAPI=axios.create({
     baseURL:  `http://${ip}:8002/`
 });
-
+export const utilsAPI = axios.create({
+    baseURL: `http://${ip}:8003/`
+});
 export default authAPI;
 
 

@@ -1,9 +1,9 @@
-import { useState,useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { v4 as uuid } from 'uuid';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-import {getStorage, setStorage} from '../../storage/storage';
-import { userAPI } from '../../api/axios';
+import { getStorage, setStorage } from '../../storage/storage';
+import { userAPI, utilsAPI } from '../../api/axios';
 import FeatureBox from '../../components/FeatureBox/FeatureBox';
 import FeatureBoxMiddlePane from '../../components/FeatureBoxMiddlePane/FeatureBoxMiddlePane';
 import ProfileHead from '../../components/ProfileHead/ProfileHead';
@@ -24,7 +24,7 @@ export default function ProfileSection({ data }) {
         console.log("Users:", data)
         SetnewData(data)
     }
-  
+
     const [languages, setLanguages] = useState(null)
     const options = {
         method: 'GET',
@@ -44,18 +44,31 @@ export default function ProfileSection({ data }) {
             console.error(error);
         }
     }
-    useEffect(() => languageAPI, [])
-
+    const [skillsList, setSkillsList] = useState(null)
+    const skillsAPI = async () => {
+        try {
+            const response = await utilsAPI.get('/api/v1/skills')
+            console.log(response)
+            setSkillsList(response.data)
+        }
+        catch(e){
+            console.log(e)
+        }
+    }
+    useEffect(() => {
+        languageAPI()
+        skillsAPI()
+    }, [])
     const params = useParams();
     const user = params.username;
     const callAPI = async () => {
         try {
             const response = (user === undefined) ?
-                await userAPI.get(`/seeker/profile`,{
+                await userAPI.get(`/seeker/profile`, {
                     headers: {
                         'Authorization': `Bearer ${getStorage("userToken")}`
                     }
-                }):
+                }) :
                 await userAPI.get(`/seeker/profile/${user}`);
             redirectFn(response.data)
         } catch (e) {
@@ -66,7 +79,7 @@ export default function ProfileSection({ data }) {
     }
     useEffect(() => callAPI, []);
     const subForm = async (data) => {
-        SetnewData({...newData, city: data.city,first_name:data.first_name,last_name:data.last_name,country:data.country,bio:data.bio})
+        SetnewData({ ...newData, city: data.city, first_name: data.first_name, last_name: data.last_name, country: data.country, bio: data.bio, profile_picture: data.profile_picture, profile_banner_color: data.profile_banner_color })
         console.log("data", data);
         try {
             await userAPI.put('/seeker/details', data,
@@ -83,7 +96,7 @@ export default function ProfileSection({ data }) {
             alert(e.message)
         }
     }
-  
+
     const [isBodyBlur, SetIsBodyBlur] = useState(false)
     const contacts = { mail: "amywilliams@gmail.com", github: "amywilliams", website: null }
     const blurBody = (state) => {
@@ -126,9 +139,9 @@ export default function ProfileSection({ data }) {
                             }} contactData={newData} subForm={subForm} />
                         </div>
                         <div className="profile-pane profile-middle-pane">
-                            <FeatureBoxMiddlePane data={{ title: "Professional Experience", edit: true, isLanguage: false }}
+                            <FeatureBoxMiddlePane data={{ title: "Professional Experience", edit: true, isLanguage: false, cardData: { qualification_label: "Title", qualification_provider: "Company name" } }}
                                 childData={[]} />
-                            <FeatureBoxMiddlePane data={{ title: "Formal Education", edit: true, isLanguage: false,cardData:{qualification_label:"Degree",qualification_provider:"School/College"} }}
+                            <FeatureBoxMiddlePane data={{ title: "Formal Education", edit: true, isLanguage: false, cardData: { qualification_label: "Degree", qualification_provider: "School/College" } }}
                                 childData={[
                                     { qualification: "Master of science - Computer Science", id: uuid(), qualification_provider: "Massachusetts Institute of Technology (MIT)", start_year: 2005, end_year: 2009 },
                                     { qualification: "Master of science - Computer Science", id: uuid(), qualification_provider: "Massachusetts Institute of Technology (MIT)", start_year: 2005, end_year: 2009 }
@@ -139,7 +152,7 @@ export default function ProfileSection({ data }) {
                                     { qualification: "Master of science - Computer Science", id: uuid(), qualification_provider: "Massachusetts Institute of Technology (MIT)", start_year: 2005, end_year: 2009 }
                                 ]} />
                             {/* <FeatureBoxMiddlePane data={{ title: "Skills",editIcon:false }} /> */}
-                            <AddSkills id="profile-section-skills" value={skill} tags={skills} deleteFn={handleDeleteSkill} changeFn={handleChangeSkill} updateFn={handleSkill} data={{ title: "Skills", inputPlaceholder: "HTML" }} />
+                            <AddSkills id="profile-section-skills" availableSkills={skillsList} value={skill} tags={skills} deleteFn={handleDeleteSkill} changeFn={handleChangeSkill} updateFn={handleSkill} data={{ title: "Skills", inputPlaceholder: "HTML" }} />
                             <FeatureBoxMiddlePane data={{ title: "Languages", editIcon: true, isLanguage: true }}
                                 languages={languages}
                                 childData={[

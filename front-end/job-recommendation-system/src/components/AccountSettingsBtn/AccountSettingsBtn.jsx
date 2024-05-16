@@ -4,6 +4,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
+import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
 import './AccountSettingsBtn.css';
 export default function AccountSettingsBtn() {
     const [anchorEl, setAnchorEl] = React.useState(null);
@@ -27,6 +28,14 @@ export default function AccountSettingsBtn() {
                 <SettingsRoundedIcon />
             </IconButton>
             <Menu
+                anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                }}
+                transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'right',
+                }}
                 id="basic-menu"
                 anchorEl={anchorEl}
                 open={open}
@@ -37,7 +46,8 @@ export default function AccountSettingsBtn() {
             >
                 {/* <MenuItem onClick={handleClose}>Profile</MenuItem>
                 <MenuItem onClick={handleClose}>My account</MenuItem> */}
-                <MenuItem sx={{color:'red'}} onClick={handleClose}><LogoutRoundedIcon/> Logout</MenuItem>
+                <MenuItem onClick={handleClose}><LogoutRoundedIcon />Logout</MenuItem>
+                <MenuItem sx={{ color: 'red' }} onClick={handleClose}><DeleteOutlineRoundedIcon/>Delete Account</MenuItem>
             </Menu>
         </div>
     );

@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { v4 as uuid } from 'uuid';
+import { userAPI } from '../../api/axios';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
@@ -15,10 +16,17 @@ export default function FeatureBoxMiddlePane({ languages, data, childData }) {
 
     const [qdata, SetQdata] = useState(childData);
     const [newQual, SetNewQual] = useState(false)
-    const addQualification = (e) => {
+    const addQualification = async(e) => {
         //accepts new qualification data and adds it into existing array of qualifications
-        SetNewQual(false)
-        SetQdata([...childData, e])
+        try {
+            const response = await userAPI.post('/seeker/education', e)
+            console.log(resonse)
+            SetNewQual(false)
+            SetQdata([...childData, e])
+        } catch (error) {
+            console.log(error)
+        }
+        
     }
     const cancelQual = () => {
         //cancels addition of new qualification
