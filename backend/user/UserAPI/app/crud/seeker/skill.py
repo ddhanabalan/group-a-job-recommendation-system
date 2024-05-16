@@ -109,3 +109,25 @@ def delete(db: Session, id: int) -> bool:
     except SQLAlchemyError:
         db.rollback()
         return False
+
+
+def delete_by_user_id(db: Session, user_id: int) -> bool:
+    """
+    Delete skill details of a seeker from the database.
+
+    Args:
+        db (Session): SQLAlchemy database session.
+        id (int): User ID of the seeker.
+
+    Returns:
+        bool: True if deletion is successful, False otherwise.
+    """
+    try:
+        db.query(seekermodel.SeekersSkill).filter(
+            seekermodel.SeekersSkill.user_id == user_id
+        ).delete()
+        db.commit()
+        return True
+    except SQLAlchemyError:
+        db.rollback()
+        return False

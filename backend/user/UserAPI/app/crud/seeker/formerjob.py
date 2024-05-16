@@ -78,3 +78,15 @@ def update(db: Session, id: int, job: seekerschema.SeekersFormerJob) -> bool:
     except SQLAlchemyError:
         db.rollback()
         return False
+
+
+def delete_by_user_id(db: Session, user_id: int) -> bool:
+    try:
+        db.query(seekermodel.SeekersFormerJob).filter(
+            seekermodel.SeekersFormerJob.user_id == user_id
+        ).delete()
+        db.commit()
+        return True
+    except SQLAlchemyError:
+        db.rollback()
+        return False

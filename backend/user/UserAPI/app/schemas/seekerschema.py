@@ -88,8 +88,11 @@ class SeekersSkill(BaseModel):
 
 class SeekersEducation(BaseModel):
     id: Optional[int]
-    user_id: int
-    education: str
+    user_id: Optional[int]
+    education_title: str
+    education_provider:Optional[str]
+    start_year:Optional[str]
+    end_year:Optional[str]
     created_at: Optional[datetime]
     updated_at: Optional[datetime]
 

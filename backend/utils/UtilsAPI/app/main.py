@@ -1,3 +1,5 @@
+from typing import Optional
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import pandas as pd
@@ -24,8 +26,10 @@ app.add_middleware(
 )
 
 @app.get("/api/v1/skills")
-async def get_skills():
+async def get_skills(q: Optional[str]=None):
     df = pd.read_csv("app/data/skills/1.csv")
-    df = df['Text']
-
-    return df.iloc[1:10000].to_list()
+    df = df.dropna(subset=['Text'])
+    df = df['Text'].drop_duplicates()# Remove duplicate entries
+    if q is not None:
+        df = df[df.str.lower().str.startswith(q.lower())]
+    return df[:100].to_list()

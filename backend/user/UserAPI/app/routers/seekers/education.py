@@ -26,8 +26,10 @@ async def user_seeker_education(
 
 @router.post("/education", status_code=status.HTTP_201_CREATED)
 async def create_seeker_education(
-    education: seekerschema.SeekersEducation, db: Session = Depends(get_db)
+    education: seekerschema.SeekersEducation, db: Session = Depends(get_db),authorization: str = Header(...),
 ):
+    user = await get_current_user(authorization)
+    user_id = user.get()
     created_education = crud.seeker.education.create(db, education)
     if not created_education:
         raise HTTPException(
@@ -38,7 +40,9 @@ async def create_seeker_education(
 
 
 @router.delete("/education/{education_id}", status_code=status.HTTP_200_OK)
-async def delete_seeker_education(education_id: int, db: Session = Depends(get_db)):
+async def delete_seeker_education(education_id: int, db: Session = Depends(get_db),authorization: str = Header(...),
+):
+    await check_authorization(authorization)
     deleted = crud.seeker.education.delete(db, education_id)
     if not deleted:
         raise HTTPException(
