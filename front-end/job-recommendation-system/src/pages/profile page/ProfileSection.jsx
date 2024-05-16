@@ -47,10 +47,10 @@ export default function ProfileSection({ data }) {
             console.error(error);
         }
     }
-    const [skillsList, setSkillsList] = useState(null)
+    const [skillsList, setSkillsList] = useState([])
     const skillsAPI = async () => {
         try {
-            const response = await utilsAPI.get('/api/v1/skills')
+            const response = await utilsAPI.get(`/api/v1/skills?q=${skill}`)
             console.log(response)
             setSkillsList(response.data)
         }
@@ -60,7 +60,6 @@ export default function ProfileSection({ data }) {
     }
     useEffect(() => {
         languageAPI()
-        skillsAPI()
     }, [])
     const params = useParams();
     const user = params.username;
@@ -74,6 +73,11 @@ export default function ProfileSection({ data }) {
                 }) :
                 await userAPI.get(`/seeker/profile/${user}`);
             redirectFn(response.data)
+            console.log(await userAPI.get(`/seeker/education`, {
+                headers: {
+                    'Authorization': `Bearer ${getStorage("userToken")}`
+                }
+            }))
         } catch (e) {
             console.log(e)
 
@@ -114,11 +118,15 @@ export default function ProfileSection({ data }) {
             prevSkills.filter(e => e.id !== id))
     };
 
-    const handleChangeSkill = (v) => {
+    const handleChangeSkill =(v) => {
         //stores the Domain value from the input field as user types
+        setSkillsList([])
+        console.log("i'm invoked")
         SetSkill(v)
     };
-
+    useEffect(() => {
+        skillsAPI()
+    }, [skill])
     const handleSkill = (n) => {
         //accepts a new domain value from the input field and updates the domains array to display the newly added domain and resets the input box value when user clicks the add button
         if (n !== "") {

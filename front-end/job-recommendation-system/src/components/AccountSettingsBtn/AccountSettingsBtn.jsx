@@ -2,8 +2,10 @@ import * as React from 'react';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
+import Divider from '@mui/material/Divider';
 import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
 import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
+import SupportAgentRoundedIcon from '@mui/icons-material/SupportAgentRounded';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
 import './AccountSettingsBtn.css';
 export default function AccountSettingsBtn() {
@@ -33,8 +35,8 @@ export default function AccountSettingsBtn() {
                     horizontal: 'left',
                 }}
                 transformOrigin={{
-                    vertical: 'top',
-                    horizontal: 'right',
+                    vertical: 20,
+                    horizontal: 180,
                 }}
                 id="basic-menu"
                 anchorEl={anchorEl}
@@ -47,7 +49,10 @@ export default function AccountSettingsBtn() {
                 {/* <MenuItem onClick={handleClose}>Profile</MenuItem>
                 <MenuItem onClick={handleClose}>My account</MenuItem> */}
                 <MenuItem onClick={handleClose}><LogoutRoundedIcon />Logout</MenuItem>
-                <MenuItem sx={{ color: 'red' }} onClick={handleClose}><DeleteOutlineRoundedIcon/>Delete Account</MenuItem>
+                <Divider orientation="horizontal" variant="middle" flexItem />
+                <MenuItem onClick={handleClose}><SupportAgentRoundedIcon />Help</MenuItem>
+                <Divider orientation="horizontal" variant="middle" flexItem />
+                <MenuItem sx={{ color: 'red' }} onClick={handleClose}><DeleteOutlineRoundedIcon />Delete Account</MenuItem>
             </Menu>
         </div>
     );

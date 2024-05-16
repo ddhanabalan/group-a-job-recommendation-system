@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { v4 as uuid } from 'uuid';
 import { userAPI } from '../../api/axios';
+import { getStorage } from '../../storage/storage';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
@@ -19,8 +20,14 @@ export default function FeatureBoxMiddlePane({ languages, data, childData }) {
     const addQualification = async(e) => {
         //accepts new qualification data and adds it into existing array of qualifications
         try {
-            const response = await userAPI.post('/seeker/education', e)
-            console.log(resonse)
+            const data = { 'education_title': e.qualification, 'education_provider': e.qualification_provider,'start_year':e.start_year,'end_year':e.end_year }
+            console.log(data)
+            const response = await userAPI.post('/seeker/education', data, {
+                headers: {
+                    'Authorization': `Bearer ${getStorage("userToken")}`
+                }
+            })
+            console.log(response)
             SetNewQual(false)
             SetQdata([...childData, e])
         } catch (error) {

@@ -21,7 +21,7 @@ export default function AddSkills({ availableSkills, data, updateFn, changeFn, d
             <Autocomplete
                 options={availableSkills}
                 autoHighlight
-                getOptionLabel={(option) => option}
+                getOptionLabel={(option) => option["Skill Name"]}
                 componentsProps={{
                     popper: {
                         modifiers: [
@@ -42,6 +42,7 @@ export default function AddSkills({ availableSkills, data, updateFn, changeFn, d
                         inputProps={{
                             ...params.inputProps
                         }}
+                        onChange={e=>changeFn(e.target.value)}
                     />
                 )}
             />
