@@ -85,9 +85,7 @@ def get_user_verified_by_username(db: Session, username: str) -> bool:
     )
 
 
-def update_auth_user(
-    db: Session, user_id: int, user_update: authschema.UserInDB
-) -> bool:
+def update_auth_user(db: Session, user_id: int, user_update: dict) -> bool:
     """
     Update an authentication user in the database.
 
@@ -102,7 +100,7 @@ def update_auth_user(
     try:
         db.query(authmodel.UserAuth).filter(
             authmodel.UserAuth.user_id == user_id
-        ).update(user_update.dict())
+        ).update(user_update)
         db.commit()
         return True
     except SQLAlchemyError:

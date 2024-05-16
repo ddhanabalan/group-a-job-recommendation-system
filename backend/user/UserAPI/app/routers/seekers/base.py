@@ -22,6 +22,8 @@ async def user_seeker_init(
 ):
     if user.profile_picture is not None:
         contents =await decode64_image(user.profile_picture)
+    else:
+        contents = None
     username = user.username
     user_details = crud.seeker.base.get_userid_from_username(db=db, username=username)
     if user_details is not None:

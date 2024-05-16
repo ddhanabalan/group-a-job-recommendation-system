@@ -9,7 +9,7 @@ class SeekersBase(BaseModel):
     first_name: Optional[str] = None
     last_name: Optional[str] = None
     email: EmailStr
-    dob: Optional[PastDate]
+    dob: Optional[PastDate] = None
     gender: Optional[str] = None
     country: Optional[str] = None
     profile_banner_color: Optional[str] = None
