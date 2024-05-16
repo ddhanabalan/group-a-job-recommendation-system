@@ -29,7 +29,8 @@ export default function LoginPage({ updateState }) {
             console.log(e)
             SetLoading(false)
             // alert(e.message)
-            SetServerMsg(e.response.data.detail);
+            const received_error = e.response?.data.detail || (e.message=="Network Error"?"We are facing some issues.Please try again later.": e.message);
+            SetServerMsg(received_error);
         }
     }
 
@@ -43,7 +44,9 @@ export default function LoginPage({ updateState }) {
                 <></>
             }
             {loading&&<LoaderAnimation/>}
+            <div className='login-form-wrapper'>
             <LoginForm callAPI={callAPI} />
+            </div>
         </div>
     )
 }

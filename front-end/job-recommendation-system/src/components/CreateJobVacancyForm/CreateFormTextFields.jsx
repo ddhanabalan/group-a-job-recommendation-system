@@ -2,12 +2,13 @@ import React from 'react'
 import { forwardRef } from 'react'
 import { TextField, MenuItem } from '@mui/material'
 
-const CreateFormTextFields = forwardRef(function CreateFormTextFields({ inputPlaceholder, textVal = "", bordRad = "7px", fontsz = "auto", wparam = "inherit", hparam = "auto", minrows = 1, multipleLine = false, type = "text", items = [], select = false, ...props }, ref) {
+const CreateFormTextFields = forwardRef(function CreateFormTextFields({ inputPlaceholder, textVal = "", bordRad = "7px", fontsz = "auto", wparam = "inherit", hparam = "auto", minrows = 1, multipleLine = false, type = "text", items = [], select = false, disabled = false, ...props }, ref) {
 
   return (
     <TextField placeholder={inputPlaceholder}
       variant="standard"
       ref={ref}
+      disabled={disabled}
       multiline={multipleLine}
       type={type}
       select={select}

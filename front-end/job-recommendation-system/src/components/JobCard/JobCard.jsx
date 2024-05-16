@@ -10,7 +10,7 @@ export default function JobCard({ data }) {
                 <p className='card-company-name-p'>{data.companyName}</p>
                 <Stack className="card-tags" direction="row" spacing={1}>
                     {data.tags.map(e => {
-                        return (<Chip key={uuid()} className="card-tags-child" label={e} size='small' />)
+                        return (<Chip key={e.id} className="card-tags-child" label={e.tags} size='small' />)
                     })}
 
                 </Stack>

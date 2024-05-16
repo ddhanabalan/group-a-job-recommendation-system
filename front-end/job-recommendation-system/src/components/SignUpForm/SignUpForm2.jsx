@@ -13,6 +13,7 @@ import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import profilePlaceholder from '../../images/profile_placeholder.svg';
 import greentick from '../../images/green-confirm.json'
 import failanim from '../../images/fail-animation.json'
+import moment from 'moment/moment.js';
 
 function SignUpForm2() {
   const VisuallyHiddenInput = styled('input')({
@@ -28,7 +29,7 @@ function SignUpForm2() {
   });
 
   const { register, formState: { errors }, handleSubmit, watch } = useForm({ mode: 'onTouched' | 'onSubmit' });
-
+  const signupAge = 18;
   const countries = ['India', 'USA', 'Australia', 'China', 'Japan']
   const genders = ['Male', 'Female', 'Transgender', 'Others']
   const industries = ['Automobile', 'Agriculture', 'Medical', 'Defense', 'Aeronautical', 'Chemical']
@@ -63,7 +64,12 @@ function SignUpForm2() {
 
 
   // const { info, setInfo } = useState(); 
-
+  const dateValidation = (dob) => {
+    const age = parseInt(moment(new Date()).diff(moment(dob), 'years'));
+    //console.log(age, ">=", signupAge, ":", age>=signupAge)
+    
+    return age;
+  }
 
   async function subForm(data) {
     //form data submission and redirecting to login
@@ -71,24 +77,26 @@ function SignUpForm2() {
     SetLoading(true)
     console.log(location)
     const newdata = { ...data, ...location.state, 'profile_picture': img,'profile_banner_color':bannerColor};
+    const checkUserType = newdata.userType
+    console.log("chewcked type", checkUserType)
     delete newdata.userType
     console.log("full data", newdata);
     try {
-      const res = await axios.post('/seeker/register', newdata, {
+        const res = await axios.post(`/${checkUserType=="seeker"?"seeker":"recruiter"}/register`, newdata, {
         headers: {
           'Content-Type': 'application/json'
         }
       })
       setServerMsg({ ...res });
       setTimeout(() => {
-        navigate('/login/seeker')
+        navigate(`/login/${checkUserType}`)
       }, 5000)
 
     } catch (e) {
       setServerMsg({ ...e.response });
       console.log(e)
       setTimeout(() => {
-        navigate('/login/seeker')
+        navigate(`/login/${checkUserType}`)
       }, 5000)
       // alert(e.message)
     }
@@ -291,28 +299,29 @@ function SignUpForm2() {
                         {...register("dob",
                           {
 
-                            required: "please enter dob",
-                          })} />
-                      <p className="error-message">{errors.dob?.message || ""}</p>
-                    </div>
-                    :
-                    /*Pincode*/
-                    <div>
-                      <p className="text-head">Pincode<span className="text-danger"> *</span></p>
-                      <TextField className="personal-details-input" variant="outlined" type='text'
-                        error={'pincode' in errors}
-                        {...register("pincode",
-                          {
-                            required: "please enter pincode",
-                            pattern: {
-                              value: /^[0-9]+$/,
-                              message: "Only numbers allowed"
-                            }
-                          })} />
-                      <p className="error-message">{errors.pincode?.message || ""}</p>
-                    </div>
-                }
-              </div>
+                        required: "please enter dob",
+                        validate: (val) =>  dateValidation(val) >= signupAge || "Age should be above 18 to register",
+                      })} />
+                  <p className="error-message">{errors.dob?.message || ""}</p>
+                </div>
+                :
+                /*Pincode*/
+                <div>
+                  <p className="text-head">Pincode<span className="text-danger"> *</span></p>
+                  <TextField className="personal-details-input" variant="outlined" type='text'
+                    error={'pincode' in errors}
+                    {...register("pincode",
+                      {
+                        required: "please enter pincode",
+                        pattern: {
+                          value: /^[0-9]+$/,
+                          message: "Only numbers allowed"
+                        }
+                      })} />
+                  <p className="error-message">{errors.pincode?.message || ""}</p>
+                </div>
+            }
+            </div>
 
               <div id="item-9">
                 {

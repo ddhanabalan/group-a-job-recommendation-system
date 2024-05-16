@@ -7,6 +7,10 @@
 .job-card-info-div-parameter{
     color: #7B7777;
 }
+
+.cs{
+    color: #fc2828;
+}
 .job-card-info-div{
     display: flex;
     justify-content: space-between;

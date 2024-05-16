@@ -1,4 +1,5 @@
-import { useState, useEffect } from 'react';
+import { useState,useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
@@ -15,6 +16,8 @@ import './ProfileSection.css';
 export default function ProfileSection({ data }) {
     const [newData, SetnewData] = useState(data);
     const [isNotEditing, SetIsNotEditing] = useState(true)
+    const {state} = useLocation();
+    console.log("received state", state)
     const updateEditStatus = (value) => {
         SetIsNotEditing(value)
     }
@@ -130,7 +133,7 @@ export default function ProfileSection({ data }) {
             {data ?
                 <div id="profile-page">
                     <ProfileHead data={newData} blurFn={blurBody} subForm={subForm} isNotEditing={isNotEditing} setIsNotEditing={updateEditStatus} />
-                    <NavigationBar active="profile" />
+                    <NavigationBar active="profile" redirect={state}/>
                     <div className={profileBodyClass}>
                         <div className="profile-pane profile-left-pane">
                             {/* <FeatureBox data={{ title: "At a Glance" }} /> */}
