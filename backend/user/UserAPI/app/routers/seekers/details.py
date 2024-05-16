@@ -15,10 +15,10 @@ from .. import (
 )
 
 
-router = APIRouter()
+router = APIRouter(prefix='/details')
 
 
-@router.get("/details", response_model=seekerschema.SeekersDetails)
+@router.get("/", response_model=seekerschema.SeekersDetails)
 async def get_seeker_details(
     db: Session = Depends(get_db), authorization: str = Header(...)
 ):
@@ -27,7 +27,7 @@ async def get_seeker_details(
     return user_details
 
 
-@router.post("/details/list", response_model=List[seekerschema.SeekersDetails])
+@router.post("/list", response_model=List[seekerschema.SeekersDetails])
 async def get_seeker_details(
     user_ids: seekerschema.JobUserDetailsIn, db: Session = Depends(get_db)
 ):
@@ -37,7 +37,7 @@ async def get_seeker_details(
     return user_details
 
 
-@router.put("/details", status_code=status.HTTP_200_OK)
+@router.put("/", status_code=status.HTTP_200_OK)
 async def update_seeker_details(
     user_details: dict,
     db: Session = Depends(get_db),
@@ -61,3 +61,18 @@ async def update_seeker_details(
             detail="Failed to update user details",
         )
     return {"detail": "User details updated successfully"}
+
+@router.delete("/", status_code=status.HTTP_200_OK)
+async def delete_seeker_details( db: Session = Depends(get_db), authorization: str = Header(...)):
+    # Start a transaction
+    user = await get_current_user(authorization)
+    user_id = user['user_id']
+    if crud.details.get(db,user_id) is None:
+        raise HTTPException(detail="User Not Found",status_code=status.HTTP_404_NOT_FOUND)
+    crud.emptype.delete_by_user_id(db, user_id)
+    crud.formerjob.delete_by_user_id(db, user_id)
+    crud.loctype.delete_by_user_id(db, user_id)
+    crud.poi.delete_by_user_id(db, user_id)
+    crud.skill.delete_by_user_id(db, user_id)
+    crud.education.delete_by_user_id(db, user_id)
+    crud.details.delete(db,user_id)

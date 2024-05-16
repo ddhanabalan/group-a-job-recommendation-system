@@ -66,7 +66,10 @@ class SeekersEducation(Base):
 
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("seekers_details.user_id"), index=True)
-    education = Column(String(32))
+    education_title = Column(String(32))
+    education_provider = Column(String(32))
+    start_year = Column(String(4))
+    end_year = Column(String(4))
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
