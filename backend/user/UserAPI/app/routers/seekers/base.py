@@ -43,7 +43,9 @@ async def user_seeker_init(
 
 @router.get("/profile", response_model=seekerschema.SeekersProfile)
 async def profile(authorization: str = Header(...), db: Session = Depends(get_db)):
+    print(authorization)
     username = await get_current_user(authorization=authorization)
+    print(username)
     username = username["user"]
     details = crud.seeker.details.get_by_username(db=db, username=username)
     if details.profile_picture is not None:
@@ -53,6 +55,7 @@ async def profile(authorization: str = Header(...), db: Session = Depends(get_db
         profile_picture64 = None
 
     user_details = seekerschema.SeekersDetails.from_orm(details)
+
     user_skill = crud.seeker.skill.get_all(db=db, user_id=user_details.user_id)
 
     user_education = crud.seeker.education.get_all(db=db, user_id=user_details.user_id)
