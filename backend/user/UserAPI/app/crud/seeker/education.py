@@ -70,7 +70,7 @@ def update(
     db: Session, id: int, updated_education: seekerschema.SeekersEducation
 ) -> bool:
     """
-    Update education details of a seeker in the database.
+    Update education details of a seeker in the database, ignoring None values.
 
     Args:
         db (Session): SQLAlchemy database session.
@@ -81,12 +81,17 @@ def update(
         bool: True if update is successful, False otherwise.
     """
     try:
+        # Convert the updated_education object to a dictionary and remove None values
+        update_data = {k: v for k, v in updated_education.dict().items() if v is not None}
+
+        # Perform the update only with non-None values
         db.query(seekermodel.SeekersEducation).filter(
             seekermodel.SeekersEducation.id == id
-        ).update(updated_education.dict())
+        ).update(update_data)
         db.commit()
         return True
-    except SQLAlchemyError:
+    except SQLAlchemyError as e:
+        print(e)
         db.rollback()
         return False
 
