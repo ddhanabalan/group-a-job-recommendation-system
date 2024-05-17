@@ -79,9 +79,11 @@ def update(db: Session, id: int, updated_skill: seekerschema.SeekersSkill) -> bo
         bool: True if update is successful, False otherwise.
     """
     try:
+        update_data = {k: v for k, v in updated_skill.dict().items() if v is not None}
+
         db.query(seekermodel.SeekersSkill).filter(
             seekermodel.SeekersSkill.id == id
-        ).update(updated_skill.dict())
+        ).update(update_data)
         db.commit()
         return True
     except SQLAlchemyError:
