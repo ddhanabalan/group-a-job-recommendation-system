@@ -77,7 +77,7 @@ class SeekersFormerJob(BaseModel):
 
 class SeekersSkill(BaseModel):
     id: Optional[int] = None
-    user_id: int
+    user_id: Optional[int]= None
     skill: str
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
