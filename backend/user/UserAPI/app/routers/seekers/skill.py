@@ -26,8 +26,9 @@ async def user_seeker_skill(
 
 @router.post("/skill", status_code=status.HTTP_201_CREATED)
 async def create_seeker_skill(
-    skill: seekerschema.SeekersSkill, db: Session = Depends(get_db),
-authorization: str = Header(...)
+    skill: seekerschema.SeekersSkill,
+    db: Session = Depends(get_db),
+    authorization: str = Header(...),
 ):
     user = await get_current_user(authorization=authorization)
     user_id = user.get("user_id")
@@ -42,7 +43,8 @@ authorization: str = Header(...)
 
 
 @router.delete("/skill/{skill_id}", status_code=status.HTTP_200_OK)
-async def delete_seeker_skill(skill_id: int, db: Session = Depends(get_db),authorization: str = Header(...)
+async def delete_seeker_skill(
+    skill_id: int, db: Session = Depends(get_db), authorization: str = Header(...)
 ):
     await check_authorization(authorization=authorization)
     deleted = crud.seeker.skill.delete(db, skill_id)
@@ -68,4 +70,4 @@ async def update_seeker_skill(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Skill not found",
         )
-    return {"detail":"Skill Updated Successfully"}
+    return {"detail": "Skill Updated Successfully"}

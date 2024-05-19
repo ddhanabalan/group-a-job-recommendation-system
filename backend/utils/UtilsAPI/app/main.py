@@ -25,12 +25,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.get("/api/v1/skills")
-async def get_skills(q: Optional[str]=None):
+async def get_skills(q: Optional[str] = None):
     df = pd.read_csv("app/data/skills/2.csv")
-    df = df.dropna(subset=['Skill Name'])
-    df = df[['Skill Name','Skill Category']]# Remove duplicate entries
+    df = df.dropna(subset=["Skill Name"])
+    df = df[["Skill Name", "Skill Category"]]  # Remove duplicate entries
     print(df)
     if q is not None:
-        df = df[df['Skill Name'].str.lower().str.startswith(q.lower())]
+        df = df[df["Skill Name"].str.lower().str.startswith(q.lower())]
     return df[:100].to_dict(orient="records")

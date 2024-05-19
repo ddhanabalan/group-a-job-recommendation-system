@@ -52,22 +52,22 @@ class UserIn(BaseModel):
 
 
 class UserInSeeker(UserIn):
-    first_name: Optional[str] =None
-    last_name: Optional[str]=None
-    gender: Optional[str]=None
-    profile_picture: Optional[str]=None
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    gender: Optional[str] = None
+    profile_picture: Optional[str] = None
     profile_banner_color: Optional[str] = None
-    country: Optional[str]=None
-    city: Optional[str]=None
-    phone: Optional[str]=None
-    dob: Optional[str]=None
+    country: Optional[str] = None
+    city: Optional[str] = None
+    phone: Optional[str] = None
+    dob: Optional[str] = None
 
 
 class UserInRecruiter(UserIn):
-    company_name: Optional[str]=None
-    address: Optional[str]=None
-    pincode: Optional[str]=None
+    company_name: Optional[str] = None
+    address: Optional[str] = None
+    pincode: Optional[str] = None
     profile_banner_color: Optional[str] = None
-    profile_picture: Optional[str]=None
-    country: Optional[str]=None
-    industry: Optional[str]=None
+    profile_picture: Optional[str] = None
+    country: Optional[str] = None
+    industry: Optional[str] = None

@@ -82,7 +82,9 @@ def update(
     """
     try:
         # Convert the updated_education object to a dictionary and remove None values
-        update_data = {k: v for k, v in updated_education.dict().items() if v is not None}
+        update_data = {
+            k: v for k, v in updated_education.dict().items() if v is not None
+        }
 
         # Perform the update only with non-None values
         db.query(seekermodel.SeekersEducation).filter(
