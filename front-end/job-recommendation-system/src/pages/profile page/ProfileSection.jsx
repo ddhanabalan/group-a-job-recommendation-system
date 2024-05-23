@@ -127,11 +127,21 @@ export default function ProfileSection({ data }) {
     useEffect(() => {
         skillsAPI()
     }, [skill])
-    const handleSkill = (n) => {
+    const handleSkill = async(n) => {
         //accepts a new domain value from the input field and updates the domains array to display the newly added domain and resets the input box value when user clicks the add button
-        if (n !== "") {
-            SetSkills([...skills, { tag: n, id: uuid() }]);
-            SetSkill('')
+        try {
+            if (n !== "") {
+                SetSkills([...skills, { tag: n, id: uuid() }]);
+                SetSkill('')
+                const response = userAPI.post('/seeker/skill', skill, {
+                    headers: {
+                        'Authorization': `Bearer ${getStorage("userToken")}`
+                    }
+                })
+                console.log(skill)
+            }
+        } catch (e) {
+            console.log(e)
         }
     };
     const profileBodyClass = `profile-body-section ${isBodyBlur && 'body-blur'}`

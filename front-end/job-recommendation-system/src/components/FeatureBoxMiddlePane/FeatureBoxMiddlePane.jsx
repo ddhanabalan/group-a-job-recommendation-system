@@ -43,7 +43,7 @@ export default function FeatureBoxMiddlePane({ languages, data, childData }) {
         //deletes existing qualification from array by referring to the id passed in
         SetQdata(qdata.filter(e => { return id !== e.id }))
     };
-    const updateQual = (data) => {
+    const updateLang = (data) => {
         //updates existing qualification data from array. new data is passed in along with existing data id
         SetQdata(qdata.map(e => {
             if (e.id === data.id) {
@@ -53,7 +53,7 @@ export default function FeatureBoxMiddlePane({ languages, data, childData }) {
             return (e)
         }))
     }
-    const updateLang = (data) => {
+    const updateQual = (data) => {
         //updates existing qualification data from array. new data is passed in along with existing data id
         SetQdata(qdata.map(e => {
             if (e.id === data.id) {
@@ -91,7 +91,7 @@ export default function FeatureBoxMiddlePane({ languages, data, childData }) {
 
                         return (
                             data.isLanguage === true ?
-                                <LanguageCard languages={languages} data={e} key={uuid()} deleteFn={deleteQual} submitFn={updateQual} />
+                                <LanguageCard languages={languages} data={e} key={uuid()} deleteFn={deleteQual} submitFn={updateLang} />
                                 : <QualificationCard cardData={data.cardData} data={e} key={uuid()} deleteFn={deleteQual} submitFn={updateQual} cancelFn={cancelQual} />)
 
                     })

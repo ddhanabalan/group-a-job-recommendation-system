@@ -21,7 +21,6 @@ export default function ProfileHead({ data, blurFn, subForm, isNotEditing, setIs
             setBannerColor(data.profile_banner_color)
         }
     }, [data])
-    console.log(img)
     const { register, formState: { errors }, getValues } = useForm({ mode: 'onTouched' | 'onSubmit' });
     const VisuallyHiddenInput = styled('input')({
         clip: 'rect(0 0 0 0)',
