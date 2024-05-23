@@ -8,8 +8,7 @@ import CorporateFareRoundedIcon from '@mui/icons-material/CorporateFareRounded';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import './QualificationCard.css';
-export default function QualificationCard({ data, deleteFn, submitFn }) {
+export default function LicenseCard({ data, deleteFn, submitFn }) {
     const { register, formState: { errors }, handleSubmit, getValues } = useForm({ mode: 'onTouched' });
     const [isNotEditing, SetIsNotEditing] = useState(true);
     const editData = () => {
@@ -30,9 +29,9 @@ export default function QualificationCard({ data, deleteFn, submitFn }) {
                         </IconButton>
                     </div>
                     <div className="qualification-card-content">
-                        <h2 className='qualification-card-h2'>{data.qualification}</h2>
-                        <h3 className='qualification-card-h3'>{data.qualification_provider}</h3>
-                        <p className='qualification-card-p'>{data.start_year + " - " + data.end_year}</p>
+                        <h2 className='qualification-card-h2'>{data.certificate_name}</h2>
+                        <h3 className='qualification-card-h3'>{data.certificate_issuer}</h3>
+                        <p className='qualification-card-p'>{data.issue_date}</p>
                     </div>
                     <div className="qualification-card-action-btns">
                         <Stack direction="column" spacing={2}>
@@ -49,48 +48,48 @@ export default function QualificationCard({ data, deleteFn, submitFn }) {
                 <form className='qualification-add-form qualification-card' noValidate autoComplete='on' onSubmit={handleSubmit(editData)}>
                     <div className="qualification-card-image"></div>
                     <div className="qualification-card-content">
-                        <TextField className='qualification-add-h2' defaultValue={data.qualification}
+                        <TextField className='qualification-add-h2' defaultValue={data.certificate_name}
                             sx={{ marginBottom: '.7rem' }}
-                            placeholder="Ex: B.Tech in Electronics"
+                            placeholder="Ex: Certified Ethical Hacker"
                             variant="outlined"
-                            label="Course/Degree"
+                            label="Name"
                             InputLabelProps={{ shrink: true }}
                             size='small'
-                            error={'qualification' in errors}
-                            {...register("qualification", {
-                                required: "qualification cannot be empty"
+                            error={'certificate_name' in errors}
+                            {...register("certificate_name", {
+                                required: "Name cannot be empty"
                             })} />
-                        <TextField className='qualification-add-h3' defaultValue={data.qualification_provider}
+                        <TextField className='qualification-add-h3' defaultValue={data.certificate_issuer}
                             sx={{ marginBottom: '.7rem' }}
-                            placeholder="Ex: Harvard University"
+                            placeholder="Ex: Google"
                             variant="outlined"
-                            label="School/College"
+                            label="Issuing organization"
                             InputLabelProps={{ shrink: true }}
                             size='small'
-                            error={'qualification_provider' in errors}
-                            {...register("qualification_provider", {
-                                required: "qualification cannot be empty"
+                            error={'certificate_issuer' in errors}
+                            {...register("certificate_issuer", {
+                                required: "Issuer name cannot be empty"
                             })} />
                         <div className='qualification-year'>
-                            <TextField className='qualification-add-p' defaultValue={data.start_year}
+                            <TextField className='qualification-add-p' defaultValue={data.issue_date}
                                 placeholder="2000"
                                 variant="outlined"
-                                label="Start year"
+                                label="Issue date"
                                 InputLabelProps={{ shrink: true }}
                                 size='small'
-                                error={'start_year' in errors}
-                                {...register("start_year", {
+                                error={'issue_date' in errors}
+                                {...register("issue_date", {
                                     required: "cannot be empty"
                                 })} />
                             <p>-</p>
-                            <TextField className='qualification-add-p' defaultValue={data.end_year}
+                            <TextField className='qualification-add-p' defaultValue={data.credential_url} 
                                 placeholder="2010"
                                 variant="outlined"
-                                label="End year"
+                                label="Credential URL"
                                 InputLabelProps={{ shrink: true }}
                                 size='small'
-                                error={'end_year' in errors}
-                                {...register("end_year", {
+                                error={'credential_url' in errors}
+                                {...register("credential_url", {
                                     required: "cannot be empty"
                                 })} />
                         </div>

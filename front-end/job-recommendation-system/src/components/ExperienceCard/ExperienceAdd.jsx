@@ -4,34 +4,33 @@ import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import './QualificationAdd.css';
-export default function QualificationAdd({submitFn,cancelFn}) {
+export default function ExperienceAdd({ submitFn, cancelFn }) {
     const { register, formState: { errors }, handleSubmit } = useForm({ mode: 'onTouched' });
-   
+
     return (
 
         <form className='qualification-add-form qualification-card' noValidate autoComplete='on' onSubmit={handleSubmit(submitFn)}>
             <div className="qualification-card-image"></div>
             <div className="qualification-card-content">
                 <TextField sx={{ marginBottom: '.7rem' }} className='qualification-add-h2'
-                label="Course/Degree"
-                    variant="outlined"
-                    placeholder="Ex: B.Tech in Electronics"
-                    InputLabelProps={{ shrink: true }}
-                    size='small'
-                error={'qualification' in  errors}
-                    {...register("qualification", {
-                        required:"qualification cannot be empty"
-                    })} />
+                label="Title"
+                variant="outlined"
+                placeholder="Ex: Sales Manager"
+                InputLabelProps={{ shrink: true }}
+                size='small'
+                error={'job_name' in errors}
+                {...register("job_name", {
+                    required: "Job title cannot be empty"
+                })} />
                 <TextField sx={{ marginBottom: '.7rem' }} className='qualification-add-h3'
-                    placeholder="Ex: Harvard University"
+                    placeholder="Ex: Google"
                     variant="outlined"
-                    label="School/College"
+                    label="Company name"
                     InputLabelProps={{ shrink: true }}
                     size='small'
-                    error={'qualification_provider' in errors}
-                    {...register("qualification_provider", {
-                        required: "qualification cannot be empty"
+                    error={'company_name' in errors}
+                    {...register("company_name", {
+                        required: "Company name cannot be empty"
                     })} />
                 <div className='qualification-year'>
                     <TextField className='qualification-add-p'
@@ -63,8 +62,8 @@ export default function QualificationAdd({submitFn,cancelFn}) {
                     <IconButton aria-label="edit" type='submit'>
                         <CheckRoundedIcon fontSize='small' />
                     </IconButton>
-                    <IconButton aria-label="edit" onClick={()=>{cancelFn()}}>
-                        <CloseRoundedIcon sx={{ color: 'red' }} fontSize='small'/>
+                    <IconButton aria-label="edit" onClick={() => { cancelFn() }}>
+                        <CloseRoundedIcon sx={{ color: 'red' }} fontSize='small' />
                     </IconButton>
                 </Stack>
             </div>

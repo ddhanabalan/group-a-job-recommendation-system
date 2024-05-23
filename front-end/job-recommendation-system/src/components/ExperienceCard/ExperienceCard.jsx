@@ -8,8 +8,7 @@ import CorporateFareRoundedIcon from '@mui/icons-material/CorporateFareRounded';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-import './QualificationCard.css';
-export default function ExperienceCard({ cardData, data, deleteFn, submitFn }) {
+export default function ExperienceCard({ data, deleteFn, submitFn }) {
     const { register, formState: { errors }, handleSubmit, getValues } = useForm({ mode: 'onTouched' });
     const [isNotEditing, SetIsNotEditing] = useState(true);
     const editData = () => {
@@ -30,7 +29,7 @@ export default function ExperienceCard({ cardData, data, deleteFn, submitFn }) {
                         </IconButton>
                     </div>
                     <div className="qualification-card-content">
-                        <h2 className='qualification-card-h2'>{data.title}</h2>
+                        <h2 className='qualification-card-h2'>{data.job_name}</h2>
                         <h3 className='qualification-card-h3'>{data.company_name}</h3>
                         <p className='qualification-card-p'>{data.start_year + " - " + data.end_year}</p>
                     </div>
@@ -49,27 +48,27 @@ export default function ExperienceCard({ cardData, data, deleteFn, submitFn }) {
                 <form className='qualification-add-form qualification-card' noValidate autoComplete='on' onSubmit={handleSubmit(editData)}>
                     <div className="qualification-card-image"></div>
                     <div className="qualification-card-content">
-                        <TextField className='qualification-add-h2' defaultValue={data.title}
+                        <TextField className='qualification-add-h2' defaultValue={data.job_name}
                             sx={{ marginBottom: '.7rem' }}
-                            placeholder="Ex: Harvard University"
+                            placeholder="Ex: Sales Manager"
                             variant="outlined"
                             label="Title"
                             InputLabelProps={{ shrink: true }}
                             size='small'
-                            error={'title' in errors}
-                            {...register("title", {
-                                required: "title cannot be empty"
+                            error={'job_name' in errors}
+                            {...register("job_name", {
+                                required: "Job title cannot be empty"
                             })} />
                         <TextField className='qualification-add-h3' defaultValue={data.company_name}
                             sx={{ marginBottom: '.7rem' }}
-                            placeholder="Ex: Harvard University"
+                            placeholder="Ex: Google"
                             variant="outlined"
                             label="Company name"
                             InputLabelProps={{ shrink: true }}
                             size='small'
                             error={'company_name' in errors}
                             {...register("company_name", {
-                                required: "company name cannot be empty"
+                                required: "Company name cannot be empty"
                             })} />
                         <div className='qualification-year'>
                             <TextField className='qualification-add-p' defaultValue={data.start_year}

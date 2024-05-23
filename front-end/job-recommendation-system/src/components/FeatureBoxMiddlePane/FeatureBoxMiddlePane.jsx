@@ -12,15 +12,13 @@ import LanguageCard from '../LanguageCard/LanguageCard';
 import Lottie from "lottie-react";
 import Turtle from '../../images/Turtle-in-space.json'
 import './FeatureBoxMiddlePane.css';
-export default function FeatureBoxMiddlePane({ languages, data, childData }) {
-
-
+export default function FeatureBoxMiddlePane({ childData }) {
     const [qdata, SetQdata] = useState(childData);
     const [newQual, SetNewQual] = useState(false)
-    const addQualification = async(e) => {
+    const addQualification = async (e) => {
         //accepts new qualification data and adds it into existing array of qualifications
         try {
-            const data = { 'education_title': e.qualification, 'education_provider': e.qualification_provider,'start_year':e.start_year,'end_year':e.end_year }
+            const data = { 'education_title': e.qualification, 'education_provider': e.qualification_provider, 'start_year': e.start_year, 'end_year': e.end_year }
             console.log(data)
             const response = await userAPI.post('/seeker/education', data, {
                 headers: {
@@ -33,7 +31,7 @@ export default function FeatureBoxMiddlePane({ languages, data, childData }) {
         } catch (error) {
             console.log(error)
         }
-        
+
     }
     const cancelQual = () => {
         //cancels addition of new qualification
@@ -43,16 +41,6 @@ export default function FeatureBoxMiddlePane({ languages, data, childData }) {
         //deletes existing qualification from array by referring to the id passed in
         SetQdata(qdata.filter(e => { return id !== e.id }))
     };
-    const updateLang = (data) => {
-        //updates existing qualification data from array. new data is passed in along with existing data id
-        SetQdata(qdata.map(e => {
-            if (e.id === data.id) {
-                e.language = data.language
-                e.language_proficiency = data.language_proficiency
-            }
-            return (e)
-        }))
-    }
     const updateQual = (data) => {
         //updates existing qualification data from array. new data is passed in along with existing data id
         SetQdata(qdata.map(e => {
@@ -67,7 +55,7 @@ export default function FeatureBoxMiddlePane({ languages, data, childData }) {
     }
     return (
         <div className="feature-box feature-box-middle-pane" id="feature-box-middle-pane">
-            <h4 className="feature-title">{data.title}</h4>
+            <h4 className="feature-title">Formal Education</h4>
             <Stack direction="row" spacing={0} className='feature-actions'>
                 <IconButton aria-label="add" onClick={() => { SetNewQual(true) }}>
                     <AddCircleRoundedIcon />
@@ -77,23 +65,19 @@ export default function FeatureBoxMiddlePane({ languages, data, childData }) {
                 {
                     (qdata.length === 0 && !newQual) &&
                     <div className='qualification-card-h3 data-exception-featurebox' style={{ fontFamily: 'Inter-light-italic' }}>
-                            <Lottie className="data-exception-ani" animationData={Turtle} loop={true} />
-                            <p>Your profile is like the vast expanse of space let's add some stars! 🌟</p></div>
+                        <Lottie className="data-exception-ani" animationData={Turtle} loop={true} />
+                        <p>Your profile is like the vast expanse of space let's add some stars! 🌟</p></div>
                 }
 
                 {
-                    newQual && (data.isLanguage ? <LanguageAdd languages={languages} submitFn={addQualification} cancelFn={cancelQual} />
-                        : <QualificationAdd cardData={data.cardData} submitFn={addQualification} cancelFn={cancelQual} />)
+                    newQual && <QualificationAdd  submitFn={addQualification} cancelFn={cancelQual} />
                 }
 
                 {
                     childData && qdata.map(e => {
 
                         return (
-                            data.isLanguage === true ?
-                                <LanguageCard languages={languages} data={e} key={uuid()} deleteFn={deleteQual} submitFn={updateLang} />
-                                : <QualificationCard cardData={data.cardData} data={e} key={uuid()} deleteFn={deleteQual} submitFn={updateQual} cancelFn={cancelQual} />)
-
+                            <QualificationCard  data={e} key={uuid()} deleteFn={deleteQual} submitFn={updateQual} cancelFn={cancelQual} />)
                     })
                 }
 
