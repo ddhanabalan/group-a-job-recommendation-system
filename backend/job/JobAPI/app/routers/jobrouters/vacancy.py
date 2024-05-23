@@ -1,5 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from typing import Type, List
+from fastapi import APIRouter, Depends, HTTPException, status, Query
+from typing import Type, List, Optional
 from .. import (
     get_db,
     Session,
@@ -11,6 +11,24 @@ from .. import (
 )
 
 job_vacancy_router = APIRouter(prefix="/job_vacancy")
+
+
+@job_vacancy_router.get("/")
+async def read_filtered_job_vacancies(
+    emp_type: Optional[List[str]] = Query(None),
+    loc_type: Optional[List[str]] = Query(None),
+    location: Optional[List[str]] = Query(None),
+    experience: Optional[List[str]] = Query(None),
+    tags: Optional[List[str]] = Query(None),  # Added tags parameter
+    db: Session = Depends(get_db),
+):
+    filter_job_id = None
+    if tags is not None:
+        filter_job_id = jobcrud.tags.get_filtered_tags(db, tags)
+    filtered_jobs = jobcrud.vacancy.get_filtered_jobs(
+        db, emp_type, loc_type, location, experience, filter_job_id
+    )
+    return filtered_jobs
 
 
 @job_vacancy_router.post("/", status_code=status.HTTP_201_CREATED)
@@ -35,6 +53,8 @@ async def create_job_vacancy(
     for _ in skill:
         job_skill_data = jobschema.JobSkillCreate(job_id=job_id, skill=_)
         jobcrud.skill.create(db, job_skill_data)
+
+    return {"details": "Job Created"}
 
 
 # Read job vacancy by ID

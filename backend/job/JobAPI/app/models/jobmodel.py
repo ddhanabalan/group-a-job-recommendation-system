@@ -15,6 +15,7 @@ class JobVacancy(Base):
     requirement = Column(String(5120))
     salary = Column(String(64))
     experience = Column(String(128))
+    loc_type = Column(String(64))
     job_position = Column(String(32))
     location = Column(String(128))
     emp_type = Column(String(128))

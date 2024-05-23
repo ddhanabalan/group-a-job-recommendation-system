@@ -21,7 +21,7 @@ async def user_seeker_init(
     user: seekerschema.SeekersBaseIn, db: Session = Depends(get_db)
 ):
     if user.profile_picture is not None:
-        contents =await decode64_image(user.profile_picture)
+        contents = await decode64_image(user.profile_picture)
     else:
         contents = None
     username = user.username
@@ -49,7 +49,7 @@ async def profile(authorization: str = Header(...), db: Session = Depends(get_db
     username = username["user"]
     details = crud.seeker.details.get_by_username(db=db, username=username)
     if details.profile_picture is not None:
-        profile_pic=details.profile_picture
+        profile_pic = details.profile_picture
         profile_picture64 = await encode64_image(profile_pic)
     else:
         profile_picture64 = None
@@ -67,6 +67,11 @@ async def profile(authorization: str = Header(...), db: Session = Depends(get_db
     user_former_job = crud.seeker.formerjob.get_all(db=db, user_id=user_details.user_id)
 
     user_poi = crud.seeker.poi.get_all(db=db, user_id=user_details.user_id)
+
+    user_certificate = crud.seeker.certificate.get_all(
+        db=db, user_id=user_details.user_id
+    )
+    print(user_certificate)
     return seekerschema.SeekersProfile(
         **user_details.dict(),
         profile_picture=profile_picture64,
@@ -76,6 +81,7 @@ async def profile(authorization: str = Header(...), db: Session = Depends(get_db
         prev_education=user_education,
         former_jobs=user_former_job,
         poi=user_poi,
+        certificate=user_certificate,
     )
 
 

@@ -10,6 +10,7 @@ class JobVacancyBase(BaseModel):
     company_name: Optional[str] = None
     requirement: Optional[str] = None
     salary: Optional[str] = None
+    loc_type: Optional[str] = None
     experience: Optional[str] = None
     job_position: Optional[str] = None
     location: Optional[str] = None
@@ -85,6 +86,10 @@ class JobRequest(JobRequestBase):
 
     class Config:
         from_attributes = True
+
+
+class JobVacancySearch(JobVacancy):
+    tags: Optional[JobTags] = None
 
 
 class JobVacancyUpdate(JobVacancyBase):

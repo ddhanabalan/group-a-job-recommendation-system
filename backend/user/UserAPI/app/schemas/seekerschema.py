@@ -63,11 +63,11 @@ class SeekersEmpType(BaseModel):
 
 class SeekersFormerJob(BaseModel):
     id: Optional[int] = None
-    user_id: int
+    user_id: Optional[int] = None
     job_name: str
-    job_company_name: str
-    job_experience: str
-    job_time: str
+    company_name: str
+    start_year: Optional[str] = None
+    end_year: Optional[str] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
@@ -77,7 +77,7 @@ class SeekersFormerJob(BaseModel):
 
 class SeekersSkill(BaseModel):
     id: Optional[int] = None
-    user_id: Optional[int]= None
+    user_id: Optional[int] = None
     skill: str
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
@@ -90,9 +90,9 @@ class SeekersEducation(BaseModel):
     id: Optional[int] = None
     user_id: Optional[int] = None
     education_title: str
-    education_provider:Optional[str] = None
-    start_year:Optional[str] = None
-    end_year:Optional[str] = None
+    education_provider: Optional[str] = None
+    start_year: Optional[str] = None
+    end_year: Optional[str] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
@@ -111,6 +111,20 @@ class SeekersPOI(BaseModel):
         from_attributes = True
 
 
+class SeekersCertificate(BaseModel):
+
+    id: Optional[int] = None
+    user_id: Optional[int] = None
+    certificate_name: str
+    certificate_issuer: Optional[str] = None
+    issue_date: Optional[str] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+
+
 class SeekersProfile(SeekersDetails):
     profile_picture: Optional[str] = None
     loc_type: Optional[List[SeekersLocType]]
@@ -119,6 +133,7 @@ class SeekersProfile(SeekersDetails):
     skill: Optional[List[SeekersSkill]]
     former_jobs: Optional[List[SeekersFormerJob]]
     poi: Optional[List[SeekersPOI]]
+    certificate: Optional[List[SeekersCertificate]]
 
 
 class JobUserDetailsIn(BaseModel):

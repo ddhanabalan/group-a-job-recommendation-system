@@ -1,27 +1,26 @@
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
-from typing import List, Type
+from typing import List, Type, Optional
 
 from .. import jobschema, jobmodel
 
 
-def get_all(db: Session, company_id: int) -> List[Type[jobschema.JobVacancy]]:
+def get_all(db: Session, company_id: int = None) -> List[Type[jobschema.JobVacancy]]:
     """
-    Retrieve job vacancies associated with a company ID from the database.
+    Retrieve job vacancies from the database, optionally filtered by a company ID.
 
     Args:
         db (Session): SQLAlchemy database session.
-        company_id (int): ID of the company whose job vacancies are to be retrieved.
+        company_id (int, optional): ID of the company whose job vacancies are to be retrieved. Defaults to None.
 
     Returns:
-        List[jobschema.JobVacancy]: List of job vacancy objects associated with the company.
+        List[jobschema.JobVacancy]: List of job vacancy objects, optionally associated with the company.
     """
+    query = db.query(jobmodel.JobVacancy)
+    if company_id is not None:
+        query = query.filter(jobmodel.JobVacancy.company_id == company_id)
     try:
-        return (
-            db.query(jobmodel.JobVacancy)
-            .filter(jobmodel.JobVacancy.company_id == company_id)
-            .all()
-        )
+        return query.all()
     except SQLAlchemyError as e:
         return []
 
@@ -102,3 +101,43 @@ def delete(db: Session, job_vacancy_id: int) -> bool:
     except SQLAlchemyError as e:
         db.rollback()
         return False
+
+
+def get_filtered_jobs(
+    db: Session,
+    emp_type: Optional[List[str]] = None,
+    loc_type: Optional[List[str]] = None,
+    location: Optional[List[str]] = None,
+    experience: Optional[str] = None,
+    filter_job_id: Optional[List[str]] = None,
+) -> List[Type[jobschema.JobVacancySearch]]:
+    """
+    Retrieve job vacancies from the database, filtered by employment type, location type, location, experience, and tags.
+
+    Args:
+        db (Session): SQLAlchemy database session.
+        emp_type (List[str], optional): Types of employment to filter by. Defaults to None.
+        loc_type (List[str], optional): Types of location to filter by. Defaults to None.
+        location (List[str], optional): Specific locations to filter by. Defaults to None.
+        experience (str, optional): Minimum years of experience required. Defaults to None.
+        tags (List[str], optional): Tags to filter by. Defaults to None.
+
+    Returns:
+        List[jobschema.JobVacancy]: List of job vacancy objects that match the filters.
+    """
+    query = db.query(jobmodel.JobVacancy)
+    if filter_job_id:
+        query = query.filter(jobmodel.JobVacancy.job_id.in_(filter_job_id))
+    if emp_type:
+        query = query.filter(jobmodel.JobVacancy.emp_type.in_(emp_type))
+    if loc_type:
+        query = query.filter(jobmodel.JobVacancy.loc_type.in_(loc_type))
+    if location:
+        query = query.filter(jobmodel.JobVacancy.location.in_(location))
+    if experience:
+        query = query.filter(jobmodel.JobVacancy.experience == experience)
+    try:
+        return query.all()
+    except SQLAlchemyError as e:
+        print(e)
+        return []

@@ -110,6 +110,7 @@ def delete(db: Session, id: int) -> bool:
         db.rollback()
         return False
 
+
 def delete_by_user_id(db: Session, user_id: int) -> bool:
     """
     Delete location type details of a seeker from the database.

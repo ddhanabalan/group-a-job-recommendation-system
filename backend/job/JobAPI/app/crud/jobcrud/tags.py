@@ -5,6 +5,19 @@ from typing import List, Type
 from .. import jobschema, jobmodel
 
 
+def get_filtered_tags(db: Session, tags: List[str]):
+    try:
+        query = (
+            db.query(jobmodel.JobTags.job_id)
+            .filter(jobmodel.JobTags.tags.in_(tags))
+            .distinct()
+            .all()
+        )
+        return [item[0] for item in query]
+    except SQLAlchemyError as e:
+        return []
+
+
 def get_all(db: Session, job_id: int) -> List[Type[jobschema.JobTags]]:
     """
     Retrieve job tags associated with a user ID from the database.

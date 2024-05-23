@@ -165,6 +165,7 @@ async def get_current_active_user(
         )
     return current_user
 
+
 async def get_refresh_user(
     token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
 ) -> authmodel.UserAuth:
@@ -210,7 +211,7 @@ async def login_for_access_token(
         data={"sub": user.username, "type": "refresh_token"},
         expires_delta=refresh_token_expires,
     )
-    authcrud.update_auth_user(db,user.user_id,{"refresh_token":refresh_token})
+    authcrud.update_auth_user(db, user.user_id, {"refresh_token": refresh_token})
     return {
         "access_token": access_token,
         "refresh_token": refresh_token,
@@ -219,7 +220,7 @@ async def login_for_access_token(
 
 
 @app.get("/refresh_token")
-async def refresh_token(user=Depends(get_refresh_user),db:Session=Depends(get_db)):
+async def refresh_token(user=Depends(get_refresh_user), db: Session = Depends(get_db)):
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -237,13 +238,14 @@ async def refresh_token(user=Depends(get_refresh_user),db:Session=Depends(get_db
         data={"sub": user.username, "type": "refresh_token"},
         expires_delta=refresh_token_expires,
     )
-    authcrud.update_auth_user(db,user.user_id,{"refresh_token":refresh_token})
+    authcrud.update_auth_user(db, user.user_id, {"refresh_token": refresh_token})
 
     return {
         "access_token": access_token,
         "refresh_token": refresh_token,
         "token_type": "bearer",
     }
+
 
 @app.get("/me")
 async def users_info(current_user=Depends(get_current_active_user)):

@@ -26,11 +26,13 @@ async def user_seeker_education(
 
 @router.post("/education", status_code=status.HTTP_201_CREATED)
 async def create_seeker_education(
-    education: seekerschema.SeekersEducation, db: Session = Depends(get_db),authorization: str = Header(...),
+    education: seekerschema.SeekersEducation,
+    db: Session = Depends(get_db),
+    authorization: str = Header(...),
 ):
     user = await get_current_user(authorization)
     user_id = user.get("user_id")
-    education.user_id =user_id
+    education.user_id = user_id
     created_education = crud.seeker.education.create(db, education)
     if not created_education:
         raise HTTPException(
@@ -41,7 +43,10 @@ async def create_seeker_education(
 
 
 @router.delete("/education/{education_id}", status_code=status.HTTP_200_OK)
-async def delete_seeker_education(education_id: int, db: Session = Depends(get_db),authorization: str = Header(...),
+async def delete_seeker_education(
+    education_id: int,
+    db: Session = Depends(get_db),
+    authorization: str = Header(...),
 ):
     await check_authorization(authorization)
     deleted = crud.seeker.education.delete(db, education_id)
@@ -67,4 +72,4 @@ async def update_seeker_education(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Education details not found",
         )
-    return {"details":"Education Updated Successfully"}
+    return {"details": "Education Updated Successfully"}

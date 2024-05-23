@@ -13,8 +13,17 @@ from ..utils import (
     encode64_image,
 )
 
-from .seekers import base, details, skill, emptype, loctype, poi, formerjob, education
-
+from .seekers import (
+    base,
+    details,
+    skill,
+    emptype,
+    loctype,
+    poi,
+    formerjob,
+    education,
+    certificate,
+)
 
 
 seeker_router = APIRouter(prefix="/seeker")
@@ -28,3 +37,4 @@ seeker_router.include_router(seekers.emptype.router)
 seeker_router.include_router(seekers.loctype.router)
 seeker_router.include_router(seekers.skill.router)
 seeker_router.include_router(seekers.poi.router)
+seeker_router.include_router(seekers.certificate.router)
