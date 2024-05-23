@@ -1,5 +1,6 @@
 import './CreateJobVacancyForm.css';
 import { v4 as uuid } from 'uuid';
+import moment from 'moment';
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import BackBtn from '../BackBtn/BackBtn';
@@ -53,6 +54,7 @@ export default function JobVacancyForm({ data = {} }) {
             }         
             }
             );
+            redirectFn(response)
             }
             else
             {const response = await jobAPI.put(`/job_vacancy/${dta.id}`, rec_data, {
@@ -61,8 +63,9 @@ export default function JobVacancyForm({ data = {} }) {
                 }         
                 }
                 );
-            }
             redirectFn(response)
+            }
+            
         } catch (e) {
             console.log(e)
             
@@ -144,6 +147,27 @@ export default function JobVacancyForm({ data = {} }) {
         
     }
 
+    const dateValidation = (closing_date) => {
+        const today = new Date();
+        const cl_date = closing_date.split('-');
+        const comp_date = new Date(cl_date[1]+"/"+cl_date[2]+"/"+cl_date[0])
+        const ms_per_day = 1000 * 60 * 60 * 24;
+        const utc1 = Date.UTC(comp_date.getFullYear(), comp_date.getMonth(), comp_date.getDate()) //given date
+        const utc2 = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate())  //present date
+        const diff = Math.floor((utc1 - utc2)/ms_per_day)
+        return diff > 0;
+        //console.log(age, ">=", signupAge, ":", age>=signupAge)   
+      }
+
+    const dateGeneration =(days) =>{
+        const ms_per_day = 1000 * 60 * 60 * 24;
+        const nextDate = new Date( Date.now() + days * ms_per_day);
+        const  formattedDate = moment(nextDate).format('YYYY-MM-DD'); 
+        console.log("formatted date", formattedDate)
+        return formattedDate;
+
+    }
+
     const checkPref = (tagType)=>{
         if(preferences[tagType].length!=0)
         {
@@ -164,6 +188,7 @@ export default function JobVacancyForm({ data = {} }) {
         //Preview box 
         checkPref("skills");
         checkPref("tags");
+        data.last_date = data.last_date?data.last_date: dateGeneration(30);
         //console.log("prefilled data to load into frontend", prefilleddata);
         //console.log("preferences", preferences)
         //console.log("form data", data)
@@ -187,7 +212,7 @@ export default function JobVacancyForm({ data = {} }) {
                                 "job_position": finalApplicationData['jobTitle'],
                                 "location": finalApplicationData['location'],
                                 "emp_type": finalApplicationData['empType'][0],
-                                "last_date": "2025-12-12",
+                                "last_date": finalApplicationData['last_date'],
                                 "tags": finalApplicationData["tags"]?finalApplicationData["tags"]:[],
                                 "skill": finalApplicationData["skills"]?finalApplicationData["skills"]:[],
                             };
@@ -316,12 +341,44 @@ export default function JobVacancyForm({ data = {} }) {
                                                         value: /^[0-9]+$/,
                                                         message: "Only numbers allowed"
                                                     },
-                                                    validate: (val) => {if(val)(val > watch("salary.0") || (val.length == 0 )) || "Enter salary greater than lower limit"},
+                                                    validate: (val) => {
+                                                        const lowerLimit = watch("salary.0");
+
+                                                        // Check if the value is provided
+                                                        if (val) {
+                                                            // Check if the value is greater than the lower limit or if it's empty
+                                                            if (Number(val) > Number(lowerLimit) || val.length === 0) {
+                                                            return true;
+                                                            } else {
+                                                            return "Enter salary greater than lower limit";
+                                                            }
+                                                        } else {
+                                                            // Allow empty values if needed
+                                                            return true;
+                                                        }
+                                                        },
                                                 })} />
                                         </div>
                                         <p className="error-message">{errors.salary ? errors.salary[0]?.message || errors.salary[1]?.message || errors.currency?.message || "" : errors.currency?.message || ""}</p>
                                     </div>
                                 </div>
+                                
+                                <div className='last-date-div'>
+                                    <p><span className={`details-header${errors.last_date?"-error":""/*console.log("salary erros", errors.salary)*/}`}>Closing Date:</span></p>
+                                    <div className='option-div'>                                            
+                                            <CreateFormTextFields  inputPlaceholder="Title" wparam="200px"
+                                                defaultValue={dta.last_date ? dta.last_date || null : null}
+                                                type="date"
+                                                error={'last_date' in errors}
+                                                {...register("last_date",
+                                                {
+                                                validate: (val) =>  {if(val!=null && val.length !=0) return (dateValidation(val) || "Please enter a future date")},
+                                                })} />
+                                        {watch('last_date')==null || watch('last_date').length==0?(<p className='helper-text'><i>&nbsp;&nbsp;default value is 30 days after post date</i></p>):<></>} 
+                                        <p className="error-message">{errors.last_date?.message}</p>
+                                    </div>
+                                </div>
+
                                 <div className="create-job-vacancy-description-div">
                                     <p><span>Job Description</span></p>
                                     <div className="create-job-desc-field"><CreateFormTextFields inputPlaceholder="Title" fontsz="14px" wparam="100%" defaultValue={dta.jobDesc || ""} multipleLine={true} minrows={8} {...register("jobDesc", { required: "Field required", })} /></div>

@@ -14,6 +14,7 @@ export default function LoginPage({ updateState }) {
     const redirectFn = (response) => {
         console.log(response.data)
         setStorage("userToken",response.data.access_token);
+        setStorage("refToken", response.data.refresh_token);
         response.status === 200 && updateState(true)
     }
     const callAPI = async (data) => {

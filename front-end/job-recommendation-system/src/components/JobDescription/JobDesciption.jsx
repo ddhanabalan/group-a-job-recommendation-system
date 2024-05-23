@@ -15,6 +15,10 @@ export default function JobDesciptionForm({ data, createJobRequest=null, userDat
     //const [tag_state,setTagState] = useState(false);
     const userSkills = (userData.type==="employer"?null:data.skills?.map(skill => userData.skills.includes(skill)?true:false).filter(Boolean).length)
     const [skillIndicator, setSkillIndicator] = useState(true);
+    
+
+
+
     //console.log(userSkills)
     //function for senting applicant details from the form to company
 
@@ -62,6 +66,7 @@ export default function JobDesciptionForm({ data, createJobRequest=null, userDat
                     <p><span >Location:</span> {data.location}</p>
                     <p><span >Employment type:</span>{data.empType}</p>
                     <p><span >Experience:</span> {data.exp}</p>
+                    <p><span >Last Date:</span> {(data.last_date?.split('-').reverse()).join('-') || ""}</p>
                 </div>
 
                 <div className="job-description">

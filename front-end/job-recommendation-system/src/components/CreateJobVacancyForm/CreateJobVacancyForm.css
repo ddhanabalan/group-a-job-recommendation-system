@@ -133,7 +133,7 @@ padding-left: 2rem;
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 20px;
+    gap: 25px;
 }
 .details-header-error{
     position:relative;
@@ -149,8 +149,17 @@ padding-left: 2rem;
     display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 50px;
+    gap: 59px;
 }
+
+.last-date-div{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+}
+
+
 
 .create-job-vacancy-description-div p{
     margin-bottom: 14px;
@@ -167,7 +176,7 @@ padding-left: 2rem;
 }
 
 .create-job-vacancy-body .create-job-desc-field{
-    padding-left: 100px;
+    padding-left: 111px;
     width: 100%;
 }
 
@@ -207,4 +216,11 @@ padding-left: 2rem;
 .post-vacancy-buttons button{
     width: 170px;
     height: fit-content;
+}
+
+.helper-text{
+    font-family:Arial, Helvetica, sans-serif !important;
+    font-size: 0.75rem !important;
+    position: absolute;
+    text-align: center;
 }
