@@ -299,14 +299,14 @@ export default function JobVacancyForm({ data = {} }) {
                                 <div className="detail-divs">
                                     <p><span className={`details-header${prefError.empType?"-error":""}`}>Employment type:</span></p>
                                     <div className="option-divs">
-                                        <MultipleOptions fSize="14px" margY="0px" options={["Full-time", "Internship", "Temporary"]} preselected={dta.empType || null} dataType="empType" checkLimit={1} onChange={handleCheckboxChange} />
+                                        <MultipleOptions   options={["Full-time", "Internship", "Temporary"]} preselected={dta.empType || null} dataType="empType" checkLimit={1} onChange={handleCheckboxChange} />
                                         <p className="error-message">{prefError.empType?.message}</p>
                                     </div>
                                 </div>
                                 <div className="detail-divs">
                                     <p><span className={`details-header${prefError.exp?"-error":""}`}>Experience:</span></p>
                                     <div className="option-divs">
-                                        <MultipleOptions fSize="14px" margY="0px" options={["Fresher", "1-5 years", "5-10 years", "10+ years"]} preselected={dta.exp || null} dataType="exp" checkLimit={1} onChange={handleCheckboxChange} />
+                                        <MultipleOptions  options={["Fresher", "1-5 years", "5-10 years", "10+ years"]} preselected={dta.exp || null} dataType="exp" checkLimit={1} onChange={handleCheckboxChange} />
                                         <p className="error-message">{prefError.exp?.message}</p>
                                     </div>
                                 </div>
@@ -380,23 +380,17 @@ export default function JobVacancyForm({ data = {} }) {
                                 </div>
 
                                 <div className="create-job-vacancy-description-div">
-                                    <p><span>Job Description</span></p>
+                                    <p><span>Job Description:</span></p>
                                     <div className="create-job-desc-field"><CreateFormTextFields inputPlaceholder="Title" fontsz="14px" wparam="100%" defaultValue={dta.jobDesc || ""} multipleLine={true} minrows={8} {...register("jobDesc", { required: "Field required", })} /></div>
                                     <p className="create-job-desc-field error-message">{errors.jobDesc?.message}</p>
                                 </div>
 
                                 <div className="create-job-vacancy-description-div">
-                                    <p><span>Job Requirements</span></p>
+                                    <p><span>Job Requirements:</span></p>
                                     <div className="create-job-desc-field"><CreateFormTextFields inputPlaceholder="Title" fontsz="14px" wparam="100%" defaultValue={dta.jobReq || ""} multipleLine={true} minrows={8} {...register("jobReq", { required: "Field required", })} /></div>
                                     <p className="create-job-desc-field error-message">{errors.jobReq?.message}</p>
                                 </div>
-                                <div className="skill-divs">
-                                    <p><span>Tags:</span></p>
-                                    <div className='create-job-skill-field'>
-                                        <AddTags value={tag} tags={tags} deleteFn={handleDeleteTag} changeFn={handleChangeTag} updateFn={handleTag} onChange={handleSkillData} tagType="tags" data={{ heading: "", inputPlaceholder: "Marketing", isLocation: false }} fSize="14px" />
-                                    </div>
-                                </div>
-
+                        
                             </div>
                         </div>
 

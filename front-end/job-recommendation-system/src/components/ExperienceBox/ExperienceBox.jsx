@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { v4 as uuid } from 'uuid';
 import { userAPI } from '../../api/axios';
 import { getStorage } from '../../storage/storage';
@@ -9,9 +9,13 @@ import ExperienceCard from '../ExperienceCard/ExperienceCard';
 import ExperienceAdd from '../ExperienceCard/ExperienceAdd';
 import Lottie from "lottie-react";
 import Turtle from '../../images/Turtle-in-space.json'
-export default function ExperienceBox({childData }) {
-
-    const [expdata, SetExpdata] = useState(childData);
+export default function ExperienceBox({ childData }) {
+    useEffect(() => {
+        if (childData) {
+            SetExpdata(childData)
+        }
+    }, [childData])
+    const [expdata, SetExpdata] = useState([]);
     const [newExp, SetNewExp] = useState(false)
     const addExperience = async (e) => {
         //accepts new Experience data and adds it into existing array of Experiences
@@ -33,22 +37,40 @@ export default function ExperienceBox({childData }) {
         //cancels addition of new Experience
         SetNewExp(false)
     };
-    const deleteExp = (id) => {
+    const deleteExp = async (id) => {
         //deletes existing Experience from array by referring to the id passed in
-        SetExpdata(expdata.filter(e => { return id !== e.id }))
+        try {
+            await userAPI.delete(`/seeker/former-job/${id}`, {
+                headers: {
+                    'Authorization': `Bearer ${getStorage("userToken")}`
+                }
+            })
+            SetExpdata(expdata.filter(e => { return id !== e.id }))
+        } catch (e) {
+            console.log(e)
+        }
     };
 
-    const updateExp = (data) => {
+    const updateExp = async (data) => {
         //updates existing Experience data from array. new data is passed in along with existing data id
-        SetExpdata(expdata.map(e => {
-            if (e.id === data.id) {
-                e.job_name = data.job_name
-                e.company_name = data.company_name
-                e.start_year = data.start_year
-                e.end_year = data.end_year
-            }
-            return (e)
-        }))
+        const { id, ...passData } = data
+        console.log("passData", passData)
+        try {
+            await userAPI.put(`/seeker/former-job/${id}`, passData, {
+                headers: {
+                    'Authorization': `Bearer ${getStorage("userToken")}`
+                }
+            })
+            SetExpdata(expdata.map(e => {
+                if (e.id === data.id) {
+                    e = data
+                }
+                return (e)
+            }))
+        } catch (e) {
+            console.log(e)
+        }
+
     }
     return (
         <div className="feature-box feature-box-middle-pane" id="feature-box-middle-pane">
@@ -66,7 +88,7 @@ export default function ExperienceBox({childData }) {
                         <p>Your profile is like the vast expanse of space let's add some stars! 🌟</p></div>
                 }
 
-                {newExp && <ExperienceAdd  submitFn={addExperience} cancelFn={cancelExp} />}
+                {newExp && <ExperienceAdd submitFn={addExperience} cancelFn={cancelExp} />}
 
                 {
                     childData && expdata.map(e => {

@@ -163,7 +163,7 @@ export default function ProfileSection({ data }) {
                             }} contactData={newData} subForm={subForm} />
                         </div>
                         <div className="profile-pane profile-middle-pane">
-                            <ExperienceBox childData={[]} />
+                            <ExperienceBox childData={newData.former_jobs} />
                             <FeatureBoxMiddlePane //component defaults to QualificationBox
                                 childData={[
                                     { qualification: "Master of science - Computer Science", id: uuid(), qualification_provider: "Massachusetts Institute of Technology (MIT)", start_year: 2005, end_year: 2009 },
