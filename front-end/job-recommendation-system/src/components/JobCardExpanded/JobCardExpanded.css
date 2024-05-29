@@ -8,6 +8,7 @@
     overflow-y: auto;
     background-color: white;
     border-radius: 11px 11px 0px 0px;
+    padding-bottom: 8rem;
 }
 .job-desc-header {
     display: flex;

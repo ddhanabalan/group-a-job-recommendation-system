@@ -1,4 +1,4 @@
-import './JobDescription.css';
+import './JobCardExpanded.css';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import { v4 as uuid } from 'uuid';
@@ -7,7 +7,7 @@ import DoneIcon from '@mui/icons-material/Done';
 import { Button } from '@mui/material';
 import { useState, useEffect } from 'react';
 
-export default function JobDesciptionForm({ data, createJobRequest=null, userData, handleSub=null }) {
+export default function JobCardExpanded({ data, createJobRequest=null, userData, handleSub=null }) {
     console.log("data received by form", userData, "jobdata",data)
    
     //console.log(userData.appliedJobs.includes("4"))
@@ -22,7 +22,7 @@ export default function JobDesciptionForm({ data, createJobRequest=null, userDat
     //console.log(userSkills)
     //function for senting applicant details from the form to company
 
-    useEffect(()=>{if(userData.type=="seeker")setSubmit(((data.applicationsReceived).map(e=>e.user_id)).includes(userData.id))})
+    /*useEffect(()=>{if(userData.type=="seeker")setSubmit(((data.applicationsReceived).map(e=>e.user_id)).includes(userData.id))})*/ //UNCOMMENT THIS AFTER BACKEND FIX FOR MISSING DATA IN THE RESPONSE(i.e.applicationsReceived, tags, skills) 
     //console.log(userData.id, "applied=", submit, (data.applicationsReceived)?.map(e=>e.user_id) || "", "status", ((data.applicationsReceived)?.map(e=>e.user_id)).includes(userData.id))
 
     function handleApplication(){
@@ -79,7 +79,7 @@ export default function JobDesciptionForm({ data, createJobRequest=null, userDat
                     <p className='desc'>{data.jobReq}</p>
                 </div> 
 
-                {data.skills && skillIndicator?
+                {data.skills && skillIndicator? 
                     <div className="job-skills">
                         <h6>Skills&nbsp;{userData.type=="seeker"?<span className='skill-counter'>&nbsp;  You have {userSkills} out of {data.skills.length} skills required for the job</span>: <></>}</h6>
                         {/*skill tags */}

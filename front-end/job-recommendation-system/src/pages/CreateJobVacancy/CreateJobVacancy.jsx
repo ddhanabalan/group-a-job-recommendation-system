@@ -1,4 +1,5 @@
 import JobVacancyForm from "../../components/CreateJobVacancyForm/CreateJobVacancyForm";
+import "./CreateJobVacancy.css"
 import { useLocation } from "react-router-dom";
 
 export default function CreateJobVacancy() {
@@ -12,7 +13,9 @@ export default function CreateJobVacancy() {
     
     return (
         <div id="page">
+            
             <JobVacancyForm data={demoInfo}/>
+            
         </div>
     )
 }

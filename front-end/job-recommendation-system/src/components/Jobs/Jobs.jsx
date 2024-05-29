@@ -1,16 +1,10 @@
 import './Jobs.css';
 import { useState, useEffect } from 'react';
 import JobCard from '../JobCard/JobCard';
-import JobDesciptionForm from '../JobDescription/JobDesciption';
+import JobCardExpanded from '../JobCardExpanded/JobCardExpanded';
 
 
-function ClickableJobCard({ id, data, onclick }) {
-    return (
-        <div className='clickable-job-card' onClick={() => { onclick(id) }}>
-            <JobCard data={data} />
-        </div>
-    )
-}
+
 export default function Jobs({ data, dataToParentFn = null, createJobRequest = null, desc_state = null, userData }) {
 
     const finalInfo = [...data];
@@ -23,7 +17,7 @@ export default function Jobs({ data, dataToParentFn = null, createJobRequest = n
     const [selectedJob, setSelectedJob] = useState(null);
     //console.log("final data info" ,finalInfo);
     function openDesc(id) {
-        //console.log("selected id", id);
+        console.log("selected id", id);
         setDesc(true);
         setId(id);
         const selection = finalInfo.filter(e => (e.id == id ? e : false))[0]
@@ -58,11 +52,11 @@ export default function Jobs({ data, dataToParentFn = null, createJobRequest = n
     return (
         <div className="cards-container">
             
-            {/* {descriptionOn ?
-                <JobDesciptionForm data={selectedJob} createJobRequest={createJobRequest} userData={userData} />
+         {descriptionOn ?
+                <JobCardExpanded data={selectedJob} createJobRequest={createJobRequest} userData={userData} />
                 :
-                Object.keys(finalInfo).map((card) => (<ClickableJobCard key={finalInfo[card]["id"]} id={finalInfo[card]["id"]} onclick={openDesc} data={{ ...finalInfo[card], 'userType': "seekerq" }} />))
-            } */}
+                Object.keys(finalInfo).map((card) => (<JobCard key={finalInfo[card]["id"]} id={finalInfo[card]["id"]} expandView={openDesc} data={{ ...finalInfo[card], 'userType': "seekerq" }} />))
+        }
         </div>
     )
 }

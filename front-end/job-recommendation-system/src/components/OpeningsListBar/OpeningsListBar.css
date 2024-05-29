@@ -6,8 +6,12 @@
     display: flex;
     flex-direction: column;
     justify-content: center;
+    
 }
 
+.left-bar button{
+    font-family: Inter-regular !important;
+}
 .openings-search-tile{
     background-color: white;
     height: 15vh;

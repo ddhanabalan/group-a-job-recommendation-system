@@ -19,14 +19,14 @@ export default function JobSection() {
     const [filterparam, setParam] = useState({});
     const filtered = (jobVacancies.length != 0 ? jobVacancies.filter(id => id["skills"].map((tag) => (tag["skill"].toLowerCase().includes(searchVal.toLowerCase()))).filter(Boolean).length ? id : false) : []);
 
-    const [descriptionOn, setDescFromChild] = useState(false);
+    const [descriptionOn, setDesc] = useState(false);
 
     const filterDataSet = (fdata) => {
         setParam({ ...fdata });
     }
     console.log("filter", filterparam);
     function OpenDesc(desc_state) {
-        setDescFromChild(desc_state);
+        setDesc(desc_state);
         //console.log("description status job section", desc_state);
     }
     const searchBar = (searchValue) => {
@@ -49,14 +49,14 @@ export default function JobSection() {
                         }).join('&');
                     }
                 });
-            const mod_response = response.data.map(e => ({ id: e.job_id, jobTitle: e.job_name, companyName: e.company_name, tags: (e.tags.length ? e.tags : [{ 'tag': "" }]), currency: e.salary.split('-')[0], salary: [e.salary.split('-')[1], e.salary.split('-')[2]], postDate: e.created_at.split('T')[0], last_date: e.last_date.split('T')[0], location: e.location, empType: e.emp_type, exp: e.experience, jobDesc: e.job_desc, jobReq: e.requirement, skills: e.skills.length ? e.skills : [{ 'skill': "" }], applicationsReceived: e.job_seekers }))
+            const mod_response = response.data.map(e => ({ id: e.job_id, jobTitle: e.job_name, companyName: e.company_name, tags: /*(e.tags.length ? e.tags : */[{ 'tag': "" }], currency: e.salary.split('-')[0], salary: [e.salary.split('-')[1], e.salary.split('-')[2]], postDate: e.created_at.split('T')[0], last_date: e.last_date.split('T')[0], location: e.location, empType: e.emp_type, exp: e.experience, jobDesc: e.job_desc, jobReq: e.requirement, skills: /*e.skills.length ? e.skills : */[{ 'skill': "" }], applicationsReceived: e.job_seekers }))
             setJobVacancies(mod_response);
             console.log(response);
             console.log(" after new job vacancies", mod_response);
             console.log("filtered", filtered);
         } catch (e) {
-            console.log("jobs failed", e)
-
+            
+            console.log("jobs failed", e);
             alert(e.message);
         }
     }

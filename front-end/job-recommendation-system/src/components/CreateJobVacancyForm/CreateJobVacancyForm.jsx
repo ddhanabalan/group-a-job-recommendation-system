@@ -15,7 +15,7 @@ import CreateFormTextFields from './CreateFormTextFields';
 import MultipleOptions from '../MultipleOptions/MultipleOptions';
 import AddTags from '../AddTags/AddTags';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
-import JobDesciptionForm from '../JobDescription/JobDesciption';
+import JobCardExpanded from '../JobCardExpanded/JobCardExpanded';
 import { jobAPI } from '../../api/axios';
 
 export default function JobVacancyForm({ data = {} }) {
@@ -34,7 +34,7 @@ export default function JobVacancyForm({ data = {} }) {
     setValue("location",googleLocationAutoField);
     const [location, SetLocation] = useState(dta.location || 'kerala');
     const [skill, SetSkill] = useState('');
-    const [tag, setTag] = useState('');
+    
     const [skills, SetSkills] = useState(dta.skills ? dta.skills.map(label => ({ tag: label.skill, id: label.id })) : []);
     const [tags, setTags] = useState(dta.tags ? dta.tags.map(label => ({ tag: label.tags, id: label.id })) : []);
     const [preferences, setPreferences] = useState({"skills": skills,"tags": tags, "empType": dta.empType, "exp": dta.exp});
@@ -187,7 +187,7 @@ export default function JobVacancyForm({ data = {} }) {
     function handlePreview(data) {
         //Preview box 
         checkPref("skills");
-        checkPref("tags");
+        
         data.last_date = data.last_date?data.last_date: dateGeneration(30);
         //console.log("prefilled data to load into frontend", prefilleddata);
         //console.log("preferences", preferences)
@@ -213,7 +213,7 @@ export default function JobVacancyForm({ data = {} }) {
                                 "location": finalApplicationData['location'],
                                 "emp_type": finalApplicationData['empType'][0],
                                 "last_date": finalApplicationData['last_date'],
-                                "tags": finalApplicationData["tags"]?finalApplicationData["tags"]:[],
+                                
                                 "skill": finalApplicationData["skills"]?finalApplicationData["skills"]:[],
                             };
         //submissionData["salary"]=(submissionData["salary"][1]==="")?submissionData["salary"][0]:submissionData["salary"].join("-");
@@ -232,7 +232,7 @@ export default function JobVacancyForm({ data = {} }) {
         <>
             {preview ?
                 <div className="job-preview-container">
-                    <JobDesciptionForm data={finalApplicationData} userData={{"type":"employer"}} />
+                    <JobCardExpanded data={finalApplicationData} userData={{"type":"employer"}} />
                     <div className="post-vacancy-buttons">
                         <Button variant="contained" color="success" onClick={()=>setPreview(false)} sx={{color: "white" }} startIcon={<EditIcon />}>
                             <p>Edit</p>
@@ -310,6 +310,21 @@ export default function JobVacancyForm({ data = {} }) {
                                         <p className="error-message">{prefError.exp?.message}</p>
                                     </div>
                                 </div>
+
+                                <div className="detail-divs">
+                                    <p><span className={`details-header${prefError.exp?"-error":""}`}>Work Style:</span></p>
+                                    <div className="option-divs">
+                                        <MultipleOptions  options={["Hybrid", "Work from home", "Onsite"]} preselected={dta.workStyle || null} dataType="workStyle" checkLimit={1} onChange={handleCheckboxChange} />
+                                        <p className="error-message">{prefError.workPref?.message}</p>
+                                    </div>
+                                </div>
+                                <div className="detail-divs">
+                                    <p><span className={`details-header${prefError.exp?"-error":""}`}>Working days:</span></p>
+                                    <div className="option-divs">
+                                        <MultipleOptions  options={["Monday-Friday", "Monday-Saturday"]} preselected={dta.workingDays || null} dataType="workingDays" checkLimit={1} onChange={handleCheckboxChange} />
+                                        <p className="error-message">{prefError.workingDays?.message}</p>
+                                    </div>
+                                </div>
                                 <div className="skill-divs">
                                     <p><span>Skills:</span></p>
                                     <div className='create-job-skill-field'>
@@ -322,7 +337,7 @@ export default function JobVacancyForm({ data = {} }) {
                                         <div className="salary-fields">
                                             <CreateFormTextFields inputPlaceholder="Title" wparam="80px" fontsz="14px" select={true} defaultValue="RS" items={['RS', 'DLR', 'YEN']} {...register("currency", { required: "Currency is required" })} />
 
-                                            <CreateFormTextFields inputPlaceholder="Title" wparam="100px"
+                                            <CreateFormTextFields inputPlaceholder="Lower limit" wparam="120px"
                                                 defaultValue={dta.salary ? dta.salary[0] || null : null}
                                                 {...register("salary.0", {
                                                     required: "Salary range is required",
@@ -333,7 +348,7 @@ export default function JobVacancyForm({ data = {} }) {
                                                     validate: (val) => val > salary_threshold || `Enter salary greater than ${salary_threshold}`,
                                                 })} />
                                             <span>to</span>
-                                            <CreateFormTextFields disabled={watch("salary.0") != null?(watch("salary.0").length?false:true): true} inputPlaceholder="Title" wparam="100px"
+                                            <CreateFormTextFields disabled={watch("salary.0") != null?(watch("salary.0").length?false:true): true} inputPlaceholder="Upper limit" wparam="120px"
                                                 defaultValue={dta.salary ? dta.salary[1] || null : null}
                                                 {...register("salary.1", {
                 
@@ -381,13 +396,13 @@ export default function JobVacancyForm({ data = {} }) {
 
                                 <div className="create-job-vacancy-description-div">
                                     <p><span>Job Description:</span></p>
-                                    <div className="create-job-desc-field"><CreateFormTextFields inputPlaceholder="Title" fontsz="14px" wparam="100%" defaultValue={dta.jobDesc || ""} multipleLine={true} minrows={8} {...register("jobDesc", { required: "Field required", })} /></div>
+                                    <div className="create-job-desc-field"><CreateFormTextFields inputPlaceholder="Enter job details" fontsz="14px" wparam="100%" defaultValue={dta.jobDesc || ""} multipleLine={true} minrows={8} {...register("jobDesc", { required: "Field required", })} /></div>
                                     <p className="create-job-desc-field error-message">{errors.jobDesc?.message}</p>
                                 </div>
 
                                 <div className="create-job-vacancy-description-div">
                                     <p><span>Job Requirements:</span></p>
-                                    <div className="create-job-desc-field"><CreateFormTextFields inputPlaceholder="Title" fontsz="14px" wparam="100%" defaultValue={dta.jobReq || ""} multipleLine={true} minrows={8} {...register("jobReq", { required: "Field required", })} /></div>
+                                    <div className="create-job-desc-field"><CreateFormTextFields inputPlaceholder="Enter criteria" fontsz="14px" wparam="100%" defaultValue={dta.jobReq || ""} multipleLine={true} minrows={8} {...register("jobReq", { required: "Field required", })} /></div>
                                     <p className="create-job-desc-field error-message">{errors.jobReq?.message}</p>
                                 </div>
                         

@@ -8,7 +8,7 @@ import { IconButton, Button, Icon } from '@mui/material';
 import SortIcon from '@mui/icons-material/Sort';
 import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import JobDesciptionForm from '../JobDescription/JobDesciption';
+
 
 function HighlightableJobCard({id, highlighted, type, data, listToDescFunc, deleteJobFunc, onclick}){
     //console.log("highlighted ", id, " : ", highlighted)

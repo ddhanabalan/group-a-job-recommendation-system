@@ -2,9 +2,10 @@ import './JobCard.css';
 import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import { v4 as uuid } from 'uuid';
-export default function JobCard({ data }) {
+export default function JobCard({ data, id, expandView }) {
+    
     return (
-        <div className="card">
+        <div className="card" onClick={()=>expandView(id)}>
             <div className='card-div1'>
                 <h1 className='card-h1'>{data.jobTitle}</h1>
                 <p className='card-company-name-p'>{data.companyName}</p>

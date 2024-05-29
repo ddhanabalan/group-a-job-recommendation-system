@@ -4,7 +4,7 @@ import "./ReviewApplications.css";
 import {getStorage, setStorage} from "../../storage/storage";
 import Filter from "../../components/Filter/Filter";
 import OpeningsListBar from "../../components/OpeningsListBar/OpeningsListBar";
-import JobDesciptionForm from "../../components/JobDescription/JobDesciption";
+import JobCardExpanded from "../../components/JobCardExpanded/JobCardExpanded";
 import BackBtn from "../../components/BackBtn/BackBtn";
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
@@ -243,7 +243,7 @@ export default function ReviewApplications() {
             <div className={`review-left-bar${sidebarState?" wide":""}`}>
                 {sidebarState?
                 <>
-                <JobDesciptionForm data={selectedJobEntry} userData={userData}/>
+                <JobCardExpanded data={selectedJobEntry} userData={userData}/>
                 <div className="back-button-review" onClick={()=>setSideBar(false)}><BackBtn outlineShape={"square"} butColor={"white"}/></div>
                 </>
                 :
@@ -269,7 +269,7 @@ export default function ReviewApplications() {
                 )
                 :
                 (selectedEntry!=null && filtered.length!=0?
-                    <JobDesciptionForm data={selectedJobEntry} createJobRequest={CreateJobRequest} userData={userData}/>
+                    <JobCardExpanded data={selectedJobEntry} createJobRequest={CreateJobRequest} userData={userData}/>
                     :
                     <></>
                 )
