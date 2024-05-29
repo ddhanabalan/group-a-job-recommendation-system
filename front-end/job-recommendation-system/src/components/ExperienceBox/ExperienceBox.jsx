@@ -9,7 +9,7 @@ import ExperienceCard from '../ExperienceCard/ExperienceCard';
 import ExperienceAdd from '../ExperienceCard/ExperienceAdd';
 import Lottie from "lottie-react";
 import Turtle from '../../images/Turtle-in-space.json'
-export default function ExperienceBox({ childData }) {
+export default function ExperienceBox({ childData, reloadFn }) {
     useEffect(() => {
         if (childData) {
             SetExpdata(childData)
@@ -27,6 +27,7 @@ export default function ExperienceBox({ childData }) {
             })
             console.log(response)
             SetNewExp(false)
+            reloadFn()
             SetExpdata([...childData, e])
         } catch (error) {
             console.log(error)

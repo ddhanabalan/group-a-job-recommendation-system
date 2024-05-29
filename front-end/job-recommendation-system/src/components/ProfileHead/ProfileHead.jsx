@@ -12,7 +12,6 @@ import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import profilePlaceholder from '../../images/profile_placeholder.svg';
 import './ProfileHead.css'
 export default function ProfileHead({ data, blurFn, subForm, isNotEditing, setIsNotEditing }) {
-    console.log(data)
     const [img, setImg] = useState('');
     const [bannerColor, setBannerColor] = useState('');
     useEffect(() => {

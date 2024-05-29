@@ -6,7 +6,7 @@ import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 import WorkRoundedIcon from '@mui/icons-material/WorkRounded';
 import './NavigationBar.css';
 export default function NavigationBar({ active, redirect=null }) {
-    console.log("present redirect", redirect);
+    // console.log("present redirect", redirect);
 
 
     return (

@@ -20,7 +20,6 @@ export default function ProfileSection({ data }) {
     const [newData, SetnewData] = useState(data);
     const [isNotEditing, SetIsNotEditing] = useState(true)
     const { state } = useLocation();
-    console.log("received state", state)
     const updateEditStatus = (value) => {
         SetIsNotEditing(value)
     }
@@ -44,7 +43,6 @@ export default function ProfileSection({ data }) {
     const languageAPI = async () => {
         try {
             const response = await axios.request(options);
-            console.log(response.data);
             setLanguages(response.data);
         } catch (error) {
             console.error(error);
@@ -54,8 +52,7 @@ export default function ProfileSection({ data }) {
     const skillsAPI = async () => {
         try {
             const response = await utilsAPI.get(`/api/v1/skills?q=${skill}`)
-            console.log(response)
-            setSkillsList(response.data)
+            setSkillsList([ {"Skill Name":""},...response.data ])
         }
         catch (e) {
             console.log(e)
@@ -76,11 +73,6 @@ export default function ProfileSection({ data }) {
                 }) :
                 await userAPI.get(`/seeker/profile/${user}`);
             redirectFn(response.data)
-            console.log(await userAPI.get(`/seeker/education`, {
-                headers: {
-                    'Authorization': `Bearer ${getStorage("userToken")}`
-                }
-            }))
         } catch (e) {
             console.log(e)
 
@@ -108,23 +100,33 @@ export default function ProfileSection({ data }) {
     }
 
     const [isBodyBlur, SetIsBodyBlur] = useState(false)
-    const contacts = { mail: "amywilliams@gmail.com", github: "amywilliams", website: null }
     const blurBody = (state) => {
         state ? SetIsBodyBlur(true) : SetIsBodyBlur(false)
     }
     const [skill, SetSkill] = useState('');
-    const [skills, SetSkills] = useState([{ tag: "software", id: uuid() }, { tag: "data science", id: uuid() }]);
-
-    const handleDeleteSkill = (id) => {
+    const [skills, SetSkills] = useState([]);
+    useEffect(() => {
+        if (newData.skill) {
+            SetSkills(newData.skill)
+        }
+    }, [newData.skill])
+    const handleDeleteSkill = async (id) => {
         //accepts id of Domain tag and delete them from the array 
-        SetSkills(prevSkills =>
-            prevSkills.filter(e => e.id !== id))
+        try {
+            await userAPI.delete(`/seeker/skill/${id}`, {
+                headers: {
+                    'Authorization': `Bearer ${getStorage("userToken")}`
+                }
+            })
+            SetSkills(prevSkills =>
+                prevSkills.filter(e => e.id !== id))
+        } catch (e) {
+            console.log(e)
+        }
     };
 
     const handleChangeSkill = (v) => {
         //stores the Domain value from the input field as user types
-        setSkillsList([])
-        console.log("i'm invoked")
         SetSkill(v)
     };
     useEffect(() => {
@@ -134,14 +136,15 @@ export default function ProfileSection({ data }) {
         //accepts a new domain value from the input field and updates the domains array to display the newly added domain and resets the input box value when user clicks the add button
         try {
             if (n !== "") {
-                SetSkills([...skills, { tag: n, id: uuid() }]);
-                SetSkill('')
-                const response = userAPI.post('/seeker/skill', skill, {
+                // SetSkills([...skills, { tag: n, id: uuid() }]);
+                const response = await userAPI.post('/seeker/skill', { "skill": skill }, {
                     headers: {
                         'Authorization': `Bearer ${getStorage("userToken")}`
                     }
                 })
-                console.log(skill)
+                SetSkill("")
+                callAPI()
+                console.log("skill", skill)
             }
         } catch (e) {
             console.log(e)
@@ -163,7 +166,7 @@ export default function ProfileSection({ data }) {
                             }} contactData={newData} subForm={subForm} />
                         </div>
                         <div className="profile-pane profile-middle-pane">
-                            <ExperienceBox childData={newData.former_jobs} />
+                            <ExperienceBox childData={newData.former_jobs} reloadFn={callAPI} />
                             <FeatureBoxMiddlePane //component defaults to QualificationBox
                                 childData={[
                                     { qualification: "Master of science - Computer Science", id: uuid(), qualification_provider: "Massachusetts Institute of Technology (MIT)", start_year: 2005, end_year: 2009 },
@@ -176,10 +179,7 @@ export default function ProfileSection({ data }) {
                                     { qualification: "Master of science - Computer Science", id: uuid(), qualification_provider: "Massachusetts Institute of Technology (MIT)", start_year: 2005, end_year: 2009 }
                                 ]} /> */}
                             <LicenseBox
-                                childData={[
-                                    { certificate_name: "Certified Ethical Hacker", id: uuid(), certificate_issuer: "Red Team Hacker Academy", issue_date: "Nov 2023", credential_url: "www.verifyme.com" },
-                                    { certificate_name: "Certified Ethical Hacker", id: uuid(), certificate_issuer: "Red Team Hacker Academy", issue_date: "Nov 2023", credential_url: "www.verifyme.com" },
-                                ]}
+                                childData={newData.certificate} reloadFn={callAPI}
                             />
                             <AddSkills id="profile-section-skills" availableSkills={skillsList} value={skill} tags={skills} deleteFn={handleDeleteSkill} changeFn={handleChangeSkill} updateFn={handleSkill} data={{ title: "Skills", inputPlaceholder: "HTML" }} />
 

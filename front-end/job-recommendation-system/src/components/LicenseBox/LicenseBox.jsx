@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { v4 as uuid } from 'uuid';
 import { userAPI } from '../../api/axios';
 import { getStorage } from '../../storage/storage';
@@ -9,20 +9,26 @@ import LicenseAdd from '../LicenseCard/LicenseAdd';
 import LicenseCard from '../LicenseCard/LicenseCard';
 import Lottie from "lottie-react";
 import Turtle from '../../images/Turtle-in-space.json'
-export default function LicenseBox({ childData }) {
-
-    const [licensedata, SetLicensedata] = useState(childData);
+export default function LicenseBox({ childData, reloadFn }) {
+    useEffect(() => {
+        if (childData) {
+            SetLicensedata(childData)
+        }
+    }, [childData])
+    const [licensedata, SetLicensedata] = useState([]);
     const [newLic, SetNewLic] = useState(false)
     const addLicense = async (e) => {
         //accepts new License data and adds it into existing array of Licenses
+        console.log(e)
         try {
-            const response = await userAPI.post('/seeker/former-job', e, {
+            const response = await userAPI.post('/seeker/certificate/', e, {
                 headers: {
                     'Authorization': `Bearer ${getStorage("userToken")}`
                 }
             })
             console.log(response)
             SetNewLic(false)
+            reloadFn()
             SetLicensedata([...childData, e])
         } catch (error) {
             console.log(error)
@@ -33,22 +39,40 @@ export default function LicenseBox({ childData }) {
         //cancels addition of new License
         SetNewLic(false)
     };
-    const deleteLic = (id) => {
+    const deleteLic = async(id) => {
         //deletes existing License from array by referring to the id passed in
-        SetLicensedata(licensedata.filter(e => { return id !== e.id }))
+        try {
+            await userAPI.delete(`/seeker/certificate/${id}`, {
+                headers: {
+                    'Authorization': `Bearer ${getStorage("userToken")}`
+                }
+            })
+            SetLicensedata(licensedata.filter(e => { return id !== e.id }))
+        } catch (e) {
+            console.log(e)
+        }
+
     };
 
-    const updateLic = (data) => {
+    const updateLic = async (data) => {
         //updates existing License data from array. new data is passed in along with existing data id
-        SetLicensedata(licensedata.map(e => {
-            if (e.id === data.id) {
-                e.job_name = data.job_name
-                e.company_name = data.company_name
-                e.start_year = data.start_year
-                e.end_year = data.end_year
-            }
-            return (e)
-        }))
+        const { id, ...passData } = data
+        console.log("passData", passData)
+        try {
+            await userAPI.put(`/seeker/certificate/${id}`, passData, {
+                headers: {
+                    'Authorization': `Bearer ${getStorage("userToken")}`
+                }
+            })
+            SetLicensedata(licensedata.map(e => {
+                if (e.id === data.id) {
+                    e = data
+                }
+                return (e)
+            }))
+        } catch (e) {
+            console.log(e)
+        }
     }
     return (
         <div className="feature-box feature-box-middle-pane" id="feature-box-middle-pane">

@@ -33,7 +33,6 @@ export default function ContactCard({ data, contactData, subForm }) {
         const result = await trigger(["website", "contact_email"])
         result ? setShouldSubmit(true) : setShouldSubmit(false)
     }
-    console.log("data", contactData)
     return (
         <form className="feature-box" >
             < h4 className="feature-title" > {data.title}</h4 >

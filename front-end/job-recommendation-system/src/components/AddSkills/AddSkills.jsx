@@ -20,8 +20,11 @@ export default function AddSkills({ availableSkills, data, updateFn, changeFn, d
             </Stack>
             <Autocomplete
                 options={availableSkills}
+                value={{"Skill Name":value}}
+                inputValue={value}
                 autoHighlight
                 getOptionLabel={(option) => option["Skill Name"]}
+                isOptionEqualToValue={() => availableSkills.some(e => e["Skill Name"] === value )}
                 componentsProps={{
                     popper: {
                         modifiers: [
@@ -36,7 +39,7 @@ export default function AddSkills({ availableSkills, data, updateFn, changeFn, d
                     changeFn(newInputValue);
                 }}
                 renderInput={(params) => (
-                    <TextField id="standard-controlled" placeholder={data.inputPlaceholder} value={value} variant="standard"
+                    <TextField id="standard-controlled" placeholder={data.inputPlaceholder} variant="standard"
                         className='tags-add-input skills-add-input'
                         {...params}
                         inputProps={{
@@ -52,7 +55,7 @@ export default function AddSkills({ availableSkills, data, updateFn, changeFn, d
                 {
                     tags.map(e => {
                         return (
-                            <Chip key={e.id} label={e.tag} color="primary" className='skill'
+                            <Chip key={e.id} label={e.skill} color="primary" className='skill'
                                 onDelete={() => deleteFn(e.id)} />
                         )
                     })

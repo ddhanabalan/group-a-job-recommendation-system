@@ -1,0 +1,57 @@
+.landing-page {
+    background-image: linear-gradient(64deg, rgba(255, 188, 242, 1.00) 0%, rgba(255, 255, 255, 1.00) 65%, rgba(147, 237, 181, 1.00) 100%);
+    background-position: center center;
+    display: block !important;
+    background-size: 200% 200%;
+    animation: gradient 15s ease-in-out infinite;
+}
+
+@keyframes gradient {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+.landing-page h3 {
+    font-family: Inter-md;
+    margin: 0;
+}
+
+.landing-page-logo {
+    margin: 1rem 1rem;
+    display: flex;
+    align-items: center;
+}
+.landing-page-logo-image{
+    height: 2.5rem;
+    width: 2.5rem;
+    margin-right: .2rem;
+}
+.landing-page-logo-image img{
+    object-fit: contain;
+    width: 100%;
+    height: 100%;
+}
+.intro-heading {
+    position: absolute;
+    left: 1rem;
+    top: 10rem;
+}
+
+.intro-heading p {
+    font-size: 2rem;
+    font-family: Inter-light;
+}
+
+.intro-heading h1 {
+    font-size: 4rem;
+    font-family: Inter-black;
+}

@@ -8,6 +8,8 @@ import CorporateFareRoundedIcon from '@mui/icons-material/CorporateFareRounded';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import LinkRoundedIcon from '@mui/icons-material/LinkRounded';
+import './LicenseCard.css';
 export default function LicenseCard({ data, deleteFn, submitFn }) {
     const { register, formState: { errors }, handleSubmit, getValues } = useForm({ mode: 'onTouched' });
     const [isNotEditing, SetIsNotEditing] = useState(true);
@@ -31,7 +33,16 @@ export default function LicenseCard({ data, deleteFn, submitFn }) {
                     <div className="qualification-card-content">
                         <h2 className='qualification-card-h2'>{data.certificate_name}</h2>
                         <h3 className='qualification-card-h3'>{data.certificate_issuer}</h3>
-                        <p className='qualification-card-p'>{data.issue_date}</p>
+                        <div className='license-card-date-and-url'>
+                            <p className='qualification-card-p'>{data.issue_date}</p>
+                            {
+                                data.credential_url &&
+                                <button className='license-card-btn' href={data.credential_url}>
+                                    <LinkRoundedIcon fontSize='small' />
+                                    View Credential
+                                </button>
+                            }
+                        </div>
                     </div>
                     <div className="qualification-card-action-btns">
                         <Stack direction="column" spacing={2}>
@@ -72,7 +83,7 @@ export default function LicenseCard({ data, deleteFn, submitFn }) {
                             })} />
                         <div className='qualification-year'>
                             <TextField className='qualification-add-p' defaultValue={data.issue_date}
-                                placeholder="2000"
+                                placeholder="Nov 2023"
                                 variant="outlined"
                                 label="Issue date"
                                 InputLabelProps={{ shrink: true }}
@@ -82,8 +93,7 @@ export default function LicenseCard({ data, deleteFn, submitFn }) {
                                     required: "cannot be empty"
                                 })} />
                             <p>-</p>
-                            <TextField className='qualification-add-p' defaultValue={data.credential_url} 
-                                placeholder="2010"
+                            <TextField className='qualification-add-p' defaultValue={data.credential_url}
                                 variant="outlined"
                                 label="Credential URL"
                                 InputLabelProps={{ shrink: true }}
