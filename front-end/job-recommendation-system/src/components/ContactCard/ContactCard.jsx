@@ -13,20 +13,25 @@ import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import PublicIcon from '@mui/icons-material/Public';
 import '../FeatureBox/FeatureBox.css';
 import './ContactCard.css';
-export default function ContactCard({ data, contactData, subForm }) {
+export default function ContactCard({ data, contactData, reloadFn }) {
     const [isNotEditing, SetIsNotEditing] = useState(true);
-    const { register, formState: { errors }, getValues, trigger, setError } = useForm({ });
+    const { register, formState: { errors }, getValues, trigger, setError } = useForm({});
     async function updateContact(data) {
         SetIsNotEditing(true)
         console.log(data)
-        // try {
-        //     await userAPI.put('/seeker/details', data);
+        try {
+            await userAPI.put('/seeker/details', data,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${getStorage("userToken")}`
+                    }
+                }
+            );
+            reloadFn()
+        } catch (e) {
+            console.log(e)
+        }
 
-        // } catch (e) {
-        //     console.log(e)
-        //     alert(e.message)
-        // }
-        subForm({ ...contactData, ...data })
     }
     const [shouldSubmit, setShouldSubmit] = useState(true)
     const onTrigger = async () => {
