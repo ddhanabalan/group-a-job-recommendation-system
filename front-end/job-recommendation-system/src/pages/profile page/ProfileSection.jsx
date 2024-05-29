@@ -163,7 +163,7 @@ export default function ProfileSection({ data }) {
                             {/* <FeatureBox data={{ title: "At a Glance" }} /> */}
                             <ContactCard data={{
                                 title: "Contacts and Profiles", addIcon: false, editIcon: true
-                            }} contactData={newData} subForm={subForm} />
+                            }} contactData={newData} reloadFn={callAPI} />
                         </div>
                         <div className="profile-pane profile-middle-pane">
                             <ExperienceBox childData={newData.former_jobs} reloadFn={callAPI} />
