@@ -114,6 +114,18 @@ class SeekersCertificate(Base):
     user_id = Column(Integer, ForeignKey("seekers_details.user_id"), index=True)
     certificate_name = Column(String(32))
     certificate_issuer = Column(String(32))
+    credential_url = Column(String(64))
     issue_date = Column(String(32))
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
+class SeekersLanguage(Base):
+    __tablename__ = "seekers_language"
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("seekers_details.user_id"), index=True)
+    language = Column(String(32))
+    language_proficiency = Column(String(32))
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

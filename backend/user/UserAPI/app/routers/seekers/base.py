@@ -71,6 +71,7 @@ async def profile(authorization: str = Header(...), db: Session = Depends(get_db
     user_certificate = crud.seeker.certificate.get_all(
         db=db, user_id=user_details.user_id
     )
+    user_language = crud.seeker.language.get_all(db=db, user_id=user_details.user_id)
     print(user_certificate)
     return seekerschema.SeekersProfile(
         **user_details.dict(),
@@ -82,6 +83,7 @@ async def profile(authorization: str = Header(...), db: Session = Depends(get_db
         former_jobs=user_former_job,
         poi=user_poi,
         certificate=user_certificate,
+        language=user_language,
     )
 
 

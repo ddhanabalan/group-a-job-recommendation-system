@@ -23,6 +23,7 @@ from .seekers import (
     formerjob,
     education,
     certificate,
+    language,
 )
 
 
@@ -38,3 +39,4 @@ seeker_router.include_router(seekers.loctype.router)
 seeker_router.include_router(seekers.skill.router)
 seeker_router.include_router(seekers.poi.router)
 seeker_router.include_router(seekers.certificate.router)
+seeker_router.include_router(seekers.language.router)

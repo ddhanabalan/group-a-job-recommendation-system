@@ -15,5 +15,6 @@ from .seeker import (
     emptype,
     education,
     certificate,
+    language,
 )
 from .recruiter import *
