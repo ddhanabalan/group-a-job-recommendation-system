@@ -14,13 +14,22 @@ from .. import (
 router = APIRouter(prefix="/certificate")
 
 
-@router.get("/", response_model=seekerschema.SeekersCertificate)
+@router.get("/")
 async def user_seeker_certificate(
     db: Session = Depends(get_db), authorization: str = Header(...)
 ):
     user = await get_current_user(authorization=authorization)
     user_id = user.get("user_id")
-    user_certificate = crud.certificate.get(db=db, user_id=user_id)
+    user_certificate = crud.certificate.get_all(db=db, user_id=user_id)
+    return user_certificate
+
+
+@router.get("/{certificate_id}", response_model=seekerschema.SeekersCertificate)
+async def get_seeker_certificate(
+    certificate_id: int, db: Session = Depends(get_db), authorization: str = Header(...)
+):
+    await check_authorization(authorization=authorization)
+    user_certificate = crud.certificate.get(db=db, certificate_id=certificate_id)
     return user_certificate
 
 

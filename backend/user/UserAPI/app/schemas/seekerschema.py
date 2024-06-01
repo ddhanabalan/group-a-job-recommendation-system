@@ -117,6 +117,7 @@ class SeekersCertificate(BaseModel):
     user_id: Optional[int] = None
     certificate_name: str
     certificate_issuer: Optional[str] = None
+    credential_url: Optional[str] = None
     issue_date: Optional[str] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
@@ -138,3 +139,16 @@ class SeekersProfile(SeekersDetails):
 
 class JobUserDetailsIn(BaseModel):
     user_ids: List[int]
+
+
+class SeekersLanguage(BaseModel):
+
+    id: Optional[int] = None
+    user_id: Optional[int] = None
+    language: str
+    language_proficiency: Optional[str] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True

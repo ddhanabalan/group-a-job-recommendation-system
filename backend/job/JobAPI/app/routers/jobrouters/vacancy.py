@@ -28,6 +28,9 @@ async def read_filtered_job_vacancies(
     filtered_jobs = jobcrud.vacancy.get_filtered_jobs(
         db, emp_type, loc_type, location, experience, filter_job_id
     )
+    for job in filtered_jobs:
+        job.tags = jobcrud.tags.get_all(db, job.job_id)
+        job.skills = jobcrud.skills.get_all(db, job.job_id)
     return filtered_jobs
 
 
@@ -51,8 +54,8 @@ async def create_job_vacancy(
         jobcrud.tags.create(db, job_tag_data)
 
     for _ in skill:
-        job_skill_data = jobschema.JobSkillCreate(job_id=job_id, skill=_)
-        jobcrud.skill.create(db, job_skill_data)
+        job_skill_data = jobschema.JobSkillsCreate(job_id=job_id, skill=_)
+        jobcrud.skills.create(db, job_skill_data)
 
     return {"details": "Job Created"}
 
@@ -94,7 +97,7 @@ async def update_job_vacancy(
         jobcrud.tags.update(db, tag.id, tag)
 
     for skill in skills:
-        jobcrud.skill.update(db, skill.id, skill)
+        jobcrud.skills.update(db, skill.id, skill)
     jobcrud.vacancy.update(db, job_vacancy_id, job_vacancy)
     return {"details": "Job Vacancy Updated successfully"}
 
@@ -110,7 +113,7 @@ async def delete_job_vacancy(job_vacancy_id: int, db: Session = Depends(get_db))
         )
 
     # Delete associated skills
-    jobcrud.skill.delete_by_vacancy_id(db, job_vacancy_id)
+    jobcrud.skills.delete_by_vacancy_id(db, job_vacancy_id)
 
     # Delete associated tags
     jobcrud.tags.delete_by_vacancy_id(db, job_vacancy_id)
@@ -130,7 +133,7 @@ async def read_job_vacancies_by_company_id(
 ):
     job_vacancy = jobcrud.vacancy.get_all(db, company_id)
     for job in job_vacancy:
-        job.skills = jobcrud.skill.get_all(db, job.job_id)
+        job.skills = jobcrud.skills.get_all(db, job.job_id)
         job.tags = jobcrud.tags.get_all(db, job.job_id)
         job.job_seekers = jobcrud.request.get_all_by_job_id(db, job.job_id)
     return job_vacancy

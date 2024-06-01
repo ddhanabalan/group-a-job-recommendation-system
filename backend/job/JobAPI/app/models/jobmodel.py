@@ -31,7 +31,7 @@ class JobTags(Base):
 
     id = Column(Integer, primary_key=True)
     job_id = Column(Integer, ForeignKey("job_vacancy.job_id"), index=True)
-    tags = Column(String(125))
+    tag = Column(String(125))
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

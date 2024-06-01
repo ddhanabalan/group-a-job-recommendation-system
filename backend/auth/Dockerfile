@@ -15,7 +15,7 @@ ENV JOB_API_HOST=jobapi
 ENV SMTP_SERVER="smtp.gmail.com"
 ENV SMTP_PORT=465
 ENV EMAIL_ADDRESS="careergo.noreply@gmail.com"
-ENV EMAIL_PASSWORD=""
+ENV EMAIL_PASSWORD="txdd fmjg vatx dqyd"
 
 WORKDIR $APP_HOME
 

@@ -9,7 +9,7 @@ def get_filtered_tags(db: Session, tags: List[str]):
     try:
         query = (
             db.query(jobmodel.JobTags.job_id)
-            .filter(jobmodel.JobTags.tags.in_(tags))
+            .filter(jobmodel.JobTags.tag.in_(tags))
             .distinct()
             .all()
         )
@@ -95,10 +95,11 @@ def update(db: Session, job_tags_id: int, job_tags: jobschema.JobTagsCreate):
         jobmodel.JobTags: Updated job tags object.
     """
     try:
+        update_data = {k: v for k, v in job_tags.dict().items() if v is not None}
 
-        db.query(jobmodel.JobTags).filter(
-            jobmodel.JobTags.id == job_tags_id
-        ).first().update(job_tags.dict())
+        db.query(jobmodel.JobTags).filter(jobmodel.JobTags.id == job_tags_id).update(
+            update_data
+        )
         db.commit()
         return True
 
