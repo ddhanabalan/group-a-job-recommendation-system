@@ -9,6 +9,8 @@
     border-radius: 11px;
     padding: 10px;
     cursor: pointer;
+    border: solid 1px rgb(189, 187, 187);
+    backdrop-filter: blur(10px);
 }
 .card:hover{
     border: solid 1px black;

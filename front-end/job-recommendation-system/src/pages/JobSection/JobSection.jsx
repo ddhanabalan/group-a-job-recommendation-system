@@ -55,7 +55,7 @@ export default function JobSection() {
             console.log(" after new job vacancies", mod_response);
             console.log("filtered", filtered);
         } catch (e) {
-            
+
             console.log("jobs failed", e);
             alert(e.message);
         }

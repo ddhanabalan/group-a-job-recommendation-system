@@ -2,7 +2,7 @@ import './Jobs.css';
 import { useState, useEffect } from 'react';
 import JobCard from '../JobCard/JobCard';
 import JobCardExpanded from '../JobCardExpanded/JobCardExpanded';
-
+import AiJobs from '../../components/AiJobs/AiJobs';
 
 
 export default function Jobs({ data, dataToParentFn = null, createJobRequest = null, desc_state = null, userData }) {
@@ -38,25 +38,31 @@ export default function Jobs({ data, dataToParentFn = null, createJobRequest = n
     useEffect(() => {
         if (selectedId != null) setSelectedJob(finalInfo.filter(e => (e.id == selectedId ? e : false))[0]);
     }, [finalInfo])
-    /*const demoInfo = [{ id: 0, jobTitle: "Python Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000","10000"], postDate: "13/9/23" , location: 'London', empType: 'Full-time', exp: '5-10 years', jobDesc: "This is for demo purpose" ,jobReq:"This is for demo purpose",skills: ["python", "AI", "Django"]},
-                         { id: 1, jobTitle: "Java Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000","10000"], postDate: "13/9/23" , location: 'Moscow', empType: 'Internship', exp: '1-5 years', jobDesc: "This is for demo purpose" ,jobReq:"This is for demo purpose",skills: ["java", "AI"]},
-                         { id: 2, jobTitle: "Ruby Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000","10000"], postDate: "13/9/23" , location: 'Uganda', empType: 'Temporary', exp: 'Fresher', jobDesc: "This is for demo purpose" ,jobReq:"This is for demo purpose",skills: ["ruby", "AI", "Django"]},
-                         { id: 3, jobTitle: "Golang Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000","10000"], postDate: "13/9/23" , location: 'Alaska', empType: 'Internship', exp: '5-10 years', jobDesc: "This is for demo purpose" ,jobReq:"This is for demo purpose",skills: ["python", "AI", "Django"]},
-                         { id: 4, jobTitle: "Game Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000","10000"], postDate: "13/9/23" , location: 'Germany', empType: 'Full-time', exp: '5-10 years', jobDesc: "This is for demo purpose" ,jobReq:"This is for demo purpose",skills: ["react", "AI", "Django"]},
-                         { id: 5, jobTitle: "Python Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000","10000"], postDate: "13/9/23" , location: 'London', empType: 'Full-time', exp: '5-10 years', jobDesc: "This is for demo purpose" ,jobReq:"This is for demo purpose",skills: ["python", "AI", "Django"]},
-                         { id: 6, jobTitle: "Java Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000","10000"], postDate: "13/9/23" , location: 'Alaska', empType: 'Temporary', exp: 'Fresher', jobDesc: "This is for demo purpose" ,jobReq:"This is for demo purpose",skills: ["reactor", "AI", "Django"]},
-                         { id: 7, jobTitle: "Ruby Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000","10000"], postDate: "13/9/23" , location: 'London', empType: 'Full-time', exp: '5-10 years', jobDesc: "This is for demo purpose" ,jobReq:"This is for demo purpose",skills: ["python", "AI", "Django"]},
-                         { id: 8, jobTitle: "Golang Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000","10000"], postDate: "13/9/23" , location: 'India', empType: 'Internship', exp: '1-5 years', jobDesc: "This is for demo purpose" ,jobReq:"This is for demo purpose",skills: ["python", "AI", "Django"]},
-                         { id: 9,jobTitle: "Game Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000","10000"], postDate: "13/9/23" , location: 'London', empType: 'Full-time', exp: '5-10 years', jobDesc: "This is for demo purpose" ,jobReq:"This is for demo purpose",skills: ["python", "AI", "Django"]},]    
-       */
+    const demoInfo = [{ id: 0, jobTitle: "Python Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000", "10000"], postDate: "13/9/23", location: 'London', empType: 'Full-time', exp: '5-10 years', jobDesc: "This is for demo purpose", jobReq: "This is for demo purpose", skills: ["python", "AI", "Django"] },
+    { id: 1, jobTitle: "Java Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000", "10000"], postDate: "13/9/23", location: 'Moscow', empType: 'Internship', exp: '1-5 years', jobDesc: "This is for demo purpose", jobReq: "This is for demo purpose", skills: ["java", "AI"] },
+    { id: 2, jobTitle: "Ruby Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000", "10000"], postDate: "13/9/23", location: 'Uganda', empType: 'Temporary', exp: 'Fresher', jobDesc: "This is for demo purpose", jobReq: "This is for demo purpose", skills: ["ruby", "AI", "Django"] },
+    { id: 3, jobTitle: "Golang Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000", "10000"], postDate: "13/9/23", location: 'Alaska', empType: 'Internship', exp: '5-10 years', jobDesc: "This is for demo purpose", jobReq: "This is for demo purpose", skills: ["python", "AI", "Django"] },
+    { id: 4, jobTitle: "Game Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000", "10000"], postDate: "13/9/23", location: 'Germany', empType: 'Full-time', exp: '5-10 years', jobDesc: "This is for demo purpose", jobReq: "This is for demo purpose", skills: ["react", "AI", "Django"] },
+    { id: 5, jobTitle: "Python Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000", "10000"], postDate: "13/9/23", location: 'London', empType: 'Full-time', exp: '5-10 years', jobDesc: "This is for demo purpose", jobReq: "This is for demo purpose", skills: ["python", "AI", "Django"] },
+    { id: 6, jobTitle: "Java Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000", "10000"], postDate: "13/9/23", location: 'Alaska', empType: 'Temporary', exp: 'Fresher', jobDesc: "This is for demo purpose", jobReq: "This is for demo purpose", skills: ["reactor", "AI", "Django"] },
+    { id: 7, jobTitle: "Ruby Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000", "10000"], postDate: "13/9/23", location: 'London', empType: 'Full-time', exp: '5-10 years', jobDesc: "This is for demo purpose", jobReq: "This is for demo purpose", skills: ["python", "AI", "Django"] },
+    { id: 8, jobTitle: "Golang Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000", "10000"], postDate: "13/9/23", location: 'India', empType: 'Internship', exp: '1-5 years', jobDesc: "This is for demo purpose", jobReq: "This is for demo purpose", skills: ["python", "AI", "Django"] },
+    { id: 9, jobTitle: "Game Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000", "10000"], postDate: "13/9/23", location: 'London', empType: 'Full-time', exp: '5-10 years', jobDesc: "This is for demo purpose", jobReq: "This is for demo purpose", skills: ["python", "AI", "Django"] },]
+
     return (
         <div className="cards-container">
-            
-         {descriptionOn ?
+
+            {descriptionOn ?
                 <JobCardExpanded data={selectedJob} createJobRequest={createJobRequest} userData={userData} />
-                :
-                Object.keys(finalInfo).map((card) => (<JobCard key={finalInfo[card]["id"]} id={finalInfo[card]["id"]} expandView={openDesc} data={{ ...finalInfo[card], 'userType': "seekerq" }} />))
-        }
+                : (
+                    <>
+                        <AiJobs childData={demoInfo} expandView={openDesc} />
+                        {
+                            Object.keys(finalInfo).map((card) => (<JobCard key={finalInfo[card]["id"]} id={finalInfo[card]["id"]} expandView={openDesc} data={{ ...finalInfo[card], 'userType': "seekerq" }} />))
+                        }
+                    </>
+                )
+            }
         </div>
     )
 }

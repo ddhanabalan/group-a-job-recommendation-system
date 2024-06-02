@@ -168,10 +168,7 @@ export default function ProfileSection({ data }) {
                         <div className="profile-pane profile-middle-pane">
                             <ExperienceBox childData={newData.former_jobs} reloadFn={callAPI} />
                             <FeatureBoxMiddlePane //component defaults to QualificationBox
-                                childData={[
-                                    { qualification: "Master of science - Computer Science", id: uuid(), qualification_provider: "Massachusetts Institute of Technology (MIT)", start_year: 2005, end_year: 2009 },
-                                    { qualification: "Master of science - Computer Science", id: uuid(), qualification_provider: "Massachusetts Institute of Technology (MIT)", start_year: 2005, end_year: 2009 }
-                                ]}
+                                childData={newData.education}
                             />
                             {/* <FeatureBoxMiddlePane data={{ title: "Licenses and certifications ", edit: true, isLanguage: false, cardData: { qualification_label: "Name", qualification_provider: "Issuing organization" } }}
                                 childData={[
@@ -184,11 +181,9 @@ export default function ProfileSection({ data }) {
                             <AddSkills id="profile-section-skills" availableSkills={skillsList} value={skill} tags={skills} deleteFn={handleDeleteSkill} changeFn={handleChangeSkill} updateFn={handleSkill} data={{ title: "Skills", inputPlaceholder: "HTML" }} />
 
                             <LanguageBox
+                                reloadFn={callAPI}
                                 languages={languages}
-                                childData={[
-                                    { language: "Malayalam", language_proficiency: "Proficient", id: uuid() },
-                                    { language: "English", language_proficiency: "Native or Bilingual Proficiency", id: uuid() }
-                                ]}
+                                childData={newData.language}
                             />
                             <div className="spacer-div" ></div>
                         </div>

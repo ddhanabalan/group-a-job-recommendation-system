@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import { v4 as uuid } from 'uuid';
 import { userAPI } from '../../api/axios';
 import { getStorage } from '../../storage/storage';
@@ -6,14 +6,16 @@ import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import QualificationCard from '../QualificationCard/QualificationCard';
-import LanguageAdd from '../LanguageAdd/LanguageAdd';
 import QualificationAdd from '../QualificationAdd/QualificationAdd';
-import LanguageCard from '../LanguageCard/LanguageCard';
-import Lottie from "lottie-react";
-import Turtle from '../../images/Turtle-in-space.json'
+import NothingToShow from '../NothingToShow/NothingToShow';
 import './FeatureBoxMiddlePane.css';
 export default function FeatureBoxMiddlePane({ childData }) {
-    const [qdata, SetQdata] = useState(childData);
+    useEffect(() => {
+        if (childData) {
+            SetQdata(childData)
+        }
+    }, [childData])
+    const [qdata, SetQdata] = useState([]);
     const [newQual, SetNewQual] = useState(false)
     const addQualification = async (e) => {
         //accepts new qualification data and adds it into existing array of qualifications
@@ -64,9 +66,7 @@ export default function FeatureBoxMiddlePane({ childData }) {
             <div className="feature-box-container">
                 {
                     (qdata.length === 0 && !newQual) &&
-                    <div className='qualification-card-h3 data-exception-featurebox' style={{ fontFamily: 'Inter-light-italic' }}>
-                        <Lottie className="data-exception-ani" animationData={Turtle} loop={true} />
-                        <p>Your profile is like the vast expanse of space let's add some stars! 🌟</p></div>
+                    <NothingToShow />
                 }
 
                 {

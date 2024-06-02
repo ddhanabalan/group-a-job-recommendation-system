@@ -9,10 +9,10 @@ export default function RedirectToRole() {
             <h1 className='redirect-to-role-h1'>Let's Get Started</h1>
             <h4>Select the account type that best suits your needs</h4>
             <div className="d-grid gap-1 col-7 mx-auto div-btn">
-                <Link to="/login/seeker"><button className="btn btn-primary btn-lg" type="button"><FaceRoundedIcon/> Personal</button></Link>
+                <Link to="/login"><button className="btn btn-primary btn-lg" type="button"><FaceRoundedIcon/> Personal</button></Link>
             </div>
             <div className="d-grid gap-1 col-7 mx-auto div-btn">
-                <Link to="/login/employer"><button className="btn btn-primary btn-lg btn-green" type="button"><LanguageRoundedIcon /> Organization</button></Link>
+                <Link to="/login/organization"><button className="btn btn-primary btn-lg btn-green" type="button"><LanguageRoundedIcon /> Organization</button></Link>
             </div>
         </div>
     )

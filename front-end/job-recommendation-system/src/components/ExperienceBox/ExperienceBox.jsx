@@ -7,8 +7,7 @@ import Stack from '@mui/material/Stack';
 import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import ExperienceCard from '../ExperienceCard/ExperienceCard';
 import ExperienceAdd from '../ExperienceCard/ExperienceAdd';
-import Lottie from "lottie-react";
-import Turtle from '../../images/Turtle-in-space.json'
+import NothingToShow from '../NothingToShow/NothingToShow';
 export default function ExperienceBox({ childData, reloadFn }) {
     useEffect(() => {
         if (childData) {
@@ -84,9 +83,7 @@ export default function ExperienceBox({ childData, reloadFn }) {
             <div className="feature-box-container">
                 {
                     (expdata.length === 0 && !newExp) &&
-                    <div className='qualification-card-h3 data-exception-featurebox' style={{ fontFamily: 'Inter-light-italic' }}>
-                        <Lottie className="data-exception-ani" animationData={Turtle} loop={true} />
-                        <p>Your profile is like the vast expanse of space let's add some stars! 🌟</p></div>
+                    <NothingToShow />
                 }
 
                 {newExp && <ExperienceAdd submitFn={addExperience} cancelFn={cancelExp} />}

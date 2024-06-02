@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState,useEffect } from 'react';
 import { v4 as uuid } from 'uuid';
 import { userAPI } from '../../api/axios';
 import { getStorage } from '../../storage/storage';
@@ -7,25 +7,59 @@ import Stack from '@mui/material/Stack';
 import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import LanguageAdd from '../LanguageAdd/LanguageAdd';
 import LanguageCard from '../LanguageCard/LanguageCard';
-import Lottie from "lottie-react";
-import Turtle from '../../images/Turtle-in-space.json'
-export default function LanguageBox({ languages, childData }) {
-
-    const [ldata, SetLdata] = useState(childData);
+import NothingToShow from '../NothingToShow/NothingToShow';
+export default function LanguageBox({ languages, childData, reloadFn }) {
+    useEffect(() => {
+        if (childData) {
+            SetLdata(childData)
+        }
+    }, [childData])
+    const [ldata, SetLdata] = useState([]);
     const [newLang, SetNewLang] = useState(false)
-    const updateLang = (data) => {
-        //updates existing qualification data from array. new data is passed in along with existing data id
-        SetLdata(ldata.map(e => {
-            if (e.id === data.id) {
-                e.language = data.language
-                e.language_proficiency = data.language_proficiency
-            }
-            return (e)
-        }))
+    const addLang = async (data) => {
+        try {
+            console.log(data)
+            await userAPI.post('/seeker/language/', data, {
+                headers: {
+                    'Authorization': `Bearer ${getStorage("userToken")}`
+                }
+            })
+            SetNewLang(false)
+            reloadFn()
+        }
+        catch (e) {
+            console.log(e)
+        }
     }
-    const deleteLang = (id) => {
+    const updateLang = async(data) => {
+        //updates existing qualification data from array. new data is passed in along with existing data id
+        try {
+            const {id, ...passData} = data
+            await userAPI.put(`/seeker/language/${id}`, passData, {
+                headers: {
+                    'Authorization': `Bearer ${getStorage("userToken")}`
+                }
+            })
+            reloadFn()
+        }
+        catch (e) {
+            console.log(e)
+        }
+    }
+    const deleteLang = async(id) => {
         //deletes existing qualification from array by referring to the id passed in
-        SetLdata(ldata.filter(e => { return id !== e.id }))
+        try {
+            await userAPI.delete(`/seeker/language/${id}`,{
+                headers: {
+                    'Authorization': `Bearer ${getStorage("userToken")}`
+                }
+            })
+            reloadFn()
+        }
+        catch (e) {
+            console.log(e)
+        }
+        // SetLdata(ldata.filter(e => { return id !== e.id }))
     };
     return (
         <div className="feature-box feature-box-middle-pane" id="feature-box-middle-pane">
@@ -38,13 +72,11 @@ export default function LanguageBox({ languages, childData }) {
             <div className="feature-box-container">
                 {
                     (ldata.length === 0 && !newLang) &&
-                    <div className='qualification-card-h3 data-exception-featurebox' style={{ fontFamily: 'Inter-light-italic' }}>
-                        <Lottie className="data-exception-ani" animationData={Turtle} loop={true} />
-                        <p>Your profile is like the vast expanse of space let's add some stars! 🌟</p></div>
+                    <NothingToShow/>
                 }
 
                 {
-                    newLang && <LanguageAdd languages={languages} submitFn={addQualification} cancelFn={cancelQual} />
+                    newLang && <LanguageAdd languages={languages} submitFn={addLang} cancelFn={() => SetNewLang(false)} />
                 }
 
                 {

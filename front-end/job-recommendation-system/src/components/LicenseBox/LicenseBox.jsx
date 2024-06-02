@@ -7,8 +7,7 @@ import Stack from '@mui/material/Stack';
 import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import LicenseAdd from '../LicenseCard/LicenseAdd';
 import LicenseCard from '../LicenseCard/LicenseCard';
-import Lottie from "lottie-react";
-import Turtle from '../../images/Turtle-in-space.json'
+import NothingToShow from '../NothingToShow/NothingToShow';
 export default function LicenseBox({ childData, reloadFn }) {
     useEffect(() => {
         if (childData) {
@@ -85,9 +84,7 @@ export default function LicenseBox({ childData, reloadFn }) {
             <div className="feature-box-container">
                 {
                     (licensedata.length === 0 && !newLic) &&
-                    <div className='qualification-card-h3 data-exception-featurebox' style={{ fontFamily: 'Inter-light-italic' }}>
-                        <Lottie className="data-exception-ani" animationData={Turtle} loop={true} />
-                        <p>Your profile is like the vast expanse of space let's add some stars! 🌟</p></div>
+                    <NothingToShow />
                 }
 
                 {newLic && <LicenseAdd submitFn={addLicense} cancelFn={cancelLic} />}

@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Navigate } from 'react-router-dom';
 import './LoginPage.css';
 import LoginForm from '../../components/LoginForm/LoginForm';
 import LoaderAnimation from '../../components/LoaderAnimation/LoaderAnimation';
@@ -8,14 +9,15 @@ import {setStorage} from '../../storage/storage';
 import qs from 'qs';
 import ConfBox from '../../components/ConfirmMsgBox/ConfirmMsgBox';
 import '../pages.css';
-export default function LoginPage({ updateState }) {
+export default function LoginPage({ userType }) {
+    const [redirect,SetRedirect]=useState(false)
     const [loading, SetLoading] = useState(false)
     const [serverMsg, SetServerMsg] = useState(null);
     const redirectFn = (response) => {
         console.log(response.data)
         setStorage("userToken",response.data.access_token);
         setStorage("refToken", response.data.refresh_token);
-        response.status === 200 && updateState(true)
+        response.status === 200 && SetRedirect(true)
     }
     const callAPI = async (data) => {
         SetLoading(true)
@@ -37,6 +39,7 @@ export default function LoginPage({ updateState }) {
 
     return (
         <div id="page">
+            {redirect && < Navigate to="/profile" />}
             {serverMsg?
                 <div className='message-box-login'>
                     <ConfBox message={serverMsg} animation={failanim} bgcolor="#FFE5B4"/>
