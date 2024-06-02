@@ -126,17 +126,6 @@ class SeekersCertificate(BaseModel):
         from_attributes = True
 
 
-class SeekersProfile(SeekersDetails):
-    profile_picture: Optional[str] = None
-    loc_type: Optional[List[SeekersLocType]]
-    emp_type: Optional[List[SeekersEmpType]]
-    prev_education: Optional[List[SeekersEducation]]
-    skill: Optional[List[SeekersSkill]]
-    former_jobs: Optional[List[SeekersFormerJob]]
-    poi: Optional[List[SeekersPOI]]
-    certificate: Optional[List[SeekersCertificate]]
-
-
 class JobUserDetailsIn(BaseModel):
     user_ids: List[int]
 
@@ -152,3 +141,15 @@ class SeekersLanguage(BaseModel):
 
     class Config:
         from_attributes = True
+
+
+class SeekersProfile(SeekersDetails):
+    profile_picture: Optional[str] = None
+    loc_type: Optional[List[SeekersLocType]]
+    emp_type: Optional[List[SeekersEmpType]]
+    prev_education: Optional[List[SeekersEducation]]
+    skill: Optional[List[SeekersSkill]]
+    former_jobs: Optional[List[SeekersFormerJob]]
+    poi: Optional[List[SeekersPOI]]
+    certificate: Optional[List[SeekersCertificate]]
+    language: Optional[List[SeekersLanguage]]
