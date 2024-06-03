@@ -27,7 +27,7 @@ async def check_authorization(authorization: str = Header(...)):
             )
 
 
-async def get_current_user(authorization: str = Header(...)):
+async def get_current_user(authorization: str = Header(...),user_type :str = "seeker"):
     headers = {"Authorization": authorization}
     async with httpx.AsyncClient() as client:
         response = await client.get(

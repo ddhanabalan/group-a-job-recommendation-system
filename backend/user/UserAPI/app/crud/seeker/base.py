@@ -25,7 +25,7 @@ def create(db: Session, user: seekerschema.SeekersBase, profile_picture) -> bool
         return False
 
 
-def get_userid_from_username(db: Session, username: str) -> int | None:
+def get_userid_from_username(db: Session, username: str):
     """
     Retrieve user ID of a seeker based on username.
 
