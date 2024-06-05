@@ -9,7 +9,9 @@ class JobVacancyBase(BaseModel):
     job_desc: Optional[str] = None
     company_name: Optional[str] = None
     requirement: Optional[str] = None
-    salary: Optional[str] = None
+    currency: Optional[str] = None
+    start_salary: Optional[str] = None
+    end_salary: Optional[str] = None
     loc_type: Optional[str] = None
     experience: Optional[str] = None
     job_position: Optional[str] = None
