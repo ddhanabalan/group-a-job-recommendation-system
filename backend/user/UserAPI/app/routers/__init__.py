@@ -2,8 +2,8 @@ from fastapi import APIRouter
 from sqlalchemy.orm import Session
 
 from .. import crud
-from ..schemas import seekerschema
-from ..models import seekermodel
+from ..schemas import seekerschema, recruiterschema
+from ..models import seekermodel, recruitermodel
 from ..config import PORT, JOB_API_HOST, AUTH_API_HOST
 from ..utils import (
     get_db,
@@ -26,6 +26,9 @@ from .seekers import (
     language,
 )
 
+from .recruiters import (
+    base
+)
 
 seeker_router = APIRouter(prefix="/seeker")
 recruiter_router = APIRouter(prefix="/recruiter")
@@ -40,3 +43,5 @@ seeker_router.include_router(seekers.skill.router)
 seeker_router.include_router(seekers.poi.router)
 seeker_router.include_router(seekers.certificate.router)
 seeker_router.include_router(seekers.language.router)
+
+recruiter_router.include_router(recruiters.base.router)
