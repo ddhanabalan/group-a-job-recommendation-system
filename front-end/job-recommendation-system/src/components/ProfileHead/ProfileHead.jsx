@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { styled } from '@mui/material/styles';
 import { FastAverageColor } from 'fast-average-color';
 import { Button } from '@mui/material';
+import Skeleton from '@mui/material/Skeleton';
 import ProfileEdit from '../ProfileEdit/ProfileEdit';
 import AccountSettingsBtn from '../AccountSettingsBtn/AccountSettingsBtn';
 import IconButton from '@mui/material/IconButton';
@@ -11,7 +12,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import profilePlaceholder from '../../images/profile_placeholder.svg';
 import './ProfileHead.css'
-export default function ProfileHead({ data, blurFn, subForm, isNotEditing, setIsNotEditing }) {
+export default function ProfileHead({ data, blurFn, logOutFn, subForm, isNotEditing, setIsNotEditing }) {
     const [img, setImg] = useState('');
     const [bannerColor, setBannerColor] = useState('');
     useEffect(() => {
@@ -47,7 +48,7 @@ export default function ProfileHead({ data, blurFn, subForm, isNotEditing, setIs
         <form noValidate autoComplete='on' className="profile-head-section"  >
             <div className="banner" style={{ backgroundColor: bannerColor }}>
                 <Stack direction="column" spacing={7} className='feature-actions'>
-                    <AccountSettingsBtn />
+                    <AccountSettingsBtn logOutFn={logOutFn} />
                     {isNotEditing ?
                         <IconButton aria-label="edit" onClick={() => {
                             setIsNotEditing(false)
@@ -85,8 +86,8 @@ export default function ProfileHead({ data, blurFn, subForm, isNotEditing, setIs
                 </div>
                 {isNotEditing ?
                     <div className="profile-head-info-div profile-head-info-div2">
-                        <h1 className="profile-name">{data.first_name} {data.last_name}</h1>
-                        <p className="profile-location">{data.city}, {data.country}</p>
+                        <h1 className="profile-name">{data.first_name && data.last_name ? data.first_name + ' ' + data.last_name : <Skeleton className="profile-name" variant="text" sx={{width:'20rem'}} />}</h1>
+                        <p className="profile-location">{data.city && data.country ? data.city + ', ' + data.country : <Skeleton className="profile-location" variant="text" sx={{ width: '15rem' }} />}</p>
                         <p className="profile-bio">{data.bio ? data.bio : "Tell the world about yourself"}</p>
                     </div>
                     :

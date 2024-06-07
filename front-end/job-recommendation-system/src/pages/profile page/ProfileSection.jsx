@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
-import { v4 as uuid } from 'uuid';
+import { useLocation,Navigate } from 'react-router-dom';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { getStorage, setStorage } from '../../storage/storage';
@@ -20,6 +19,12 @@ export default function ProfileSection({ data }) {
     const [newData, SetnewData] = useState(data);
     const [isNotEditing, SetIsNotEditing] = useState(true)
     const { state } = useLocation();
+
+    const [redirectHome, SetRedirectHome] = useState(false);
+    const logOut = () => {
+        console.log('helo')
+        SetRedirectHome(true)
+    }
     const updateEditStatus = (value) => {
         SetIsNotEditing(value)
     }
@@ -154,9 +159,10 @@ export default function ProfileSection({ data }) {
 
     return (
         <>
+            {redirectHome && <Navigate to='/' />}
             {data ?
                 <div id="profile-page">
-                    <ProfileHead data={newData} blurFn={blurBody} subForm={subForm} isNotEditing={isNotEditing} setIsNotEditing={updateEditStatus} />
+                    <ProfileHead data={newData} logOutFn={logOut} blurFn={blurBody} subForm={subForm} isNotEditing={isNotEditing} setIsNotEditing={updateEditStatus} />
                     <NavigationBar active="profile" redirect={state} />
                     <div className={profileBodyClass}>
                         <div className="profile-pane profile-left-pane">

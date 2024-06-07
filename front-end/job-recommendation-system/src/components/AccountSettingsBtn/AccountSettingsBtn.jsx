@@ -8,7 +8,8 @@ import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import SupportAgentRoundedIcon from '@mui/icons-material/SupportAgentRounded';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
 import './AccountSettingsBtn.css';
-export default function AccountSettingsBtn() {
+export default function AccountSettingsBtn({ logOutFn }) {
+
     const [anchorEl, setAnchorEl] = React.useState(null);
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
@@ -46,9 +47,7 @@ export default function AccountSettingsBtn() {
                     'aria-labelledby': 'basic-button',
                 }}
             >
-                {/* <MenuItem onClick={handleClose}>Profile</MenuItem>
-                <MenuItem onClick={handleClose}>My account</MenuItem> */}
-                <MenuItem onClick={handleClose}><LogoutRoundedIcon />Logout</MenuItem>
+                <MenuItem onClick={logOutFn}><LogoutRoundedIcon />Logout</MenuItem>
                 <Divider orientation="horizontal" variant="middle" flexItem />
                 <MenuItem onClick={handleClose}><SupportAgentRoundedIcon />Help</MenuItem>
                 <Divider orientation="horizontal" variant="middle" flexItem />

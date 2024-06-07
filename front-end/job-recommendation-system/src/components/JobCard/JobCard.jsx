@@ -4,7 +4,7 @@ import Stack from '@mui/material/Stack';
 import { v4 as uuid } from 'uuid';
 import IconButton from '@mui/material/IconButton';
 import CorporateFareRoundedIcon from '@mui/icons-material/CorporateFareRounded';
-export default function JobCard({ data, id, expandView, background }) {
+export default function JobCard({ data, id, expandView, background,profilePictureStyle }) {
 
     return (
         <div className="card" onClick={() => expandView(data.id)} style={background}>
@@ -20,7 +20,7 @@ export default function JobCard({ data, id, expandView, background }) {
                 <p className='card-salary'>{data.currency}{data.salary[0]} - {data.salary[1]} per month</p>
             </div>
             <div className='card-div2'>
-                <div className='card-img-container qualification-card-image'>
+                <div className='card-img-container qualification-card-image' style={profilePictureStyle}>
                     <IconButton disabled>
                         <CorporateFareRoundedIcon fontSize='large' />
                     </IconButton>

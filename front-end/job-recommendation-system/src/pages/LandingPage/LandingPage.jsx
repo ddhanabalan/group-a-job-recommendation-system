@@ -1,8 +1,10 @@
+import { useEffect } from 'react';
 import '../pages.css';
 import RedirectToRole from '../../components/RedirectToRole/RedirectToRole';
 import logo from '../../images/careergo_logo.svg'
 import './LandingPage.css'
 export default function LandingPage() {
+    useEffect(() => { sessionStorage.clear() },[])
     return (
         <div id="page" className='landing-page'>
             <div className='landing-page-logo'>

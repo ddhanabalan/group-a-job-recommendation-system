@@ -11,6 +11,7 @@
     cursor: pointer;
     border: solid 1px rgb(189, 187, 187);
     backdrop-filter: blur(10px);
+    transition: border 200ms ease-in-out;
 }
 .card:hover{
     border: solid 1px black;

@@ -19,9 +19,7 @@ function LoginForm({ callAPI }) {
     setVisible(!visible);
   }
 
-  // const { info, setInfo } = useState(); 
 
-  // console.log("errors", { errors })
   return (
     <>
       {/*Login Form*/}
