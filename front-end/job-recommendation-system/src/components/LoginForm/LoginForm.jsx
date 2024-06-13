@@ -14,7 +14,7 @@ function LoginForm({ callAPI }) {
   const { register, formState: { errors }, handleSubmit } = useForm();
   const [visible, setVisible] = useState(false);
   const location = useLocation();
-  const userType = location["pathname"].includes("employer") ? "employer" : "seeker";
+  const userType = location["pathname"].includes("organization") ? "employer" : "seeker";
   function handleVisibility() {
     setVisible(!visible);
   }
@@ -79,7 +79,7 @@ function LoginForm({ callAPI }) {
 
 
         <a href="" className="lk">forgot your password?</a>
-        <a className="sigup-redirect" href={`/signup/${userType}`}>New User? SignUp</a>
+        <a className="sigup-redirect" href={userType==="employer"?"/signup/organization":"/signup"}>New User? SignUp</a>
         {/* <Link to={'../signup/' + userType} state={{ "userType": userType }}></Link> */}
 
 

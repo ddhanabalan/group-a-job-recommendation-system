@@ -27,8 +27,8 @@ export default function LoginPage({fixUser}) {
                     'Authorization': `Bearer ${getStorage("userToken")}`
                 }
             });
-            response.data.type === "seeker" ? SetRedirectSeeker(true) : SetRedirectEmployer(true)
             fixUser(response.data.type)
+            response.data.type === "seeker" ? SetRedirectSeeker(true) : SetRedirectEmployer(true)
            
         } catch (e) {
             console.log(e)

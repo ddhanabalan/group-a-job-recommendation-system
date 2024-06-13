@@ -18,7 +18,7 @@ function SignUpForm() {
   const [visible, setVisible] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const userType = location["pathname"].includes("employer") ? "employer" : "seeker";
+  const userType = location["pathname"].includes("organization") ? "employer" : "seeker";
 
   //const userType = location.state["userType"];
   // const { info, setInfo } = useState(); 
@@ -34,7 +34,7 @@ function SignUpForm() {
   function subForm(data) {
     //Form data submission and passing it to sign up page part 2
     console.log(data)
-    navigate("../signup2/" + userType, { state: { "email": data.email, "password": data.password, "userType": userType } })
+    navigate(userType==="employer"?"/signup/organization/personal-details":"/signup/personal-details", { state: { "email": data.email, "password": data.password, "userType": userType } })
   }
   const color = watch("password") === watch("cpassword") ? "#07F407" : "#ff2d00"
 

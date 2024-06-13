@@ -35,7 +35,7 @@ function SignUpForm2() {
   const industries = ['Automobile', 'Agriculture', 'Medical', 'Defense', 'Aeronautical', 'Chemical']
   const location = useLocation();
   const navigate = useNavigate();
-  const userType = location["pathname"].includes("employer") ? "employer" : "seeker";
+  const userType = location["pathname"].includes("organization") ? "employer" : "seeker";
 
   //error messages received after submitting form
   /*const serverErrorMsgs= {200: "Account creation request sent successfully",
@@ -78,7 +78,7 @@ function SignUpForm2() {
     console.log(location)
     const newdata = { ...data, ...location.state, 'profile_picture': img,'profile_banner_color':bannerColor};
     const checkUserType = newdata.userType
-    console.log("chewcked type", checkUserType)
+    console.log("checked type", checkUserType)
     delete newdata.userType
     console.log("full data", newdata);
     try {
@@ -220,17 +220,18 @@ function SignUpForm2() {
                       <p className="error-message">{errors.last_name?.message || ""}</p>
                     </div>
                     :
-                    /*Address*/
+                    /*Country*/
                     <div>
-                      <p className="text-head">Address<span className="text-danger"> *</span></p>
-                      <TextField className="personal-details-input" variant="outlined"
-
-                        error={'address' in errors}
-                        {...register("address",
+                      <p className="text-head">Industry<span className="text-danger"> *</span></p>
+                      <TextField className="personal-details-input" variant="outlined" select defaultValue=""
+                        error={'industry' in errors}
+                        {...register("industry",
                           {
-                            required: "please enter address",
-                          })} />
-                      <p className="error-message">{errors.address?.message || ""}</p>
+                            required: "please select industry"
+                          })}>
+                        {industries.map((op) => (<MenuItem key={op} value={op}>{op}</MenuItem>))}
+                      </TextField>
+                      <p className="error-message">{errors.industry?.message || ""}</p>
                     </div>
                 }
               </div>
@@ -340,18 +341,17 @@ function SignUpForm2() {
                       <p className="error-message">{errors.gender?.message || ""}</p>
                     </div>
                     :
-                    /*Industry*/
+                    /*Address*/
                     <div>
-                      <p className="text-head">Industry<span className="text-danger"> *</span></p>
-                      <TextField className="personal-details-input" variant="outlined" select defaultValue=""
-                        error={'industry' in errors}
-                        {...register("industry",
+                      <p className="text-head">Address<span className="text-danger"> *</span></p>
+                      <TextField className="personal-details-input" variant="outlined"
+
+                        error={'address' in errors}
+                        {...register("address",
                           {
-                            required: "please select industry"
-                          })}>
-                        {industries.map((op) => (<MenuItem key={op} value={op}>{op}</MenuItem>))}
-                      </TextField>
-                      <p className="error-message">{errors.industry?.message || ""}</p>
+                            required: "please enter address",
+                          })} />
+                      <p className="error-message">{errors.address?.message || ""}</p>
                     </div>
                 }
               </div>

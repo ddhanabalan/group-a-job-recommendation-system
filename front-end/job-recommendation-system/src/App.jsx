@@ -28,11 +28,12 @@ function App() {
           {/* general routes */}
           <Route index element={<LandingPage />} />
           <Route path="/login" element={<LoginPage fixUser={fixUser} />} />
-          <Route path="/login/organization" element={<LoginPage userType="employer" />} />
-          <Route path="/signup/seeker" element={<SignUpPage />} />
-          <Route path="/signup/employer" element={<SignUpPage />} />
-          <Route path="/signup2/seeker" element={<SignUpPage2 />} />
-          <Route path="/signup2/employer" element={<SignUpPage2 />} />
+          <Route path="/login/organization" element={<LoginPage fixUser={fixUser} />} />
+          {/* seeker signup  */}
+          <Route path="/signup" element={<SignUpPage />} /> 
+          <Route path="/signup/organization" element={<SignUpPage />} />
+          <Route path="/signup/personal-details" element={<SignUpPage2 />} />
+          <Route path="/signup/organization/personal-details" element={<SignUpPage2 />} />
           <Route path="/verify/:accessToken" element={<VerifyAccount />} />
           {/* routes common to signed-in users */}
           <Route element={<PrivateRoutes />}>
