@@ -1,4 +1,5 @@
-import * as React from 'react';
+import { useState } from 'react';
+import { Navigate } from 'react-router-dom';
 import IconButton from '@mui/material/IconButton';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
@@ -10,7 +11,8 @@ import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
 import './AccountSettingsBtn.css';
 export default function AccountSettingsBtn({ logOutFn }) {
 
-    const [anchorEl, setAnchorEl] = React.useState(null);
+    const [anchorEl, setAnchorEl] = useState(null);
+    const [deleteAcc, SetDeleteAcc] = useState(false);
     const open = Boolean(anchorEl);
     const handleClick = (event) => {
         setAnchorEl(event.currentTarget);
@@ -18,9 +20,12 @@ export default function AccountSettingsBtn({ logOutFn }) {
     const handleClose = () => {
         setAnchorEl(null);
     };
-
+    const handleDelete = () => {
+        SetDeleteAcc(true)
+    }
     return (
         <div>
+            {deleteAcc && <Navigate to='/delete' />}
             <IconButton
                 id="basic-button"
                 aria-controls={open ? 'basic-menu' : undefined}
@@ -51,7 +56,7 @@ export default function AccountSettingsBtn({ logOutFn }) {
                 <Divider orientation="horizontal" variant="middle" flexItem />
                 <MenuItem onClick={handleClose}><SupportAgentRoundedIcon />Help</MenuItem>
                 <Divider orientation="horizontal" variant="middle" flexItem />
-                <MenuItem sx={{ color: 'red' }} onClick={handleClose}><DeleteOutlineRoundedIcon />Delete Account</MenuItem>
+                <MenuItem sx={{ color: 'red' }} onClick={handleDelete}><DeleteOutlineRoundedIcon />Delete Account</MenuItem>
             </Menu>
         </div>
     );

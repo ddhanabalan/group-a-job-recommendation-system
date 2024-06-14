@@ -10,36 +10,57 @@
     width: 100%;
     background-color: aquamarine;
 }
-.banner button{
+
+.banner button {
     background-color: rgba(255, 255, 255, 0.63);
 }
+
 .profile-head-info {
     width: 100%;
     display: flex;
-   justify-content: flex-start;
-   position: relative;
+    justify-content: flex-start;
+    position: relative;
 }
-.profile_info_edit{
+
+.profile_info_edit {
     width: 100%;
 }
-.profile-name input{
+
+.profile-name input {
     font-size: 2.1rem;
     height: min-content;
     padding-bottom: 0;
 }
-.profile-name div{
+
+.profile-name div {
     margin-top: .2rem;
 }
+
+.profile-location {
+    display: flex;
+    align-items: center;
+    padding: .1rem .3rem;
+    border-radius: 15px;
+    background-color: #e9ecef;
+}
+
 .profile-location input {
     font-size: 1.1rem;
 }
+
+.profile-bio {
+    margin-top: .6rem;
+}
+
 .profile-bio textarea {
     font-size: .8rem;
 }
+
 .profile-head-info-div {
     display: flex;
     flex-direction: column;
 }
+
 .profile-head-info-div label,
 .profile-head-info-div label:hover,
 .profile-head-info-div label:active {
@@ -58,13 +79,15 @@
     justify-content: center;
 
 }
-.profile-head-info-div label span{
+
+.profile-head-info-div label span {
     margin: 0;
     padding: 0;
 }
+
 .profile-head-info-div1 {
     height: 100%;
-    margin:0  1rem;
+    margin: 0 1rem;
     align-items: center;
 }
 
@@ -81,11 +104,13 @@
     position: relative;
     bottom: 2rem;
 }
-.profile-img-container img{
+
+.profile-img-container img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
+
 .profile-location {
     font-size: 1.1rem;
 }

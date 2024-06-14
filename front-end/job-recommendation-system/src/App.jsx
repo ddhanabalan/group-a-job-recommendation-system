@@ -6,6 +6,7 @@ import { PrivateRoutes, SeekerRoutes, EmployerRoutes } from './utils/PrivateRout
 import CandidateSection from './pages/CandidateSection/CandidateSection';
 import CreateJobVacancy from './pages/CreateJobVacancy/CreateJobVacancy';
 import Error from './pages/Error/Error';
+import DeleteAccount from './components/DeleteAccount/DeleteAccount';
 import JobSection from './pages/JobSection/JobSection';
 import LandingPage from './pages/LandingPage/LandingPage';
 import LoginPage from './pages/LoginPage/LoginPage';
@@ -29,8 +30,9 @@ function App() {
           <Route index element={<LandingPage />} />
           <Route path="/login" element={<LoginPage fixUser={fixUser} />} />
           <Route path="/login/organization" element={<LoginPage fixUser={fixUser} />} />
+          <Route path='/delete' element={<DeleteAccount />} />
           {/* seeker signup  */}
-          <Route path="/signup" element={<SignUpPage />} /> 
+          <Route path="/signup" element={<SignUpPage />} />
           <Route path="/signup/organization" element={<SignUpPage />} />
           <Route path="/signup/personal-details" element={<SignUpPage2 />} />
           <Route path="/signup/organization/personal-details" element={<SignUpPage2 />} />
