@@ -33,6 +33,7 @@ async def create_seeker_education(
     user = await get_current_user(authorization)
     user_id = user.get("user_id")
     education.user_id = user_id
+    print(education)
     created_education = crud.seeker.education.create(db, education)
     if not created_education:
         raise HTTPException(
