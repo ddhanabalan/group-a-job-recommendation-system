@@ -13,12 +13,13 @@ class RecruiterBase(BaseModel):
     profile_picture: Optional[str] = None
     country: Optional[str] = None
     industry: Optional[str] = None
+    city: Optional[str] = None
+    phone: Optional[str] = None
 
 
 class RecruiterDetails(RecruiterBase):
     bio: Optional[str] = None
     dob: Optional[PastDate]
-    city: Optional[str] = None
     company_size: Optional[str] = None
     headquarters: Optional[str] = None
     location: Optional[str] = None

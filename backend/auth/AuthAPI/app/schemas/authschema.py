@@ -70,4 +70,6 @@ class UserInRecruiter(UserIn):
     profile_banner_color: Optional[str] = None
     profile_picture: Optional[str] = None
     country: Optional[str] = None
+    city: Optional[str] = None
     industry: Optional[str] = None
+    phone: Optional[str] = None
