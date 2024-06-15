@@ -66,6 +66,25 @@ services:
       app_network:
         ipv4_address: 172.20.0.5
 
+
+  modelapi:
+    build:
+      context: ./user
+      dockerfile: Dockerfile
+    ports:
+      - "8004:8000"
+    depends_on:
+      - mysql_server
+    volumes:
+      - ./Model/ModelAPI:/app
+    environment:
+      SQL_HOST: mysql_server
+      AUTH_API_HOST: authapi
+      JOB_API_HOST: jobapi
+    networks:
+      app_network:
+        ipv4_address: 172.20.0.7
+
 networks:
   app_network:
     driver: bridge
