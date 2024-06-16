@@ -11,7 +11,7 @@ class RecruiterDetails(Base):
     user_id = Column(Integer, primary_key=True, index=True)
     username = Column(String(32), unique=True)
     company_name = Column(String(128))
-    profile_picture = Column(LargeBinary)
+    profile_picture = Column(LargeBinary(length=(2**24)-1))
     email = Column(String(32), unique=True)
     bio = Column(String(512))
     address = Column(String(256))

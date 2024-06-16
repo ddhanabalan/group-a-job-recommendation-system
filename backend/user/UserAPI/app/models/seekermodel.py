@@ -26,7 +26,7 @@ class SeekersDetails(Base):
     address = Column(String(256))
     city = Column(String(128))
     country = Column(String(128))
-    profile_picture = Column(LargeBinary)
+    profile_picture = Column(LargeBinary(length=(2**24)-1))
     institution = Column(String(256))
     experience = Column(String(256))
     education = Column(String(256))
