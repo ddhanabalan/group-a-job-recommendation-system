@@ -20,7 +20,7 @@ export default function FeatureBoxMiddlePane({ childData,showSuccessMsg,showFail
     const addQualification = async (e) => {
         //accepts new qualification data and adds it into existing array of qualifications
         try {
-            const data = { 'education_title': e.qualification, 'education_provider': e.qualification_provider, 'start_year': e.start_year, 'end_year': e.end_year }
+            const data = { 'education_title': e.education_title, 'education_provider': e.education_provider, 'start_year': e.start_year, 'end_year': e.end_year }
             console.log(data)
             const response = await userAPI.post('/seeker/education', data, {
                 headers: {
@@ -54,7 +54,7 @@ export default function FeatureBoxMiddlePane({ childData,showSuccessMsg,showFail
                 }
             })
               response.request.status===200&&showSuccessMsg()
-            SetQdata(expdata.filter(e => { return id !== e.id }))
+            SetQdata(qdata.filter(e => { return id !== e.id }))
         } catch (e) {
             console.log(e)
             showFailMsg()

@@ -1,5 +1,6 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
+import { useState } from 'react';
 import { setStorage } from './storage/storage';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { PrivateRoutes, SeekerRoutes, EmployerRoutes } from './utils/PrivateRoutes';
@@ -17,9 +18,10 @@ import EmployerProfileSection from './pages/profile page/EmployerProfileSection'
 import VerifyAccount from './pages/VerifyAccount/VerifyAccount';
 import ReviewApplications from './pages/ReviewApplications/ReviewApplications';
 function App() {
-
+  const [user, SetUser] = useState();
   const fixUser = (type) => {
     console.log(type)
+    SetUser(type)
     setStorage("userType", type)
   }
   return (
@@ -39,7 +41,7 @@ function App() {
           <Route path="/verify/:accessToken" element={<VerifyAccount />} />
           {/* routes common to signed-in users */}
           <Route element={<PrivateRoutes />}>
-            <Route path="/profile" element={<ProfileSection data={{}} />} />
+            <Route path="/profile" element={user === "seeker" ? <ProfileSection data={{}} /> : <EmployerProfileSection data={{}} />} />
             <Route path="/profile/:username" element={<ProfileSection data={{}} />} />
             <Route path="/employer-profile" element={<EmployerProfileSection data={{
               userName: "NASA", first_name: "NASA - National Aeronautics and Space Administration", location: "Washington, D.C", country: "USA", bio: "We search the Universe. "

@@ -60,7 +60,7 @@ export default function ProfileSection({ data }) {
     const skillsAPI = async () => {
         try {
             const response = await utilsAPI.get(`/api/v1/skills?q=${skill}`)
-            setSkillsList([{ "Skill Name": "" }, ...response.data])
+            setSkillsList([{ "name": "" }, ...response.data])
         }
         catch (e) {
             console.log(e)
@@ -99,7 +99,7 @@ export default function ProfileSection({ data }) {
                     }
                 }
             );
-            response.request.status===200&&showSuccessMsg()
+            response.request.status === 200 && showSuccessMsg()
 
         } catch (e) {
             console.log(e)
@@ -123,12 +123,12 @@ export default function ProfileSection({ data }) {
     const handleDeleteSkill = async (id) => {
         //accepts id of Domain tag and delete them from the array 
         try {
-           const response = await userAPI.delete(`/seeker/skill/${id}`, {
+            const response = await userAPI.delete(`/seeker/skill/${id}`, {
                 headers: {
                     'Authorization': `Bearer ${getStorage("userToken")}`
                 }
             })
-              response.request.status===200&&showSuccessMsg()
+            response.request.status === 200 && showSuccessMsg()
             SetSkills(prevSkills =>
                 prevSkills.filter(e => e.id !== id))
         } catch (e) {
@@ -154,7 +154,7 @@ export default function ProfileSection({ data }) {
                         'Authorization': `Bearer ${getStorage("userToken")}`
                     }
                 })
-                  response.request.status===201&&showSuccessMsg()
+                response.request.status === 201 && showSuccessMsg()
                 SetSkill("")
                 callAPI()
                 console.log("skill", response)
@@ -173,7 +173,7 @@ export default function ProfileSection({ data }) {
     }
     const showFailMsg = () => {
         SetFailMsg(true)
-        setTimeout(()=>{SetFailMsg(false)},1500)
+        setTimeout(() => { SetFailMsg(false) }, 1500)
     }
     return (
         <>
@@ -185,15 +185,15 @@ export default function ProfileSection({ data }) {
                     <div className={profileBodyClass}>
                         <div className="profile-pane profile-left-pane">
                             {/* <FeatureBox data={{ title: "At a Glance" }} /> */}
-                            <ContactCard 
-                            data={{title: "Contacts and Profiles", addIcon: false, editIcon: true}} 
-                            contactData={newData} reloadFn={callAPI} showSuccessMsg={showSuccessMsg } showFailMsg={showFailMsg} />
+                            <ContactCard
+                                data={{ title: "Contacts and Profiles", addIcon: false, editIcon: true }}
+                                contactData={newData} reloadFn={callAPI} showSuccessMsg={showSuccessMsg} showFailMsg={showFailMsg} />
                         </div>
                         <div className="profile-pane profile-middle-pane">
-                            <ExperienceBox childData={newData.former_jobs} reloadFn={callAPI} showSuccessMsg={showSuccessMsg } showFailMsg={showFailMsg}/>
+                            <ExperienceBox childData={newData.former_jobs} reloadFn={callAPI} showSuccessMsg={showSuccessMsg} showFailMsg={showFailMsg} />
                             <FeatureBoxMiddlePane //component defaults to QualificationBox
                                 childData={newData.prev_education}
-                                showSuccessMsg={showSuccessMsg } showFailMsg={showFailMsg}
+                                showSuccessMsg={showSuccessMsg} showFailMsg={showFailMsg}
                             />
                             {/* <FeatureBoxMiddlePane data={{ title: "Licenses and certifications ", edit: true, isLanguage: false, cardData: { qualification_label: "Name", qualification_provider: "Issuing organization" } }}
                                 childData={[
@@ -201,14 +201,14 @@ export default function ProfileSection({ data }) {
                                     { qualification: "Master of science - Computer Science", id: uuid(), qualification_provider: "Massachusetts Institute of Technology (MIT)", start_year: 2005, end_year: 2009 }
                                 ]} /> */}
                             <LicenseBox
-                            showSuccessMsg={showSuccessMsg } showFailMsg={showFailMsg}
+                                showSuccessMsg={showSuccessMsg} showFailMsg={showFailMsg}
                                 childData={newData.certificate} reloadFn={callAPI}
                             />
                             <AddSkills id="profile-section-skills" availableSkills={skillsList} value={skill} tags={skills} deleteFn={handleDeleteSkill} changeFn={handleChangeSkill} updateFn={handleSkill} data={{ title: "Skills", inputPlaceholder: "HTML" }} />
 
                             <LanguageBox
-                            showSuccessMsg={showSuccessMsg } 
-                            showFailMsg={showFailMsg}
+                                showSuccessMsg={showSuccessMsg}
+                                showFailMsg={showFailMsg}
                                 reloadFn={callAPI}
                                 languages={languages}
                                 childData={newData.language}
@@ -222,7 +222,7 @@ export default function ProfileSection({ data }) {
                                 </div>
                             }
                             {failMsg &&
-                                <div className="message-from-server" style={{ backgroundColor:"#f7cad0a1",width:'20rem'}}>
+                                <div className="message-from-server" style={{ backgroundColor: "#f7cad0a1", width: '20rem' }}>
                                     {/* <ConfBox message={"Changes saved"} animation={cloudAnimation} bgcolor="#90e0ef" /> */}
                                     <p>Failed to update changes &emsp; </p>
                                     <Lottie className="success-ani" animationData={failAnimation} loop={true} />

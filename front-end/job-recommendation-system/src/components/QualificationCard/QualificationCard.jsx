@@ -30,8 +30,8 @@ export default function QualificationCard({ data, deleteFn, submitFn }) {
                         </IconButton>
                     </div>
                     <div className="qualification-card-content">
-                        <h2 className='qualification-card-h2'>{data.qualification}</h2>
-                        <h3 className='qualification-card-h3'>{data.qualification_provider}</h3>
+                        <h2 className='qualification-card-h2'>{data.education_title}</h2>
+                        <h3 className='qualification-card-h3'>{data.education_provider}</h3>
                         <p className='qualification-card-p'>{data.start_year + " - " + data.end_year}</p>
                     </div>
                     <div className="qualification-card-action-btns">
@@ -49,26 +49,26 @@ export default function QualificationCard({ data, deleteFn, submitFn }) {
                 <form className='qualification-add-form qualification-card' noValidate autoComplete='on' onSubmit={handleSubmit(editData)}>
                     <div className="qualification-card-image"></div>
                     <div className="qualification-card-content">
-                        <TextField className='qualification-add-h2' defaultValue={data.qualification}
+                        <TextField className='qualification-add-h2' defaultValue={data.education_title}
                             sx={{ marginBottom: '.7rem' }}
                             placeholder="Ex: B.Tech in Electronics"
                             variant="outlined"
                             label="Course/Degree"
                             InputLabelProps={{ shrink: true }}
                             size='small'
-                            error={'qualification' in errors}
-                            {...register("qualification", {
+                            error={'education_title' in errors}
+                            {...register("education_title", {
                                 required: "qualification cannot be empty"
                             })} />
-                        <TextField className='qualification-add-h3' defaultValue={data.qualification_provider}
+                        <TextField className='qualification-add-h3' defaultValue={data.education_provider}
                             sx={{ marginBottom: '.7rem' }}
                             placeholder="Ex: Harvard University"
                             variant="outlined"
                             label="School/College"
                             InputLabelProps={{ shrink: true }}
                             size='small'
-                            error={'qualification_provider' in errors}
-                            {...register("qualification_provider", {
+                            error={'education_provider' in errors}
+                            {...register("education_provider", {
                                 required: "qualification cannot be empty"
                             })} />
                         <div className='qualification-year'>
