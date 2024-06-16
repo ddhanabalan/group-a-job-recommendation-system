@@ -290,8 +290,15 @@ async def auth(request: Request, db: Session = Depends(get_db)):
     return {"access_token": access_token, "token_type": "bearer"}
 
 
-@app.get("/verify", status_code=status.HTTP_200_OK)
-async def verify_token(current_user=Depends(get_current_active_user)):
+@app.get("/verify/{user_type}", status_code=status.HTTP_200_OK)
+async def verify_token(user_type: authschema.UserTypeEnum, current_user=Depends(get_current_active_user)):
+    print(current_user.user_type)
+    if current_user.user_type != user_type:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid Username or Password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
     return {"detail": "Successful"}
 
 

@@ -19,9 +19,9 @@ async def check_authorization(authorization: str = Header(...), user_type: str =
     headers = {"Authorization": authorization}
     async with httpx.AsyncClient() as client:
         response = await client.get(
-            f"http://{AUTH_API_HOST}:{PORT}/verify", headers=headers
+            f"http://{AUTH_API_HOST}:{PORT}/verify/{user_type}", headers=headers
         )
-        if response.status_code != status.HTTP_200_OK or response.json() is None or response.json()["type"] != user_type:
+        if response.status_code != status.HTTP_200_OK:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid access token"
             )
