@@ -1,5 +1,6 @@
 import './Filter.css';
 import { useState, useEffect } from 'react';
+import { utilsAPI } from '../../api/axios';
 import AddTags from '../AddTags/AddTags';
 import MultipleOptions from '../MultipleOptions/MultipleOptions';
 import filtersvg from '../../images/filter.svg';
@@ -10,9 +11,24 @@ export default function Filter({ title, passFilteredDataFn = null }) {
     const [googleLocationAutoField, SetGoogleLocationAutoField] = useState(null);
     const [domain, SetDomain] = useState('');
     const [preferences, SetPreferences] = useState({});
-    const [domains, SetDomains] = useState([{ tag: "software", id: uuid() }, { tag: "data science", id: uuid() }]);
+    const [domains, SetDomains] = useState([]);
     const [location, SetLocation] = useState('');
     const [locations, SetLocations] = useState([{ tag: "Bangalore", id: uuid() }, { tag: "Chennai", id: uuid() }]);
+
+    const [skillsList, setSkillsList] = useState([])
+    const skillsAPI = async () => {
+        try {
+            const response = await utilsAPI.get(`/api/v1/skills?q=${domain}`)
+
+            setSkillsList([{ "Skill Name": "" }, ...response.data])
+        }
+        catch (e) {
+            console.log(e)
+        }
+    }
+    useEffect(() => {
+        skillsAPI()
+    }, [domain])
 
     useEffect(() => {
         const tags = domains.map(e => e.tag);
@@ -84,7 +100,7 @@ export default function Filter({ title, passFilteredDataFn = null }) {
                 <img src={filtersvg} alt="filter" />
                 <span>{title}</span>
             </div>
-            <AddTags value={domain} tags={domains} deleteFn={handleDeleteDomain} changeFn={handleChangeDomain} updateFn={handleDomain} data={{ heading: "interested domains", inputPlaceholder: "Marketing", isLocation: false }} />
+            <AddTags availableDomains={skillsList} value={domain} tags={domains} deleteFn={handleDeleteDomain} changeFn={handleChangeDomain} updateFn={handleDomain} data={{ heading: "interested domains", inputPlaceholder: "Marketing", isLocation: false }} />
             <MultipleOptions heading={"job location"} options={["On-site", "Hybrid", "Work from home"]} dataType="loc_type" onChange={handleCheckboxChange} />
             <MultipleOptions heading={"working days"} options={["Monday - Friday", "Monday - Saturday"]} dataType="workTime" onChange={handleCheckboxChange} />
             <AddTags locationFieldAutoValue={googleLocationAutoField} updatelocationFieldAutoValue={setGoogleAutoField} value={location} tags={locations} deleteFn={handleDeleteLocation} changeFn={handleChangeLocation} updateFn={handleLocation} data={{ heading: "preferred job locations", inputPlaceholder: "Kerala", isLocation: true }} />

@@ -32,7 +32,7 @@ export default function ProfileEdit({ data ,register,errors}) {
                         <div className='personal-info-container'>
                             <div id="item-3">
                                 <p className="text-head">First Name<span className="text-danger"> *</span></p>
-                                <TextField className="personal-details-input" variant="outlined" type='text'
+                                <TextField className="personal-details-input profile-edit-input" variant="outlined" type='text'
                                     defaultValue={data.first_name}
                                     error={'first_name' in errors}
                                     {...register("first_name",
@@ -48,7 +48,7 @@ export default function ProfileEdit({ data ,register,errors}) {
                             {/* Last Name */}
                             <div id="item-4">
                                 <p className="text-head">Last Name<span className="text-danger"> *</span></p>
-                                <TextField className="personal-details-input" variant="outlined"
+                            <TextField className="personal-details-input profile-edit-input" variant="outlined"
                                     defaultValue={data.last_name}
                                     error={'last_name' in errors}
                                     {...register("last_name",
@@ -65,7 +65,7 @@ export default function ProfileEdit({ data ,register,errors}) {
                             {/*Country*/}
                             <div id="item-5">
                                 <p className="text-head">Country<span className="text-danger"> *</span></p>
-                                <TextField className="personal-details-input" variant="outlined" 
+                            <TextField className="personal-details-input profile-edit-input" variant="outlined" 
                                     defaultValue={data.country}
                                     error={'country' in errors}
                                     {...register("country",
@@ -79,7 +79,7 @@ export default function ProfileEdit({ data ,register,errors}) {
                             {/*location*/}
                             <div id="item-6">
                                 <p className="text-head">City<span className="text-danger"> *</span></p>
-                                <TextField className="personal-details-input" variant="outlined"
+                            <TextField className="personal-details-input profile-edit-input" variant="outlined"
                                     defaultValue={data.city}
                                     error={'city' in errors}
                                     {...register("city",
@@ -97,7 +97,7 @@ export default function ProfileEdit({ data ,register,errors}) {
                         </div>
                         <div id="item-8">
                             <p className="text-head">Bio<span className="text-danger"> *</span></p>
-                            <TextField className="personal-details-input profile-edit-bio" variant="outlined" fullWidth
+                        <TextField className="personal-details-input profile-edit-bio profile-edit-input" variant="outlined" fullWidth
                                 multiline
                                 defaultValue={data.bio}
                                 error={'bio' in errors}

@@ -22,3 +22,7 @@ border-color: black;
 .delete-btn,.delete-btn:hover{
     background-color: #dd0426 !important;
 }
+.confirm-delete-message{
+    position: absolute;
+    top: 5rem;
+}

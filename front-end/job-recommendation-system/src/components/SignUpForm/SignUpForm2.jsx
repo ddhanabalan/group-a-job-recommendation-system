@@ -89,14 +89,14 @@ function SignUpForm2() {
       })
       setServerMsg({ ...res });
       setTimeout(() => {
-        navigate(`/login/${checkUserType}`)
+        navigate(`/login`)
       }, 5000)
 
     } catch (e) {
       setServerMsg({ ...e.response });
       console.log(e)
       setTimeout(() => {
-        navigate(`/login/${checkUserType}`)
+        navigate(`/login`)
       }, 5000)
       // alert(e.message)
     }
@@ -110,12 +110,12 @@ function SignUpForm2() {
 
   }
 
-
+  const pageClass = `page-container ${userType === "seeker" ? 'signup-page-user' : 'signup-page'}`;
   console.log("serverMessage", serverMsg)
   return (
     <>
       {/*SignUp Form part-2(Personal info from seekers/Company info from employers)*/}
-      <div className='page-container'>
+      <div className={pageClass} >
         {loading && <LoaderAnimation />}
         {Object.keys(serverMsg).length !== 0 ? /*loads server error messages and displays at top*/
           <div className="alert-boxes">

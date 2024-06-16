@@ -3,8 +3,12 @@
     top: .5rem;
     z-index:2
 }
+.profile-edit-input{
+        background-color: #D9D9D9;
+}
 .profile-edit-box{
     box-shadow: 4px 8px 40px -5px grey;
+    background-color: white;
 }
 #item-8,.profile-edit-bio>div{
     width: 100%;

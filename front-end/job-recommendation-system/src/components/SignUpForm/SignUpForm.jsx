@@ -37,7 +37,6 @@ function SignUpForm() {
     navigate(userType==="employer"?"/signup/organization/personal-details":"/signup/personal-details", { state: { "email": data.email, "password": data.password, "userType": userType } })
   }
   const color = watch("password") === watch("cpassword") ? "#07F407" : "#ff2d00"
-
   return (
     <>
       {/*SignUp Form*/}
