@@ -2,15 +2,17 @@ from datetime import datetime, timedelta
 import httpx
 from typing import Union
 
-from fastapi import FastAPI, Depends, HTTPException, status, Request
+from fastapi import FastAPI, Depends, HTTPException, status, Request, Header
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
 from authlib.integrations.starlette_client import OAuth, OAuthError
+from pydantic import EmailStr
 from starlette.middleware.sessions import SessionMiddleware
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
 
+from . import models
 from .config import (
     SECRET_KEY,
     ALGORITHM,
@@ -27,7 +29,7 @@ from .crud import authcrud
 from .database import SessionLocal, engine
 from .models import authmodel
 from .schemas import authschema
-from .utils import validate_user_update, send_verify
+from .utils import validate_user_update, send_verify, send_pwd_reset
 
 authmodel.Base.metadata.create_all(bind=engine)
 origins = [
@@ -85,10 +87,10 @@ def get_password_hashed(password):
 
 
 async def authenticate_user(
-    username: str, password: str, db: Session = Depends(get_db)
+        username: str, password: str, db: Session = Depends(get_db)
 ):
     print("in")
-    user = authcrud.get_auth_user_by_email(db=db, username=username)
+    user = authcrud.get_by_email(db=db, username=username)
     if not user:
         return False
     if not verify_password(password, user.hashed_password):
@@ -134,7 +136,7 @@ def validate_access_token(token):
 
 
 async def get_current_user(
-    token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
+        token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
 ) -> authmodel.UserAuth:
     credential_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -149,7 +151,7 @@ async def get_current_user(
     except JWTError:
         raise credential_exception
 
-    user = authcrud.get_auth_user_by_username(db, token_data.username)
+    user = authcrud.get_by_username(db, token_data.username)
     if user is None:
         raise credential_exception
 
@@ -157,7 +159,7 @@ async def get_current_user(
 
 
 async def get_current_active_user(
-    current_user: authschema.UserInDB = Depends(get_current_user),
+        current_user: authschema.UserInDB = Depends(get_current_user),
 ) -> authschema.UserInDB:
     if current_user.disabled:
         raise HTTPException(
@@ -167,7 +169,7 @@ async def get_current_active_user(
 
 
 async def get_refresh_user(
-    token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
+        token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
 ) -> authmodel.UserAuth:
     credential_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -182,7 +184,7 @@ async def get_refresh_user(
     except JWTError:
         raise credential_exception
 
-    user = authcrud.get_auth_user_by_username(db, token_data.username)
+    user = authcrud.get_by_username(db, token_data.username)
     if user is None:
         raise credential_exception
     if user.refresh_token != token or user.disabled:
@@ -192,7 +194,7 @@ async def get_refresh_user(
 
 @app.post("/token", response_model=authschema.Token)
 async def login_for_access_token(
-    form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
+        form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
 ):
     user = await authenticate_user(form_data.username, form_data.password, db=db)
     if not user:
@@ -211,7 +213,7 @@ async def login_for_access_token(
         data={"sub": user.username, "type": "refresh_token"},
         expires_delta=refresh_token_expires,
     )
-    authcrud.update_auth_user(db, user.user_id, {"refresh_token": refresh_token})
+    authcrud.update(db, user.user_id, {"refresh_token": refresh_token})
     return {
         "access_token": access_token,
         "refresh_token": refresh_token,
@@ -238,7 +240,7 @@ async def refresh_token(user=Depends(get_refresh_user), db: Session = Depends(ge
         data={"sub": user.username, "type": "refresh_token"},
         expires_delta=refresh_token_expires,
     )
-    authcrud.update_auth_user(db, user.user_id, {"refresh_token": refresh_token})
+    authcrud.update(db, user.user_id, {"refresh_token": refresh_token})
 
     return {
         "access_token": access_token,
@@ -275,7 +277,7 @@ async def auth(request: Request, db: Session = Depends(get_db)):
             detail="Invalid Username or Password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    user = authcrud.get_auth_user_by_email(db=db, username=user_info.email)
+    user = authcrud.get_by_email(db=db, username=user_info.email)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="User Not Found"
@@ -289,7 +291,7 @@ async def auth(request: Request, db: Session = Depends(get_db)):
 
 @app.get("/verify", status_code=status.HTTP_200_OK)
 async def verify_token(current_user=Depends(get_current_active_user)):
-    return {"status": "Successful"}
+    return {"detail": "Successful"}
 
 
 @app.get("/email/verify/{token}")
@@ -301,7 +303,7 @@ async def email_verify(token: str, db: Session = Depends(get_db)):
         username, data_type = validate_access_token(token)
         if username is None or data_type != "emailVerify":
             raise credential_exception
-        verified = authcrud.get_user_verified_by_username(db=db, username=username)
+        verified = authcrud.get_verified_by_username(db=db, username=username)
         if verified:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST, detail="Already Verified"
@@ -311,23 +313,12 @@ async def email_verify(token: str, db: Session = Depends(get_db)):
         raise credential_exception
 
 
-@app.post("/{user_type}/register", status_code=status.HTTP_201_CREATED)
+@app.post("/seeker/register", status_code=status.HTTP_201_CREATED)
 async def register(
-    user: Union[authschema.UserInSeeker, authschema.UserInRecruiter],
-    user_type: authschema.UserTypeEnum,
-    db: Session = Depends(get_db),
+        user: authschema.UserInSeeker,
+        db: Session = Depends(get_db),
 ):
-    if (
-        user_type.value == "seeker"
-        and type(user) is not authschema.UserInSeeker
-        or user_type.value == "recruiter"
-        and type(user) is not authschema.UserInRecruiter
-    ):
-        raise HTTPException(
-            status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
-            detail="Data Requested doesn't validate the user type",
-        )
-    existing_user = authcrud.get_auth_user_by_username(db=db, username=user.username)
+    existing_user = authcrud.get_by_username(db=db, username=user.username)
     if existing_user:
         raise HTTPException(
             status_code=status.HTTP_302_FOUND,
@@ -337,7 +328,7 @@ async def register(
     user_dict = user.dict()
     user_dict.pop("password")
     response = await httpx.AsyncClient().post(
-        url=f"http://{USER_API_HOST}:{PORT}/{user_type.value}/init", json=user_dict
+        url=f"http://{USER_API_HOST}:{PORT}/seeker/init", json=user_dict
     )
     res_data = response.json()
     if res_data is None:
@@ -350,7 +341,7 @@ async def register(
             "username": user_dict.get("username"),
             "email": user_dict.get("email"),
             "hashed_password": hashed_pwd,
-            "user_type": user_type.value,
+            "user_type": "seeker",
             "user_id": res_data["user_id"],
         }
     )
@@ -368,4 +359,121 @@ async def register(
         to_email=user_db.email,
     )
 
-    return {"status": "Created"}
+    return {"detail": "Created"}
+
+
+@app.post("/recruiter/register", status_code=status.HTTP_201_CREATED)
+async def register(
+        user: authschema.UserInRecruiter,
+        db: Session = Depends(get_db),
+):
+    existing_user = authcrud.get_by_username(db=db, username=user.username)
+    if existing_user:
+        raise HTTPException(
+            status_code=status.HTTP_302_FOUND,
+            detail="User Already Exist!",
+        )
+    hashed_pwd = get_password_hashed(user.password)
+    user_dict = user.dict()
+    user_dict.pop("password")
+    response = await httpx.AsyncClient().post(
+        url=f"http://{USER_API_HOST}:{PORT}/recruiter/init", json=user_dict
+    )
+    res_data = response.json()
+    if res_data is None:
+        raise HTTPException(
+            status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
+            detail="User Init was not Successful",
+        )
+    user_db = authschema.UserInDB(
+        **{
+            "username": user_dict.get("username"),
+            "email": user_dict.get("email"),
+            "hashed_password": hashed_pwd,
+            "user_type": "recruiter",
+            "user_id": res_data["user_id"],
+        }
+    )
+    if response.status_code == status.HTTP_201_CREATED:
+        res = authcrud.create(db=db, user=user_db)
+        if not res:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Data Creation Failed",
+            )
+
+    await send_verify(
+        token=create_token({"sub": user_db.username, "type": "emailVerify"}),
+        username=user_db.username,
+        to_email=user_db.email,
+    )
+
+    return {"detail": "Created"}
+
+
+@app.post("/forgot_password", status_code=status.HTTP_200_OK)
+async def forgot_password(email: EmailStr, db: Session = Depends(get_db)):
+    credential_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Email"
+    )
+    try:
+        user = authcrud.get_by_email(db=db, email=email)
+        if not user:
+            raise credential_exception
+        if not user.verified:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST, detail="Account Not Verified"
+            )
+        await send_pwd_reset(
+            token=create_token({"sub": user.username, "type": "forgotPassword"}),
+            username=user.username,
+            to_email=user.email,
+        )
+    except JWTError:
+        raise credential_exception
+
+    return {"detail": "Reset Link Sent"}
+
+@app.post("/forgot_password/verify/{token}", status_code=status.HTTP_200_OK)
+async def forgot_password_verify(token: str, password: authschema.ForgetPassword, db: Session = Depends(get_db)):
+    credential_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Link"
+    )
+    try:
+        username, data_type = validate_access_token(token)
+        if username is None or data_type != "forgotPassword":
+            raise credential_exception
+        hashed_pwd = get_password_hashed(password.new_password)
+        user = authcrud.get_by_username(db=db, username=username)
+        if not user:
+            raise credential_exception
+        res = authcrud.update(db=db, user_id=user.user_id, user_update={"hashed_password": hashed_pwd}, )
+        if not res:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Data Update Failed",
+            )
+        return {"detail": "Password Changed"}
+    except JWTError:
+        raise credential_exception
+
+
+@app.delete("/user", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_user(user=Depends(get_current_active_user), authorization: str = Header(...),
+                      db: Session = Depends(get_db)):
+    response = await httpx.AsyncClient().post(
+        url=f"http://{USER_API_HOST}:{PORT}/{user.user_type}/details", headers={"Authorization": {authorization}}
+    )
+    res_data = response.json()
+    if res_data is None:
+        raise HTTPException(
+            status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
+            detail="User Init was not Successful",
+        )
+    res = authcrud.delete(db=db, user_id=user.user_id)
+    if not res:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Data Deletion Failed",
+        )
+    return {"detail": "deleted successfully"}

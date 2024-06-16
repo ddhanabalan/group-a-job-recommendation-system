@@ -8,7 +8,7 @@ def get_by_username(
     Retrieve recruiter details by username.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         username (str): Username of the recruiter.
 
     Returns:
@@ -29,7 +29,7 @@ def get_by_emails(db: Session, email: str) -> recruitermodel.RecruiterDetails | 
     Retrieve recruiter details by email.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         email (str): Email of the recruiter.
 
     Returns:
@@ -50,7 +50,7 @@ def get(db: Session, user_id: int) -> recruitermodel.RecruiterDetails | None:
     Retrieve recruiter details by user ID.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         user_id (int): User ID of the recruiter.
 
     Returns:
@@ -68,10 +68,10 @@ def get(db: Session, user_id: int) -> recruitermodel.RecruiterDetails | None:
 
 def create(db: Session, recruiter_details: recruiterschema.RecruiterDetails) -> bool:
     """
-    Create a new recruiter details record in the database.
+    Create a new recruiter details record in the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         recruiter_details (recruiterschema.RecruiterDetails): Recruiter details to be created.
 
     Returns:
@@ -93,10 +93,10 @@ def update_recruiter_details(
     db: Session, user_id: int, recruiter_details: recruiterschema.RecruiterDetails
 ) -> bool:
     """
-    Update recruiter details in the database.
+    Update recruiter details in the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         user_id (int): User ID of the recruiter.
         recruiter_details (recruiterschema.RecruiterDetails): Updated recruiter details.
 
@@ -116,10 +116,10 @@ def update_recruiter_details(
 
 def delete_recruiter_details(db: Session, user_id: int) -> bool:
     """
-    Delete recruiter details from the database.
+    Delete recruiter details from the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         user_id (int): User ID of the recruiter.
 
     Returns:

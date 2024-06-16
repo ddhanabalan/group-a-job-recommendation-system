@@ -8,7 +8,7 @@ def get(db: Session, emp_id: int) -> Type[recruitermodel.RecruiterEmpType] | Non
     Retrieve employment type details of a recruiter.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         user_id (int): User ID of the recruiter.
 
     Returns:
@@ -29,7 +29,7 @@ def get_all(db: Session, user_id: int) -> List[Type[recruitermodel.RecruiterEmpT
     Retrieve employment type details of a recruiter.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         user_id (int): User ID of the recruiter.
 
     Returns:
@@ -47,10 +47,10 @@ def get_all(db: Session, user_id: int) -> List[Type[recruitermodel.RecruiterEmpT
 
 def create(db: Session, emp_type: recruiterschema.RecruiterEmpType) -> bool:
     """
-    Create a new employment type record for a recruiter in the database.
+    Create a new employment type record for a recruiter in the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         emp_type (recruiterschema.RecruiterEmpType): Employment type details to be created.
 
     Returns:
@@ -73,7 +73,7 @@ def update(
     Update employment type details of a recruiter.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         user_id (int): User ID of the recruiter.
         emp_type (str): New employment type.
 
@@ -96,7 +96,7 @@ def delete_recruiter_emp_type(db: Session, emp_type_id: int) -> bool:
     Delete employment type details of a recruiter.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         user_id (int): User ID of the recruiter.
 
     Returns:

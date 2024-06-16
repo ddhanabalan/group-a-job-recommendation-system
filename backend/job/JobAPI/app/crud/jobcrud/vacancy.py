@@ -7,10 +7,10 @@ from .. import jobschema, jobmodel
 
 def get_all(db: Session, company_id: int = None) -> List[Type[jobschema.JobVacancy]]:
     """
-    Retrieve job vacancies from the database, optionally filtered by a company ID.
+    Retrieve job vacancies from the database.py, optionally filtered by a company ID.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         company_id (int, optional): ID of the company whose job vacancies are to be retrieved. Defaults to None.
 
     Returns:
@@ -27,10 +27,10 @@ def get_all(db: Session, company_id: int = None) -> List[Type[jobschema.JobVacan
 
 def get(db: Session, job_vacancy_id: int) -> Type[jobmodel.JobVacancy] | None:
     """
-    Retrieve a job vacancy from the database by ID.
+    Retrieve a job vacancy from the database.py by ID.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         job_vacancy_id (int): ID of the job vacancy to retrieve.
 
     Returns:
@@ -60,10 +60,10 @@ def update(
     db: Session, job_vacancy_id: int, job_vacancy: jobschema.JobVacancyCreate
 ) -> bool:
     """
-    Update a job vacancy in the database.
+    Update a job vacancy in the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         job_vacancy_id (int): ID of the job vacancy to update.
         job_vacancy (jobschema.JobVacancyCreate): Updated job vacancy details.
 
@@ -83,10 +83,10 @@ def update(
 
 def delete(db: Session, job_vacancy_id: int) -> bool:
     """
-    Delete a job vacancy from the database.
+    Delete a job vacancy from the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         job_vacancy_id (int): ID of the job vacancy to delete.
 
     Returns:
@@ -112,10 +112,10 @@ def get_filtered_jobs(
     filter_job_id: Optional[List[str]] = None,
 ) -> List[Type[jobschema.JobVacancySearch]]:
     """
-    Retrieve job vacancies from the database, filtered by employment type, location type, location, experience, and tags.
+    Retrieve job vacancies from the database.py, filtered by employment type, location type, location, experience, and tags.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         emp_type (List[str], optional): Types of employment to filter by. Defaults to None.
         loc_type (List[str], optional): Types of location to filter by. Defaults to None.
         location (List[str], optional): Specific locations to filter by. Defaults to None.

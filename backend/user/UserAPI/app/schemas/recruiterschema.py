@@ -10,16 +10,20 @@ class RecruiterBase(BaseModel):
     email: EmailStr
     address: Optional[str] = None
     pincode: Optional[str] = None
-    profile_picture: Optional[str] = None
+    profile_banner_color: Optional[str] = None
     country: Optional[str] = None
     industry: Optional[str] = None
     city: Optional[str] = None
     phone: Optional[str] = None
 
+class RecruiterBaseInDB(RecruiterBase):
+    profile_picture: Optional[str] = None
+
 
 class RecruiterDetails(RecruiterBase):
     bio: Optional[str] = None
-    dob: Optional[PastDate]
+    overview: Optional[str] = None
+    dob: Optional[PastDate] = None
     company_size: Optional[str] = None
     headquarters: Optional[str] = None
     location: Optional[str] = None

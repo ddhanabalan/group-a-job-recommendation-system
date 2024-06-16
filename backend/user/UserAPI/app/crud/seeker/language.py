@@ -8,7 +8,7 @@ def get_all(db: Session, user_id: int) -> List[Type[seekermodel.SeekersLanguage]
     Retrieve language details of a seeker.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         user_id (int): User ID of the seeker.
 
     Returns:
@@ -29,7 +29,7 @@ def get(db: Session, language_id: int) -> Type[seekermodel.SeekersLanguage] | No
     Retrieve language details of a seeker.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         language_id (int): Language id to get the info.
 
     Returns:
@@ -47,10 +47,10 @@ def get(db: Session, language_id: int) -> Type[seekermodel.SeekersLanguage] | No
 
 def create(db: Session, language: seekerschema.SeekersLanguage) -> bool:
     """
-    Create a new language record for a seeker in the database.
+    Create a new language record for a seeker in the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         language (seekerschema.SeekersLanguage): Language details to be created.
 
     Returns:
@@ -68,10 +68,10 @@ def create(db: Session, language: seekerschema.SeekersLanguage) -> bool:
 
 def update(db: Session, id: int, language: seekerschema.SeekersLanguage) -> bool:
     """
-    Update language details of a seeker in the database, ignoring None values.
+    Update language details of a seeker in the database.py, ignoring None values.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         id (int): User ID of the seeker.
         updated_language (seekerschema.SeekersLanguage): Updated language details.
 
@@ -96,10 +96,10 @@ def update(db: Session, id: int, language: seekerschema.SeekersLanguage) -> bool
 
 def delete(db: Session, id: int) -> bool:
     """
-    Delete language details of a seeker from the database.
+    Delete language details of a seeker from the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         id (int): User ID of the seeker.
 
     Returns:
@@ -118,10 +118,10 @@ def delete(db: Session, id: int) -> bool:
 
 def delete_by_user_id(db: Session, user_id: int) -> bool:
     """
-    Delete language details of a seeker from the database.
+    Delete language details of a seeker from the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         id (int): User ID of the seeker.
 
     Returns:

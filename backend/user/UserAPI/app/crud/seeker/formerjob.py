@@ -8,7 +8,7 @@ def get_all(db: Session, user_id: int) -> List[Type[seekermodel.SeekersFormerJob
     Retrieve certificate details of a seeker.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         user_id (int): User ID of the seeker.
 
     Returns:
@@ -29,7 +29,7 @@ def get(db: Session, former_job_id: int) -> Type[seekermodel.SeekersFormerJob] |
     Retrieve certificate details of a seeker.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         former_job_id (int): Former_Job id to get the info.
 
     Returns:
@@ -47,10 +47,10 @@ def get(db: Session, former_job_id: int) -> Type[seekermodel.SeekersFormerJob] |
 
 def create(db: Session, certificate: seekerschema.SeekersFormerJob) -> bool:
     """
-    Create a new certificate record for a seeker in the database.
+    Create a new certificate record for a seeker in the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         certificate (seekerschema.SeekersFormerJob): Former_Job details to be created.
 
     Returns:
@@ -71,10 +71,10 @@ def update(
     db: Session, id: int, updated_former_job: seekerschema.SeekersFormerJob
 ) -> bool:
     """
-    Update certificate details of a seeker in the database, ignoring None values.
+    Update certificate details of a seeker in the database.py, ignoring None values.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         id (int): User ID of the seeker.
         updated_former_job (seekerschema.SeekersFormerJob): Updated certificate details.
 
@@ -101,10 +101,10 @@ def update(
 
 def delete(db: Session, id: int) -> bool:
     """
-    Delete certificate details of a seeker from the database.
+    Delete certificate details of a seeker from the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         id (int): User ID of the seeker.
 
     Returns:
@@ -123,10 +123,10 @@ def delete(db: Session, id: int) -> bool:
 
 def delete_by_user_id(db: Session, user_id: int) -> bool:
     """
-    Delete certificate details of a seeker from the database.
+    Delete certificate details of a seeker from the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         id (int): User ID of the seeker.
 
     Returns:
