@@ -16,20 +16,24 @@ job_vacancy_router = APIRouter(prefix="/job_vacancy")
 @job_vacancy_router.get("/")
 async def read_filtered_job_vacancies(
     emp_type: Optional[List[str]] = Query(None),
-    loc_type: Optional[List[str]] = Query(None),
+    work_style: Optional[List[str]] = Query(None),
+    working_days: Optional[List[str]] = Query(None),
     location: Optional[List[str]] = Query(None),
     experience: Optional[List[str]] = Query(None),
-    tags: Optional[List[str]] = Query(None),  # Added tags parameter
+    salary: Optional[int] = Query(None),
+    skills: Optional[List[str]] = Query(None),
+sort: Optional[str] = None,
+        order: Optional[str] = "asc",
+        limit: Optional[int] = None,
     db: Session = Depends(get_db),
 ):
     filter_job_id = None
-    if tags is not None:
-        filter_job_id = jobcrud.tags.get_filtered_tags(db, tags)
+    if skills is not None:
+        filter_job_id = jobcrud.skills.get_filtered_skills(db, skills)
     filtered_jobs = jobcrud.vacancy.get_filtered_jobs(
-        db, emp_type, loc_type, location, experience, filter_job_id
+        db, emp_type, work_style, location, working_days, salary, experience, filter_job_id,sort ,order, limit
     )
     for job in filtered_jobs:
-        job.tags = jobcrud.tags.get_all(db, job.job_id)
         job.skills = jobcrud.skills.get_all(db, job.job_id)
     return filtered_jobs
 
@@ -39,8 +43,7 @@ async def create_job_vacancy(
     job_vacancy: jobschema.JobVacancyCreate, db: Session = Depends(get_db)
 ):
     data = job_vacancy.dict()
-    tags = data.pop("tags", [])
-    skill = data.pop("skill", [])
+    skill = data.pop("skills", [])
 
     job_vacancy_instance = jobmodel.JobVacancy(**data)
     if not jobcrud.vacancy.create(db, job_vacancy_instance):
@@ -49,9 +52,6 @@ async def create_job_vacancy(
             detail="Data not updated to Database",
         )
     job_id = job_vacancy_instance.job_id
-    for tag in tags:
-        job_tag_data = jobschema.JobTagsCreate(job_id=job_id, tags=tag)
-        jobcrud.tags.create(db, job_tag_data)
 
     for _ in skill:
         job_skill_data = jobschema.JobSkillsCreate(job_id=job_id, skill=_)
@@ -83,7 +83,6 @@ async def update_job_vacancy(
             status_code=status.HTTP_404_NOT_FOUND, detail="Job Vacancy not found"
         )
     data = job_vacancy.dict()
-    tags = data.pop("tags", [])
     skills = data.pop("skill", [])
 
     if not jobcrud.vacancy.update(
@@ -93,8 +92,6 @@ async def update_job_vacancy(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Data not updated to Database",
         )
-    for tag in tags:
-        jobcrud.tags.update(db, tag.id, tag)
 
     for skill in skills:
         jobcrud.skills.update(db, skill.id, skill)
@@ -115,8 +112,6 @@ async def delete_job_vacancy(job_vacancy_id: int, db: Session = Depends(get_db))
     # Delete associated skills
     jobcrud.skills.delete_by_vacancy_id(db, job_vacancy_id)
 
-    # Delete associated tags
-    jobcrud.tags.delete_by_vacancy_id(db, job_vacancy_id)
 
     # Finally, delete the job vacancy
     jobcrud.vacancy.delete(db, job_vacancy_id)
@@ -134,6 +129,5 @@ async def read_job_vacancies_by_company_id(
     job_vacancy = jobcrud.vacancy.get_all(db, company_id)
     for job in job_vacancy:
         job.skills = jobcrud.skills.get_all(db, job.job_id)
-        job.tags = jobcrud.tags.get_all(db, job.job_id)
         job.job_seekers = jobcrud.request.get_all_by_job_id(db, job.job_id)
     return job_vacancy

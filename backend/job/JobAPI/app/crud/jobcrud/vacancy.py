@@ -1,3 +1,4 @@
+from sqlalchemy import func, Integer, cast
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from typing import List, Type, Optional
@@ -103,29 +104,46 @@ def delete(db: Session, job_vacancy_id: int) -> bool:
         return False
 
 
+from sqlalchemy import func, Integer, cast, asc, desc
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import Session
+from typing import Optional, List, Type
+
+
 def get_filtered_jobs(
-    db: Session,
-    emp_type: Optional[List[str]] = None,
-    loc_type: Optional[List[str]] = None,
-    location: Optional[List[str]] = None,
-    experience: Optional[str] = None,
-    filter_job_id: Optional[List[str]] = None,
+        db: Session,
+        emp_type: Optional[List[str]] = None,
+        loc_type: Optional[List[str]] = None,
+        location: Optional[List[str]] = None,
+        working_day: Optional[List[str]] = None,
+        salary: Optional[int] = None,
+        experience: Optional[List[str]] = None,
+        filter_job_id: Optional[List[str]] = None,
+        sort: Optional[str] = None,
+        order: Optional[str] = "asc",  # 'asc' for ascending, 'desc' for descending
+        limit: Optional[int] = None
 ) -> List[Type[jobschema.JobVacancySearch]]:
     """
-    Retrieve job vacancies from the database.py, filtered by employment type, location type, location, experience, and tags.
+    Retrieve job vacancies from the database, filtered by various criteria, with sorting and limit options.
 
     Args:
-        db (Session): SQLAlchemy database.py session.
+        db (Session): SQLAlchemy database session.
         emp_type (List[str], optional): Types of employment to filter by. Defaults to None.
         loc_type (List[str], optional): Types of location to filter by. Defaults to None.
         location (List[str], optional): Specific locations to filter by. Defaults to None.
-        experience (str, optional): Minimum years of experience required. Defaults to None.
-        tags (List[str], optional): Tags to filter by. Defaults to None.
+        working_day (List[str], optional): Working days to filter by. Defaults to None.
+        salary (int, optional): Minimum salary to filter by. Defaults to None.
+        experience (List[str], optional): Minimum years of experience required. Defaults to None.
+        filter_job_id (List[str], optional): Job IDs to filter by. Defaults to None.
+        sort (str, optional): Attribute to sort by. Defaults to None.
+        order (str, optional): Sort order, 'asc' for ascending and 'desc' for descending. Defaults to 'asc'.
+        limit (int, optional): Maximum number of results to return. Defaults to None.
 
     Returns:
-        List[jobschema.JobVacancy]: List of job vacancy objects that match the filters.
+        List[jobschema.JobVacancySearch]: List of job vacancy objects that match the filters.
     """
     query = db.query(jobmodel.JobVacancy)
+
     if filter_job_id:
         query = query.filter(jobmodel.JobVacancy.job_id.in_(filter_job_id))
     if emp_type:
@@ -135,7 +153,29 @@ def get_filtered_jobs(
     if location:
         query = query.filter(jobmodel.JobVacancy.location.in_(location))
     if experience:
-        query = query.filter(jobmodel.JobVacancy.experience == experience)
+        query = query.filter(jobmodel.JobVacancy.experience.in_(experience))
+    if working_day:
+        query = query.filter(jobmodel.JobVacancy.working_day.in_(working_day))
+    if salary is not None:
+        middle_salary = func.split_part(jobmodel.JobVacancy.salary, '-', 2)
+        query = query.filter(cast(middle_salary, Integer) >= salary)
+
+    # Apply sorting
+    if sort:
+        sort_order = asc if order == "asc" else desc
+        if sort == "salary":
+            middle_salary = func.split_part(jobmodel.JobVacancy.salary, '-', 2)
+            query = query.order_by(sort_order(cast(middle_salary, Integer)))
+        elif sort == "working_day":
+            query = query.order_by(sort_order(jobmodel.JobVacancy.working_day))
+        else:
+            # Default sorting by any other attribute
+            query = query.order_by(sort_order(getattr(jobmodel.JobVacancy, sort)))
+
+    # Apply limit
+    if limit:
+        query = query.limit(limit)
+
     try:
         return query.all()
     except SQLAlchemyError as e:

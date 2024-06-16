@@ -4,7 +4,17 @@ from typing import List, Type
 
 from .. import jobschema, jobmodel
 
-
+def get_filtered_skills(db: Session, skills: List[str]):
+    try:
+        query = (
+            db.query(jobmodel.JobSkill.job_id)
+            .filter(jobmodel.JobSkill.skill.in_(skills))
+            .distinct()
+            .all()
+        )
+        return [item[0] for item in query]
+    except SQLAlchemyError as e:
+        return []
 def get_all(db: Session, job_id: int) -> List[Type[jobschema.JobSkills]]:
     """
     Retrieve job skill associated with a user ID from the database.py.

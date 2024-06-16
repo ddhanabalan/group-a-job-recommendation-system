@@ -9,10 +9,9 @@ class JobVacancyBase(BaseModel):
     job_desc: Optional[str] = None
     company_name: Optional[str] = None
     requirement: Optional[str] = None
-    currency: Optional[str] = None
-    start_salary: Optional[str] = None
-    end_salary: Optional[str] = None
-    loc_type: Optional[str] = None
+    salary: Optional[str] = None
+    working_days: Optional[str] = None
+    work_style: Optional[str] = None
     experience: Optional[str] = None
     job_position: Optional[str] = None
     location: Optional[str] = None
@@ -23,34 +22,11 @@ class JobVacancyBase(BaseModel):
 
 
 class JobVacancyCreate(JobVacancyBase):
-    tags: Optional[List[str]]
     skills: Optional[List[str]]
 
 
 class JobVacancy(JobVacancyBase):
     job_id: Optional[int] = None
-    created_at: Optional[datetime] = None
-    updated_at: Optional[datetime] = None
-
-    class Config:
-        from_attributes = True
-
-
-class JobTagsBase(BaseModel):
-    job_id: Optional[int] = None
-    tag: str
-
-
-class JobTagsCreate(JobTagsBase):
-    pass
-
-
-class JobTagsUpdate(BaseModel):
-    tag: str
-
-
-class JobTags(JobTagsBase):
-    id: Optional[int] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
@@ -99,10 +75,9 @@ class JobRequest(JobRequestBase):
 
 
 class JobVacancySearch(JobVacancy):
-    tags: Optional[JobTags] = None
+    skills: Optional[JobSkills] = None
 
 
 class JobVacancyUpdate(JobVacancyBase):
-    tags: Optional[List[JobTags]] = []
     skills: Optional[List[JobSkills]] = []
     job_seekers: Optional[List[JobRequest]] = []
