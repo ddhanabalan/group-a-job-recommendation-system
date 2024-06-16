@@ -59,9 +59,9 @@ async def profile(authorization: str = Header(...), db: Session = Depends(get_db
         **user_details.dict(),
         profile_picture=profile_picture64,
         loc_type=user_loc_type,
-        user_speciality=user_speciality,
-        user_achievements=user_achievements,
-        user_emp_type=user_emp_type
+        speciality=user_speciality,
+        achievements=user_achievements,
+        emp_type=user_emp_type
 
     )
 
