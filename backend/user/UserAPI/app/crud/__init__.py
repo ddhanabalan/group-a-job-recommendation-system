@@ -18,5 +18,10 @@ from .seeker import (
     language,
 )
 from .recruiter import (
-base
+    base,
+    details,
+    emptype,
+    achievements,
+    speciality,
+    loctype
 )
