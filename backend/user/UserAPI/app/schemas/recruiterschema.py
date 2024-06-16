@@ -30,6 +30,8 @@ class RecruiterDetails(RecruiterBase):
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
+    class Config:
+        from_attributes = True
 
 class RecruiterLocType(BaseModel):
     id: int
