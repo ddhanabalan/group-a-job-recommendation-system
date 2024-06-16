@@ -124,7 +124,7 @@ export default function JobSection() {
     return (
         <div id="page">
             <div className="job-filter">
-                <Filter title="Filter jobs" passFilteredDataFn={filterDataSet} />
+                <Filter title="Filter jobs" userType="seeker" passFilteredDataFn={filterDataSet} />
             </div>
             <NavigationBar active="job/candidate" />
             <StatsAI value="jobs" />

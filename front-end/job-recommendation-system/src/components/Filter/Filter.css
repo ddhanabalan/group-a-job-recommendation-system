@@ -18,6 +18,25 @@
     margin: 3rem 0;
 }
 
+.sorting-options{
+    margin-top: 0.2rem;
+    margin-left: 0.8rem;
+}
+
+.salary-cutoff{
+    margin-top: 0.7rem;
+}
+.salary-threshold{
+    color: green;
+}
+.Mui-checked{
+    color: rgb(136, 136, 136) !important;
+}
 button{
     align-self: center;
 }
+
+.MuiSlider-root{
+    color:  #020102 !important;
+}
+

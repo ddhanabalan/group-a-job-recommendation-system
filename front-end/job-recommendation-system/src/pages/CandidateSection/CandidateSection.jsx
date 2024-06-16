@@ -7,7 +7,7 @@ export default function CandidateSection() {
     return (
         <div id="page">
             <div className="job-filter">
-                <Filter title="Filter Applicants"/>
+                <Filter title="Filter Applicants" userType="employer"/>
             </div>
             <StatsAI value="candidates"/>
             <div className="candidate-search">

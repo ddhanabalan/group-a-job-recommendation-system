@@ -10,7 +10,7 @@ export default function Jobs({ data, dataToParentFn = null, createJobRequest = n
     const finalInfo = [...data];
     //console.log("final information to job card", finalInfo)
     //const userType="none";
-    console.log("data to card", finalInfo)
+    //console.log("data to card", finalInfo)
     //const parentDescState=desc_state?desc_state:false;
     const [descriptionOn, setDesc] = useState(desc_state ? desc_state : false);
     const [selectedId, setId] = useState(null);
@@ -56,9 +56,9 @@ export default function Jobs({ data, dataToParentFn = null, createJobRequest = n
                 <JobCardExpanded data={selectedJob} createJobRequest={createJobRequest} userData={userData} />
                 : (
                     <>
-                        <AiJobs childData={demoInfo} expandView={openDesc} />
+                        <AiJobs childData={finalInfo} expandView={openDesc} />
                         {
-                            Object.keys(finalInfo).map((card) => (<JobCard key={finalInfo[card]["id"]} id={finalInfo[card]["id"]} expandView={openDesc} data={{ ...finalInfo[card], 'userType': "seekerq" }} />))
+                            Object.keys(finalInfo).map((card) => (<JobCard key={finalInfo[card]["id"]} id={finalInfo[card]["id"]} expandView={openDesc} data={{ ...finalInfo[card], 'userType': "seeker" }} />))
                         }
                     </>
                 )
