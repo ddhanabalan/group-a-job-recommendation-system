@@ -34,11 +34,11 @@ app.add_middleware(
 
 
 @app.get("/api/v1/skills")
-async def get_skills(q: Optional[str] = None,db: Session = Depends(get_db)):
+async def get_skills(q: Optional[str] = None,limit: Optional[int] = 100,db: Session = Depends(get_db)):
     if q:
-        return db.query(models.Skill).filter(models.Skill.name.startswith(q)).limit(100).all()
+        return db.query(models.Skill).filter(models.Skill.name.startswith(q)).limit(limit).all()
     else:
-        return db.query(models.Skill).limit(100).all()
+        return db.query(models.Skill).limit(limit).all()
 
 
 
