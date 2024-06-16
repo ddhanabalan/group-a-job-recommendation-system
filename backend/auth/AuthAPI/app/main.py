@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta
 import httpx
-from typing import Union
+from typing import Union, Type
 
 from fastapi import FastAPI, Depends, HTTPException, status, Request, Header
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -28,6 +28,7 @@ from .config import (
 from .crud import authcrud
 from .database import SessionLocal, engine
 from .models import authmodel
+from .models.authmodel import UserAuth
 from .schemas import authschema
 from .utils import validate_user_update, send_verify, send_pwd_reset
 
@@ -90,7 +91,7 @@ async def authenticate_user(
         username: str, password: str, db: Session = Depends(get_db)
 ):
     print("in")
-    user = authcrud.get_by_email(db=db, username=username)
+    user = authcrud.get_by_email(db=db, email=username)
     if not user:
         return False
     if not verify_password(password, user.hashed_password):
@@ -137,7 +138,7 @@ def validate_access_token(token):
 
 async def get_current_user(
         token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
-) -> authmodel.UserAuth:
+) -> Type[authmodel.UserAuth]:
     credential_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -170,7 +171,7 @@ async def get_current_active_user(
 
 async def get_refresh_user(
         token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
-) -> authmodel.UserAuth:
+) -> Type[authmodel.UserAuth]:
     credential_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -277,7 +278,7 @@ async def auth(request: Request, db: Session = Depends(get_db)):
             detail="Invalid Username or Password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    user = authcrud.get_by_email(db=db, username=user_info.email)
+    user = authcrud.get_by_email(db=db, email=user_info.email)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="User Not Found"
@@ -346,7 +347,7 @@ async def register(
         }
     )
     if response.status_code == status.HTTP_201_CREATED:
-        res = authcrud.create_auth_user(db=db, user=user_db)
+        res = authcrud.create(db=db, user=user_db)
         if not res:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
