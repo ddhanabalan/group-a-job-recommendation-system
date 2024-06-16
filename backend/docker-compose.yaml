@@ -10,6 +10,11 @@ services:
     networks:
       app_network:
         ipv4_address: 172.20.0.2
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
 
   authapi:
     build:
@@ -18,7 +23,8 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - mysql_server
+      mysql_server:
+        condition: service_healthy
     volumes:
       - ./auth/AuthAPI:/app
     environment:
@@ -36,7 +42,8 @@ services:
     ports:
       - "8001:8000"
     depends_on:
-      - mysql_server
+      mysql_server:
+        condition: service_healthy
     volumes:
       - ./user/UserAPI:/app
     environment:
@@ -54,7 +61,8 @@ services:
     ports:
       - "8002:8000"
     depends_on:
-      - mysql_server
+      mysql_server:
+        condition: service_healthy
     volumes:
       - ./job/JobAPI:/app
     environment:
@@ -70,11 +78,15 @@ services:
       dockerfile: Dockerfile
     ports:
       - "8003:8000"
+    depends_on:
+      mysql_server:
+        condition: service_healthy
     volumes:
       - ./utils/UtilsAPI:/app
     networks:
       app_network:
         ipv4_address: 172.20.0.6
+
 networks:
   app_network:
     driver: bridge
