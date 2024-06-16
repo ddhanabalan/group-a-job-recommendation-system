@@ -54,7 +54,7 @@ export default function FeatureBoxMiddlePane({ childData,showSuccessMsg,showFail
                 }
             })
               response.request.status===200&&showSuccessMsg()
-            SetExpdata(expdata.filter(e => { return id !== e.id }))
+            SetQdata(expdata.filter(e => { return id !== e.id }))
         } catch (e) {
             console.log(e)
             showFailMsg()

@@ -192,7 +192,7 @@ export default function ProfileSection({ data }) {
                         <div className="profile-pane profile-middle-pane">
                             <ExperienceBox childData={newData.former_jobs} reloadFn={callAPI} showSuccessMsg={showSuccessMsg } showFailMsg={showFailMsg}/>
                             <FeatureBoxMiddlePane //component defaults to QualificationBox
-                                childData={newData.education}
+                                childData={newData.prev_education}
                                 showSuccessMsg={showSuccessMsg } showFailMsg={showFailMsg}
                             />
                             {/* <FeatureBoxMiddlePane data={{ title: "Licenses and certifications ", edit: true, isLanguage: false, cardData: { qualification_label: "Name", qualification_provider: "Issuing organization" } }}

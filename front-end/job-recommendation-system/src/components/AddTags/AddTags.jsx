@@ -32,11 +32,11 @@ export default function AddTags({ data, availableDomains, updateFn, changeFn, de
                     ? <GoogleLocationSearch data={data} changeFn={changeFn} locationValue={value} value={locationFieldAutoValue} updateValue={updatelocationFieldAutoValue} />
                     : <Autocomplete
                         options={availableDomains}
-                        value={{ "Skill Name": value }}
+                        value={{ "name": value }}
                         inputValue={value}
                         autoHighlight
-                        getOptionLabel={(option) => option["Skill Name"]}
-                        isOptionEqualToValue={() => availableDomains.some(e => e["Skill Name"] === value)}
+                        getOptionLabel={(option) => option["name"]}
+                        isOptionEqualToValue={() => availableDomains.some(e => e["name"] === value)}
                         componentsProps={{
                             popper: {
                                 modifiers: [

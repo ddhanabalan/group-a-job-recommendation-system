@@ -20,11 +20,11 @@ export default function AddSkills({ availableSkills, data, updateFn, changeFn, d
             </Stack>
             <Autocomplete
                 options={availableSkills}
-                value={{"Skill Name":value}}
+                value={{"name":value}}
                 inputValue={value}
                 autoHighlight
-                getOptionLabel={(option) => option["Skill Name"]}
-                isOptionEqualToValue={() => availableSkills.some(e => e["Skill Name"] === value )}
+                getOptionLabel={(option) => option["name"]}
+                isOptionEqualToValue={() => availableSkills.some(e => e["name"] === value )}
                 componentsProps={{
                     popper: {
                         modifiers: [
