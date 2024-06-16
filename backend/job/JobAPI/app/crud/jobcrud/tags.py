@@ -20,10 +20,10 @@ def get_filtered_tags(db: Session, tags: List[str]):
 
 def get_all(db: Session, job_id: int) -> List[Type[jobschema.JobTags]]:
     """
-    Retrieve job tags associated with a user ID from the database.
+    Retrieve job tags associated with a user ID from the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         job_id (int): ID of the job whose job tags are to be retrieved.
 
     Returns:
@@ -39,10 +39,10 @@ def get_all(db: Session, job_id: int) -> List[Type[jobschema.JobTags]]:
 
 def get(db: Session, job_tags_id: int) -> Type[jobmodel.JobTags] | None:
     """
-    Retrieve a job tags from the database by ID.
+    Retrieve a job tags from the database.py by ID.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         job_tags_id (int): ID of the job tags to retrieve.
 
     Returns:
@@ -60,10 +60,10 @@ def get(db: Session, job_tags_id: int) -> Type[jobmodel.JobTags] | None:
 
 def create(db: Session, job_tags: jobschema.JobTagsCreate) -> bool:
     """
-    Create a new job tags in the database.
+    Create a new job tags in the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         job_tags (jobschema.JobTagsCreate): Details of the job tags to create.
 
     Returns:
@@ -84,10 +84,10 @@ def create(db: Session, job_tags: jobschema.JobTagsCreate) -> bool:
 
 def update(db: Session, job_tags_id: int, job_tags: jobschema.JobTagsCreate):
     """
-    Update a job tags in the database.
+    Update a job tags in the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         job_tags_id (int): ID of the job tags to update.
         job_tags (jobschema.JobTagsCreate): Updated job tags details.
 
@@ -110,10 +110,10 @@ def update(db: Session, job_tags_id: int, job_tags: jobschema.JobTagsCreate):
 
 def delete(db: Session, job_tags_id: int):
     """
-    Delete a job tags from the database.
+    Delete a job tags from the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         job_tags_id (int): ID of the job tags to delete.
 
     Returns:

@@ -78,4 +78,4 @@ async def update_seeker_certificate(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Certificate details not found",
         )
-    return {"details": "Certificate Updated Successfully"}
+    return {"details": "Certificate details Updated Successfully"}

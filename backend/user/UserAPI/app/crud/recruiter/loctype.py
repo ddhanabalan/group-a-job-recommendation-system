@@ -10,7 +10,7 @@ def get_all(
     Retrieve location type details of a recruiter.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         user_id (int): User ID of the recruiter.
 
     Returns:
@@ -28,10 +28,10 @@ def get_all(
 
 def create(db: Session, loc_type: recruiterschema.RecruiterLocType) -> bool:
     """
-    Create a new location type record for a recruiter in the database.
+    Create a new location type record for a recruiter in the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         loc_type (recruiterschema.RecruiterLocType): Location type details to be created.
 
     Returns:
@@ -54,7 +54,7 @@ def update(
     Update location type details of a recruiter.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         user_id (int): User ID of the recruiter.
         loc_type (str): New location type.
 
@@ -77,7 +77,7 @@ def delete(db: Session, loc_id: int) -> bool:
     Delete location type details of a recruiter.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         loc_id (int): loc_id.
 
     Returns:

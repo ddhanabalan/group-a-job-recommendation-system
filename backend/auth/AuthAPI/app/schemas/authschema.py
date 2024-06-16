@@ -4,10 +4,6 @@ from typing import Optional
 from enum import Enum
 
 
-class UserTypeEnum(str, Enum):
-    recruiter = "recruiter"
-    seeker = "seeker"
-
 
 class Token(BaseModel):
     access_token: str
@@ -17,6 +13,11 @@ class Token(BaseModel):
 
 class TokenData(BaseModel):
     username: Optional[str] = None
+
+
+class UserTypeEnum(Enum):
+    seeker = "seeker"
+    recruiter = "recruiter"
 
 
 class UserBase(BaseModel):
@@ -73,3 +74,7 @@ class UserInRecruiter(UserIn):
     city: Optional[str] = None
     industry: Optional[str] = None
     phone: Optional[str] = None
+
+
+class ForgetPassword(BaseModel):
+    new_password: str

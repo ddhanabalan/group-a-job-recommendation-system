@@ -3,10 +3,10 @@ from .. import recruitermodel, recruiterschema, Session, SQLAlchemyError
 
 def create(db: Session, user: recruiterschema.RecruiterBase,profile_picture) -> bool:
     """
-    Create a new seeker's details in the database.
+    Create a new seeker's details in the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         user (recruiterschema.RecruiterBase): Seeker details to be created.
 
     Returns:
@@ -16,6 +16,7 @@ def create(db: Session, user: recruiterschema.RecruiterBase,profile_picture) -> 
         user_model = recruitermodel.RecruiterDetails(
             **user.dict(), profile_picture=profile_picture
         )
+        print(user_model)
         db.add(user_model)
         db.commit()
         return True
@@ -30,7 +31,7 @@ def get_userid_from_username(db: Session, username: str):
     Retrieve the user ID of a recruiter by username.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         username (str): Username of the recruiter.
 
     Returns:

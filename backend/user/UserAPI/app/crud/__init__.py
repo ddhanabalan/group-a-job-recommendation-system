@@ -17,4 +17,6 @@ from .seeker import (
     certificate,
     language,
 )
-from .recruiter import *
+from .recruiter import (
+base
+)

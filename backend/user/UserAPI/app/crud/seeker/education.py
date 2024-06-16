@@ -8,7 +8,7 @@ def get_all(db: Session, user_id: int) -> List[Type[seekermodel.SeekersEducation
     Retrieve education details of a seeker.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         user_id (int): User ID of the seeker.
 
     Returns:
@@ -29,7 +29,7 @@ def get(db: Session, education_id: int) -> Type[seekermodel.SeekersEducation] | 
     Retrieve education details of a seeker.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         education_id (int): Education id to get the info.
 
     Returns:
@@ -47,10 +47,10 @@ def get(db: Session, education_id: int) -> Type[seekermodel.SeekersEducation] | 
 
 def create(db: Session, education: seekerschema.SeekersEducation) -> bool:
     """
-    Create a new education record for a seeker in the database.
+    Create a new education record for a seeker in the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         education (seekerschema.SeekersEducation): Education details to be created.
 
     Returns:
@@ -70,10 +70,10 @@ def update(
     db: Session, id: int, updated_education: seekerschema.SeekersEducation
 ) -> bool:
     """
-    Update education details of a seeker in the database, ignoring None values.
+    Update education details of a seeker in the database.py, ignoring None values.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         id (int): User ID of the seeker.
         updated_education (seekerschema.SeekersEducation): Updated education details.
 
@@ -100,10 +100,10 @@ def update(
 
 def delete(db: Session, id: int) -> bool:
     """
-    Delete education details of a seeker from the database.
+    Delete education details of a seeker from the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         id (int): User ID of the seeker.
 
     Returns:
@@ -122,10 +122,10 @@ def delete(db: Session, id: int) -> bool:
 
 def delete_by_user_id(db: Session, user_id: int) -> bool:
     """
-    Delete education details of a seeker from the database.
+    Delete education details of a seeker from the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         id (int): User ID of the seeker.
 
     Returns:

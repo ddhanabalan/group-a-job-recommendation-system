@@ -8,7 +8,7 @@ def get(db: Session, id: int) -> Type[seekermodel.SeekersLocType] | None:
     Retrieve location type details of a seeker.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         id (int): Loc Type ID of the seeker.
 
     Returns:
@@ -29,7 +29,7 @@ def get_all(db: Session, user_id: int) -> List[Type[seekermodel.SeekersLocType]]
     Retrieve location type details of a seeker.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         user_id (int): User ID of the seeker.
 
     Returns:
@@ -47,10 +47,10 @@ def get_all(db: Session, user_id: int) -> List[Type[seekermodel.SeekersLocType]]
 
 def create(db: Session, loc_type: seekerschema.SeekersLocType) -> bool:
     """
-    Create a new location type record for a seeker in the database.
+    Create a new location type record for a seeker in the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         loc_type (seekerschema.SeekersLocType): Location type details to be created.
 
     Returns:
@@ -68,10 +68,10 @@ def create(db: Session, loc_type: seekerschema.SeekersLocType) -> bool:
 
 def update(db: Session, id: int, updated_loc_type: seekerschema.SeekersLocType) -> bool:
     """
-    Update location type details of a seeker in the database.
+    Update location type details of a seeker in the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         id (int): User ID of the seeker.
         updated_loc_type (seekerschema.SeekersLocType): Updated location type details.
 
@@ -91,10 +91,10 @@ def update(db: Session, id: int, updated_loc_type: seekerschema.SeekersLocType) 
 
 def delete(db: Session, id: int) -> bool:
     """
-    Delete location type details of a seeker from the database.
+    Delete location type details of a seeker from the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         id (int): User ID of the seeker.
 
     Returns:
@@ -113,10 +113,10 @@ def delete(db: Session, id: int) -> bool:
 
 def delete_by_user_id(db: Session, user_id: int) -> bool:
     """
-    Delete location type details of a seeker from the database.
+    Delete location type details of a seeker from the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         id (int): User ID of the seeker.
 
     Returns:

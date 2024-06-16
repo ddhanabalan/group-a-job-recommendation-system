@@ -7,10 +7,10 @@ from .. import jobschema, jobmodel
 
 def get_all(db: Session, job_id: int) -> List[Type[jobschema.JobSkills]]:
     """
-    Retrieve job skill associated with a user ID from the database.
+    Retrieve job skill associated with a user ID from the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         job_id (int): ID of the job whose job skill are to be retrieved.
 
     Returns:
@@ -26,10 +26,10 @@ def get_all(db: Session, job_id: int) -> List[Type[jobschema.JobSkills]]:
 
 def get(db: Session, job_skill_id: int) -> Type[jobmodel.JobSkill] | None:
     """
-    Retrieve a job skill from the database by ID.
+    Retrieve a job skill from the database.py by ID.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         job_skill_id (int): ID of the job skill to retrieve.
 
     Returns:
@@ -47,10 +47,10 @@ def get(db: Session, job_skill_id: int) -> Type[jobmodel.JobSkill] | None:
 
 def create(db: Session, job_skill: jobschema.JobSkillsCreate) -> bool:
     """
-    Create a new job skill in the database.
+    Create a new job skill in the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         job_skill (jobschema.JobSkillsCreate): Details of the job skill to create.
 
     Returns:
@@ -71,10 +71,10 @@ def create(db: Session, job_skill: jobschema.JobSkillsCreate) -> bool:
 
 def update(db: Session, job_skill_id: int, job_skill: jobschema.JobSkillsCreate):
     """
-    Update a job skill in the database.
+    Update a job skill in the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         job_skill_id (int): ID of the job skill to update.
         job_skill (jobschema.JobSkillsCreate): Updated job skill details.
 
@@ -96,10 +96,10 @@ def update(db: Session, job_skill_id: int, job_skill: jobschema.JobSkillsCreate)
 
 def delete(db: Session, job_skill_id: int):
     """
-    Delete a job skill from the database.
+    Delete a job skill from the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         job_skill_id (int): ID of the job skill to delete.
 
     Returns:
