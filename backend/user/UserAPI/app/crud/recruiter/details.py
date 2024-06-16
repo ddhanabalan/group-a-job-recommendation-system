@@ -89,8 +89,8 @@ def create(db: Session, recruiter_details: recruiterschema.RecruiterDetails) -> 
         return False
 
 
-def update_recruiter_details(
-    db: Session, user_id: int, recruiter_details: recruiterschema.RecruiterDetails
+def update(
+    db: Session, user_id: int, recruiter_details: dict
 ) -> bool:
     """
     Update recruiter details in the database.py.
@@ -104,9 +104,11 @@ def update_recruiter_details(
         bool: if Updated successfully then True else false
     """
     try:
-        db.query(recruitermodel.RecruiterDetails).filter(
+        user = db.query(recruitermodel.RecruiterDetails).filter(
             recruitermodel.RecruiterDetails.user_id == user_id
-        ).update(recruiter_details.dict())
+        )
+        for k, v in recruiter_details.items():
+            setattr(user, k, v)
         db.commit()
         return True
     except SQLAlchemyError:
@@ -114,7 +116,7 @@ def update_recruiter_details(
         return False
 
 
-def delete_recruiter_details(db: Session, user_id: int) -> bool:
+def delete(db: Session, user_id: int) -> bool:
     """
     Delete recruiter details from the database.py.
 
