@@ -47,7 +47,7 @@ export default function LoginPage({fixUser}) {
             console.log(e)
             SetLoading(false)
             // alert(e.message)
-            const received_error = e.response?.data.detail || (e.message == "Network Error" ? "We are facing some issues.Please try again later." : e.message);
+            const received_error = e.response?.data.detail || (e.message == "Network Error" ? "We are facing some issues, please try again later." : e.message);
             SetServerMsg(received_error);
         }
     }

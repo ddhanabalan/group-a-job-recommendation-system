@@ -8,7 +8,7 @@ import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import ExperienceCard from '../ExperienceCard/ExperienceCard';
 import ExperienceAdd from '../ExperienceCard/ExperienceAdd';
 import NothingToShow from '../NothingToShow/NothingToShow';
-export default function ExperienceBox({ childData, reloadFn }) {
+export default function ExperienceBox({ childData, reloadFn,showSuccessMsg,showFailMsg }) {
     useEffect(() => {
         if (childData) {
             SetExpdata(childData)
@@ -23,13 +23,15 @@ export default function ExperienceBox({ childData, reloadFn }) {
                 headers: {
                     'Authorization': `Bearer ${getStorage("userToken")}`
                 }
-            })
+            });
+              response.request.status===201&&showSuccessMsg()
             console.log(response)
             SetNewExp(false)
             reloadFn()
             SetExpdata([...childData, e])
         } catch (error) {
             console.log(error)
+            showFailMsg()
         }
 
     }
@@ -40,14 +42,16 @@ export default function ExperienceBox({ childData, reloadFn }) {
     const deleteExp = async (id) => {
         //deletes existing Experience from array by referring to the id passed in
         try {
-            await userAPI.delete(`/seeker/former-job/${id}`, {
+           const response = await userAPI.delete(`/seeker/former-job/${id}`, {
                 headers: {
                     'Authorization': `Bearer ${getStorage("userToken")}`
                 }
             })
+              response.request.status===200&&showSuccessMsg()
             SetExpdata(expdata.filter(e => { return id !== e.id }))
         } catch (e) {
             console.log(e)
+            showFailMsg()
         }
     };
 
@@ -56,11 +60,12 @@ export default function ExperienceBox({ childData, reloadFn }) {
         const { id, ...passData } = data
         console.log("passData", passData)
         try {
-            await userAPI.put(`/seeker/former-job/${id}`, passData, {
+           const response = await userAPI.put(`/seeker/former-job/${id}`, passData, {
                 headers: {
                     'Authorization': `Bearer ${getStorage("userToken")}`
                 }
             })
+            response.request.status===200&&showSuccessMsg()
             SetExpdata(expdata.map(e => {
                 if (e.id === data.id) {
                     e = data
@@ -69,6 +74,7 @@ export default function ExperienceBox({ childData, reloadFn }) {
             }))
         } catch (e) {
             console.log(e)
+            showFailMsg()
         }
 
     }

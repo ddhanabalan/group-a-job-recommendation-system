@@ -8,7 +8,7 @@ import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import LicenseAdd from '../LicenseCard/LicenseAdd';
 import LicenseCard from '../LicenseCard/LicenseCard';
 import NothingToShow from '../NothingToShow/NothingToShow';
-export default function LicenseBox({ childData, reloadFn }) {
+export default function LicenseBox({ childData, reloadFn,showSuccessMsg,showFailMsg }) {
     useEffect(() => {
         if (childData) {
             SetLicensedata(childData)
@@ -25,12 +25,14 @@ export default function LicenseBox({ childData, reloadFn }) {
                     'Authorization': `Bearer ${getStorage("userToken")}`
                 }
             })
+              response.request.status===201&&showSuccessMsg()
             console.log(response)
             SetNewLic(false)
             reloadFn()
             SetLicensedata([...childData, e])
         } catch (error) {
             console.log(error)
+            showFailMsg()
         }
 
     }
@@ -41,14 +43,16 @@ export default function LicenseBox({ childData, reloadFn }) {
     const deleteLic = async(id) => {
         //deletes existing License from array by referring to the id passed in
         try {
-            await userAPI.delete(`/seeker/certificate/${id}`, {
+             const response = await userAPI.delete(`/seeker/certificate/${id}`, {
                 headers: {
                     'Authorization': `Bearer ${getStorage("userToken")}`
                 }
             })
+              response.request.status===200&&showSuccessMsg()
             SetLicensedata(licensedata.filter(e => { return id !== e.id }))
         } catch (e) {
             console.log(e)
+             showFailMsg()
         }
 
     };
@@ -58,11 +62,12 @@ export default function LicenseBox({ childData, reloadFn }) {
         const { id, ...passData } = data
         console.log("passData", passData)
         try {
-            await userAPI.put(`/seeker/certificate/${id}`, passData, {
+            const response = await userAPI.put(`/seeker/certificate/${id}`, passData, {
                 headers: {
                     'Authorization': `Bearer ${getStorage("userToken")}`
                 }
             })
+              response.request.status===200&&showSuccessMsg()
             SetLicensedata(licensedata.map(e => {
                 if (e.id === data.id) {
                     e = data
@@ -71,6 +76,7 @@ export default function LicenseBox({ childData, reloadFn }) {
             }))
         } catch (e) {
             console.log(e)
+             showFailMsg()
         }
     }
     return (

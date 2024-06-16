@@ -213,8 +213,8 @@ function SignUpForm2() {
                           {
                             required: "please enter last name",
                             pattern: {
-                              value: /^[a-zA-Z]+$/,
-                              message: "Only letters allowed"
+                              value: /^[a-zA-Z\s]+$/,
+                              message: "Only letters and whitespace allowed"
                             }
                           })} />
                       <p className="error-message">{errors.last_name?.message || ""}</p>

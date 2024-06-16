@@ -9,7 +9,7 @@ import QualificationCard from '../QualificationCard/QualificationCard';
 import QualificationAdd from '../QualificationAdd/QualificationAdd';
 import NothingToShow from '../NothingToShow/NothingToShow';
 import './FeatureBoxMiddlePane.css';
-export default function FeatureBoxMiddlePane({ childData }) {
+export default function FeatureBoxMiddlePane({ childData,showSuccessMsg,showFailMsg }) {
     useEffect(() => {
         if (childData) {
             SetQdata(childData)
@@ -27,11 +27,13 @@ export default function FeatureBoxMiddlePane({ childData }) {
                     'Authorization': `Bearer ${getStorage("userToken")}`
                 }
             })
+            response.request.status===201&&showSuccessMsg()
             console.log(response)
             SetNewQual(false)
-            SetQdata([...childData, e])
+            SetQdata([...qdata, e])
         } catch (error) {
             console.log(error)
+              showFailMsg()
         }
 
     }
@@ -39,21 +41,60 @@ export default function FeatureBoxMiddlePane({ childData }) {
         //cancels addition of new qualification
         SetNewQual(false)
     };
-    const deleteQual = (id) => {
-        //deletes existing qualification from array by referring to the id passed in
-        SetQdata(qdata.filter(e => { return id !== e.id }))
+    // const deleteQua = (id) => {
+    //     //deletes existing qualification from array by referring to the id passed in
+    //     SetQdata(qdata.filter(e => { return id !== e.id }))
+    // };
+    const deleteQual = async (id) => {
+        //deletes existing Qualification from array by referring to the id passed in
+        try {
+           const response = await userAPI.delete(`/seeker/former-job/${id}`, {
+                headers: {
+                    'Authorization': `Bearer ${getStorage("userToken")}`
+                }
+            })
+              response.request.status===200&&showSuccessMsg()
+            SetExpdata(expdata.filter(e => { return id !== e.id }))
+        } catch (e) {
+            console.log(e)
+            showFailMsg()
+        }
     };
-    const updateQual = (data) => {
-        //updates existing qualification data from array. new data is passed in along with existing data id
-        SetQdata(qdata.map(e => {
-            if (e.id === data.id) {
-                e.qualification = data.qualification
-                e.qualification_provider = data.qualification_provider
-                e.start_year = data.start_year
-                e.end_year = data.end_year
-            }
-            return (e)
-        }))
+
+    // const updateQua = (data) => {
+    //     //updates existing qualification data from array. new data is passed in along with existing data id
+    //     SetQdata(qdata.map(e => {
+    //         if (e.id === data.id) {
+    //             e.qualification = data.qualification
+    //             e.qualification_provider = data.qualification_provider
+    //             e.start_year = data.start_year
+    //             e.end_year = data.end_year
+    //         }
+    //         return (e)
+    //     }))
+    // }
+    const updateQual = async (data) => {
+        //updates existing Education data from array. new data is passed in along with existing data id
+        const { id, ...passData } = data
+        console.log("passData", passData)
+        try {
+           const response = await userAPI.put(`/seeker/education/${id}`, passData, {
+                headers: {
+                    'Authorization': `Bearer ${getStorage("userToken")}`
+                }
+            })
+            response.request.status===200&&showSuccessMsg()
+            SetQdata(qdata.map(e => {
+                if (e.id === data.id) {
+                    e = data
+                }
+                return (e)
+            }))
+        } catch (e) {
+            console.log(e)
+            showFailMsg()
+        }
+
     }
     return (
         <div className="feature-box feature-box-middle-pane" id="feature-box-middle-pane">

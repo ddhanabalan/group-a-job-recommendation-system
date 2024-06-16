@@ -15,11 +15,11 @@ import profilePlaceholder from '../../images/profile_placeholder.svg';
 import './ProfileHead.css'
 import { Margin } from '@mui/icons-material';
 export default function ProfileHead({ data, blurFn, logOutFn, subForm, isNotEditing, setIsNotEditing }) {
-    const [img, setImg] = useState('');
+    const [img, setImg] = useState();
     const [bannerColor, setBannerColor] = useState('');
     useEffect(() => {
         if (data) {
-            setImg(data.profile_picture)
+            data.profile_picture && setImg(data.profile_picture)
             setBannerColor(data.profile_banner_color)
         }
     }, [data])
@@ -83,13 +83,13 @@ export default function ProfileHead({ data, blurFn, logOutFn, subForm, isNotEdit
                     }
 
                     <div className='profile-img-container p-image'>
-                        <img src={data.profile_picture ? img : profilePlaceholder} alt="profile picture" />
+                        {data.profile_picture || img ? <img src={data.profile_picture || img ? img : profilePlaceholder} alt="profile picture" /> : <Skeleton className="profile-img-container-skeleton" variant="circular" />}
                     </div>
                 </div>
                 {isNotEditing ?
                     <div className="profile-head-info-div profile-head-info-div2">
                         <h1 className="profile-name">{data.first_name && data.last_name ? data.first_name + ' ' + data.last_name : <Skeleton className="profile-name" variant="text" sx={{ width: '20rem' }} />}</h1>
-                        <p className="profile-location"><FmdGoodRoundedIcon fontSize='small' sx={{marginRight:'.1rem'}}/>{data.city && data.country ? data.city + ', ' + data.country : <Skeleton className="profile-location" variant="text" sx={{ width: '15rem' }} />}</p>
+                        <p className="profile-location"><FmdGoodRoundedIcon fontSize='small' sx={{ marginRight: '.1rem' }} />{data.city && data.country ? data.city + ', ' + data.country : <Skeleton className="profile-location" variant="text" sx={{ width: '15rem' }} />}</p>
                         <p className="profile-bio">{data.bio ? data.bio : "Tell the world about yourself"}</p>
                     </div>
                     :

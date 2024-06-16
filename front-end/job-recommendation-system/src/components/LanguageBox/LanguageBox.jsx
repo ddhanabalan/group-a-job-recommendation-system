@@ -8,7 +8,7 @@ import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import LanguageAdd from '../LanguageAdd/LanguageAdd';
 import LanguageCard from '../LanguageCard/LanguageCard';
 import NothingToShow from '../NothingToShow/NothingToShow';
-export default function LanguageBox({ languages, childData, reloadFn }) {
+export default function LanguageBox({ languages, childData, reloadFn,showSuccessMsg,showFailMsg }) {
     useEffect(() => {
         if (childData) {
             SetLdata(childData)
@@ -19,45 +19,51 @@ export default function LanguageBox({ languages, childData, reloadFn }) {
     const addLang = async (data) => {
         try {
             console.log(data)
-            await userAPI.post('/seeker/language/', data, {
+            const response =  await userAPI.post('/seeker/language/', data, {
                 headers: {
                     'Authorization': `Bearer ${getStorage("userToken")}`
                 }
             })
+              response.request.status===201&&showSuccessMsg()
             SetNewLang(false)
             reloadFn()
         }
         catch (e) {
             console.log(e)
+             showFailMsg()
         }
     }
     const updateLang = async(data) => {
         //updates existing qualification data from array. new data is passed in along with existing data id
         try {
             const {id, ...passData} = data
-            await userAPI.put(`/seeker/language/${id}`, passData, {
+             const response = await userAPI.put(`/seeker/language/${id}`, passData, {
                 headers: {
                     'Authorization': `Bearer ${getStorage("userToken")}`
                 }
             })
+              response.request.status===200&&showSuccessMsg()
             reloadFn()
         }
         catch (e) {
             console.log(e)
+             showFailMsg()
         }
     }
     const deleteLang = async(id) => {
         //deletes existing qualification from array by referring to the id passed in
         try {
-            await userAPI.delete(`/seeker/language/${id}`,{
+             const response = await userAPI.delete(`/seeker/language/${id}`,{
                 headers: {
                     'Authorization': `Bearer ${getStorage("userToken")}`
                 }
             })
+              response.request.status===200&&showSuccessMsg()
             reloadFn()
         }
         catch (e) {
             console.log(e)
+             showFailMsg()
         }
         // SetLdata(ldata.filter(e => { return id !== e.id }))
     };
