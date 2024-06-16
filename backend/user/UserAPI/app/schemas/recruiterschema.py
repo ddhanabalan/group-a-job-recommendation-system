@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr, PastDate
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
 
 
@@ -61,3 +61,11 @@ class RecruiterAchievements(BaseModel):
     position: str
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
+
+
+class RecruiterProfile(RecruiterDetails):
+    profile_picture: Optional[str] = None
+    loc_type: Optional[List[RecruiterLocType]]
+    achievements: Optional[List[RecruiterAchievements]]
+    speciality: Optional[List[RecruiterSpeciality]]
+    emp_type: Optional[List[RecruiterEmpType]]
