@@ -13,141 +13,23 @@ import greentick from '../../images/green-confirm.json'
 import failanim from '../../images/fail-animation.json'
 import '../SignUpForm/SignUpForm2.css';
 import './ProfileEdit.css';
-export default function ProfileEdit({ data }) {
-    const VisuallyHiddenInput = styled('input')({
-        clip: 'rect(0 0 0 0)',
-        clipPath: 'inset(50%)',
-        height: 1,
-        overflow: 'hidden',
-        position: 'absolute',
-        bottom: 0,
-        left: 0,
-        whiteSpace: 'nowrap',
-        width: 1,
-    });
+export default function ProfileEdit({ data ,register,errors}) {
+   
+   
 
-    const { register, formState: { errors }, handleSubmit, watch } = useForm({ mode: 'onTouched' | 'onSubmit' });
-
-    const countries = ['India', 'USA', 'Australia', 'China', 'Japan']
-    const genders = ['Male', 'Female', 'Transgender', 'Others']
-    const industries = ['Automobile', 'Agriculture', 'Medical', 'Defense', 'Aeronautical', 'Chemical']
-    const location = useLocation();
-    const navigate = useNavigate();
-    const userType = location["pathname"].includes("employer") ? "employer" : "seeker";
-
-    //error messages received after submitting form
-    const serverErrorMsgs = {
-        "server": { "status": false, "message": "unable to reach server" },
-        "formdata": { "status": false, "message": "Field unfilled.Please complete the form." },
-        "phone": { "status": false, "message": "Invalid Phone number.Please retype." },
-        "success": { "status": true, "message": "Account successfully created" }
-    }
-
-    //const userType = location.state.userType;
-    const [loading, SetLoading] = useState(false)
-    const [success, SetSuccess] = useState(false)
-    const [img, SetImg] = useState();
-    const handleChange = (e) => {
-        console.log(e.target.files)
-        const data = new FileReader();
-        data.addEventListener('load', () => {
-            SetImg(data.result)
-        })
-        data.readAsDataURL(e.target.files[0])
-
-    }
-
-
-
-
-    // const { info, setInfo } = useState(); 
-
-
-    async function subForm(data) {
-        //form data submission and redirecting to login
-        SetLoading(true)
-        console.log(location)
-        const newdata = { ...data, ...location.state, 'profile_picture': img };
-        delete newdata.userType
-        console.log("full data", newdata);
-        try {
-            await axios.post('/seeker/register', newdata, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-
-        } catch (e) {
-            console.log(e)
-            alert(e.message)
-        }
-        SetLoading(false)
-        SetSuccess(true);
-        // setTimeout(()=>{setSuccess(false)},3000)
-        // navigate("/login/" + userType);
-
-    }
 
     return (
         <>
             {/*SignUp Form part-2(Personal info from seekers/Company info from employers)*/}
             <div className='profile-edit-page'>
-                {loading && <LoaderAnimation />}
-                {serverErrorMsgs && success == true ? /*loads server error messages and displays at top*/
-                    <div className="alert-boxes">
-                        {
-                            Object.keys(serverErrorMsgs).map((err) => {
-                                return serverErrorMsgs[err]["status"] ?
-                                    <ConfBox message={serverErrorMsgs[err]["message"]} animation={greentick} bgcolor="#99FF99" />
-                                    :
-                                    <ConfBox message={serverErrorMsgs[err]["message"]} animation={failanim} bgcolor="#FFE5B4" />
-                            })
-                        }
-                    </div> /*Final Registration confirmed message box*/
-                    :
-                    <></>
-                }
+                
                 <div className="signup-container info-box profile-edit-box">
                     <h3 className="signup-header info-header">Edit profile</h3>
-                    {/*<Box sx={{ boxShadow: 0, paddingBottom: 1, paddingTop: 3, paddingX: 4, borderRadius: 5, width: 800, height: 580, display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: 'white' }}>*/}
+                 
 
-                    <form noValidate autoComplete='on' onSubmit={handleSubmit(subForm)}>
-                        {/*form has separate textboxes displayed according to who is signing up*/}
+                    
+                      
                         <div className='personal-info-container'>
-
-                            {/* <div id="item-1" className="personal-detail-picture">
-                                <p className="text-head">Profile picture (optional)</p>
-                                <div className='card-img-container personal-picture'>
-                                    <Button
-                                        component="label"
-                                        role={undefined}
-                                        variant="contained"
-                                        startIcon={<AddCircleRoundedIcon />}
-                                    >
-                                        <VisuallyHiddenInput type="file" onChange={handleChange} />
-                                    </Button>
-                                    <div className='p-image'>
-                                        <img src={img ? img : profilePlaceholder} alt="profile picture" />
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="item-2" className="personal-detail-picture">
-                                <p className="text-head">Profile picture (optional)</p>
-                                <div className='card-img-container personal-picture'>
-                                    <Button
-                                        component="label"
-                                        role={undefined}
-                                        variant="contained"
-                                        startIcon={<AddCircleRoundedIcon />}
-                                    >
-                                        <VisuallyHiddenInput type="file" onChange={handleChange} />
-                                    </Button>
-                                    <div className='p-image'>
-                                        <img src={img ? img : profilePlaceholder} alt="profile picture" />
-                                    </div>
-                                </div>
-                            </div> */}
-                            {/* First Name */}
                             <div id="item-3">
                                 <p className="text-head">First Name<span className="text-danger"> *</span></p>
                                 <TextField className="personal-details-input" variant="outlined" type='text'
@@ -183,34 +65,33 @@ export default function ProfileEdit({ data }) {
                             {/*Country*/}
                             <div id="item-5">
                                 <p className="text-head">Country<span className="text-danger"> *</span></p>
-                                <TextField className="personal-details-input" variant="outlined" select
+                                <TextField className="personal-details-input" variant="outlined" 
                                     defaultValue={data.country}
                                     error={'country' in errors}
                                     {...register("country",
                                         {
                                             required: "please select country",
                                         })}>
-                                    {countries.map((op) => (<MenuItem key={op} value={op}>{op}</MenuItem>))}
                                 </TextField>
                                 <p className="error-message">{errors.country?.message || ""}</p>
                             </div>
 
-                            {/*Phone number*/}
+                            {/*location*/}
                             <div id="item-6">
-                                <p className="text-head">Location<span className="text-danger"> *</span></p>
+                                <p className="text-head">City<span className="text-danger"> *</span></p>
                                 <TextField className="personal-details-input" variant="outlined"
-                                    defaultValue={data.location}
-                                    error={'location' in errors}
-                                    {...register("location",
+                                    defaultValue={data.city}
+                                    error={'city' in errors}
+                                    {...register("city",
                                         {
-                                            required: "please enter phone number",
+                                            required: "",
                                             pattern: {
                                                 value: /^\d{10}$/, // Regular expression to check exactly 10 digits
                                                 // message: "Phone number must be exactly 10 numbers"
                                             }
                                         })} />
 
-                                <p className="error-message">{errors.phone?.message || ""}</p>
+                                <p className="error-message">{errors.city?.message || ""}</p>
                             </div>
                             
                         </div>
@@ -225,15 +106,10 @@ export default function ProfileEdit({ data }) {
                                         required: ""
                                     })}>
                             </TextField>
-                            <p className="error-message">{errors.gender?.message || ""}</p>
+                            <p className="error-message">{errors.bio?.message || ""}</p>
                         </div>
-                        {/*Submit button*/}
-                        {/* <div>
-                            <Button type='submit' className="continue-btn" variant="contained" sx={{ backgroundColor: 'black', borderRadius: 2 }} endIcon={<ArrowForwardIcon />}>
-                                <p >Continue</p>
-                            </Button>
-                        </div> */}
-                    </form>
+                       
+                  
                     <br />
 
                 </div>

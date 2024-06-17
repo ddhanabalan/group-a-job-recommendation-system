@@ -1,3 +1,8 @@
+.openings-left-side-bar{
+    width: 34%;
+    height: 100vh;
+    align-self: start;
+}
 .job-desc-box{
     width: 65%;
     height: 95vh;
@@ -5,4 +10,23 @@
     right: 0.463vh;
     position: absolute;
     align-self: end;
+    
 }
+.job-desc-box.blur{
+    width: 65%;
+    height: 95vh;
+    top: 5vh;
+    right: 0.463vh;
+    position: absolute;
+    align-self: end;
+    filter: blur(0.4rem);
+}
+.filter{
+    z-index: 100;
+    width: 25%;
+    border: 0.07rem solid #98979750;
+    position: absolute;
+    left: 34.5%;
+    box-shadow: 0.2rem 0.001rem 1rem 0.1rem #98979750;
+}
+

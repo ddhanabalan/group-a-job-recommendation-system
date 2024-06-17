@@ -4,7 +4,7 @@
     z-index:2
 }
 .profile-edit-box{
-    border: solid 1px black;
+    box-shadow: 4px 8px 40px -5px grey;
 }
 #item-8,.profile-edit-bio>div{
     width: 100%;

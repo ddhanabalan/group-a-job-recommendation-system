@@ -1,7 +1,7 @@
 .login_container {
     position: relative;
     width: fit-content;
-    height: fit-content;
+    height: 42rem;
     align-self: flex-start;
     margin-left:100px;
     padding: 20px 40px 250px 40px;
@@ -23,7 +23,6 @@
     flex-direction: column; 
     align-items: center;
     background-color: white;
-    gap: 10px;
     padding: 20px 20px 30px 20px;
 }
 
@@ -47,6 +46,7 @@
     align-self: start;
     font-size: 12px;
     font-family: Inter-b;
+    margin:0 0 .4em 0;
 }
 
 .sigup-redirect {
