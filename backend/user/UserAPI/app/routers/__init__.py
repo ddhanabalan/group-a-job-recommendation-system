@@ -28,7 +28,8 @@ from .seekers import (
 
 from .recruiters import (
     base,
-    details
+    details,
+    speciality
 )
 
 seeker_router = APIRouter(prefix="/seeker")
@@ -47,3 +48,4 @@ seeker_router.include_router(seekers.language.router)
 
 recruiter_router.include_router(recruiters.base.router)
 recruiter_router.include_router(recruiters.details.router)
+recruiter_router.include_router(recruiters.speciality.router)

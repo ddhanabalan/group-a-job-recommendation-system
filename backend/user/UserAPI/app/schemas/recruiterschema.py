@@ -40,6 +40,8 @@ class RecruiterLocType(BaseModel):
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
+    class Config:
+        from_attributes = True
 
 class RecruiterEmpType(BaseModel):
     id: int
@@ -48,21 +50,29 @@ class RecruiterEmpType(BaseModel):
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
+    class Config:
+        from_attributes = True
 
 class RecruiterSpeciality(BaseModel):
-    id: int
-    user_id: int
+    id: Optional[int] = None
+    user_id: Optional[int] = None
     speciality: str
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
+    class Config:
+        from_attributes = True
+
 
 class RecruiterAchievements(BaseModel):
-    id: int
-    user_id: int
+    id: Optional[int] = None
+    user_id: Optional[int] = None
     position: str
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
 
 
 class RecruiterProfile(RecruiterDetails):
@@ -71,3 +81,6 @@ class RecruiterProfile(RecruiterDetails):
     achievements: Optional[List[RecruiterAchievements]]
     speciality: Optional[List[RecruiterSpeciality]]
     emp_type: Optional[List[RecruiterEmpType]]
+
+    class Config:
+        from_attributes = True

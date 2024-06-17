@@ -74,9 +74,11 @@ contact us.
 def validate_user_update(username: str, db: Session):
     try:
         user = authcrud.get_by_username(db=db, username=username)
-        authcrud.update(
-            db=db, user_id=user.user_id, user_update={"verified": True}
+        update = authcrud.update(
+            db=db, user_id=user.id, user_update={"verified": True}
         )
+        if not update:
+            return False
         return True
     except SQLAlchemyError:
         return False

@@ -102,14 +102,14 @@ def update(db: Session, user_id: int, user_update: dict) -> bool:
     try:
 
         user = db.query(authmodel.UserAuth).filter(
-            authmodel.UserAuth.user_id == user_id
+            authmodel.UserAuth.id == user_id
         ).first()
         if user:
             for k, v in user_update.items():
-                if k != "user_id" or v is not None: setattr(user, k, v)
-            db.commit()
-            return True
-        return False
+                if k != "user_id" or v is not None:
+                    setattr(user, k, v)
+        db.commit()
+        return True
     except SQLAlchemyError:
         db.rollback()
         return False
