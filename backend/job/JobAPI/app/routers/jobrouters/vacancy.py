@@ -15,6 +15,7 @@ job_vacancy_router = APIRouter(prefix="/job_vacancy")
 
 @job_vacancy_router.get("/")
 async def read_filtered_job_vacancies(
+    title: Optional[str] = None,
     emp_type: Optional[List[str]] = Query(None),
     work_style: Optional[List[str]] = Query(None),
     working_days: Optional[List[str]] = Query(None),
@@ -22,16 +23,16 @@ async def read_filtered_job_vacancies(
     experience: Optional[List[str]] = Query(None),
     salary: Optional[int] = Query(None),
     skills: Optional[List[str]] = Query(None),
-sort: Optional[str] = None,
-        order: Optional[str] = "asc",
-        limit: Optional[int] = None,
+    sort: Optional[str] = None,
+    order: Optional[str] = "asc",
+    limit: Optional[int] = None,
     db: Session = Depends(get_db),
 ):
     filter_job_id = None
     if skills is not None:
         filter_job_id = jobcrud.skills.get_filtered_skills(db, skills)
     filtered_jobs = jobcrud.vacancy.get_filtered_jobs(
-        db, emp_type, work_style, location, working_days, salary, experience, filter_job_id,sort ,order, limit
+        db, emp_type, work_style, location, working_days, salary, experience, filter_job_id,sort ,order, limit,title
     )
     for job in filtered_jobs:
         job.skills = jobcrud.skills.get_all(db, job.job_id)

@@ -1,4 +1,4 @@
-from sqlalchemy import func, Integer, cast
+from sqlalchemy import func, Integer, cast, desc, asc
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from typing import List, Type, Optional
@@ -104,12 +104,6 @@ def delete(db: Session, job_vacancy_id: int) -> bool:
         return False
 
 
-from sqlalchemy import func, Integer, cast, asc, desc
-from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy.orm import Session
-from typing import Optional, List, Type
-
-
 def get_filtered_jobs(
         db: Session,
         emp_type: Optional[List[str]] = None,
@@ -120,8 +114,9 @@ def get_filtered_jobs(
         experience: Optional[List[str]] = None,
         filter_job_id: Optional[List[str]] = None,
         sort: Optional[str] = None,
-        order: Optional[str] = "asc",  # 'asc' for ascending, 'desc' for descending
-        limit: Optional[int] = None
+        order: Optional[str] = "asc",
+        limit: Optional[int] = None,
+        title: Optional[str] = None
 ) -> List[Type[jobschema.JobVacancySearch]]:
     """
     Retrieve job vacancies from the database, filtered by various criteria, with sorting and limit options.
@@ -138,6 +133,7 @@ def get_filtered_jobs(
         sort (str, optional): Attribute to sort by. Defaults to None.
         order (str, optional): Sort order, 'asc' for ascending and 'desc' for descending. Defaults to 'asc'.
         limit (int, optional): Maximum number of results to return. Defaults to None.
+        title (str, optional): Filter jobs by job_name starting with this title. Defaults to None.
 
     Returns:
         List[jobschema.JobVacancySearch]: List of job vacancy objects that match the filters.
@@ -157,15 +153,23 @@ def get_filtered_jobs(
     if working_day:
         query = query.filter(jobmodel.JobVacancy.working_day.in_(working_day))
     if salary is not None:
-        middle_salary = func.split_part(jobmodel.JobVacancy.salary, '-', 2)
-        query = query.filter(cast(middle_salary, Integer) >= salary)
+        middle_salary_expr = cast(
+            func.SUBSTRING_INDEX(func.SUBSTRING_INDEX(jobmodel.JobVacancy.salary, '-', 2), '-', -1),
+            Integer
+        )
+        query = query.filter(middle_salary_expr >= salary)
+    if title:
+        query = query.filter(jobmodel.JobVacancy.job_name.startswith(title))
 
     # Apply sorting
     if sort:
         sort_order = asc if order == "asc" else desc
         if sort == "salary":
-            middle_salary = func.split_part(jobmodel.JobVacancy.salary, '-', 2)
-            query = query.order_by(sort_order(cast(middle_salary, Integer)))
+            middle_salary_expr = cast(
+                func.SUBSTRING_INDEX(func.SUBSTRING_INDEX(jobmodel.JobVacancy.salary, '-', 2), '-', -1),
+                Integer
+            )
+            query = query.order_by(sort_order(middle_salary_expr))
         elif sort == "working_day":
             query = query.order_by(sort_order(jobmodel.JobVacancy.working_day))
         else:
