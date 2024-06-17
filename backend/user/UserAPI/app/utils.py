@@ -33,7 +33,6 @@ async def get_current_user(authorization: str = Header(...), user_type: str = "s
         response = await client.get(
             f"http://{AUTH_API_HOST}:{PORT}/me", headers=headers
         )
-        print(response.json()["type"])
         if response.status_code != status.HTTP_200_OK or response.json() is None or response.json()["type"] != user_type:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid access token"

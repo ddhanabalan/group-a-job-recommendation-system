@@ -106,8 +106,9 @@ def update(
     try:
         user = db.query(recruitermodel.RecruiterDetails).filter(
             recruitermodel.RecruiterDetails.user_id == user_id
-        )
+        ).first()
         for k, v in recruiter_details.items():
+            print(k, v)
             setattr(user, k, v)
         db.commit()
         return True

@@ -22,7 +22,7 @@ router = APIRouter(prefix="/details")
 async def get_recruiter_details(
     db: Session = Depends(get_db), authorization: str = Header(...)
 ):
-    username = await get_current_user(authorization=authorization)
+    username = await get_current_user(authorization=authorization, user_type="recruiter")
     user_details = crud.recruiter.details.get_by_username(db=db, username=username["user"])
     return user_details
 
@@ -33,7 +33,7 @@ async def update_recruiter_details(
     db: Session = Depends(get_db),
     authorization: str = Header(...),
 ):
-    username = await get_current_user(authorization=authorization)
+    username = await get_current_user(authorization=authorization, user_type="recruiter")
     existing_user = crud.recruiter.details.get_by_username(db=db, username=username["user"])
     if not existing_user:
         raise HTTPException(
@@ -58,7 +58,7 @@ async def delete_recruiter_details(
     db: Session = Depends(get_db), authorization: str = Header(...)
 ):
     # Start a transaction
-    user = await get_current_user(authorization)
+    user = await get_current_user(authorization=authorization, user_type="recruiter")
     user_id = user["user_id"]
     if crud.recruiter.details.get(db, user_id) is None:
         raise HTTPException(
