@@ -1,5 +1,6 @@
 import { useForm } from 'react-hook-form';
 import { useState, useEffect } from 'react';
+import { getStorage } from '../../storage/storage';
 import { styled } from '@mui/material/styles';
 import { FastAverageColor } from 'fast-average-color';
 import { Button } from '@mui/material';
@@ -14,8 +15,12 @@ import FmdGoodRoundedIcon from '@mui/icons-material/FmdGoodRounded';
 import profilePlaceholder from '../../images/profile_placeholder.svg';
 import './ProfileHead.css'
 import { Margin } from '@mui/icons-material';
-export default function ProfileHead({ data, blurFn, logOutFn, subForm, isNotEditing, setIsNotEditing }) {
+export default function ProfileHead({ access, data, blurFn, logOutFn, subForm, isNotEditing, setIsNotEditing }) {
     const [img, setImg] = useState();
+    const [user, SetUser] = useState()
+    useEffect(() => {
+        SetUser(getStorage("userType"))
+    },[])
     const [bannerColor, setBannerColor] = useState('');
     useEffect(() => {
         if (data) {
@@ -51,7 +56,8 @@ export default function ProfileHead({ data, blurFn, logOutFn, subForm, isNotEdit
             <div className="banner" style={{ backgroundColor: bannerColor }}>
                 <Stack direction="column" spacing={7} className='feature-actions'>
                     <AccountSettingsBtn logOutFn={logOutFn} />
-                    {isNotEditing ?
+                    {access !== "viewOnly" &&(
+                        isNotEditing ?
                         <IconButton aria-label="edit" onClick={() => {
                             setIsNotEditing(false)
                             blurFn(true)
@@ -66,7 +72,9 @@ export default function ProfileHead({ data, blurFn, logOutFn, subForm, isNotEdit
                             console.log({ ...getValues(), 'profile_banner_color': bannerColor, 'profile_picture': img })
                         }}>
                             <CheckRoundedIcon />
-                        </IconButton>}
+                        </IconButton>)
+                    }
+
                 </Stack>
             </div>
             <div className="profile-head-info">
@@ -87,11 +95,18 @@ export default function ProfileHead({ data, blurFn, logOutFn, subForm, isNotEdit
                     </div>
                 </div>
                 {isNotEditing ?
-                    <div className="profile-head-info-div profile-head-info-div2">
-                        <h1 className="profile-name">{data.first_name && data.last_name ? data.first_name + ' ' + data.last_name : <Skeleton className="profile-name" variant="text" sx={{ width: '20rem' }} />}</h1>
-                        <p className="profile-location"><FmdGoodRoundedIcon fontSize='small' sx={{ marginRight: '.1rem' }} />{data.city && data.country ? data.city + ', ' + data.country : <Skeleton className="profile-location" variant="text" sx={{ width: '15rem' }} />}</p>
-                        <p className="profile-bio">{data.bio ? data.bio : "Tell the world about yourself"}</p>
-                    </div>
+                    (user === "seeker" ?
+                        <div className="profile-head-info-div profile-head-info-div2">
+                            <h1 className="profile-name">{data.first_name && data.last_name ? data.first_name + ' ' + data.last_name : <Skeleton className="profile-name" variant="text" sx={{ width: '20rem' }} />}</h1>
+                            <p className="profile-location"><FmdGoodRoundedIcon fontSize='small' sx={{ marginRight: '.1rem' }} />{data.city && data.country ? data.city + ', ' + data.country : <Skeleton className="profile-location" variant="text" sx={{ width: '15rem' }} />}</p>
+                            <p className="profile-bio">{data.bio ? data.bio : "Tell the world about yourself"}</p>
+                        </div>
+                        :
+                        <div className="profile-head-info-div profile-head-info-div2">
+                            <h1 className="profile-name">{data.company_name ? data.company_name : <Skeleton className="profile-name" variant="text" sx={{ width: '20rem' }} />}</h1>
+                            <p className="profile-location"><FmdGoodRoundedIcon fontSize='small' sx={{ marginRight: '.1rem' }} />{data.city && data.country ? data.city + ', ' + data.country : <Skeleton className="profile-location" variant="text" sx={{ width: '15rem' }} />}</p>
+                            <p className="profile-bio">{data.bio ? data.bio : "Tell the world about yourself"}</p>
+                        </div>)
                     :
                     <div className="profile-head-info-div profile-head-info-div2">
                         <ProfileEdit data={data} register={register} errors={errors} />
@@ -99,6 +114,6 @@ export default function ProfileHead({ data, blurFn, logOutFn, subForm, isNotEdit
                 }
                 <div className="profile-head-info-div profile-head-info-div3"></div>
             </div>
-        </form>
+        </form >
     )
 }

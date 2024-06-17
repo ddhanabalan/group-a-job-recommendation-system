@@ -10,8 +10,8 @@ import qs from 'qs';
 import ConfBox from '../../components/ConfirmMsgBox/ConfirmMsgBox';
 import '../pages.css';
 export default function LoginPage({fixUser}) {
-    const [redirectSeeker, SetRedirectSeeker] = useState(false)
-    const [redirectEmployer, SetRedirectEmployer] = useState(false)
+    const [redirect, SetRedirect] = useState(false)
+    // const [redirectEmployer, SetRedirectEmployer] = useState(false)
     const [loading, SetLoading] = useState(false)
     const [serverMsg, SetServerMsg] = useState(null);
     const redirectFn = (response) => {
@@ -28,8 +28,8 @@ export default function LoginPage({fixUser}) {
                 }
             });
             fixUser(response.data.type)
-            response.data.type === "seeker" ? SetRedirectSeeker(true) : SetRedirectEmployer(true)
-           
+            // response.data.type === "seeker" ? SetRedirectSeeker(true) : SetRedirectEmployer(true)
+            SetRedirect(true)
         } catch (e) {
             console.log(e)
         }
@@ -54,7 +54,7 @@ export default function LoginPage({fixUser}) {
 
     return (
         <div id="page">
-            {redirectSeeker && < Navigate to="/profile" />}
+            {redirect && < Navigate to="/profile" />}
             {serverMsg ?
                 <div className='message-box-login'>
                     <ConfBox message={serverMsg} animation={failanim} bgcolor="#FFE5B4" />

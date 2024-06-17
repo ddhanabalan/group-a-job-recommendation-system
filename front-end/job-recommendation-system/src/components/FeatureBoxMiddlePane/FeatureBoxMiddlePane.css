@@ -30,7 +30,15 @@
     height: 1px;
     width: 104%;
 }
-
+.overview-edit-input>div{
+    margin-top: 1rem;
+    border-radius: 10px;
+    min-height: 5rem !important;
+}
+.overview-formatted{
+    white-space: pre-wrap;
+    font-family: Inter-regular;
+}
 .openings-redirect-button {
     color: rgba(0, 0, 0, 0.748);
     cursor: pointer;

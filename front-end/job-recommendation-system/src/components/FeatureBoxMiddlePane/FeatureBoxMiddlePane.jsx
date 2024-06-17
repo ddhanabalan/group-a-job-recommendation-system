@@ -9,7 +9,7 @@ import QualificationCard from '../QualificationCard/QualificationCard';
 import QualificationAdd from '../QualificationAdd/QualificationAdd';
 import NothingToShow from '../NothingToShow/NothingToShow';
 import './FeatureBoxMiddlePane.css';
-export default function FeatureBoxMiddlePane({ childData,showSuccessMsg,showFailMsg }) {
+export default function FeatureBoxMiddlePane({ access,childData,showSuccessMsg,showFailMsg }) {
     useEffect(() => {
         if (childData) {
             SetQdata(childData)
@@ -41,10 +41,7 @@ export default function FeatureBoxMiddlePane({ childData,showSuccessMsg,showFail
         //cancels addition of new qualification
         SetNewQual(false)
     };
-    // const deleteQua = (id) => {
-    //     //deletes existing qualification from array by referring to the id passed in
-    //     SetQdata(qdata.filter(e => { return id !== e.id }))
-    // };
+
     const deleteQual = async (id) => {
         //deletes existing Qualification from array by referring to the id passed in
         try {
@@ -61,18 +58,6 @@ export default function FeatureBoxMiddlePane({ childData,showSuccessMsg,showFail
         }
     };
 
-    // const updateQua = (data) => {
-    //     //updates existing qualification data from array. new data is passed in along with existing data id
-    //     SetQdata(qdata.map(e => {
-    //         if (e.id === data.id) {
-    //             e.qualification = data.qualification
-    //             e.qualification_provider = data.qualification_provider
-    //             e.start_year = data.start_year
-    //             e.end_year = data.end_year
-    //         }
-    //         return (e)
-    //     }))
-    // }
     const updateQual = async (data) => {
         //updates existing Education data from array. new data is passed in along with existing data id
         const { id, ...passData } = data
@@ -99,11 +84,13 @@ export default function FeatureBoxMiddlePane({ childData,showSuccessMsg,showFail
     return (
         <div className="feature-box feature-box-middle-pane" id="feature-box-middle-pane">
             <h4 className="feature-title">Formal Education</h4>
-            <Stack direction="row" spacing={0} className='feature-actions'>
-                <IconButton aria-label="add" onClick={() => { SetNewQual(true) }}>
-                    <AddCircleRoundedIcon />
-                </IconButton>
-            </Stack>
+            {access !== "viewOnly" &&
+                <Stack direction="row" spacing={0} className='feature-actions'>
+                    <IconButton aria-label="add" onClick={() => { SetNewQual(true) }}>
+                        <AddCircleRoundedIcon />
+                    </IconButton>
+                </Stack>}
+            
             <div className="feature-box-container">
                 {
                     (qdata.length === 0 && !newQual) &&
@@ -118,7 +105,7 @@ export default function FeatureBoxMiddlePane({ childData,showSuccessMsg,showFail
                     childData && qdata.map(e => {
 
                         return (
-                            <QualificationCard  data={e} key={uuid()} deleteFn={deleteQual} submitFn={updateQual} cancelFn={cancelQual} />)
+                            <QualificationCard access={access} data={e} key={uuid()} deleteFn={deleteQual} submitFn={updateQual} cancelFn={cancelQual} />)
                     })
                 }
 

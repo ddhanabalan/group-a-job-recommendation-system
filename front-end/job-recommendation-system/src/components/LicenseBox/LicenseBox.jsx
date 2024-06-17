@@ -8,7 +8,7 @@ import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import LicenseAdd from '../LicenseCard/LicenseAdd';
 import LicenseCard from '../LicenseCard/LicenseCard';
 import NothingToShow from '../NothingToShow/NothingToShow';
-export default function LicenseBox({ childData, reloadFn,showSuccessMsg,showFailMsg }) {
+export default function LicenseBox({access, childData, reloadFn,showSuccessMsg,showFailMsg }) {
     useEffect(() => {
         if (childData) {
             SetLicensedata(childData)
@@ -82,11 +82,13 @@ export default function LicenseBox({ childData, reloadFn,showSuccessMsg,showFail
     return (
         <div className="feature-box feature-box-middle-pane" id="feature-box-middle-pane">
             <h4 className="feature-title">Licenses and certifications</h4>
-            <Stack direction="row" spacing={0} className='feature-actions'>
-                <IconButton aria-label="add" onClick={() => { SetNewLic(true) }}>
-                    <AddCircleRoundedIcon />
-                </IconButton>
-            </Stack>
+            {access !== "viewOnly" &&
+                <Stack direction="row" spacing={0} className='feature-actions'>
+                    <IconButton aria-label="add" onClick={() => { SetNewLic(true) }}>
+                        <AddCircleRoundedIcon />
+                    </IconButton>
+                </Stack>
+            }
             <div className="feature-box-container">
                 {
                     (licensedata.length === 0 && !newLic) &&
@@ -99,7 +101,7 @@ export default function LicenseBox({ childData, reloadFn,showSuccessMsg,showFail
                     childData && licensedata.map(e => {
 
                         return (
-                            <LicenseCard data={e} key={uuid()} deleteFn={deleteLic} submitFn={updateLic} cancelFn={cancelLic} />
+                            <LicenseCard access={access} data={e} key={uuid()} deleteFn={deleteLic} submitFn={updateLic} cancelFn={cancelLic} />
                         )
                     }
                     )

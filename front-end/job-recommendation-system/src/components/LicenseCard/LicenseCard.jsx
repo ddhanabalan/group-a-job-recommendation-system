@@ -10,7 +10,7 @@ import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import LinkRoundedIcon from '@mui/icons-material/LinkRounded';
 import './LicenseCard.css';
-export default function LicenseCard({ data, deleteFn, submitFn }) {
+export default function LicenseCard({ access,data, deleteFn, submitFn }) {
     const { register, formState: { errors }, handleSubmit, getValues } = useForm({ mode: 'onTouched' });
     const [isNotEditing, SetIsNotEditing] = useState(true);
     const editData = () => {
@@ -45,14 +45,16 @@ export default function LicenseCard({ data, deleteFn, submitFn }) {
                         </div>
                     </div>
                     <div className="qualification-card-action-btns">
-                        <Stack direction="column" spacing={2}>
-                            <IconButton aria-label="edit" onClick={() => SetIsNotEditing(false)}>
-                                <EditIcon fontSize='small' />
-                            </IconButton>
-                            <IconButton aria-label="delete" onClick={() => deleteFn(data.id)}>
-                                <DeleteRoundedIcon sx={{ color: 'red' }} fontSize='small' />
-                            </IconButton>
-                        </Stack>
+                        {access !== "viewOnly" &&
+                            <Stack direction="column" spacing={2}>
+                                <IconButton aria-label="edit" onClick={() => SetIsNotEditing(false)}>
+                                    <EditIcon fontSize='small' />
+                                </IconButton>
+                                <IconButton aria-label="delete" onClick={() => deleteFn(data.id)}>
+                                    <DeleteRoundedIcon sx={{ color: 'red' }} fontSize='small' />
+                                </IconButton>
+                            </Stack>
+                        }
                     </div>
                 </div >
                 :
@@ -105,14 +107,16 @@ export default function LicenseCard({ data, deleteFn, submitFn }) {
                         </div>
                     </div>
                     <div className="qualification-card-action-btns">
-                        <Stack direction="column" spacing={2}>
-                            <IconButton aria-label="check" type='submit'>
-                                <CheckRoundedIcon fontSize='small' />
-                            </IconButton>
-                            <IconButton aria-label="edit" onClick={() => SetIsNotEditing(true)}>
-                                <CloseRoundedIcon sx={{ color: 'red' }} fontSize='small' />
-                            </IconButton>
-                        </Stack>
+                        {access !== "viewOnly" &&
+                            <Stack direction="column" spacing={2}>
+                                <IconButton aria-label="check" type='submit'>
+                                    <CheckRoundedIcon fontSize='small' />
+                                </IconButton>
+                                <IconButton aria-label="edit" onClick={() => SetIsNotEditing(true)}>
+                                    <CloseRoundedIcon sx={{ color: 'red' }} fontSize='small' />
+                                </IconButton>
+                            </Stack>
+                        }
                     </div>
                 </form>}
         </>

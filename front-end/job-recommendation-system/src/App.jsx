@@ -1,7 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
-import { useState } from 'react';
-import { setStorage } from './storage/storage';
+import { useState, useEffect } from 'react';
+import { setStorage, getStorage } from './storage/storage';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { PrivateRoutes, SeekerRoutes, EmployerRoutes } from './utils/PrivateRoutes';
 import CandidateSection from './pages/CandidateSection/CandidateSection';
@@ -13,12 +13,20 @@ import LandingPage from './pages/LandingPage/LandingPage';
 import LoginPage from './pages/LoginPage/LoginPage';
 import SignUpPage from './pages/SignUp/SignUp';
 import SignUpPage2 from './pages/SignUp/SignUp2';
+import OtherUserProfile from './pages/profile page/OtherUserProfile';
 import ProfileSection from './pages/profile page/ProfileSection';
 import EmployerProfileSection from './pages/profile page/EmployerProfileSection';
 import VerifyAccount from './pages/VerifyAccount/VerifyAccount';
 import ReviewApplications from './pages/ReviewApplications/ReviewApplications';
+import OtherEmployerProfile from './pages/profile page/OtherEmployerProfile';
 function App() {
+
+  useEffect(() => {
+    SetUser(getStorage("userType"))
+  }, []);
+
   const [user, SetUser] = useState();
+
   const fixUser = (type) => {
     console.log(type)
     SetUser(type)
@@ -42,7 +50,8 @@ function App() {
           {/* routes common to signed-in users */}
           <Route element={<PrivateRoutes />}>
             <Route path="/profile" element={user === "seeker" ? <ProfileSection data={{}} /> : <EmployerProfileSection data={{}} />} />
-            <Route path="/profile/:username" element={<ProfileSection data={{}} />} />
+            <Route path="/profile/:username" element={<OtherUserProfile data={{}} />} />
+            <Route path="/e/profile/:username" element={<OtherEmployerProfile data={{}} />} />
             <Route path="/employer-profile" element={<EmployerProfileSection data={{
               userName: "NASA", first_name: "NASA - National Aeronautics and Space Administration", location: "Washington, D.C", country: "USA", bio: "We search the Universe. "
             }} />} />

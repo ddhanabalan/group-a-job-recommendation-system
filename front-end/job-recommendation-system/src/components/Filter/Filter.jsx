@@ -129,7 +129,7 @@ export default function Filter({ title, userType=null, passFilteredDataFn = null
                 :
                 <></>
             }
-            <AddTags value={domain} tags={domains} deleteFn={handleDeleteDomain} changeFn={handleChangeDomain} updateFn={handleDomain} data={{ heading: "interested domains", inputPlaceholder: "Marketing", isLocation: false }} />
+            <AddTags availableDomains={skillsList} value={domain} tags={domains} deleteFn={handleDeleteDomain} changeFn={handleChangeDomain} updateFn={handleDomain} data={{ heading: "interested domains", inputPlaceholder: "Marketing", isLocation: false }} />
             <MultipleOptions heading={"job location"} options={["On-site", "Hybrid", "Work from home"]} dataType="loc_type" onChange={handleCheckboxChange} />
             <MultipleOptions heading={"working days"} options={["Monday - Friday", "Monday - Saturday"]} dataType="workTime" onChange={handleCheckboxChange} />
             <AddTags locationFieldAutoValue={googleLocationAutoField} updatelocationFieldAutoValue={setGoogleAutoField} value={location} tags={locations} deleteFn={handleDeleteLocation} changeFn={handleChangeLocation} updateFn={handleLocation} data={{ heading: "preferred job locations", inputPlaceholder: "Kerala", isLocation: true }} />

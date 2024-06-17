@@ -8,7 +8,7 @@ import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import ExperienceCard from '../ExperienceCard/ExperienceCard';
 import ExperienceAdd from '../ExperienceCard/ExperienceAdd';
 import NothingToShow from '../NothingToShow/NothingToShow';
-export default function ExperienceBox({ childData, reloadFn,showSuccessMsg,showFailMsg }) {
+export default function ExperienceBox({ access, childData, reloadFn, showSuccessMsg, showFailMsg }) {
     useEffect(() => {
         if (childData) {
             SetExpdata(childData)
@@ -24,7 +24,7 @@ export default function ExperienceBox({ childData, reloadFn,showSuccessMsg,showF
                     'Authorization': `Bearer ${getStorage("userToken")}`
                 }
             });
-              response.request.status===201&&showSuccessMsg()
+            response.request.status === 201 && showSuccessMsg()
             console.log(response)
             SetNewExp(false)
             reloadFn()
@@ -42,12 +42,12 @@ export default function ExperienceBox({ childData, reloadFn,showSuccessMsg,showF
     const deleteExp = async (id) => {
         //deletes existing Experience from array by referring to the id passed in
         try {
-           const response = await userAPI.delete(`/seeker/former-job/${id}`, {
+            const response = await userAPI.delete(`/seeker/former-job/${id}`, {
                 headers: {
                     'Authorization': `Bearer ${getStorage("userToken")}`
                 }
             })
-              response.request.status===200&&showSuccessMsg()
+            response.request.status === 200 && showSuccessMsg()
             SetExpdata(expdata.filter(e => { return id !== e.id }))
         } catch (e) {
             console.log(e)
@@ -60,12 +60,12 @@ export default function ExperienceBox({ childData, reloadFn,showSuccessMsg,showF
         const { id, ...passData } = data
         console.log("passData", passData)
         try {
-           const response = await userAPI.put(`/seeker/former-job/${id}`, passData, {
+            const response = await userAPI.put(`/seeker/former-job/${id}`, passData, {
                 headers: {
                     'Authorization': `Bearer ${getStorage("userToken")}`
                 }
             })
-            response.request.status===200&&showSuccessMsg()
+            response.request.status === 200 && showSuccessMsg()
             SetExpdata(expdata.map(e => {
                 if (e.id === data.id) {
                     e = data
@@ -81,11 +81,13 @@ export default function ExperienceBox({ childData, reloadFn,showSuccessMsg,showF
     return (
         <div className="feature-box feature-box-middle-pane" id="feature-box-middle-pane">
             <h4 className="feature-title">Professional Experience</h4>
-            <Stack direction="row" spacing={0} className='feature-actions'>
-                <IconButton aria-label="add" onClick={() => { SetNewExp(true) }}>
-                    <AddCircleRoundedIcon />
-                </IconButton>
-            </Stack>
+            {access !== "viewOnly" &&
+                <Stack direction="row" spacing={0} className='feature-actions'>
+                    <IconButton aria-label="add" onClick={() => { SetNewExp(true) }}>
+                        <AddCircleRoundedIcon />
+                    </IconButton>
+                </Stack>}
+
             <div className="feature-box-container">
                 {
                     (expdata.length === 0 && !newExp) &&

@@ -18,7 +18,7 @@ import failAnimation from '../../images/fail-animation.json'
 import LoaderAnimation from '../../components/LoaderAnimation/LoaderAnimation';
 import cloudAnimation from '../../images/cloud-animation.json';
 import './ProfileSection.css';
-export default function ProfileSection({ data }) {
+export default function OtherUserProfile({ data }) {
     const [newData, SetnewData] = useState(data);
     const [isNotEditing, SetIsNotEditing] = useState(true)
     const { state } = useLocation();
@@ -71,6 +71,7 @@ export default function ProfileSection({ data }) {
     }, [])
     const params = useParams();
     const user = params.username;
+    const [isEmployer, SetIsEmployer] = useState(false)
     const callAPI = async () => {
         try {
             const response = (user === undefined) ?
@@ -80,6 +81,7 @@ export default function ProfileSection({ data }) {
                     }
                 }) :
                 await userAPI.get(`/profile/${user}`);
+            response.data.user_type && response.data.user_type==="recruiter"&&SetIsEmployer(true)
             redirectFn(response.data)
         } catch (e) {
             console.log(e)
@@ -178,21 +180,22 @@ export default function ProfileSection({ data }) {
     return (
         <>
             {redirectHome && <Navigate to='/' />}
+            {isEmployer && <Navigate to={'/e/profile/'+user} />}
             {data ?
                 <div id="profile-page">
-                    <ProfileHead data={newData} logOutFn={logOut} blurFn={blurBody} subForm={subForm} isNotEditing={isNotEditing} setIsNotEditing={updateEditStatus} />
+                    <ProfileHead access={"viewOnly"} data={newData} logOutFn={logOut} blurFn={blurBody} subForm={subForm} isNotEditing={isNotEditing} setIsNotEditing={updateEditStatus} />
                     <NavigationBar active="profile" redirect={state} />
                     <div className={profileBodyClass}>
                         <div className="profile-pane profile-left-pane">
                             {/* <FeatureBox data={{ title: "At a Glance" }} /> */}
                             <ContactCard
-                                data={{ title: "Contacts and Profiles", addIcon: false, editIcon: true }}
+                                access={"viewOnly"} data={{ title: "Contacts and Profiles", addIcon: false, editIcon: true }}
                                 contactData={newData} reloadFn={callAPI} showSuccessMsg={showSuccessMsg} showFailMsg={showFailMsg} />
                         </div>
                         <div className="profile-pane profile-middle-pane">
-                            <ExperienceBox childData={newData.former_jobs} reloadFn={callAPI} showSuccessMsg={showSuccessMsg} showFailMsg={showFailMsg} />
+                            <ExperienceBox access={"viewOnly"} childData={newData.former_jobs} reloadFn={callAPI} showSuccessMsg={showSuccessMsg} showFailMsg={showFailMsg} />
                             <FeatureBoxMiddlePane //component defaults to QualificationBox
-                                childData={newData.prev_education}
+                                access={"viewOnly"} childData={newData.prev_education}
                                 showSuccessMsg={showSuccessMsg} showFailMsg={showFailMsg}
                             />
                             {/* <FeatureBoxMiddlePane data={{ title: "Licenses and certifications ", edit: true, isLanguage: false, cardData: { qualification_label: "Name", qualification_provider: "Issuing organization" } }}
@@ -201,12 +204,13 @@ export default function ProfileSection({ data }) {
                                     { qualification: "Master of science - Computer Science", id: uuid(), qualification_provider: "Massachusetts Institute of Technology (MIT)", start_year: 2005, end_year: 2009 }
                                 ]} /> */}
                             <LicenseBox
-                                showSuccessMsg={showSuccessMsg} showFailMsg={showFailMsg}
+                                access={"viewOnly"} showSuccessMsg={showSuccessMsg} showFailMsg={showFailMsg}
                                 childData={newData.certificate} reloadFn={callAPI}
                             />
-                            <AddSkills id="profile-section-skills" availableSkills={skillsList} value={skill} tags={skills} deleteFn={handleDeleteSkill} changeFn={handleChangeSkill} updateFn={handleSkill} data={{ title: "Skills", inputPlaceholder: "HTML" }} />
+                            <AddSkills access={"viewOnly"} id="profile-section-skills" availableSkills={skillsList} value={skill} tags={skills} deleteFn={handleDeleteSkill} changeFn={handleChangeSkill} updateFn={handleSkill} data={{ title: "Skills", inputPlaceholder: "HTML" }} />
 
                             <LanguageBox
+                                access={"viewOnly"}
                                 showSuccessMsg={showSuccessMsg}
                                 showFailMsg={showFailMsg}
                                 reloadFn={callAPI}
@@ -214,24 +218,22 @@ export default function ProfileSection({ data }) {
                                 childData={newData.language}
                             />
                             <div className="spacer-div" ></div>
-                            {successMsg &&
+                            {/* {successMsg &&
                                 <div className="message-from-server">
-                                    {/* <ConfBox message={"Changes saved"} animation={cloudAnimation} bgcolor="#90e0ef" /> */}
                                     <p>Changes saved &emsp; </p>
                                     <Lottie className="cloud-ani" animationData={cloudAnimation} loop={false} />
                                 </div>
                             }
                             {failMsg &&
                                 <div className="message-from-server" style={{ backgroundColor: "#f7cad0a1", width: '20rem' }}>
-                                    {/* <ConfBox message={"Changes saved"} animation={cloudAnimation} bgcolor="#90e0ef" /> */}
                                     <p>Failed to update changes &emsp; </p>
                                     <Lottie className="success-ani" animationData={failAnimation} loop={true} />
                                 </div>
-                            }
+                            } */}
                         </div>
-                        <div className="profile-pane profile-right-pane">
+                        {/* <div className="profile-pane profile-right-pane">
                             <FeatureBox data={{ title: "Achievements", addIcon: true, editIcon: true }} />
-                        </div>
+                        </div> */}
                     </div>
                 </div>
                 :
