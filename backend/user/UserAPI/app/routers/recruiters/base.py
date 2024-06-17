@@ -34,9 +34,7 @@ async def user_recruiters_init(
 
 @router.get("/profile", response_model=recruiterschema.RecruiterProfile)
 async def profile(authorization: str = Header(...), db: Session = Depends(get_db)):
-    print(authorization)
     username = await get_current_user(authorization=authorization,user_type = "recruiter")
-    print(username)
     username = username["user"]
     details = crud.recruiter.details.get_by_username(db=db, username=username)
     if details.profile_picture is not None:
@@ -47,9 +45,9 @@ async def profile(authorization: str = Header(...), db: Session = Depends(get_db
 
     user_details = recruiterschema.RecruiterDetails.from_orm(details)
 
-    user_achievements = crud.recruiter.achievements.get_all(db=db, user_id=user_details.user_id)
-
     user_speciality = crud.recruiter.speciality.get_all(db=db, user_id=user_details.user_id)
+
+    user_achievements = crud.recruiter.achievements.get_all(db=db, user_id=user_details.user_id)
 
     user_emp_type = crud.recruiter.emptype.get_all(db=db, user_id=user_details.user_id)
 

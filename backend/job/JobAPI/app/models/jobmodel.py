@@ -13,13 +13,12 @@ class JobVacancy(Base):
     job_desc = Column(String(1024))
     company_name = Column(String(256))
     requirement = Column(String(5120))
-    currency = Column(String(64))
-    start_salary = Column(String(64))
-    end_salary = Column(String(64))
+    salary = Column(String(256))
     experience = Column(String(128))
-    loc_type = Column(String(64))
+    work_style = Column(String(64))
     job_position = Column(String(32))
     location = Column(String(128))
+    working_days = Column(String(128))
     emp_type = Column(String(128))
     last_date = Column(DateTime)
     closed = Column(Boolean, default=False)
@@ -27,15 +26,6 @@ class JobVacancy(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-
-class JobTags(Base):
-    __tablename__ = "job_tags"
-
-    id = Column(Integer, primary_key=True)
-    job_id = Column(Integer, ForeignKey("job_vacancy.job_id"), index=True)
-    tag = Column(String(125))
-    created_at = Column(DateTime, default=datetime.utcnow)
-    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
 
 class JobSkill(Base):
