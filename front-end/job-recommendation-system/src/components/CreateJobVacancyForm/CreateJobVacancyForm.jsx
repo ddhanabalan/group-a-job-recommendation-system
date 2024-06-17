@@ -37,7 +37,7 @@ export default function JobVacancyForm({ data = {} }) {
     
     const [skills, SetSkills] = useState(dta.skills ? dta.skills.map(label => ({ tag: label.skill, id: label.id })) : []);
     const [tags, setTags] = useState(dta.tags ? dta.tags.map(label => ({ tag: label.tags, id: label.id })) : []);
-    const [preferences, setPreferences] = useState({"skills": skills,"tags": tags, "empType": dta.empType, "exp": dta.exp});
+    const [preferences, setPreferences] = useState({"skills": skills,"tags": tags, "empType": dta.empType, "exp": dta.exp, "workStyle": dta.workStyle, "workingDays": dta.workingDays});
     const [preview, setPreview] = useState(false);
     const [finalApplicationData, setData] = useState({});
 
@@ -203,18 +203,22 @@ export default function JobVacancyForm({ data = {} }) {
         //Application submission data
         const submissionData={
                                 "company_id": 23,
-                                "job_name": finalApplicationData['jobTitle'],
-                                "job_desc": finalApplicationData['jobDesc'],
                                 "company_name": finalApplicationData['companyName'],
-                                "requirement": finalApplicationData['jobReq'],
+                                "emp_type": finalApplicationData['empType'][0],
                                 "salary": finalApplicationData["currency"] + "-" + ((finalApplicationData["salary"][1]==="")?finalApplicationData["salary"][0]:finalApplicationData["salary"].join("-")),
+	                            "working_days": finalApplicationData["workingDays"][0],
+                                "work_style": finalApplicationData["workStyle"][0],
                                 "experience": finalApplicationData["exp"][0],
+                                "job_name": finalApplicationData['jobTitle'],
                                 "job_position": finalApplicationData['jobTitle'],
                                 "location": finalApplicationData['location'],
-                                "emp_type": finalApplicationData['empType'][0],
+
+                                "job_desc": finalApplicationData['jobDesc'],
+                                
+                                "requirement": finalApplicationData['jobReq'],
                                 "last_date": finalApplicationData['last_date'],
                                 
-                                "skill": finalApplicationData["skills"]?finalApplicationData["skills"]:[],
+                                "skills": finalApplicationData["skills"]?finalApplicationData["skills"]:[],
                             };
         //submissionData["salary"]=(submissionData["salary"][1]==="")?submissionData["salary"][0]:submissionData["salary"].join("-");
         
@@ -299,14 +303,14 @@ export default function JobVacancyForm({ data = {} }) {
                                 <div className="detail-divs">
                                     <p><span className={`details-header${prefError.empType?"-error":""}`}>Employment type:</span></p>
                                     <div className="option-divs">
-                                        <MultipleOptions   options={["Full-time", "Internship", "Temporary"]} preselected={dta.empType || null} dataType="empType" checkLimit={1} onChange={handleCheckboxChange} />
+                                        <MultipleOptions   options={["Full-time", "Internship", "Temporary"]} preselected={preferences.empType || null} dataType="empType" checkLimit={1} onChange={handleCheckboxChange} />
                                         <p className="error-message">{prefError.empType?.message}</p>
                                     </div>
                                 </div>
                                 <div className="detail-divs">
                                     <p><span className={`details-header${prefError.exp?"-error":""}`}>Experience:</span></p>
                                     <div className="option-divs">
-                                        <MultipleOptions  options={["Fresher", "1-5 years", "5-10 years", "10+ years"]} preselected={dta.exp || null} dataType="exp" checkLimit={1} onChange={handleCheckboxChange} />
+                                        <MultipleOptions  options={["Fresher", "1-5 years", "5-10 years", "10+ years"]} preselected={preferences.exp || null} dataType="exp" checkLimit={1} onChange={handleCheckboxChange} />
                                         <p className="error-message">{prefError.exp?.message}</p>
                                     </div>
                                 </div>
@@ -314,14 +318,14 @@ export default function JobVacancyForm({ data = {} }) {
                                 <div className="detail-divs">
                                     <p><span className={`details-header${prefError.exp?"-error":""}`}>Work Style:</span></p>
                                     <div className="option-divs">
-                                        <MultipleOptions  options={["Hybrid", "Work from home", "Onsite"]} preselected={dta.workStyle || null} dataType="workStyle" checkLimit={1} onChange={handleCheckboxChange} />
+                                        <MultipleOptions  options={["Hybrid", "Work from home", "Onsite"]} preselected={preferences.workStyle || null} dataType="workStyle" checkLimit={1} onChange={handleCheckboxChange} />
                                         <p className="error-message">{prefError.workPref?.message}</p>
                                     </div>
                                 </div>
                                 <div className="detail-divs">
                                     <p><span className={`details-header${prefError.exp?"-error":""}`}>Working days:</span></p>
                                     <div className="option-divs">
-                                        <MultipleOptions  options={["Monday-Friday", "Monday-Saturday"]} preselected={dta.workingDays || null} dataType="workingDays" checkLimit={1} onChange={handleCheckboxChange} />
+                                        <MultipleOptions  options={["Monday-Friday", "Monday-Saturday"]} preselected={preferences.workingDays || null} dataType="workingDays" checkLimit={1} onChange={handleCheckboxChange} />
                                         <p className="error-message">{prefError.workingDays?.message}</p>
                                     </div>
                                 </div>

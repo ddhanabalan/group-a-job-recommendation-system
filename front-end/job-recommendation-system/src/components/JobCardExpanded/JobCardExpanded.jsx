@@ -42,12 +42,13 @@ export default function JobCardExpanded({ data, createJobRequest=null, userData,
                     <h1 className='job-desc-h1'>{data.jobTitle}</h1>
                     <p className='job-desc-company-name-p'>{data.companyName}</p>
                     {data.tags?
-                        <Stack className="job-desc-tags" direction="row" spacing={1}>
+                        <div></div>
+                        /*<Stack className="job-desc-tags" direction="row" spacing={1}>
                             {data.tags.map(e => {
                                 return (<Chip key={typeof(e)=="string"?uuid():e.id} className="job-desc-tags-child" label={typeof(e)=="string"?e:e.tags} size='small' />)
                             })}
 
-                        </Stack>
+                        </Stack>*/
                         :
                         <></>
                     }
@@ -66,6 +67,8 @@ export default function JobCardExpanded({ data, createJobRequest=null, userData,
                     <p><span >Location:</span> {data.location}</p>
                     <p><span >Employment type:</span>{data.empType}</p>
                     <p><span >Experience:</span> {data.exp}</p>
+                    <p><span >Work Style:</span> {data.workStyle}</p>
+                    <p><span >Working Days:</span> {data.workingDays}</p>
                     <p><span >Last Date:</span> {(data.last_date?.split('-').reverse()).join('-') || ""}</p>
                 </div>
 
@@ -84,7 +87,7 @@ export default function JobCardExpanded({ data, createJobRequest=null, userData,
                         <h6>Skills&nbsp;{userData.type=="seeker"?<span className='skill-counter'>&nbsp;  You have {userSkills} out of {data.skills.length} skills required for the job</span>: <></>}</h6>
                         {/*skill tags */}
                         <div className='desc'><Stack className="job-desc-tags" direction="row" spacing={1}>
-                            {data.skills.map(e => {if(e.skill != "" && e.skill !="")
+                            {data.skills.map(e => {if(e.skill != ""/* && e.skill !=""*/)
                                 {return (<div className="job-desc-skill-tags-child" key={typeof(e)=="string"?uuid():e.id}>
                                         {typeof(e)=="string"?e:e.skill} {userData.type=="employer"?
                                                 <></>

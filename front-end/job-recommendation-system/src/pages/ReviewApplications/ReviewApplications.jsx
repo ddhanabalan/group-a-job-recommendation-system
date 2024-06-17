@@ -61,7 +61,7 @@ export default function ReviewApplications() {
         GetSeekerDetails();
         try {
             const response = await jobAPI.get(`/job_vacancy/company/${companyId}`);
-            const mod_response = response.data.map(e=>({id: e.job_id, jobTitle: e.job_name, companyName: e.company_name, tags: e.tags, currency: e.salary.split('-')[0], salary: [e.salary.split('-')[1],e.salary.split('-')[2]], postDate: e.created_at.split('T')[0] , last_date: e.last_date.split('T')[0], location: e.location, empType: e.emp_type, exp: e.experience, jobDesc: e.job_desc ,jobReq:e.requirement,skills: e.skills.length?e.skills: [{'skill': ""}], applicationsReceived: e.job_seekers}))
+            const mod_response = response.data.map(e=>({id: e.job_id, jobTitle: e.job_name, companyName: e.company_name, tags: e.tags, currency: e.salary.split('-')[0], salary: [e.salary.split('-')[1],e.salary.split('-')[2]], postDate: e.created_at.split('T')[0] , last_date: e.last_date.split('T')[0], location: e.location, empType: e.emp_type, exp: e.experience, workStyle: e.work_style, workingDays: e.working_days, jobDesc: e.job_desc ,jobReq:e.requirement,skills: e.skills.length?e.skills: [{'skill': ""}], applicationsReceived: e.job_seekers}))
             setJobVacancies(mod_response);
             console.log(response);
             console.log(" after new job vacancies", mod_response);
@@ -77,6 +77,7 @@ export default function ReviewApplications() {
         try{
             const response = await jobAPI.delete(`job_vacancy/${job_id}`);
             callJobVacancyAPI(23); 
+            setEntry(null);
             console.log("deleted successfully", job_id, "resp: ", response)
         }
         catch(e){
@@ -188,8 +189,9 @@ export default function ReviewApplications() {
     }
     const expJob=(selection)=>{
         //console.log("select", selection);
-        console.log("selected job vacncyt after mod", jobVacancies)
+        console.log("selected job vacncyt after mod", jobVacancies, "selection", selection)
         const expEntry = jobVacancies.filter(e=>(e["id"]===selection?e:false));
+        console.log("expEntry ", expEntry)
         setJobEntry(expEntry[0]);
         if(userData.type == "employer")console.log("yep done");RequestJobApplications(expEntry[0].applicationsReceived);
         console.log("selected entry: ", selectedEntry, " selected job: ", selectedJobEntry);

@@ -32,6 +32,8 @@
     color: #7B7777;
 }
 .job-desc-img-container{
+    position: absolute;
+    bottom: 1.2rem;
     width: 4.5rem;
     height: 4.5rem;
     border-radius: 50%;
@@ -46,7 +48,7 @@
     font-size: .8rem;
     color: #7B7777;
     position: absolute;
-    bottom: 10px; 
+    bottom: -0.5rem; 
 }
 .job-desc-tags{
     margin: 5px 0 10px 0;
