@@ -153,3 +153,5 @@ class SeekersProfile(SeekersDetails):
     poi: Optional[List[SeekersPOI]]
     certificate: Optional[List[SeekersCertificate]]
     language: Optional[List[SeekersLanguage]]
+    user_type:Optional[str]
+

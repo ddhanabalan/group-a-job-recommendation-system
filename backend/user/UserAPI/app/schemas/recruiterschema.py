@@ -83,6 +83,7 @@ class RecruiterProfile(RecruiterDetails):
     achievements: Optional[List[RecruiterAchievements]]
     speciality: Optional[List[RecruiterSpeciality]]
     emp_type: Optional[List[RecruiterEmpType]]
+    user_type: Optional[str]
 
     class Config:
         from_attributes = True

@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from .config import PORT, JOB_API_HOST, AUTH_API_HOST
 from .database import engine
 from .models import seekermodel, recruitermodel
-from .routers import seeker_router, recruiter_router
+from .routers import seeker_router, recruiter_router,base_router
 
 seekermodel.Base.metadata.create_all(bind=engine)
 recruitermodel.Base.metadata.create_all(bind=engine)
@@ -34,3 +34,4 @@ app.add_middleware(
 
 app.include_router(router=seeker_router)
 app.include_router(router=recruiter_router)
+app.include_router(router=base_router)

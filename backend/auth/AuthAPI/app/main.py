@@ -445,6 +445,7 @@ async def forgot_password(email: EmailStr, db: Session = Depends(get_db)):
 
     return {"detail": "Reset Link Sent"}
 
+
 @app.post("/forgot_password/verify/{token}", status_code=status.HTTP_200_OK)
 async def forgot_password_verify(token: str, password: authschema.ForgetPassword, db: Session = Depends(get_db)):
     credential_exception = HTTPException(
@@ -467,6 +468,22 @@ async def forgot_password_verify(token: str, password: authschema.ForgetPassword
         return {"detail": "Password Changed"}
     except JWTError:
         raise credential_exception
+
+
+@app.get("/user_type/{username}", status_code=status.HTTP_200_OK)
+async def get_user_type(username: str, db: Session = Depends(get_db)):
+    user = authcrud.get_by_username(db=db, username=username)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="User Not Found",
+        )
+    if not user.verified or user.disabled:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Account Not Verified or Disabled",
+        )
+    return {"user_type": user.user_type}
 
 
 @app.delete("/user", status_code=status.HTTP_204_NO_CONTENT)

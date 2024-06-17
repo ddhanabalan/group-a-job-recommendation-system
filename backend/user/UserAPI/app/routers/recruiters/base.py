@@ -59,42 +59,36 @@ async def profile(authorization: str = Header(...), db: Session = Depends(get_db
         loc_type=user_loc_type,
         speciality=user_speciality,
         achievements=user_achievements,
-        emp_type=user_emp_type
-
+        emp_type=user_emp_type,
+        user_type = 'recruiter'
     )
 
 
 @router.get("/profile/{username}", response_model=recruiterschema.RecruiterProfile)
 async def profile_by_username(username: str, db: Session = Depends(get_db)):
     details = crud.recruiter.details.get_by_username(db=db, username=username)
-    profile_picture = details.profile_picture
-    user_details = recruiterschema.RecruiterDetails.from_orm(details)
-    if profile_picture is not None:
-        profile_picture64 = base64.b64encode(profile_picture).decode("utf-8")
-        print(profile_picture64)
-        profile_picture64 = (
-            f"data:image/png;base64,{profile_picture64.split('base64')[1]}"
-        )
+    if details.profile_picture is not None:
+        profile_pic = details.profile_picture
+        profile_picture64 = await encode64_image(profile_pic)
     else:
         profile_picture64 = None
-    user_skill = crud.recruiter.skill.get_all(db=db, user_id=user_details.user_id)
 
-    user_education = crud.recruiter.education.get_all(db=db, user_id=user_details.user_id)
+    user_details = recruiterschema.RecruiterDetails.from_orm(details)
+
+    user_speciality = crud.recruiter.speciality.get_all(db=db, user_id=user_details.user_id)
+
+    user_achievements = crud.recruiter.achievements.get_all(db=db, user_id=user_details.user_id)
 
     user_emp_type = crud.recruiter.emptype.get_all(db=db, user_id=user_details.user_id)
 
     user_loc_type = crud.recruiter.loctype.get_all(db=db, user_id=user_details.user_id)
 
-    user_former_job = crud.recruiter.formerjob.get_all(db=db, user_id=user_details.user_id)
-
-    user_poi = crud.recruiter.poi.get_all(db=db, user_id=user_details.user_id)
     return recruiterschema.RecruiterProfile(
         **user_details.dict(),
         profile_picture=profile_picture64,
         loc_type=user_loc_type,
+        speciality=user_speciality,
+        achievements=user_achievements,
         emp_type=user_emp_type,
-        skill=user_skill,
-        prev_education=user_education,
-        former_jobs=user_former_job,
-        poi=user_poi,
+        user_type='recruiter'
     )
