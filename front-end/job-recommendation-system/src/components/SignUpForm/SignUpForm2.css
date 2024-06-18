@@ -29,8 +29,14 @@
 .personal-detail-picture{
     display: flex;
     justify-content: flex-end;
+    position: relative;
+    margin-bottom: 1rem;
 }
-
+.warning-pic-format{
+    position: absolute;
+    right: 0;
+    bottom: -1.5rem;
+}
 .personal-detail-picture label,
 .personal-detail-picture label:hover,
 .personal-detail-picture label:active {

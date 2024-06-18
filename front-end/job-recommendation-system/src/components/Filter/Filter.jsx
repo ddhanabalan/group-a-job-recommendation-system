@@ -118,8 +118,8 @@ export default function Filter({ title, userType=null, passFilteredDataFn = null
                     <div className='sorting-options'>
                     <FormControl>
                         <RadioGroup onChange={(e,val)=>SetSortOrder(val)}>
-                            <FormControlLabel value="new" control={<Radio />} label="Newest Jobs First"  />
-                            <FormControlLabel value="old" control={<Radio />} label="Oldest Jobs First" />      
+                            <FormControlLabel value="new" control={<Radio />} label="Newest jobs first"  />
+                            <FormControlLabel value="old" control={<Radio />} label="Oldest jobs first" />      
                         </RadioGroup>
                     </FormControl>
                     </div>

@@ -14,7 +14,14 @@
 .banner button {
     background-color: rgba(255, 255, 255, 0.63);
 }
-
+.banner-back-btn{
+    position: absolute;
+    top: .4rem;
+    left: .5rem;
+}
+.banner-back-btn svg{
+    color: black;
+}
 .profile-head-info {
     width: 100%;
     display: flex;

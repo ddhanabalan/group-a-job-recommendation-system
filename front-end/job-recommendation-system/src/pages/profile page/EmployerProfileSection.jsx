@@ -41,7 +41,7 @@ export default function EmployerProfileSection({ data }) {
                     headers: {
                         'Authorization': `Bearer ${getStorage("userToken")}`
                     }
-                }) :1
+                }) :
                 await userAPI.get(`/profile/${user}`);
             console.log(response)
             redirectFn(response.data)
@@ -116,7 +116,7 @@ export default function EmployerProfileSection({ data }) {
     return (
         <div id="employer-profile-page">
             <ProfileHead data={newData} blurFn={blurBody} subForm={subForm} isNotEditing={isNotEditing} setIsNotEditing={updateEditStatus} />
-            <NavigationBar active="employer-profile" />
+            <NavigationBar active="profile" />
             <div className="employer-profile-body-section">
                 <div className="employer-profile-pane employer-profile-left-pane">
                     {/* <FeatureBox data={{ title: "At a Glance" }} /> */}

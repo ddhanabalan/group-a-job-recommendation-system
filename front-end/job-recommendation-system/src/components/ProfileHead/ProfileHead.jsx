@@ -7,6 +7,7 @@ import { Button } from '@mui/material';
 import Skeleton from '@mui/material/Skeleton';
 import ProfileEdit from '../ProfileEdit/ProfileEdit';
 import AccountSettingsBtn from '../AccountSettingsBtn/AccountSettingsBtn';
+import ArrowBackIosNewRoundedIcon from '@mui/icons-material/ArrowBackIosNewRounded';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import EditIcon from '@mui/icons-material/Edit';
@@ -54,6 +55,11 @@ export default function ProfileHead({ access, data, blurFn, logOutFn, subForm, i
     return (
         <form noValidate autoComplete='on' className="profile-head-section"  >
             <div className="banner" style={{ backgroundColor: bannerColor }}>
+                {access === "viewOnly" &&
+                    <IconButton aria-label="back" className='banner-back-btn'>
+                        <ArrowBackIosNewRoundedIcon />
+                    </IconButton>
+                }
                 <Stack direction="column" spacing={7} className='feature-actions'>
                     <AccountSettingsBtn logOutFn={logOutFn} />
                     {access !== "viewOnly" &&(

@@ -67,7 +67,7 @@ function SignUpForm2() {
   const dateValidation = (dob) => {
     const age = parseInt(moment(new Date()).diff(moment(dob), 'years'));
     //console.log(age, ">=", signupAge, ":", age>=signupAge)
-    
+
     return age;
   }
 
@@ -76,28 +76,28 @@ function SignUpForm2() {
 
     SetLoading(true)
     console.log(location)
-    const newdata = { ...data, ...location.state, 'profile_picture': img,'profile_banner_color':bannerColor};
+    const newdata = { ...data, ...location.state, 'profile_picture': img, 'profile_banner_color': bannerColor };
     const checkUserType = newdata.userType
     console.log("checked type", checkUserType)
     delete newdata.userType
     console.log("full data", newdata);
     try {
-        const res = await axios.post(`/${checkUserType=="seeker"?"seeker":"recruiter"}/register`, newdata, {
+      const res = await axios.post(`/${checkUserType == "seeker" ? "seeker" : "recruiter"}/register`, newdata, {
         headers: {
           'Content-Type': 'application/json'
         }
       })
       setServerMsg({ ...res });
-      setTimeout(() => {
+      res.request.status === 201 && setTimeout(() => {
         navigate(`/login`)
       }, 5000)
 
     } catch (e) {
       setServerMsg({ ...e.response });
       console.log(e)
-      setTimeout(() => {
-        navigate(`/login`)
-      }, 5000)
+      // setTimeout(() => {
+      //   navigate(`/login`)
+      // }, 5000)
       // alert(e.message)
     }
 
@@ -166,6 +166,7 @@ function SignUpForm2() {
                     <img src={img ? img : profilePlaceholder} alt="profile picture" />
                   </div>
                 </div>
+                <p className='warning-pic-format'>supported formats: .jpg, .jpeg, .webp</p>
               </div>
               <div id="item-3">
                 {
@@ -300,29 +301,29 @@ function SignUpForm2() {
                         {...register("dob",
                           {
 
-                        required: "please enter dob",
-                        validate: (val) =>  dateValidation(val) >= signupAge || "Age should be above 18 to register",
-                      })} />
-                  <p className="error-message">{errors.dob?.message || ""}</p>
-                </div>
-                :
-                /*Pincode*/
-                <div>
-                  <p className="text-head">Pincode<span className="text-danger"> *</span></p>
-                  <TextField className="personal-details-input" variant="outlined" type='text'
-                    error={'pincode' in errors}
-                    {...register("pincode",
-                      {
-                        required: "please enter pincode",
-                        pattern: {
-                          value: /^[0-9]+$/,
-                          message: "Only numbers allowed"
-                        }
-                      })} />
-                  <p className="error-message">{errors.pincode?.message || ""}</p>
-                </div>
-            }
-            </div>
+                            required: "please enter dob",
+                            validate: (val) => dateValidation(val) >= signupAge || "Age should be above 18 to register",
+                          })} />
+                      <p className="error-message">{errors.dob?.message || ""}</p>
+                    </div>
+                    :
+                    /*Pincode*/
+                    <div>
+                      <p className="text-head">Pincode<span className="text-danger"> *</span></p>
+                      <TextField className="personal-details-input" variant="outlined" type='text'
+                        error={'pincode' in errors}
+                        {...register("pincode",
+                          {
+                            required: "please enter pincode",
+                            pattern: {
+                              value: /^[0-9]+$/,
+                              message: "Only numbers allowed"
+                            }
+                          })} />
+                      <p className="error-message">{errors.pincode?.message || ""}</p>
+                    </div>
+                }
+              </div>
 
               <div id="item-9">
                 {
