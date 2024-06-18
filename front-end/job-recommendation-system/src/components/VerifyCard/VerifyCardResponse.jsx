@@ -21,7 +21,7 @@ export default function VerifyCardResponse({ status }) {
 
     useEffect(() => {
         setTimeout(() => {
-            navigate('/login/seeker')
+            navigate('/login')
         }, 5000)
     }, [])
     return (

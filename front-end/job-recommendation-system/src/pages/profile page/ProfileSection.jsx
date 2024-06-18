@@ -61,6 +61,7 @@ export default function ProfileSection({ data }) {
     const skillsAPI = async () => {
         try {
             const response = await utilsAPI.get(`/api/v1/skills?q=${skill}`)
+            console.log(response.data)
             setSkillsList([{ "name": "" }, ...response.data])
         }
         catch (e) {
