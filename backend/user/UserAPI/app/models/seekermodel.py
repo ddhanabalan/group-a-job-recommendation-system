@@ -28,7 +28,7 @@ class SeekersDetails(Base):
     country = Column(String(128))
     profile_picture = Column(LargeBinary(length=(2**24)-1))
     institution = Column(String(256))
-    experience = Column(String(256))
+    experience = Column(Integer, default=0)
     education = Column(String(256))
     contact_email = Column(String(32), default=email)
     dob = Column(Date)

@@ -26,7 +26,7 @@ class SeekersDetails(SeekersBase):
     contact_email: Optional[EmailStr]
     address: Optional[str] = None
     institution: Optional[str] = None
-    experience: Optional[str] = None
+    experience: Optional[int] = 0
     education: Optional[str] = None
     age: Optional[int] = None
     github: Optional[str] = None
