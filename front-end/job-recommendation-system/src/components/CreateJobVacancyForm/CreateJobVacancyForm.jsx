@@ -14,9 +14,10 @@ import GoogleLocationSearch from '../GoogleLocationSearch/GoogleLocationSearch';
 import CreateFormTextFields from './CreateFormTextFields';
 import MultipleOptions from '../MultipleOptions/MultipleOptions';
 import AddTags from '../AddTags/AddTags';
+import AddSkills from '../AddSkills/AddSkills';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
 import JobCardExpanded from '../JobCardExpanded/JobCardExpanded';
-import { jobAPI } from '../../api/axios';
+import { jobAPI, utilsAPI } from '../../api/axios';
 
 export default function JobVacancyForm({ data = {} }) {
     const prefilleddata = data;
@@ -72,7 +73,16 @@ export default function JobVacancyForm({ data = {} }) {
             alert(e.message)
         }
     }
-
+    const [skillsList, setSkillsList] = useState([])
+    const skillsAPI = async () => {
+        try {
+            const response = await utilsAPI.get(`/api/v1/skills?q=${skill}`)
+            setSkillsList([{ "name": "" }, ...response.data])
+        }
+        catch (e) {
+            console.log(e)
+        }
+    }
 
     const setGoogleAutoField = (v) => {
         SetGoogleLocationAutoField(v)
@@ -229,7 +239,7 @@ export default function JobVacancyForm({ data = {} }) {
 
     }
     useEffect(() => { if (submit === true) { navigate("../employer/review-applications") } }, [submit]);
-
+    useEffect(() => {skillsAPI()}, [skill])
 
 
     return (
@@ -332,7 +342,7 @@ export default function JobVacancyForm({ data = {} }) {
                                 <div className="skill-divs">
                                     <p><span>Skills:</span></p>
                                     <div className='create-job-skill-field'>
-                                        <AddTags value={skill} tags={skills} deleteFn={handleDeleteSkill} changeFn={handleChangeSkill} updateFn={handleSkill} onChange={handleSkillData} tagType="skills" data={{ heading: "", inputPlaceholder: "Marketing", isLocation: false }} fSize="14px" />
+                                    <AddSkills id="job-vacancy-skills" availableSkills={skillsList} value={skill} tags={skills} deleteFn={handleDeleteSkill} changeFn={handleChangeSkill} updateFn={handleSkill} onChange={handleSkillData} data={{ title: "Skills", pageType: "vacancy form", inputPlaceholder: "HTML" }} />
                                     </div>
                                 </div>
                                 <div className='salary-div'>
