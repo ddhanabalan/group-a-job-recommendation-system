@@ -4,8 +4,9 @@ import Stack from '@mui/material/Stack';
 import { v4 as uuid } from 'uuid';
 import IconButton from '@mui/material/IconButton';
 import CorporateFareRoundedIcon from '@mui/icons-material/CorporateFareRounded';
-export default function JobCard({ data, id, expandView, background,profilePictureStyle }) {
-    const chips = [data.workStyle, data.workingDays, ...((data.skills.map(e => e.skill).slice(0,2)))]
+export default function JobCard({ data, id, expandView, background, profilePictureStyle }) {
+    const chips = [data.workStyle, data.workingDays, ...(data.skills.map(e => e).slice(0, 2))]
+    console.log(chips)
     return (
         <div className="card" onClick={() => expandView(data.id)} style={background}>
             <div className='card-div1'>

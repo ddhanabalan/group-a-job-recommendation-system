@@ -14,7 +14,7 @@ import JobCard from '../JobCard/JobCard';
 import { Button } from '@mui/material';
 import './FeatureBoxMiddlePane.css';
 export default function FeatureBoxMiddlePaneOpenings({data, childData}) {
-    const demoInfo = { jobTitle: "Python Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: "50k", postDate: "13/9/23" };
+    const demoInfo = { jobTitle: "Python Developer", companyName: "Google LLC",workStyle:"on-site",workingDays:"Monday-Friday", skills: ["python","javascript"], currency: "₹", salary: "50k", postDate: "13/9/23" };
  
     
     
