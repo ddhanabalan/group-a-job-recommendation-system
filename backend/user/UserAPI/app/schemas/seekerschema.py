@@ -102,7 +102,7 @@ class SeekersEducation(BaseModel):
 
 class SeekersPOI(BaseModel):
     id: Optional[int] = None
-    user_id: int
+    user_id: Optional[int] = None
     position: str
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
