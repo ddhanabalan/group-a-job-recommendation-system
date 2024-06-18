@@ -8,6 +8,7 @@ import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import TextField from '@mui/material/TextField';
 import Chip from '@mui/material/Chip';
 import Box from '@mui/material/Box';
+import './AddPOI.css';
 export default function AddPOI({ callAPI, showSuccessMsg, showFailMsg }) {
     // poi-position of interests
     const [poi, SetPOI] = useState('');
@@ -135,7 +136,7 @@ console.log("user poi",pois)
                 {
                     pois.map(e => {
                         return (
-                            <Chip key={e.id} label={e.poi} color="primary" className='poi'
+                            <Chip key={e.id} label={e.position} color="primary" className='skill poi'
                                 onDelete={() => deleteFn(e.id)} />
                         )
                     })

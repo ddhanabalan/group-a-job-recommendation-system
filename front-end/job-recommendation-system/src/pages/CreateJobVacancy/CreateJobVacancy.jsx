@@ -13,7 +13,7 @@ export default function CreateJobVacancy() {
    
     
     return (
-        <div id="page">
+        <div id="page" className="create-vacancy-page">
             
             <JobVacancyForm data={demoInfo}/>
             
