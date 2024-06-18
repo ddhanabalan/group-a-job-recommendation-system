@@ -20,8 +20,8 @@ router = APIRouter()
 async def user_seeker_poi(
     db: Session = Depends(get_db), authorization: str = Header(...)
 ):
-    username = await get_current_user(authorization=authorization)
-    user_id = crud.seeker.base.get_userid_from_username(db=db, username=username)
+    user = await get_current_user(authorization=authorization)
+    user_id = user.get("user_id")
     user_poi = crud.seeker.poi.get_all(db=db, user_id=user_id)
     return user_poi
 
