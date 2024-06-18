@@ -30,7 +30,7 @@ export default function FeatureBoxMiddlePaneOpenings({data, childData}) {
              
             Object.keys(companyOpenings).map((card) => (<JobCard key={companyOpenings[card]["id"]} id={companyOpenings[card]["id"]}  data={{ ...companyOpenings[card], 'userType': "seeker" }} />)).slice(0,2)
             :
-            <p className='openings-exception-msg'>The organisation doesnt have any job openings at the moment.</p>
+            <p className='openings-exception-msg'>The organisation doesn't have any job openings at the moment.</p>
         }
                 <hr className="line-separator"/>
                 <div className='see-openings-footer'>

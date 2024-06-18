@@ -16,6 +16,21 @@ export default function ExperienceBox({ access, childData, reloadFn, showSuccess
     }, [childData])
     const [expdata, SetExpdata] = useState([]);
     const [newExp, SetNewExp] = useState(false)
+    const [totalExp, SetTotalExp] = useState()
+    useEffect(() => {
+        updateProfile()
+    }, [totalExp])
+    const updateProfile = async () => {
+        try {
+
+        }
+        catch (e) {
+            console.log(e)
+        }
+    }
+    const calcExperience = (e) => {
+        SetTotalExp(totalExp + (e.end_year - e.start_year))
+    }
     const addExperience = async (e) => {
         //accepts new Experience data and adds it into existing array of Experiences
         try {
@@ -24,6 +39,7 @@ export default function ExperienceBox({ access, childData, reloadFn, showSuccess
                     'Authorization': `Bearer ${getStorage("userToken")}`
                 }
             });
+            calcExperience(e)
             response.request.status === 201 && showSuccessMsg()
             console.log(response)
             SetNewExp(false)
