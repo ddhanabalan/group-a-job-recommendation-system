@@ -17,15 +17,19 @@ import AddTags from '../AddTags/AddTags';
 import AddSkills from '../AddSkills/AddSkills';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
 import JobCardExpanded from '../JobCardExpanded/JobCardExpanded';
-import { jobAPI, utilsAPI } from '../../api/axios';
+import {getStorage, setStorage} from '../../storage/storage';
+import { userAPI, jobAPI, utilsAPI } from '../../api/axios';
 
 export default function JobVacancyForm({ data = {} }) {
+    const USERID = getStorage("userID");
     const prefilleddata = data;
     const locating = useLocation();
     const navigate = useNavigate();
     const dta = (locating.state ? locating.state : {})
     //console.log("received state data for edit", dta, "pre", prefilleddata)
     const salary_threshold = 5000;
+    const profile_picture = getStorage("profile pic")
+    const [companyData, setCompanyData] = useState({});
     const { register, formState: { errors }, handleSubmit, setValue, watch} = useForm({ mode: 'onTouched' });
     
     const [submit, setSubmit] = useState(false);
@@ -44,6 +48,22 @@ export default function JobVacancyForm({ data = {} }) {
 
     const redirectFn = (response) => {
         console.log(response.data)
+    }
+    const callCompanyAPI = async() => {
+        try {
+            const response = await userAPI.get(`/recruiter/details/`, {
+                         headers: {
+                        'Authorization': `Bearer ${getStorage("userToken")}`
+                        }
+                        }) 
+            console.log("logged comp data", response.data)
+            console.log("profile pic", profile_picture)
+            setCompanyData(response.data)
+        } catch (e) {
+            console.log("company failed",  e)
+
+            alert(e.message)
+        }
     }
     const callJobAPI = async (rec_data, edit=false) => {
         console.log("data to submit to server ", rec_data)
@@ -212,7 +232,7 @@ export default function JobVacancyForm({ data = {} }) {
     function handlePostVacancy() {
         //Application submission data
         const submissionData={
-                                "company_id": 23,
+                                "company_id": USERID,
                                 "company_name": finalApplicationData['companyName'],
                                 "emp_type": finalApplicationData['empType'][0],
                                 "salary": finalApplicationData["currency"] + "-" + ((finalApplicationData["salary"][1]==="")?finalApplicationData["salary"][0]:finalApplicationData["salary"].join("-")),
@@ -240,6 +260,7 @@ export default function JobVacancyForm({ data = {} }) {
     }
     useEffect(() => { if (submit === true) { navigate("../employer/review-applications") } }, [submit]);
     useEffect(() => {skillsAPI()}, [skill])
+    useEffect(() => {callCompanyAPI()}, [])
 
 
     return (
@@ -275,13 +296,13 @@ export default function JobVacancyForm({ data = {} }) {
                                     <CreateFormTextFields inputPlaceholder="Title" hparam="50px" fontsz="1.875rem" defaultValue={dta.jobTitle || ""} {...register("jobTitle", { required: "Job title is required", })} />
                                 </h1>
                                 <p className='error-message'>{errors.jobTitle?.message}</p>
-                                <p className='create-job-vacancy-company-name-p'>{data.companyName}</p>
+                                <p className='create-job-vacancy-company-name-p'>{Object.keys(companyData).length?companyData.company_name : ""}</p>
 
 
                             </div>
                             <div className='create-job-vacancy-div2'>
                                 <div className='create-job-vacancy-img-container'>
-                                    {/* <img src="" alt="" /> */}
+                                    {profile_picture?<img src={profile_picture} alt="" />:<></>}
                                 </div>
 
                             </div>

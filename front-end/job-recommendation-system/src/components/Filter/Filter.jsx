@@ -129,10 +129,21 @@ export default function Filter({ title, userType=null, passFilteredDataFn = null
                 :
                 <></>
             }
-            <AddTags availableDomains={skillsList} value={domain} tags={domains} deleteFn={handleDeleteDomain} changeFn={handleChangeDomain} updateFn={handleDomain} data={{ heading: "interested domains", inputPlaceholder: "Marketing", isLocation: false }} />
-            <MultipleOptions heading={"job location"} options={["On-site", "Hybrid", "Work from home"]} dataType="loc_type" onChange={handleCheckboxChange} />
-            <MultipleOptions heading={"working days"} options={["Monday - Friday", "Monday - Saturday"]} dataType="workTime" onChange={handleCheckboxChange} />
-            <AddTags locationFieldAutoValue={googleLocationAutoField} updatelocationFieldAutoValue={setGoogleAutoField} value={location} tags={locations} deleteFn={handleDeleteLocation} changeFn={handleChangeLocation} updateFn={handleLocation} data={{ heading: "preferred job locations", inputPlaceholder: "Kerala", isLocation: true }} />
+            <AddTags availableDomains={skillsList} value={domain} tags={domains} deleteFn={handleDeleteDomain} changeFn={handleChangeDomain} updateFn={handleDomain} data={{ heading: "Interested Domains", inputPlaceholder: "Marketing", isLocation: false }} />
+            <div className='domain-gap'></div>
+            {userType=="employer"?
+                    <>
+                    <AddTags locationFieldAutoValue={googleLocationAutoField} updatelocationFieldAutoValue={setGoogleAutoField} value={location} tags={locations} deleteFn={handleDeleteLocation} changeFn={handleChangeLocation} updateFn={handleLocation} data={{ heading: "Preferred Candidate Locations", inputPlaceholder: "Kerala", isLocation: true }} />
+                    </>
+                    :
+                    <>
+                    <MultipleOptions heading={"job location"} options={["On-site", "Hybrid", "Work from home"]} dataType="loc_type" onChange={handleCheckboxChange} />
+                    <MultipleOptions heading={"working days"} options={["Monday - Friday", "Monday - Saturday"]} dataType="workTime" onChange={handleCheckboxChange} />
+                    <AddTags locationFieldAutoValue={googleLocationAutoField} updatelocationFieldAutoValue={setGoogleAutoField} value={location} tags={locations} deleteFn={handleDeleteLocation} changeFn={handleChangeLocation} updateFn={handleLocation} data={{ heading: "Preferred Job Locations", inputPlaceholder: "Kerala", isLocation: true }} />
+                    <MultipleOptions heading={"Employment Type"} options={["Full-time", "Internship", "Temporary"]} dataType="emp_type" onChange={handleCheckboxChange} />
+
+                    </>
+            }
             <MultipleOptions heading={"Experience"} options={["Fresher", "1-5 years", "5-10 years", "10+ years"]} dataType="exp" onChange={handleCheckboxChange} />
             {userType=="seeker"?
                 <>
@@ -147,7 +158,6 @@ export default function Filter({ title, userType=null, passFilteredDataFn = null
                 :
                 <></>
             }
-            <MultipleOptions heading={"Employment Type"} options={["Full-time", "Internship", "Temporary"]} dataType="emp_type" onChange={handleCheckboxChange} />
             {/* <Button variant="outlined" type="submit" onClick={startFilter} sx={{border: 2, borderColor: "gray",color: "black", borderRadius: 2 ,marginTop:'1rem'}} endIcon={<ArrowForwardIcon />}>
               <p>Filter</p>
             </Button> */}

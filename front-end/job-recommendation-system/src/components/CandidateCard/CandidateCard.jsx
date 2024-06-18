@@ -11,7 +11,7 @@ import { Button } from '@mui/material';
 import { v4 as uuid } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-export default function CandidateCard({ type = null, jobEntryId = null, crLink = null, data }) {
+export default function CandidateCard({ type = null, jobEntryId = null, crLink = null, data, background, profilePictureStyle  }) {
     const [profile, setProfile] = useState(false)
     const navigate = useNavigate();
     const showProfile = () => {
@@ -22,7 +22,7 @@ export default function CandidateCard({ type = null, jobEntryId = null, crLink =
 
 
     return (
-        <div className="card job-card">
+        <div className="card job-card" style={background}>
             <div className='job-card-div1'>
                 <h1 className='card-h1'>{data.candidateName}</h1>
                 <Stack direction="row" spacing={1}>
@@ -45,7 +45,7 @@ export default function CandidateCard({ type = null, jobEntryId = null, crLink =
                 </div> */}
             </div>
             <div className='job-card-div2'>
-                <div className='job-card-img-container'>
+                <div className='job-card-img-container' style={profilePictureStyle}>
                     <img src={profilePlaceholder} alt="candidate profile" />
                 </div>
                 {type === "review" ?

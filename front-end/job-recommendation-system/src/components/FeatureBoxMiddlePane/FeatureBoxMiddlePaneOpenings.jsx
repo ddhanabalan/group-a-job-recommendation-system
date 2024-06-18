@@ -11,11 +11,14 @@ import QualificationAdd from '../QualificationAdd/QualificationAdd';
 import LanguageCard from '../LanguageCard/LanguageCard';
 import CreateFormTextFields from '../CreateJobVacancyForm/CreateFormTextFields';
 import JobCard from '../JobCard/JobCard';
-import { Button } from '@mui/material';
+import { Button } from '@mui/material'
+import { Link } from 'react-router-dom';
 import './FeatureBoxMiddlePane.css';
 export default function FeatureBoxMiddlePaneOpenings({data, childData}) {
     const demoInfo = { jobTitle: "Python Developer", companyName: "Google LLC",workStyle:"on-site",workingDays:"Monday-Friday", skills: ["python","javascript"], currency: "₹", salary: "50k", postDate: "13/9/23" };
- 
+    
+    const companyOpenings = data.vacancies;
+
     
     
     return (
@@ -23,12 +26,17 @@ export default function FeatureBoxMiddlePaneOpenings({data, childData}) {
             <h4 className="feature-title">{data.title}</h4>
             
             <div className="feature-box-container">
-                <JobCard data={demoInfo}/>
-                <JobCard data={demoInfo}/>
-                <JobCard data={demoInfo}/>
+            {Object.keys(companyOpenings).length?
+             
+            Object.keys(companyOpenings).map((card) => (<JobCard key={companyOpenings[card]["id"]} id={companyOpenings[card]["id"]}  data={{ ...companyOpenings[card], 'userType': "seeker" }} />)).slice(0,2)
+            :
+            <p className='openings-exception-msg'>The organisation doesnt have any job openings at the moment.</p>
+        }
                 <hr className="line-separator"/>
-                <div>
-                    <a className="openings-redirect-button" href="/employer/review-applications">See all openings<ArrowForwardIcon/></a>
+                <div className='see-openings-footer'>
+                    <Link to="/employer/review-applications" state={{user_id: data.user_id}}>
+                        <a className="openings-redirect-button">See all openings<ArrowForwardIcon/></a>
+                    </Link>
                 </div> 
             </div>
         </div>

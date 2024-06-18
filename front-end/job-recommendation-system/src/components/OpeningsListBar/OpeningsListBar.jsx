@@ -19,7 +19,7 @@ function HighlightableJobCard({id, highlighted, type, data, listToDescFunc, dele
     )
 }
 
-export default function OpeningsListBar({data, userType, chooseEntry, searchBar, preselectedEntry, filterFunc, pageType, listToDescParentFunc=null, deleteJobFunc=null}) {
+export default function OpeningsListBar({data, userType, userID, chooseEntry, searchBar, preselectedEntry, filterFunc, pageType, listToDescParentFunc=null, deleteJobFunc=null}) {
     
     //console.log("received jobs in data", data);
     const finalInfo = {...data}
@@ -80,7 +80,9 @@ export default function OpeningsListBar({data, userType, chooseEntry, searchBar,
             <div className="openings-search-tile">
                 <div className="search-bar">
                     <div className="back-icon">
-                        <BackBtn/>
+                        <Link to="/profile">
+                            <BackBtn/>
+                        </Link>
                     </div>
                     <div className="opening-search">
                         <SearchBar toSearch={"Search jobs"} searchHeight={33} onSearch={onSearch} searchColor="#D9D9D9"/>
@@ -93,7 +95,7 @@ export default function OpeningsListBar({data, userType, chooseEntry, searchBar,
                 </div>
                 {userType=="employer"?
                     <div className="create-vacancy-button" >
-                        <Link to="../employer/job-vacancy"><Button variant="contained"  sx={{color: 'black', backgroundColor: '#D9D9D9',width: 'fit-content', paddingY: "4px", paddingX: "10px", textTransform: "none", borderRadius: 20}} endIcon={<Icon sx={{backgroundColor: "white", borderRadius: 50, width: "23px", height: "23px", display: "flex", alignSelf: "centre"}}><AddIcon sx={{color:"black"}}/></Icon>}>
+                        <Link to="../employer/job-vacancy" state={{user_id: userID}}><Button variant="contained"  sx={{color: 'black', backgroundColor: '#D9D9D9',width: 'fit-content', paddingY: "4px", paddingX: "10px", textTransform: "none", borderRadius: 20}} endIcon={<Icon sx={{backgroundColor: "white", borderRadius: 50, width: "23px", height: "23px", display: "flex", alignSelf: "centre"}}><AddIcon sx={{color:"black"}}/></Icon>}>
                         <p>Create Job Vacancy</p>
                         </Button></Link>
                     </div>

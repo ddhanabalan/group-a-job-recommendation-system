@@ -60,14 +60,42 @@ form{
     right: 32px;
 }
 .create-job-vacancy-company-name-p{
+    padding-left: 0.5rem;
     font-size: .938rem;
     color: #7B7777;
 }
 .create-job-vacancy-img-container{
-    width: 4.5rem;
-    height: 4.5rem;
+    width: 5rem;
+    height: 5rem;
     border-radius: 50%;
     background-color: #D9D9D9;
+    overflow: hidden;
+}
+
+.create-job-vacancy-img-container img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.profile-img-container {
+    width: 8rem;
+    height: 8rem;
+    border-radius: 50%;
+    background-color: #D9D9D9;
+    position: relative;
+    bottom: 2rem;
+}
+
+.profile-img-container-skeleton {
+    width: 8rem !important;
+    height: 8rem !important;
+    background-color: #D9D9D9;
+}
+
+.profile-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 .create-job-vacancy-salary{
     font-size: 1rem;

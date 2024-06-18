@@ -1,4 +1,5 @@
 import { useForm } from 'react-hook-form';
+import { setStorage } from '../../storage/storage';
 import { useState, useEffect } from 'react';
 import { getStorage } from '../../storage/storage';
 import { styled } from '@mui/material/styles';
@@ -47,6 +48,7 @@ export default function ProfileHead({ access, data, blurFn, logOutFn, subForm, i
     const handleChange = (e) => {
         const fac = new FastAverageColor();
         const data = new FileReader();
+        setStorage("profile_pic", data.result)
         data.addEventListener('load', () => {
             setImg(data.result)
             fac.getColorAsync(data.result).then(color => setBannerColor(color.hex))

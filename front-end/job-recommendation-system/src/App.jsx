@@ -63,9 +63,9 @@ function App() {
           {/* routes exclusive to recruiters */}
           <Route element={<EmployerRoutes />}>
             <Route path="/candidates" element={<CandidateSection />} />
-            <Route path="/seeker/openings" element={<ReviewApplications />} />
+            <Route path="/seeker/openings" element={<ReviewApplications userType="seeker"/>} />
             <Route path="/employer/job-vacancy" element={<CreateJobVacancy />} />
-            <Route path="/employer/review-applications" element={<ReviewApplications />} />
+            <Route path="/employer/review-applications" element={<ReviewApplications userType="employer" />} />
           </Route>
 
           <Route path="*" element={<Error />} />

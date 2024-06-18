@@ -13,11 +13,11 @@ import { set } from "react-hook-form";
 import { jobAPI, userAPI } from "../../api/axios";
 import { LocalConvenienceStoreOutlined } from "@mui/icons-material";
 
-export default function ReviewApplications() {
+export default function ReviewApplications({userType}) {
+    const USERID = getStorage("userID");
     const receivedData = useLocation();
-    const userType = receivedData["pathname"].includes("employer")?"employer":"seeker";
     const [userData, setUserData] = useState({'type': userType, 'skills': []});
-    //console.log("received data",receivedData)
+    console.log("received data",receivedData)
     //const [selectedEntry, setEntry] = useState(null);
     const [selectedEntry, setEntry] = useState(receivedData["state"]?receivedData.state.highlightedId || null: null);//userData is for knowing if employer or seeker and further passing it down to components
     //console.log("selected entry", selectedEntry);
@@ -57,8 +57,9 @@ export default function ReviewApplications() {
     //const [filteredApplicants, setfilteredApplicants]=useState(profileInfo.filter(applicants=>(selectedJobEntry["applicationsReceived"].includes(applicants["applicantID"])?applicants:false)));
     const [sidebarState, setSideBar] = useState(false);
     const callJobVacancyAPI= async (companyId)=>{
-        GetSeekerSkills();
-        GetSeekerDetails();
+        if(userType==="seeker")
+        {GetSeekerSkills();
+        GetSeekerDetails();}
         try {
             const response = await jobAPI.get(`/job_vacancy/company/${companyId}`);
             const mod_response = response.data.map(e=>({id: e.job_id, jobTitle: e.job_name, companyName: e.company_name, tags: e.tags, currency: e.salary.split('-')[0], salary: [e.salary.split('-')[1],e.salary.split('-')[2]], postDate: e.created_at.split('T')[0] , last_date: e.last_date.split('T')[0], location: e.location, empType: e.emp_type, exp: e.experience, workStyle: e.work_style, workingDays: e.working_days, jobDesc: e.job_desc ,jobReq:e.requirement,skills: e.skills.length?e.skills: [{'skill': ""}], applicationsReceived: e.job_seekers}))
@@ -76,7 +77,7 @@ export default function ReviewApplications() {
     const DeleteJobAPI = async (job_id) =>{
         try{
             const response = await jobAPI.delete(`job_vacancy/${job_id}`);
-            callJobVacancyAPI(23); 
+            callJobVacancyAPI(USERID); 
             setEntry(null);
             console.log("deleted successfully", job_id, "resp: ", response)
         }
@@ -136,7 +137,7 @@ export default function ReviewApplications() {
             );
             console.log("successfully created job request");
             console.log(response);
-            callJobVacancyAPI(23);  
+            callJobVacancyAPI(USERID);  
             
             
         } catch (e) {
@@ -201,7 +202,7 @@ export default function ReviewApplications() {
         setSideBar(true);
     }
     //console.log("filtered applicants",filteredApplicants);
-    useEffect(() => {callJobVacancyAPI(23)}, []);//only runs during initial render
+    useEffect(() => {callJobVacancyAPI(USERID)}, []);//only runs during initial render
     useEffect(()=>{if(selectedEntry==null)
         {setEntry(jobVacancies[0]?jobVacancies[0].id:null)
          setJobEntry(jobVacancies[0]?jobVacancies[0]:null)
@@ -249,7 +250,7 @@ export default function ReviewApplications() {
                 <div className="back-button-review" onClick={()=>setSideBar(false)}><BackBtn outlineShape={"square"} butColor={"white"}/></div>
                 </>
                 :
-                <OpeningsListBar data={filtered} userType={userType} pageType="review" chooseEntry={chooseEntry} searchBar={searchBar} listToDescParentFunc={listToDescParentFunc} preselectedEntry={selectedEntry} filterFunc={filterStateSet} deleteJobFunc={DeleteJobAPI}/>
+                <OpeningsListBar data={filtered} userType={userType} userID={USERID} pageType="review" chooseEntry={chooseEntry} searchBar={searchBar} listToDescParentFunc={listToDescParentFunc} preselectedEntry={selectedEntry} filterFunc={filterStateSet} deleteJobFunc={DeleteJobAPI}/>
                 }
             </div>
             {filterstat?
