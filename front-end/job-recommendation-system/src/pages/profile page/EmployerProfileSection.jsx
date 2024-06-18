@@ -1,5 +1,7 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { v4 as uuid } from 'uuid';
+import getStorage from '../../storage/storage';
+import authAPI from '../../api/axios';
 import FeatureBox from '../../components/FeatureBox/FeatureBox';
 import FeatureBoxMiddlePane from '../../components/FeatureBoxMiddlePane/FeatureBoxMiddlePane';
 import ProfileHead from '../../components/ProfileHead/ProfileHead';
@@ -12,9 +14,38 @@ import FeatureBoxMiddlePaneOpenings from '../../components/FeatureBoxMiddlePane/
 import FeatureBoxMiddlePaneReview from '../../components/FeatureBoxMiddlePane/FeatureBoxMiddlePaneReview';
 import './EmployerProfileSection.css';
 export default function EmployerProfileSection({ data }) {
-
+    const [newData, SetnewData] = useState(data);
+    const [isNotEditing, SetIsNotEditing] = useState(true)
+    const updateEditStatus = (value) => {
+        SetIsNotEditing(value)
+    }
+    const redirectFn = (response) => {
+        console.log(response.data)
+    }
+    const callAPI = async () => {
+        console.log(Object.keys(getStorage("userToken")))
+        try {
+            const response = await authAPI.get('/me', {
+                headers: {
+                    'Authorization': `Bearer ${getStorage("userToken")}`
+                }
+            });
+            redirectFn(response)
+        } catch (e) {
+            console.log(e)
+            
+            alert(e.message)
+        }
+    }
+    useEffect(()=>callAPI, []);
+    
+    const [isBodyBlur, SetIsBodyBlur] = useState(false)
+    const blurBody = (state) => {
+        state ? SetIsBodyBlur(true) : SetIsBodyBlur(false)
+    }
     const [skill, SetSkill] = useState('');
     const [skills, SetSkills] = useState([{ tag: "software", id: uuid() }, { tag: "data science", id: uuid() }]);
+    
 
     const handleDeleteSkill = (id) => {
         //accepts id of Domain tag and delete them from the array 
@@ -35,10 +66,20 @@ export default function EmployerProfileSection({ data }) {
         }
     };
 
+    const subForm = async (data) => {
+        SetnewData(data)
+        console.log(data);
+        // try {
+        //     await userAPI.put('/seeker/details', data);
 
+        // } catch (e) {
+        //     console.log(e)
+        //     alert(e.message)
+        // }
+    }
     return (
         <div id="employer-profile-page">
-            <ProfileHead data={data} />
+            <ProfileHead data={newData} blurFn={blurBody} subForm={subForm} isNotEditing={isNotEditing} setIsNotEditing={updateEditStatus} />
             <NavigationBar active="employer-profile" />
             <div className="employer-profile-body-section">
                 <div className="employer-profile-pane employer-profile-left-pane">
@@ -49,7 +90,7 @@ export default function EmployerProfileSection({ data }) {
 
                     <ContactCard data={{
                         title: "Contacts and Profiles", addIcon: false, editIcon: true
-                    }} contactInfo={{website: "www.nasa.gov" }} />
+                    }} contactData={newData} subForm={subForm} />
 
                     
                 </div>

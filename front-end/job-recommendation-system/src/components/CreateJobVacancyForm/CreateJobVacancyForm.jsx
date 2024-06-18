@@ -2,6 +2,7 @@ import './CreateJobVacancyForm.css';
 import { v4 as uuid } from 'uuid';
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import BackBtn from '../BackBtn/BackBtn';
 import MailIcon from '@mui/icons-material/Mail';
 import DoneIcon from '@mui/icons-material/Done';
 import EditIcon from '@mui/icons-material/Edit';
@@ -14,19 +15,21 @@ import MultipleOptions from '../MultipleOptions/MultipleOptions';
 import AddTags from '../AddTags/AddTags';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
 import JobDesciptionForm from '../JobDescription/JobDesciption';
+import { jobAPI } from '../../api/axios';
 
 export default function JobVacancyForm({ data = {} }) {
     const prefilleddata = data;
     const locating = useLocation();
     const navigate = useNavigate();
     const dta = (locating.state ? locating.state : {})
-    const { register, formState: { errors }, handleSubmit } = useForm({ mode: 'onTouched' });
+    const { register, formState: { errors }, handleSubmit, setValue} = useForm({ mode: 'onTouched' });
     
     const [submit, setSubmit] = useState(false);
     const [prefError, setPrefErrors] = useState({});
     //const [tag_state,setTagState] = useState(false);
-    const [googleLocationAutoField, SetGoogleLocationAutoField] = useState(dta.location || null);
-    const [location, SetLocation] = useState(dta.location || '');
+    const [googleLocationAutoField, SetGoogleLocationAutoField] = useState(dta.location || 'kerala');
+    setValue("location",googleLocationAutoField);
+    const [location, SetLocation] = useState(dta.location || 'kerala');
     const [skill, SetSkill] = useState('');
     const [tag, setTag] = useState('');
     const [skills, SetSkills] = useState(dta.skills ? dta.skills.map(label => ({ tag: label, id: uuid() })) : []);
@@ -34,6 +37,27 @@ export default function JobVacancyForm({ data = {} }) {
     const [preferences, setPreferences] = useState({"skills": dta.skills,"tags": dta.tags, "empType": dta.empType, "exp": dta.exp});
     const [preview, setPreview] = useState(false);
     const [finalApplicationData, setData] = useState({});
+
+    const redirectFn = (response) => {
+        console.log(response.data)
+    }
+    const callJobAPI = async (rec_data) => {
+        
+        try {
+            const response = await jobAPI.post('/job_vacancy/', rec_data, {
+            headers:{
+                'Content-Type': 'application/json'
+            }         
+            }
+            );
+            redirectFn(response)
+        } catch (e) {
+            console.log(e)
+            
+            alert(e.message)
+        }
+    }
+
 
     const setGoogleAutoField = (v) => {
         SetGoogleLocationAutoField(v)
@@ -120,11 +144,30 @@ export default function JobVacancyForm({ data = {} }) {
 
     function handlePostVacancy() {
         //Application submission data
-        console.log(finalApplicationData);
+        const submissionData={
+                                "company_id": 23,
+                                "job_name": finalApplicationData['jobTitle'],
+                                "job_desc": finalApplicationData['jobDesc'],
+                                "company_name": finalApplicationData['companyName'],
+                                "requirement": finalApplicationData['jobReq'],
+                                "salary": finalApplicationData["currency"] + "-" + ((finalApplicationData["salary"][1]==="")?finalApplicationData["salary"][0]:finalApplicationData["salary"].join("-")),
+                                "experience": finalApplicationData["exp"][0],
+                                "job_position": finalApplicationData['jobTitle'],
+                                "location": finalApplicationData['location'],
+                                "emp_type": finalApplicationData['empType'][0],
+                                "last_date": "2222-12-12",
+                                "tags": finalApplicationData["tags"]?finalApplicationData["tags"]:[],
+                                "skill": finalApplicationData["skills"]?finalApplicationData["skills"]:[],
+                            };
+        //submissionData["salary"]=(submissionData["salary"][1]==="")?submissionData["salary"][0]:submissionData["salary"].join("-");
+        
+        
+        callJobAPI(submissionData);
+        console.log("successfully submitted", submissionData);
         setSubmit(true);
 
     }
-    useEffect(() => { if (submit === true) { navigate("../employer/openings") } }, [submit]);
+    useEffect(() => { if (submit === true) { navigate("../employer/review-applications") } }, [submit]);
 
 
 
@@ -154,9 +197,8 @@ export default function JobVacancyForm({ data = {} }) {
 
                                 <h1 className='create-job-vacancy-h1'>
                                     <div className="back-buton">
-                                        <Link to="../employer/openings" state={locating.state}><IconButton aria-label="back" sx={{ display: "flex", alignItems: "center", width: 35, height: 35 }}>
-                                            <ArrowBackIosIcon sx={{ color: "black" }} />
-                                        </IconButton>
+                                        <Link to="../employer/review-applications" state={locating.state}>
+                                            <BackBtn/>
                                         </Link>
                                     </div>
                                     <CreateFormTextFields inputPlaceholder="Title" hparam="50px" fontsz="1.875rem" defaultValue={dta.jobTitle || ""} {...register("jobTitle", { required: "Job title is required", })} />
@@ -236,7 +278,7 @@ export default function JobVacancyForm({ data = {} }) {
                                             <CreateFormTextFields inputPlaceholder="Title" wparam="100px"
                                                 defaultValue={dta.salary ? dta.salary[1] || null : null}
                                                 {...register("salary.1", {
-                                                    required: "Salary range is required",
+                
                                                     pattern: {
                                                         value: /^[0-9]+$/,
                                                         message: "Only numbers allowed"

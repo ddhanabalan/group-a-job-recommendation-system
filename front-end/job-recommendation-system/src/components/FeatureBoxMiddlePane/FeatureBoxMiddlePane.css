@@ -5,7 +5,8 @@
     height: fit-content;
     min-height: 10rem;
 }
-.feature-box-container{
+
+.feature-box-container {
     width: 100%;
     height: fit-content;
     display: flex;
@@ -13,24 +14,47 @@
     align-items: center;
 }
 
-.featured-openings{
+.featured-openings {
     padding: 10px 0px;
 }
 
-.feature-text{
+.feature-text {
     width: 90%;
 }
 
-.feature-text p{
+.feature-text p {
     font-size: 14px;
 }
 
-.line-separator{
+.line-separator {
     height: 1px;
     width: 104%;
 }
 
-.openings-redirect-button{
+.openings-redirect-button {
     color: rgba(0, 0, 0, 0.748);
     cursor: pointer;
+}
+
+.data-exception-featurebox {
+    position: relative;
+    height: 5rem;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.data-exception-ani {
+    position: absolute;
+    left: 0;
+    height: 225%;
+}
+
+.data-exception-featurebox p {
+    font-size: .8rem;
+    font-family: Inter-sb;
+    position: absolute;
+    right: 1rem;
+    bottom: 0;
 }

@@ -1,0 +1,65 @@
+.review-left-bar{
+    width: 34%;
+    height: 100vh;
+    align-self: start; 
+    padding-top: -3rem;
+    transition: width 0.3s;
+    transition-timing-function: ease;
+}
+
+.review-left-bar.wide{
+    width: 45%;
+    background-color: white;
+    box-shadow: 0rem -0.1rem 0.5rem rgb(142, 142, 142);
+}
+
+.back-button-review{
+    width: fit-content;
+    position: relative;
+    bottom: 50%;
+    left: 94.9%;
+    z-index: 100;
+    background-color: rgb(49, 49, 49);
+    border-radius: 5px 0px 0px 5px;
+    box-shadow: 0rem 0rem 0.1rem black;
+}
+
+.back-button-review:hover{
+    background-color: rgb(116, 115, 115);
+}
+.applications-box{
+    width: 65%;
+    height: 100%;
+    right: 0.5rem;
+    position: absolute;
+    align-self: end;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+    transition: width 0.2s;
+    
+}
+
+.applications-box.wide{
+    width: 55%;
+    right: 0.01rem;
+}
+.applications-box.blur{
+    width: 65%;
+    height: 100%;
+    right: 0.463vh;
+    position: absolute;
+    align-self: end;
+    filter: blur(0.4rem);
+    overflow-y: auto;
+}
+.filter{
+    z-index: 100;
+    width: 25%;
+    border: 0.07rem solid #98979750;
+    position: absolute;
+    left: 34.5%;
+    box-shadow: 0.2rem 0.001rem 1rem 0.1rem #98979750;
+}
+

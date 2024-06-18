@@ -26,7 +26,9 @@ class RecruiterDetails(RecruiterBase):
     dob: Optional[PastDate] = None
     company_size: Optional[str] = None
     headquarters: Optional[str] = None
-    location: Optional[str] = None
+    locations: Optional[str] = None
+    website: Optional[str] = None
+    contact_email: Optional[str] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
@@ -81,6 +83,7 @@ class RecruiterProfile(RecruiterDetails):
     achievements: Optional[List[RecruiterAchievements]]
     speciality: Optional[List[RecruiterSpeciality]]
     emp_type: Optional[List[RecruiterEmpType]]
+    user_type: Optional[str]
 
     class Config:
         from_attributes = True

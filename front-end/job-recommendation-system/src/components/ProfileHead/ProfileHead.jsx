@@ -1,6 +1,6 @@
-import { useForm } from 'react-hook-form'
-import { useState } from 'react'
-import ProfileEdit from '../ProfileEdit/ProfileEdit'
+import { useForm } from 'react-hook-form';
+import { useState } from 'react';
+import ProfileEdit from '../ProfileEdit/ProfileEdit';
 import AccountSettingsBtn from '../AccountSettingsBtn/AccountSettingsBtn';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
@@ -8,55 +8,48 @@ import EditIcon from '@mui/icons-material/Edit';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import profilePlaceholder from '../../images/profile_placeholder.svg';
 import './ProfileHead.css'
-export default function ProfileHead({ data, blurFn }) {
-    const { register, formState: { errors }, handleSubmit } = useForm({ mode: 'onTouched' | 'onSubmit' });
-    const [isNotEditing, SetIsNotEditing] = useState(true)
-    isNotEditing === false ? blurFn(true) : blurFn(false)
+export default function ProfileHead({ data, blurFn, subForm, isNotEditing, setIsNotEditing }) {
+
+    const { register, formState: { errors }, getValues } = useForm({ mode: 'onTouched' | 'onSubmit' });
+
+   
     return (
-        <form noValidate autoComplete='on' onSubmit={handleSubmit()} className="profile-head-section"  >
-            <div className="banner">
+        <form noValidate autoComplete='on' className="profile-head-section"  >
+            <div className="banner" style={{backgroundColor:data.profile_banner_color}}>
                 <Stack direction="column" spacing={7} className='feature-actions'>
                     <AccountSettingsBtn />
                     {isNotEditing ?
-                        <IconButton aria-label="edit" onClick={() => { SetIsNotEditing(false) }}>
+                        <IconButton aria-label="edit" onClick={() => {
+                            setIsNotEditing(false)
+                            blurFn(true)
+                        }}>
                             <EditIcon />
                         </IconButton>
                         :
-                        <IconButton aria-label="check" onClick={() => { SetIsNotEditing(true) }}>
+                        <IconButton aria-label="check" onClick={() => {
+                            setIsNotEditing(true)
+                            blurFn(false)
+                            subForm({...getValues() })
+                        }}>
                             <CheckRoundedIcon />
                         </IconButton>}
                 </Stack>
             </div>
             <div className="profile-head-info">
                 <div className="profile-head-info-div profile-head-info-div1">
-                    <div className='profile-img-container'>
+                    <div className='profile-img-container p-image'>
                         <img src={data.profile_picture ? data.profile_picture : profilePlaceholder} alt="profile picture" />
                     </div>
                 </div>
                 {isNotEditing ?
                     <div className="profile-head-info-div profile-head-info-div2">
                         <h1 className="profile-name">{data.first_name} {data.last_name}</h1>
-                        <p className="profile-location">{data.location}, {data.country}</p>
-                        <p className="profile-bio">{data.bio}</p>
+                        <p className="profile-location">{data.city}, {data.country}</p>
+                        <p className="profile-bio">{data.bio ? data.bio : "Tell the world about yourself"}</p>
                     </div>
                     :
                     <div className="profile-head-info-div profile-head-info-div2">
-                        {/* <TextField className="profile-name qualification-add profile_info_edit" defaultValue={data.userName} placeholder="Amy Williams" variant="filled"
-                            error={'profile_name' in errors}
-                            {...register("profile_name", {
-                                required: "cannot be empty"
-                            })} />
-                        <TextField className="profile-location qualification-add  profile_info_edit" defaultValue={data.userLocation} placeholder="Kerala" variant="filled"
-                            error={'profile_location' in errors}
-                            {...register("profile_location", {
-                                required: "cannot be empty"
-                            })} />
-                        <TextField className="profile-bio qualification-add  profile_info_edit" multiline maxRows="2" defaultValue={data.userBio} placeholder="something about yourself" variant="filled"
-                            error={'profile_bio' in errors}
-                            {...register("profile_bio", {
-                                required: "cannot be empty"
-                            })} /> */}
-                        <ProfileEdit data={data} />
+                        <ProfileEdit data={data} register={register} errors={errors} />
                     </div>
                 }
                 <div className="profile-head-info-div profile-head-info-div3"></div>

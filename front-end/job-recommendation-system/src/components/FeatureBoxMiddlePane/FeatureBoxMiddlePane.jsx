@@ -7,10 +7,14 @@ import QualificationCard from '../QualificationCard/QualificationCard';
 import LanguageAdd from '../LanguageAdd/LanguageAdd';
 import QualificationAdd from '../QualificationAdd/QualificationAdd';
 import LanguageCard from '../LanguageCard/LanguageCard';
+import Lottie from "lottie-react";
+import Turtle from '../../images/Turtle-in-space.json'
 import './FeatureBoxMiddlePane.css';
-export default function FeatureBoxMiddlePane({ data, childData }) {
+export default function FeatureBoxMiddlePane({ languages, data, childData }) {
+
+
     const [qdata, SetQdata] = useState(childData);
-    const [newQual,SetNewQual]=useState(false)
+    const [newQual, SetNewQual] = useState(false)
     const addQualification = (e) => {
         //accepts new qualification data and adds it into existing array of qualifications
         SetNewQual(false)
@@ -31,7 +35,7 @@ export default function FeatureBoxMiddlePane({ data, childData }) {
                 e.language = data.language
                 e.language_proficiency = data.language_proficiency
             }
-            return(e)
+            return (e)
         }))
     }
     const updateLang = (data) => {
@@ -50,19 +54,30 @@ export default function FeatureBoxMiddlePane({ data, childData }) {
         <div className="feature-box feature-box-middle-pane" id="feature-box-middle-pane">
             <h4 className="feature-title">{data.title}</h4>
             <Stack direction="row" spacing={0} className='feature-actions'>
-                <IconButton aria-label="add" onClick={()=>{SetNewQual(true)}}>
+                <IconButton aria-label="add" onClick={() => { SetNewQual(true) }}>
                     <AddCircleRoundedIcon />
                 </IconButton>
             </Stack>
             <div className="feature-box-container">
-                {newQual && (data.isLanguage ? <LanguageAdd submitFn={addQualification} cancelFn={cancelQual} />:<QualificationAdd submitFn={addQualification} cancelFn={cancelQual } />)}
                 {
-                    qdata.map(e => {
+                    (qdata.length === 0 && !newQual) &&
+                    <div className='qualification-card-h3 data-exception-featurebox' style={{ fontFamily: 'Inter-light-italic' }}>
+                            <Lottie className="data-exception-ani" animationData={Turtle} loop={true} />
+                            <p>Your profile is like the vast expanse of space let's add some stars! 🌟</p></div>
+                }
+
+                {
+                    newQual && (data.isLanguage ? <LanguageAdd languages={languages} submitFn={addQualification} cancelFn={cancelQual} />
+                        : <QualificationAdd cardData={data.cardData} submitFn={addQualification} cancelFn={cancelQual} />)
+                }
+
+                {
+                    childData && qdata.map(e => {
 
                         return (
                             data.isLanguage === true ?
-                                <LanguageCard data={e} key={uuid()} deleteFn={deleteQual} submitFn={updateQual} />
-                                : <QualificationCard data={e} key={uuid()} deleteFn={deleteQual} submitFn={updateQual} cancelFn={cancelQual} />)
+                                <LanguageCard languages={languages} data={e} key={uuid()} deleteFn={deleteQual} submitFn={updateQual} />
+                                : <QualificationCard cardData={data.cardData} data={e} key={uuid()} deleteFn={deleteQual} submitFn={updateQual} cancelFn={cancelQual} />)
 
                     })
                 }

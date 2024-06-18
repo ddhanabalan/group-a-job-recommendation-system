@@ -26,7 +26,9 @@ class RecruiterDetails(Base):
     headquarters = Column(String(256))
     dob = Column(Date)
     age = Column(Integer)
-    location = Column(String(512))
+    website = Column(String(256))
+    contact_email = Column(String(32))
+    locations = Column(String(512))
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
