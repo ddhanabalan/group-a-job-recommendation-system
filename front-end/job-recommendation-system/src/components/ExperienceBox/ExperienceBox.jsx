@@ -100,7 +100,7 @@ export default function ExperienceBox({ access, childData, reloadFn, showSuccess
                     childData && expdata.map(e => {
 
                         return (
-                            <ExperienceCard data={e} key={uuid()} deleteFn={deleteExp} submitFn={updateExp} cancelFn={cancelExp} />
+                            <ExperienceCard access={access} data={e} key={uuid()} deleteFn={deleteExp} submitFn={updateExp} cancelFn={cancelExp} />
                         )
                     }
                     )

@@ -9,7 +9,7 @@ import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
 import SupportAgentRoundedIcon from '@mui/icons-material/SupportAgentRounded';
 import DeleteOutlineRoundedIcon from '@mui/icons-material/DeleteOutlineRounded';
 import './AccountSettingsBtn.css';
-export default function AccountSettingsBtn({ logOutFn }) {
+export default function AccountSettingsBtn({ access,logOutFn }) {
 
     const [anchorEl, setAnchorEl] = useState(null);
     const [deleteAcc, SetDeleteAcc] = useState(false);
@@ -55,8 +55,12 @@ export default function AccountSettingsBtn({ logOutFn }) {
                 <MenuItem onClick={logOutFn}><LogoutRoundedIcon />Logout</MenuItem>
                 <Divider orientation="horizontal" variant="middle" flexItem />
                 <MenuItem onClick={handleClose}><SupportAgentRoundedIcon />Help</MenuItem>
-                <Divider orientation="horizontal" variant="middle" flexItem />
+                {access !== "viewOnly" &&
+                    <Divider orientation="horizontal" variant="middle" flexItem />
+                }
+                {access !== "viewOnly" && 
                 <MenuItem sx={{ color: 'red' }} onClick={handleDelete}><DeleteOutlineRoundedIcon />Delete Account</MenuItem>
+                }
             </Menu>
         </div>
     );

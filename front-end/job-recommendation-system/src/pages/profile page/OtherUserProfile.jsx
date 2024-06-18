@@ -32,8 +32,9 @@ export default function OtherUserProfile({ data }) {
         SetIsNotEditing(value)
     }
     const redirectFn = (data) => {
-        setStorage("userID", data.user_id)
-        setStorage("username", data.username)
+        setStorage("guestUserID", data.user_id)
+        setStorage("guestUsername", data.username)
+        setStorage("guestUserType", data.user_type)
         console.log("Users:", data)
         SetnewData(data)
     }

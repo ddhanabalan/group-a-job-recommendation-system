@@ -8,7 +8,7 @@ import CorporateFareRoundedIcon from '@mui/icons-material/CorporateFareRounded';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-export default function ExperienceCard({ data, deleteFn, submitFn }) {
+export default function ExperienceCard({ access,data, deleteFn, submitFn }) {
     const { register, formState: { errors }, handleSubmit, getValues } = useForm({ mode: 'onTouched' });
     const [isNotEditing, SetIsNotEditing] = useState(true);
     const editData = () => {
@@ -34,14 +34,16 @@ export default function ExperienceCard({ data, deleteFn, submitFn }) {
                         <p className='qualification-card-p'>{data.start_year + " - " + data.end_year}</p>
                     </div>
                     <div className="qualification-card-action-btns">
-                        <Stack direction="column" spacing={2}>
-                            <IconButton aria-label="edit" onClick={() => SetIsNotEditing(false)}>
-                                <EditIcon fontSize='small' />
-                            </IconButton>
-                            <IconButton aria-label="delete" onClick={() => deleteFn(data.id)}>
-                                <DeleteRoundedIcon sx={{ color: 'red' }} fontSize='small' />
-                            </IconButton>
-                        </Stack>
+                        {access !== "viewOnly" &&
+                            <Stack direction="column" spacing={2}>
+                                <IconButton aria-label="edit" onClick={() => SetIsNotEditing(false)}>
+                                    <EditIcon fontSize='small' />
+                                </IconButton>
+                                <IconButton aria-label="delete" onClick={() => deleteFn(data.id)}>
+                                    <DeleteRoundedIcon sx={{ color: 'red' }} fontSize='small' />
+                                </IconButton>
+                            </Stack>
+                        }
                     </div>
                 </div >
                 :

@@ -4,6 +4,7 @@ import { getStorage } from '../../storage/storage';
 import { styled } from '@mui/material/styles';
 import { FastAverageColor } from 'fast-average-color';
 import { Button } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import Skeleton from '@mui/material/Skeleton';
 import ProfileEdit from '../ProfileEdit/ProfileEdit';
 import AccountSettingsBtn from '../AccountSettingsBtn/AccountSettingsBtn';
@@ -20,8 +21,10 @@ export default function ProfileHead({ access, data, blurFn, logOutFn, subForm, i
     const [img, setImg] = useState();
     const [user, SetUser] = useState()
     useEffect(() => {
-        SetUser(getStorage("userType"))
-    },[])
+        access !== "viewOnly" ? SetUser(getStorage("userType")) :
+            SetUser(getStorage("guestUserType"))
+    }, [])
+    console.log("user", user)
     const [bannerColor, setBannerColor] = useState('');
     useEffect(() => {
         if (data) {
@@ -51,34 +54,34 @@ export default function ProfileHead({ access, data, blurFn, logOutFn, subForm, i
         data.readAsDataURL(e.target.files[0])
 
     }
-
+    const navigate = useNavigate()
     return (
         <form noValidate autoComplete='on' className="profile-head-section"  >
             <div className="banner" style={{ backgroundColor: bannerColor }}>
                 {access === "viewOnly" &&
-                    <IconButton aria-label="back" className='banner-back-btn'>
+                    <IconButton aria-label="back" className='banner-back-btn' onClick={() => navigate("/profile")}>
                         <ArrowBackIosNewRoundedIcon />
                     </IconButton>
                 }
                 <Stack direction="column" spacing={7} className='feature-actions'>
-                    <AccountSettingsBtn logOutFn={logOutFn} />
-                    {access !== "viewOnly" &&(
+                    <AccountSettingsBtn logOutFn={logOutFn} access={access} />
+                    {access !== "viewOnly" && (
                         isNotEditing ?
-                        <IconButton aria-label="edit" onClick={() => {
-                            setIsNotEditing(false)
-                            blurFn(true)
-                        }}>
-                            <EditIcon />
-                        </IconButton>
-                        :
-                        <IconButton aria-label="check" onClick={() => {
-                            setIsNotEditing(true)
-                            blurFn(false)
-                            subForm({ ...getValues(), 'profile_banner_color': bannerColor, 'profile_picture': img })
-                            console.log({ ...getValues(), 'profile_banner_color': bannerColor, 'profile_picture': img })
-                        }}>
-                            <CheckRoundedIcon />
-                        </IconButton>)
+                            <IconButton aria-label="edit" onClick={() => {
+                                setIsNotEditing(false)
+                                blurFn(true)
+                            }}>
+                                <EditIcon />
+                            </IconButton>
+                            :
+                            <IconButton aria-label="check" onClick={() => {
+                                setIsNotEditing(true)
+                                blurFn(false)
+                                subForm({ ...getValues(), 'profile_banner_color': bannerColor, 'profile_picture': img })
+                                console.log({ ...getValues(), 'profile_banner_color': bannerColor, 'profile_picture': img })
+                            }}>
+                                <CheckRoundedIcon />
+                            </IconButton>)
                     }
 
                 </Stack>

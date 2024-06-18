@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { userAPI } from '../../api/axios';
 import { v4 as uuid } from 'uuid';
 import { getStorage, setStorage } from '../../storage/storage';
-import { useParams } from 'react-router-dom';
+import { useParams,Navigate } from 'react-router-dom';
 import authAPI from '../../api/axios';
 import FeatureBox from '../../components/FeatureBox/FeatureBox';
 import FeatureBoxMiddlePane from '../../components/FeatureBoxMiddlePane/FeatureBoxMiddlePane';
@@ -26,8 +26,9 @@ export default function OtherEmployerProfile({ data }) {
         SetIsNotEditing(value)
     }
     const redirectFn = (data) => {
-        setStorage("userID", data.user_id)
-        setStorage("username", data.username)
+        setStorage("guestUserID", data.user_id)
+        setStorage("guestUsername", data.username)
+        setStorage("guestUserType", data.user_type)
         console.log("Users:", data)
         SetnewData(data)
     }
@@ -100,8 +101,14 @@ export default function OtherEmployerProfile({ data }) {
         SetFailMsg(true)
         setTimeout(() => { SetFailMsg(false) }, 1500)
     }
+    const [redirectHome, SetRedirectHome] = useState(false);
+    const logOut = () => {
+        console.log('helo')
+        SetRedirectHome(true)
+    }
     return (
         <div id="employer-profile-page">
+            {redirectHome && <Navigate to='/' />}
             <ProfileHead access="viewOnly" data={newData} blurFn={blurBody} subForm={subForm} isNotEditing={isNotEditing} setIsNotEditing={updateEditStatus} />
             <NavigationBar active="employer-profile" />
             <div className="employer-profile-body-section">
