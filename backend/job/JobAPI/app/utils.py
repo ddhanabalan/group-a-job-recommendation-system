@@ -47,14 +47,15 @@ async def get_current_user(authorization: str = Header(...), user_type: str = "s
             )
         return response.json()
 
+
 async def get_company_details(authorization: str = Header(...)) -> dict:
     headers = {"Authorization": authorization}
     async with httpx.AsyncClient() as client:
         response = await client.get(
-            f"http://{USER_API_HOST}:{PORT}/recruiter/details",headers=headers
+            f"http://{USER_API_HOST}:{PORT}/recruiter/details/", headers=headers
         )
         if response.status_code != status.HTTP_200_OK:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="Error Occured"
+                status_code=status.HTTP_404_NOT_FOUND, detail="Error Occurred"
             )
         return response.json()
