@@ -18,7 +18,7 @@ export default function JobCard({ data, id, expandView, background, profilePictu
                     })}
 
                 </Stack>
-                <p className='card-salary'>{data.currency}{data.salary[0]} - {data.salary[1]} per month</p>
+                <p className='card-salary'>{data.currency} {data.salary[0]}{data.salary[1]? <span>- {data.salary[1]}</span>: <></>} per month</p>
             </div>
             <div className='card-div2'>
                 <div className='card-img-container qualification-card-image' style={profilePictureStyle}>

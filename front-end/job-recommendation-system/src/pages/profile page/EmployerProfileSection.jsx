@@ -27,7 +27,7 @@ export default function EmployerProfileSection({ data }) {
         SetIsNotEditing(value)
     }
     const redirectFn = (data) => {
-        setStorage("UserID", data.user_id)
+        setStorage("userID", data.user_id)
         setStorage("username", data.username)
         setStorage("profile pic", data.profile_picture)
         console.log("Users:", data)
@@ -45,7 +45,7 @@ export default function EmployerProfileSection({ data }) {
                     }
                 }) :
                 await userAPI.get(`/profile/${user}`);
-            console.log(response)
+            console.log("user profile", response)
             redirectFn(response.data)
         } catch (e) {
             console.log(e)
@@ -62,7 +62,7 @@ export default function EmployerProfileSection({ data }) {
             console.log(" after new job vacancies", mod_response);
             
         } catch (e) {
-            console.log("jobs failed", e)
+            console.log("jobs failed for id",getStorage("userID"), e)
             
             alert(e.message);
         }
@@ -135,7 +135,7 @@ export default function EmployerProfileSection({ data }) {
         SetRedirectHome(true)
     }
 
-    useEffect(() => {callJobVacancyAPI(getStorage("userID"))}, [newData])
+    useEffect(() => {if(getStorage("userID"))callJobVacancyAPI(getStorage("userID"))}, [newData])
     return (
         <div id="employer-profile-page">
             {redirectHome && <Navigate to='/' />}

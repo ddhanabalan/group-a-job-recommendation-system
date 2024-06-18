@@ -19,9 +19,12 @@ import { useLocation, Link, useNavigate } from 'react-router-dom';
 import JobCardExpanded from '../JobCardExpanded/JobCardExpanded';
 import {getStorage, setStorage} from '../../storage/storage';
 import { userAPI, jobAPI, utilsAPI } from '../../api/axios';
+import {Autocomplete} from '@mui/material';
+import {TextField} from '@mui/material';
 
 export default function JobVacancyForm({ data = {} }) {
     const USERID = getStorage("userID");
+    const POI = ['salesman', 'assisstant engineer', 'supervisor']
     const prefilleddata = data;
     const locating = useLocation();
     const navigate = useNavigate();
@@ -310,7 +313,37 @@ export default function JobVacancyForm({ data = {} }) {
                         <hr className="separator" />
 
                         <div className="create-job-vacancy-body">
+                            
                             <div className="create-job-vacancy-details">
+                                
+                                <div className='detail-divs'>
+                                    <span className={`details-header${errors.POI?"-error":""}`}>Position of Interest:</span>
+                                    <div className='option-divs'>
+                                    <Autocomplete
+                                        disablePortal
+                                        id="combo-box-demo"
+                                        options={POI}
+                                        onChange={(event, value) => setValue("POI",value)}
+                                        renderInput={(params) => <TextField {...params} InputProps={{
+                                                                    ...params.InputProps,
+                                                                    disableUnderline: true,
+                                                                }}
+                                                                variant="standard"
+                                                                sx={{backgroundColor: "#D9D9D9",
+                                                                    width: "230px",
+                                                                    height: "30px",
+                                                                    paddingX: "5px",
+                                                                    borderRadius: "7px",
+                                                                    '.MuiInputBase-input': { fontFamily: "Inter-regular", fontSize: "15px"},              
+                                                                }}   
+                                                                {...register("POI", { required: "Field is required", })}
+                                                                />}
+                                                                
+                                    />
+                                    <p className="error-message" style={{ position: 'relative', left: "0px" }}>{errors.POI?.message}</p>
+
+                                    </div>
+                                </div>
                                 <div className="detail-divs">
                                     <span className={`details-header${errors.location?"-error":""}`}>Location:</span>
                                     <div className='option-divs'>

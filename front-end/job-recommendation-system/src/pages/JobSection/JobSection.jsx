@@ -36,7 +36,7 @@ export default function JobSection() {
         GetSeekerSkills();
         GetSeekerDetails();
         try {
-            const response = await jobAPI.get('http://localhost:8002/job_vacancy/',
+            const response = await jobAPI.get('/job_vacancy/',
                 {
                     params: { ...filterparam },
                     paramsSerializer: params => {
@@ -96,7 +96,7 @@ export default function JobSection() {
 
     const CreateJobRequest = async (jobId) => {
         try {
-            const response = await jobAPI.post('/job_request', {
+            const response = await jobAPI.post('/job_request/', {
                 "job_id": Number(jobId),
                 "status": "Applied"
             },
