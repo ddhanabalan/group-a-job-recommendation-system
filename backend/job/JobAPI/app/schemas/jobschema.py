@@ -7,6 +7,7 @@ class JobVacancyBase(BaseModel):
     company_id: Optional[int] = None
     job_name: Optional[str] = None
     job_desc: Optional[str] = None
+    company_username: Optional[str] = None
     company_name: Optional[str] = None
     requirement: Optional[str] = None
     salary: Optional[str] = None

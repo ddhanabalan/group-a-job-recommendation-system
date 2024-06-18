@@ -1,3 +1,5 @@
+from typing import List
+
 from fastapi import APIRouter, Depends, HTTPException, status, Header
 
 from .. import (
@@ -14,7 +16,7 @@ from .. import (
 router = APIRouter()
 
 
-@router.get("/poi", response_model=seekerschema.SeekersPOI)
+@router.get("/poi", response_model=List[seekerschema.SeekersPOI])
 async def user_seeker_poi(
     db: Session = Depends(get_db), authorization: str = Header(...)
 ):
