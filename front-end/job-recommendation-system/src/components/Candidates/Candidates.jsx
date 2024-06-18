@@ -1,10 +1,10 @@
 import '../Jobs/Jobs.css';
 import CandidateCard from '../CandidateCard/CandidateCard';
-export default function Candidates() {
+export default function Candidates({type}) {
     const demoInfo = { candidateName: "Amy Williams", location: "Kerala, India", tags: ["on-site", "software / IT", "Monday-Friday"], experience:2};
     return (
         <div className="cards-container">
-            <CandidateCard data={demoInfo} type="review"/>
+            <CandidateCard data={demoInfo} type={type}/>
         </div>
     )
 }
