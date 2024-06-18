@@ -12,6 +12,7 @@ import LanguageBox from '../../components/LanguageBox/LanguageBox';
 import LicenseBox from '../../components/LicenseBox/LicenseBox';
 import ProfileHead from '../../components/ProfileHead/ProfileHead';
 import ContactCard from '../../components/ContactCard/ContactCard';
+import AddPOI from '../../components/AddPOI/AddPOI';
 import AddSkills from '../../components/AddSkills/AddSkills';
 import NavigationBar from '../../components/NavigationBar/NavigationBar';
 import failAnimation from '../../images/fail-animation.json'
@@ -231,6 +232,7 @@ export default function ProfileSection({ data }) {
                         </div>
                         <div className="profile-pane profile-right-pane">
                             <FeatureBox data={{ title: "Achievements", addIcon: true, editIcon: true }} />
+                            <AddPOI callAPI={callAPI} showSuccessMsg={showSuccessMsg} showFailMsg={showFailMsg}  />
                         </div>
                     </div>
                 </div>
