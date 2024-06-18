@@ -60,15 +60,27 @@ def recommend_applicants(job_position):
 
 # Define FastAPI endpoints
 
-@app.get('/recommend_jobs/{applicant_id}')
-async def handle_recommend_jobs_endpoint(applicant_id: int):
-    recommendations = print_recommended_jobs(applicant_id)
-    return recommendations
+@app.get('/recommend_jobs')
+async def handle_recommend_jobs_endpoint():
+    async with httpx.AsyncClient() as client:
+        response = await client.get('http://localhost:8080/seeker/input')  # Endpoint to fetch applicant IDs
+        if response.status_code == 200:
+            applicant_ids = response.json()['input']
+            recommendations = [print_recommended_jobs(applicant_id) for applicant_id in applicant_ids]
+            return recommendations
+        else:
+            raise HTTPException(status_code=response.status_code, detail="Failed to fetch applicant IDs.")
 
-@app.get('/recommend_applicants/{job_position}')
-async def handle_recommend_applicants_endpoint(job_position: str):
-    recommendations = recommend_applicants(job_position)
-    return recommendations
+@app.get('/recommend_applicants')
+async def handle_recommend_applicants_endpoint():
+    async with httpx.AsyncClient() as client:
+        response = await client.get('http://localhost:8080/recruiter/input')  # Endpoint to fetch job positions
+        if response.status_code == 200:
+            job_positions = response.json()['input']
+            recommendations = [recommend_applicants(job_position) for job_position in job_positions]
+            return recommendations
+        else:
+            raise HTTPException(status_code=response.status_code, detail="Failed to fetch job positions.")
 
 # Create an asynchronous scheduler
 scheduler = AsyncIOScheduler()
