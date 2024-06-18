@@ -11,7 +11,7 @@ from . import (
     Session,
     decode64_image,
     encode64_image,
-get_user_type
+    get_user_type
 )
 
 
