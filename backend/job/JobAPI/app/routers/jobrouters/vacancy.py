@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Query
+from fastapi import APIRouter, Depends, HTTPException, status, Query,Header
 from typing import Type, List, Optional
 from .. import (
     get_db,
@@ -8,6 +8,7 @@ from .. import (
     jobcrud,
     check_authorization,
     get_current_user,
+    get_company_details
 )
 
 job_vacancy_router = APIRouter(prefix="/job_vacancy")
@@ -41,8 +42,11 @@ async def read_filtered_job_vacancies(
 
 @job_vacancy_router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_job_vacancy(
-    job_vacancy: jobschema.JobVacancyCreate, db: Session = Depends(get_db)
+    job_vacancy: jobschema.JobVacancyCreate, db: Session = Depends(get_db),authorization: str = Header(...),
 ):
+    user = await get_current_user(authorization,user_type="recruiter")
+    user_id = user.get("user_id")
+    company_details = await get_company_details(user_id)
     data = job_vacancy.dict()
     skill = data.pop("skills", [])
 
