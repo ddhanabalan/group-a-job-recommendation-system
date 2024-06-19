@@ -54,8 +54,7 @@ async def get_seeker_details_list(
             )
     if location:
         filters.append(
-            lambda user_details: location.lower() == (
-                    user_details.city.lower() + ', ' + user_details.country.lower())
+            lambda user_details: location.lower() in user_details.city.lower() or location.lower() in user_details.country.lower()
         )
 
     # Fetch user details based on filters
