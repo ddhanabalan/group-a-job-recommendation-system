@@ -17,7 +17,7 @@ import './FeatureBoxMiddlePane.css';
 export default function FeatureBoxMiddlePaneOpenings({data, childData}) {
     const demoInfo = { jobTitle: "Python Developer", companyName: "Google LLC",workStyle:"on-site",workingDays:"Monday-Friday", skills: ["python","javascript"], currency: "₹", salary: "50k", postDate: "13/9/23" };
     
-    const companyOpenings = data.vacancies;
+    const companyOpenings = data?.vacancies || [];
 
     
     
@@ -34,7 +34,7 @@ export default function FeatureBoxMiddlePaneOpenings({data, childData}) {
         }
                 <hr className="line-separator"/>
                 <div className='see-openings-footer'>
-                    <Link to="/employer/review-applications" state={{user_id: data.user_id}}>
+                    <Link to={data.userType == "employer"?"/employer/review-applications": "/seeker/openings"} state={{user_id: data.user_id}}>
                         <a className="openings-redirect-button">See all openings<ArrowForwardIcon/></a>
                     </Link>
                 </div> 

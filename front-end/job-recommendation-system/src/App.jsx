@@ -77,18 +77,17 @@ function App() {
             <Route path="/profile" element={user && user === "seeker" ? <ProfileSection data={{}} /> : <EmployerProfileSection data={{}} />} />
             <Route path="/profile/:username" element={<OtherUserProfile data={{}} />} />
             <Route path="/e/profile/:username" element={<OtherEmployerProfile data={{}} />} />
-            <Route path="/employer-profile" element={<EmployerProfileSection data={{
-              userName: "NASA", first_name: "NASA - National Aeronautics and Space Administration", location: "Washington, D.C", country: "USA", bio: "We search the Universe. "
-            }} />} />
+            <Route path="/employer-profile" element={<EmployerProfileSection data={{}} />} />
           </Route>
           {/* routes exclusive to seekers */}
           <Route element={<SeekerRoutes />}>
             <Route path="/jobs" element={<JobSection />} />
+            <Route path="/seeker/openings" element={<ReviewApplications userType="seeker"/>} />
           </Route>
           {/* routes exclusive to recruiters */}
           <Route element={<EmployerRoutes />}>
             <Route path="/candidates" element={<CandidateSection />} />
-            <Route path="/seeker/openings" element={<ReviewApplications userType="seeker" />} />
+            
             <Route path="/employer/job-vacancy" element={<CreateJobVacancy />} />
             <Route path="/employer/review-applications" element={<ReviewApplications userType="employer" />} />
           </Route>

@@ -4,6 +4,7 @@ import { v4 as uuid } from 'uuid';
 import { getStorage, setStorage } from '../../storage/storage';
 import { useParams,Navigate } from 'react-router-dom';
 import authAPI from '../../api/axios';
+import { jobAPI } from '../../api/axios';
 import FeatureBox from '../../components/FeatureBox/FeatureBox';
 import FeatureBoxMiddlePane from '../../components/FeatureBoxMiddlePane/FeatureBoxMiddlePane';
 import ProfileHead from '../../components/ProfileHead/ProfileHead';
@@ -22,6 +23,7 @@ import './EmployerProfileSection.css';
 export default function OtherEmployerProfile({ data }) {
     const [newData, SetnewData] = useState(data);
     const [isNotEditing, SetIsNotEditing] = useState(true)
+    const [jobVacancies, SetJobVacancies] = useState([]);
     const updateEditStatus = (value) => {
         SetIsNotEditing(value)
     }
@@ -50,6 +52,20 @@ export default function OtherEmployerProfile({ data }) {
             console.log(e)
 
             alert(e.message)
+        }
+    }
+    const callJobVacancyAPI= async (companyId)=>{
+        try {
+            const response = await jobAPI.get(`/job_vacancy/company/${companyId}`);
+            const mod_response = response.data.map(e=>({id: e.job_id, jobTitle: e.job_name, companyName: e.company_name, tags: e.tags, currency: e.salary.split('-')[0], salary: [e.salary.split('-')[1],e.salary.split('-')[2]], postDate: e.created_at.split('T')[0] , last_date: e.last_date.split('T')[0], location: e.location, empType: e.emp_type, exp: e.experience, workStyle: e.work_style, workingDays: e.working_days, jobDesc: e.job_desc ,jobReq:e.requirement,skills: e.skills.length?e.skills: [{'skill': ""}], applicationsReceived: e.job_seekers}))
+            SetJobVacancies(mod_response);
+            console.log(response);
+            console.log(" after new job vacancies", mod_response);
+            
+        } catch (e) {
+            console.log("jobs failed for id",getStorage("userID"), e)
+            
+            alert(e.message);
         }
     }
     useEffect(() => callAPI, []);
@@ -106,6 +122,7 @@ export default function OtherEmployerProfile({ data }) {
         console.log('helo')
         SetRedirectHome(true)
     }
+    useEffect(() => {if(getStorage("guestUserID"))callJobVacancyAPI(getStorage("guestUserID"))}, [newData])
     return (
         <div id="employer-profile-page">
             {redirectHome && <Navigate to='/' />}
@@ -127,7 +144,7 @@ export default function OtherEmployerProfile({ data }) {
                 <div className="employer-profile-pane employer-profile-middle-pane">
                     <FeatureBoxMiddlePaneText access="viewOnly" data={{ title: "About", edit: false }} childData={newData.overview}
                         reloadFn={callAPI} showSuccessMsg={showSuccessMsg} showFailMsg={showFailMsg} />
-                    <FeatureBoxMiddlePaneOpenings data={{ title: "Recent Job Openings", edit: false }} childData={{ text: "This is for demo purpose only" }} />
+                    <FeatureBoxMiddlePaneOpenings data={{ title: "Recent Job Openings", edit: false, vacancies: jobVacancies, userType: "seeker" }} childData={{ text: "This is for demo purpose only" }} />
                     {/* <FeatureBoxMiddlePaneReview data={{title: "Reviews", edit: false}} childData={{text: "This is for demo purpose only"}}/> */}
 
 

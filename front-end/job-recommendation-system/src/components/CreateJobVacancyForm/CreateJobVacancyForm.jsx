@@ -8,7 +8,7 @@ import DoneIcon from '@mui/icons-material/Done';
 import EditIcon from '@mui/icons-material/Edit';
 import { Button, IconButton } from '@mui/material';
 import { useState, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { set, useForm } from 'react-hook-form';
 import GoogleLocationSearch from '../GoogleLocationSearch/GoogleLocationSearch';
 import CreateFormTextFields from './CreateFormTextFields';
 import MultipleOptions from '../MultipleOptions/MultipleOptions';
@@ -18,6 +18,7 @@ import { useLocation, Link, useNavigate } from 'react-router-dom';
 import JobCardExpanded from '../JobCardExpanded/JobCardExpanded';
 import { getStorage, setStorage } from '../../storage/storage';
 import { userAPI, jobAPI, utilsAPI } from '../../api/axios';
+import { cloneDeep } from 'lodash';
 import { Autocomplete } from '@mui/material';
 import { TextField } from '@mui/material';
 import './CreateJobVacancyForm.css';
@@ -27,7 +28,7 @@ export default function JobVacancyForm({ data = {} }) {
     const locating = useLocation();
     const navigate = useNavigate();
     const dta = (locating.state ? locating.state : {})
-    //console.log("received state data for edit", dta, "pre", prefilleddata)
+    console.log("received state data for edit", dta, "pre", prefilleddata)
     const salary_threshold = 5000;
     const profile_picture = getStorage("profile pic")
     const [companyData, setCompanyData] = useState({});
@@ -42,6 +43,9 @@ export default function JobVacancyForm({ data = {} }) {
     const [skill, SetSkill] = useState('');
 
     const [skills, SetSkills] = useState(dta.skills ? dta.skills.map(label => ({ tag: label.skill, id: label.id })) : []);
+    const [checkSkillsList, SetList] = useState(skills);
+    const [deletedSkills, setDeletedSkills] = useState([]);
+    const [addedSkills, setAddedSkills] = useState([]);
     const [tags, setTags] = useState(dta.tags ? dta.tags.map(label => ({ tag: label.tags, id: label.id })) : []);
     const [preferences, setPreferences] = useState({ "skills": skills, "tags": tags, "empType": dta.empType, "exp": dta.exp, "workStyle": dta.workStyle, "workingDays": dta.workingDays });
     const [preview, setPreview] = useState(false);
@@ -83,20 +87,24 @@ export default function JobVacancyForm({ data = {} }) {
     const callJobAPI = async (rec_data, edit = false) => {
         console.log("data to submit to server ", rec_data)
         try {
-            if (!edit) {
-                const response = await jobAPI.post('/job_vacancy/', rec_data, {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                }
-                );
-                redirectFn(response)
+            if(!edit)
+            {const response = await jobAPI.post('/job_vacancy/', rec_data, {
+            headers:{
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getStorage("userToken")}` 
+            }         
             }
-            else {
-                const response = await jobAPI.put(`/job_vacancy/${dta.id}`, rec_data, {
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
+            );
+            redirectFn(response)
+            }
+            else
+            {   const update_data = {...rec_data, 'skills_delete': deletedSkills}
+                console.log("updating data", update_data)
+                const response = await jobAPI.put(`/job_vacancy/${dta.id}`, update_data, {
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getStorage("userToken")}`
+                }         
                 }
                 );
                 redirectFn(response)
@@ -167,12 +175,14 @@ export default function JobVacancyForm({ data = {} }) {
 
     const handleSkillData = (tags, tagType) => {
         //function for adding selected skill tags into submitting form data
-        //console.log("skills and tags", tags, "tagtype: ", tagType)
+        console.log("skills and tags", tags, "check", checkSkillsList)
+        checkSkillsList.every(skill => {if(Object.keys(tags).length == 0 || !(tags.map(tag => tag.id).includes(skill.id))){if(!deletedSkills.includes(skill.id) && skill.id){setDeletedSkills([...deletedSkills,skill.id])}}})
+        tags.every(skill => {if(typeof(skill.id)!="number")setAddedSkills([...addedSkills, skill.tag])})
+        //console.log("only added tags", addedSkills )
         //console.log("preferences befre changing", preferences)
         setPreferences({ ...preferences, [tagType]: tags.map(tagObj => { return (tagObj['tag']) }) });
-
     }
-
+    console.log("deleted skills", deletedSkills,)
     const dateValidation = (closing_date) => {
         const today = new Date();
         const cl_date = closing_date.split('-');
@@ -226,25 +236,25 @@ export default function JobVacancyForm({ data = {} }) {
 
     function handlePostVacancy() {
         //Application submission data
-        const submissionData = {
-            "company_id": USERID,
-            "company_name": finalApplicationData['companyName'],
-            "emp_type": finalApplicationData['empType'][0],
-            "salary": finalApplicationData["currency"] + "-" + ((finalApplicationData["salary"][1] === "") ? finalApplicationData["salary"][0] : finalApplicationData["salary"].join("-")),
-            "working_days": finalApplicationData["workingDays"][0],
-            "work_style": finalApplicationData["workStyle"][0],
-            "experience": finalApplicationData["exp"][0],
-            "job_name": finalApplicationData['jobTitle'],
-            "job_position": finalApplicationData['jobTitle'],
-            "location": finalApplicationData['location'],
+        const submissionData={
+                                "company_id": USERID,
+                                "company_name": finalApplicationData['companyName'],
+                                "emp_type": finalApplicationData['empType'][0],
+                                "salary": finalApplicationData["currency"] + "-" + ((finalApplicationData["salary"][1]==="")?finalApplicationData["salary"][0]:finalApplicationData["salary"].join("-")),
+	                            "working_days": finalApplicationData["workingDays"][0],
+                                "work_style": finalApplicationData["workStyle"][0],
+                                "experience": finalApplicationData["exp"][0],
+                                "job_name": finalApplicationData['jobTitle'],
+                                "job_position": finalApplicationData['poi'],
+                                "location": finalApplicationData['location'],
 
-            "job_desc": finalApplicationData['jobDesc'],
-
-            "requirement": finalApplicationData['jobReq'],
-            "last_date": finalApplicationData['last_date'],
-
-            "skills": finalApplicationData["skills"] ? finalApplicationData["skills"] : [],
-        };
+                                "job_desc": finalApplicationData['jobDesc'],
+                                
+                                "requirement": finalApplicationData['jobReq'],
+                                "last_date": finalApplicationData['last_date'],
+                                
+                                "skills": addedSkills,
+                            };
         //submissionData["salary"]=(submissionData["salary"][1]==="")?submissionData["salary"][0]:submissionData["salary"].join("-");
 
 
@@ -254,10 +264,10 @@ export default function JobVacancyForm({ data = {} }) {
 
     }
     useEffect(() => { if (submit === true) { navigate("../employer/review-applications") } }, [submit]);
-    useEffect(() => { skillsAPI() }, [skill])
-    useEffect(() => { callCompanyAPI() }, [])
-
-
+    useEffect(() => {skillsAPI()}, [skill])
+    useEffect(() => {callCompanyAPI()}, [])
+    
+    //useEffect(() => {setPreferences({ ...preferences, "skills_delete": deletedSkills })}, [deletedSkills])
     return (
         <>
             {preview ?
@@ -309,7 +319,7 @@ export default function JobVacancyForm({ data = {} }) {
                             <div className="create-job-vacancy-details">
 
                                 <div className='detail-divs'>
-                                    <span >Position of Interest:</span>
+                                <span className={`details-header${errors.poi ? "-error" : ""}`}>Position of Interest:</span>
                                     <div className='option-divs'>
                                         <Autocomplete
                                             disablePortal
