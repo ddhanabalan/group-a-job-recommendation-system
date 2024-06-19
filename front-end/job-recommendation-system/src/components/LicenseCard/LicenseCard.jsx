@@ -10,7 +10,7 @@ import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import LinkRoundedIcon from '@mui/icons-material/LinkRounded';
 import './LicenseCard.css';
-export default function LicenseCard({ access,data, deleteFn, submitFn }) {
+export default function LicenseCard({ access, data, deleteFn, submitFn }) {
     const { register, formState: { errors }, handleSubmit, getValues } = useForm({ mode: 'onTouched' });
     const [isNotEditing, SetIsNotEditing] = useState(true);
     const editData = () => {
@@ -37,10 +37,12 @@ export default function LicenseCard({ access,data, deleteFn, submitFn }) {
                             <p className='qualification-card-p'>{data.issue_date}</p>
                             {
                                 data.credential_url &&
-                                <button className='license-card-btn' href={data.credential_url}>
-                                    <LinkRoundedIcon fontSize='small' />
-                                    View Credential
-                                </button>
+                                <a href={data.credential_url} rel="noopener noreferrer" target="_blank">
+                                    <button className='license-card-btn'>
+                                        <LinkRoundedIcon fontSize='small' />
+                                        View Credential
+                                    </button>
+                                </a>
                             }
                         </div>
                     </div>
@@ -97,7 +99,7 @@ export default function LicenseCard({ access,data, deleteFn, submitFn }) {
                             <p>-</p>
                             <TextField className='qualification-add-p' defaultValue={data.credential_url}
                                 variant="outlined"
-                                label="Credential URL"
+                                label="Credential URL - include https://"
                                 InputLabelProps={{ shrink: true }}
                                 size='small'
                                 error={'credential_url' in errors}

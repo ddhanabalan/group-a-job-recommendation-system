@@ -51,7 +51,7 @@ export default function LicenseAdd({ submitFn, cancelFn }) {
                     </LocalizationProvider> */}
                     <TextField className='qualification-add-p'
                         variant="outlined"
-                        label="Credential URL"
+                        label="Credential URL - include https://"
                         InputLabelProps={{ shrink: true }}
                         size='small'
                         error={'credential_url' in errors}

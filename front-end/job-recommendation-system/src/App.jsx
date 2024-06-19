@@ -47,7 +47,7 @@ function App() {
     SetUser(getStorage("userType"))
   }, []);
 
-  const [user, SetUser] = useState();
+  const [user, SetUser] = useState(null);
 
   const fixUser = (type) => {
     console.log(type)
@@ -74,7 +74,7 @@ function App() {
           <Route path="/verify/:accessToken" element={<VerifyAccount />} />
           {/* routes common to signed-in users */}
           <Route element={<PrivateRoutes />}>
-            <Route path="/profile" element={user && user === "seeker" ? <ProfileSection data={{}} /> : <EmployerProfileSection data={{}} />} />
+            <Route path="/profile" element={user!==null && user === "seeker" ? <ProfileSection data={{}} /> : <EmployerProfileSection data={{}} />} />
             <Route path="/profile/:username" element={<OtherUserProfile data={{}} />} />
             <Route path="/e/profile/:username" element={<OtherEmployerProfile data={{}} />} />
             <Route path="/employer-profile" element={<EmployerProfileSection data={{
