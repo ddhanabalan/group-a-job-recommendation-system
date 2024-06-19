@@ -1,6 +1,6 @@
-from typing import List
+from typing import List, Optional
 
-from fastapi import APIRouter, Depends, HTTPException, status, Header, Body
+from fastapi import APIRouter, Depends, HTTPException, status, Header, Body, Query
 
 from .. import (
     get_db,
@@ -29,13 +29,46 @@ async def get_seeker_details(
 
 @router.get("/list", response_model=List[seekerschema.SeekerView])
 async def get_seeker_details_list(
-        db: Session = Depends(get_db), authorization: str = Header(...)
+        name: Optional[str] = Query(None),
+        experience: Optional[str] = Query(None),
+        location: Optional[str] = Query(None),
+        db: Session = Depends(get_db),
+        authorization: str = Header(...)
 ):
     await check_authorization(authorization=authorization, user_type="recruiter")
+
+    # Build filter conditions
+    filters = []
+    if name:
+        filters.append(
+            lambda user_details: name.lower() in (
+                        user_details.first_name.lower() + ' ' + user_details.last_name.lower())
+        )
+    if experience is not None:
+        (min_experience, max_experience) = experience.split('-') if '-' in experience else (experience, None)
+        filters.append(
+            lambda user_details: user_details.experience >= min_experience
+        )
+        if max_experience is not None:
+            filters.append(
+                lambda user_details: user_details.experience <= max_experience
+            )
+    if location:
+        filters.append(
+            lambda user_details: user_details.location.lower() == (
+                        user_details.city.lower() + ', ' + user_details.country.lower())
+        )
+
+    # Fetch user details based on filters
     user_details_list = crud.seeker.details.get_all(db=db)
+    print(list(user_details_list))
+    filtered_user_details_list = []
+    for user_details in user_details_list:
+        if all(f(user_details) for f in filters):
+            filtered_user_details_list.append(user_details)
 
     seeker_views = []
-    for user_details in user_details_list:
+    for user_details in filtered_user_details_list:
         user_id = user_details.user_id
         user_skills = crud.seeker.skill.get_all(db=db, user_id=user_id)
 
