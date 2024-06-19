@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Query,Header
+from fastapi import APIRouter, Depends, HTTPException, status, Query, Header
 from typing import Type, List, Optional
 from .. import (
     get_db,
@@ -8,7 +8,7 @@ from .. import (
     jobcrud,
     check_authorization,
     get_current_user,
-    get_company_details
+    get_company_details,
 )
 
 job_vacancy_router = APIRouter(prefix="/job_vacancy")
@@ -33,16 +33,30 @@ async def read_filtered_job_vacancies(
     if skills is not None:
         filter_job_id = jobcrud.skills.get_filtered_skills(db, skills)
     filtered_jobs = jobcrud.vacancy.get_filtered_jobs(
-        db, emp_type, work_style, location, working_days, salary, experience, filter_job_id,sort ,order, limit,title
+        db,
+        emp_type,
+        work_style,
+        location,
+        working_days,
+        salary,
+        experience,
+        filter_job_id,
+        sort,
+        order,
+        limit,
+        title,
     )
     for job in filtered_jobs:
         job.skills = jobcrud.skills.get_all(db, job.job_id)
+        job.job_seekers = jobcrud.request.get_all_by_job_id(db, job.job_id)
     return filtered_jobs
 
 
 @job_vacancy_router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_job_vacancy(
-    job_vacancy: jobschema.JobVacancyCreate, db: Session = Depends(get_db),authorization: str = Header(...),
+    job_vacancy: jobschema.JobVacancyCreate,
+    db: Session = Depends(get_db),
+    authorization: str = Header(...),
 ):
     company_details = await get_company_details(authorization=authorization)
     job_vacancy.company_id = company_details.get("user_id")
@@ -65,9 +79,10 @@ async def create_job_vacancy(
 
     return {"details": "Job Created"}
 
+
 @job_vacancy_router.get("/company")
 async def read_job_vacancies_by_company_id(
-     db: Session = Depends(get_db),authorization: str = Header(...)
+    db: Session = Depends(get_db), authorization: str = Header(...)
 ):
     user = await get_current_user(authorization=authorization, user_type="recruiter")
     company_id = user.get("user_id")
@@ -76,6 +91,18 @@ async def read_job_vacancies_by_company_id(
         job.skills = jobcrud.skills.get_all(db, job.job_id)
         job.job_seekers = jobcrud.request.get_all_by_job_id(db, job.job_id)
     return job_vacancy
+
+@job_vacancy_router.get("/company/{company_id}")
+async def read_job_vacancies_by_company_id(
+    company_id: int, db: Session = Depends(get_db)
+):
+
+    job_vacancy = jobcrud.vacancy.get_all(db, company_id)
+    for job in job_vacancy:
+        job.skills = jobcrud.skills.get_all(db, job.job_id)
+        job.job_seekers = jobcrud.request.get_all_by_job_id(db, job.job_id)
+    return job_vacancy
+
 
 # Read job vacancy by ID
 @job_vacancy_router.get("/{job_vacancy_id}", response_model=jobschema.JobVacancy)
@@ -94,19 +121,18 @@ async def update_job_vacancy(
     job_vacancy_id: int,
     job_vacancy: jobschema.JobVacancyUpdate,
     db: Session = Depends(get_db),
-    authorization: str = Header(...)
+    authorization: str = Header(...),
 ):
     await check_authorization(authorization=authorization, user_type="recruiter")
     if not jobcrud.vacancy.get(db, job_vacancy_id):
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Job Vacancy not found"
         )
-    data = job_vacancy.dict()
+    data = job_vacancy.dict(exclude_unset=True)
     skills = data.pop("skill", [])
     skills_delete = data.pop("skills_delete", [])
-    if not jobcrud.vacancy.update(
-        db, job_vacancy_id, jobschema.JobVacancyCreate(**data)
-    ):
+    resp = jobcrud.vacancy.update(db, job_vacancy_id, data)
+    if not resp:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Data not updated to Database",
@@ -114,14 +140,15 @@ async def update_job_vacancy(
     for skill in skills_delete:
         jobcrud.skills.delete(db, skill)
     for skill in skills:
-        jobcrud.skills.create(db, skill)
-    jobcrud.vacancy.update(db, job_vacancy_id, job_vacancy)
+        jobcrud.skills.create(db, jobschema.JobSkillsCreate(**{"job_id": job_vacancy_id, "skill": skill}))
     return {"details": "Job Vacancy Updated successfully"}
 
 
 # Delete job vacancy by ID
 @job_vacancy_router.delete("/{job_vacancy_id}")
-async def delete_job_vacancy(job_vacancy_id: int, db: Session = Depends(get_db),authorization: str = Header(...)):
+async def delete_job_vacancy(
+    job_vacancy_id: int, db: Session = Depends(get_db), authorization: str = Header(...)
+):
     await check_authorization(authorization=authorization, user_type="recruiter")
     # Retrieve the job vacancy to ensure it exists
     db_job_vacancy = jobcrud.vacancy.get(db, job_vacancy_id)
@@ -133,7 +160,6 @@ async def delete_job_vacancy(job_vacancy_id: int, db: Session = Depends(get_db),
     # Delete associated skills
     jobcrud.skills.delete_by_vacancy_id(db, job_vacancy_id)
 
-
     # Finally, delete the job vacancy
     jobcrud.vacancy.delete(db, job_vacancy_id)
 
@@ -142,5 +168,9 @@ async def delete_job_vacancy(job_vacancy_id: int, db: Session = Depends(get_db),
     }
 
 
-# Get job vacancies by company ID
-
+# Get All data from job vacancy for model
+@job_vacancy_router.get("/model/data")
+async def read_job_vacancies_by_company_id(
+    db: Session = Depends(get_db)
+):
+    return jobcrud.vacancy.get_all_for_model(db)

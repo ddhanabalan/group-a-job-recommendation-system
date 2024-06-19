@@ -12,7 +12,7 @@ class JobVacancy(Base):
     job_name = Column(String(256))
     job_desc = Column(String(1024))
     company_name = Column(String(256))
-    company_username= Column(String(128))
+    company_username = Column(String(128))
     requirement = Column(String(5120))
     salary = Column(String(256))
     experience = Column(String(128))
@@ -26,7 +26,6 @@ class JobVacancy(Base):
     no_of_request = Column(Integer)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-
 
 
 class JobSkill(Base):
