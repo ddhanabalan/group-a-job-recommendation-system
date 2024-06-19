@@ -41,8 +41,8 @@ export default function JobOpeningCard({ data, type=null, highlighted, listToDes
                         <p>{data.applicationsReceived.length}</p>
                     </div>
                     {highlighted?
-                        <Button variant="contained"  onClick={listToDescFunc} sx={{ color: 'black', backgroundColor: 'white', width: 'fit-content', paddingY: "2px", paddingX: "10px", textTransform: "none" }} endIcon={<EditIcon />}>
-                            <p>View Job Info</p>
+                        <Button variant="contained"  onClick={listToDescFunc} sx={{ color: 'black', backgroundColor: 'white', width: 'fit-content', paddingY: "2px", paddingX: "0 10px", textTransform: "none" }} endIcon={<EditIcon />}>
+                            <p style={{minWidth:'6rem'}}>View Job Info</p>
                         </Button>
                         :
                         <></>

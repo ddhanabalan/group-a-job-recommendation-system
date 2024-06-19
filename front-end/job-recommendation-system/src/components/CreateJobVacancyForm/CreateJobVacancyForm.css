@@ -14,13 +14,13 @@
 }
 .job-preview-container{
     width: 65%;
-    height: 90%;
+    height: fit-content;
     position: relative;
     top: 1vh;    
     display: flex;
     flex-direction: column;
     align-items: center;
-    
+    margin: 5rem 0;
     background-color: white;
     border-radius: 11px 11px 11px 11px;
 
@@ -241,6 +241,7 @@ padding-left: 2rem;
     display: flex;
     flex-direction: row;
     gap: 30px;
+    margin: 0 0 2rem 0;
 }
 
 .post-vacancy-buttons button{

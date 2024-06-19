@@ -25,7 +25,10 @@
     box-shadow: 0rem 0.001rem 0.5rem rgb(120, 120, 120);
     
 }
-
+.back-icon{
+    background-color: #E7E4E4;
+    border-radius: 50%;
+}
 .openings-search-tile .create-vacancy-button{
     position: absolute;
     top: 60%;
@@ -50,7 +53,9 @@
     
 
 }
-
+.create-vacancy-mui-btn:hover{
+background-color: #eae9e9 !important;
+}
 .openings-search-tile .search-bar .back-icon, .sort-icon{
     position: relative;
     top: 21px;

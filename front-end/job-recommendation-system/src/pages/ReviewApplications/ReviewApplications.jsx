@@ -250,7 +250,7 @@ export default function ReviewApplications({userType}) {
     //console.log(`search=${searchVal}`);
    
     return (
-        <div id="page">
+        <div id="page" >
             <div className={`review-left-bar${sidebarState?" wide":""}`}>
                 {sidebarState?
                 <>

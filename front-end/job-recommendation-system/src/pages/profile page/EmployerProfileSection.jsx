@@ -188,7 +188,7 @@ export default function EmployerProfileSection({ data }) {
                     }
                 </div>
                 <div className="employer-profile-pane employer-profile-right-pane">
-                    <FeatureBox data={{ title: "Achievements and Rankings", addIcon: true, editIcon: true }} />
+                    {/* <FeatureBox data={{ title: "Achievements and Rankings", addIcon: true, editIcon: true }} /> */}
                 </div>
             </div>
         </div>

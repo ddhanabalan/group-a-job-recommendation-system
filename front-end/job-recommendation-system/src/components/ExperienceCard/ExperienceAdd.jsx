@@ -13,15 +13,15 @@ export default function ExperienceAdd({ submitFn, cancelFn }) {
             <div className="qualification-card-image"></div>
             <div className="qualification-card-content">
                 <TextField sx={{ marginBottom: '.7rem' }} className='qualification-add-h2'
-                label="Title"
-                variant="outlined"
-                placeholder="Ex: Sales Manager"
-                InputLabelProps={{ shrink: true }}
-                size='small'
-                error={'job_name' in errors}
-                {...register("job_name", {
-                    required: "Job title cannot be empty"
-                })} />
+                    label="Title"
+                    variant="outlined"
+                    placeholder="Ex: Sales Manager"
+                    InputLabelProps={{ shrink: true }}
+                    size='small'
+                    error={'job_name' in errors}
+                    {...register("job_name", {
+                        required: "Job title cannot be empty"
+                    })} />
                 <TextField sx={{ marginBottom: '.7rem' }} className='qualification-add-h3'
                     placeholder="Ex: Google"
                     variant="outlined"

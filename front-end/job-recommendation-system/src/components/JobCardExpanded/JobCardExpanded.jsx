@@ -53,39 +53,41 @@ export default function JobCardExpanded({ data=[], createJobRequest=null, userDa
                                         return (<Chip key={typeof(e)=="string"?uuid():e.id} className="job-desc-tags-child" label={typeof(e)=="string"?e:e.tags} size='small' />)
                                     })}
 
-                                </Stack>*/
-                                :
-                                <></>
-                            }
-                            <p className='job-desc-salary'>{data.currency} {data.salary[0]}  {data.salary[1]?"- "+data.salary[1]:""} per month</p>
-                        </div>
-                        <div className='job-desc-div2'>
-                            <div className='job-desc-img-container'>
-                                {/* <img src="" alt="" /> */}
-                            </div>
-                            <p className='job-desc-time-p'>{data.postDate}</p>
-                        </div>
+                        </Stack>*/
+                        :
+                        <></>
+                    }
+                    <p className='job-desc-salary'>{data.currency} {data.salary[0]}  {data.salary[1]?"- "+data.salary[1]:""} per month</p>
+                </div>
+                <div className='job-desc-div2'>
+                    <div className='job-desc-img-container'>
+                        {/* <img src="" alt="" /> */}
                     </div>
-                    <hr className="separator"/>
-                    <div className="job-desc-body">
-                        <div className="job-details">
-                            <p><span >Location:</span> {data.location}</p>
-                            <p><span >Employment type:</span>{data.empType}</p>
-                            <p><span >Experience:</span> {data.exp}</p>
-                            <p><span >Work Style:</span> {data.workStyle}</p>
-                            <p><span >Working Days:</span> {data.workingDays}</p>
-                            <p><span >Last Date:</span> {(data.last_date?.split('-').reverse()).join('-') || ""}</p>
-                        </div>
+                    <p className='job-desc-time-p'>{data.postDate}</p>
+                </div>
+            </div>
+            <hr className="separator"/>
+            <div className="job-desc-body">
+                <div className="job-details">
+                    <p><span >Location:</span> {data.location}</p>
+                    <p><span >Employment type: </span>{data.empType}</p>
+                    <p><span >Experience:</span> {data.exp}</p>
+                    <p><span >Work Style:</span> {data.workStyle}</p>
+                    <p><span >Working Days:</span> {data.workingDays}</p>
+                    <p><span >Last Date:</span> {(data.last_date?.split('-').reverse()).join('-') || ""}</p>
+                </div>
 
-                        <div className="job-description">
-                            <h6>Job Description</h6>
-                            <p className="desc">{data.jobDesc}</p>
-                        </div> 
+                <div className="job-description">
+                        <h6>Job Description</h6>
+                        <pre className='overview-formatted desc'>{data.jobDesc}</pre>
+                    {/* <p className="desc">{data.jobDesc}</p> */}
+                </div> 
 
-                        <div className="job-requirements">
-                            <h6>Job Requirements</h6>
-                            <p className='desc'>{data.jobReq}</p>
-                        </div> 
+                <div className="job-requirements">
+                        <h6>Job Requirements</h6>
+                        <pre className='overview-formatted desc'>{data.jobReq}</pre>
+                    {/* <p className='desc'>{data.jobReq}</p> */}
+                </div> 
 
                         {data.skills && skillIndicator? 
                             <div className="job-skills">

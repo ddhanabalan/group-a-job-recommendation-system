@@ -1,7 +1,7 @@
-.job-desc-container{
+.job-desc-container {
     width: 100%;
     height: inherit;
-        
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -10,6 +10,7 @@
     border-radius: 11px 11px 0px 0px;
     padding-bottom: 8rem;
 }
+
 .job-desc-header {
     display: flex;
     flex-direction: row;
@@ -17,49 +18,56 @@
     margin: 25px 0px 0px 0px;
     width: 98%;
     height: fit-content;
-    
+
 }
 
-.separator{
+.separator {
     color: black;
     width: 100%;
 }
-.job-desc-h1{
+
+.job-desc-h1 {
     font-size: 1.6rem;
 }
-.job-desc-company-name-p{
+
+.job-desc-company-name-p {
     font-size: .938rem;
     color: #7B7777;
 }
-.job-desc-img-container{
+
+.job-desc-img-container {
     position: absolute;
-    bottom: 1.2rem;
+    top: 1rem;
     width: 4.5rem;
     height: 4.5rem;
     border-radius: 50%;
     background-color: #D9D9D9;
 }
-.job-desc-salary{
+
+.job-desc-salary {
     font-size: 1rem;
     color: #2BA84A;
     font-family: Inter-md;
 }
-.job-desc-time-p{
+
+.job-desc-time-p {
     font-size: .8rem;
     color: #7B7777;
     position: absolute;
-    bottom: -0.5rem; 
-}
-.job-desc-tags{
-    margin: 5px 0 10px 0;
-}
-.job-desc-tags-child{
-    font-family: Inter-regular !important;
-    border-radius: 3px !important;
-    
+    bottom: -0.5rem;
 }
 
-.job-desc-skill-tags-child{
+.job-desc-tags {
+    margin: 5px 0 10px 0;
+}
+
+.job-desc-tags-child {
+    font-family: Inter-regular !important;
+    border-radius: 3px !important;
+
+}
+
+.job-desc-skill-tags-child {
     font-family: Inter-regular !important;
     border-radius: 3px !important;
     font-size: 0.8125rem;
@@ -71,70 +79,74 @@
     align-items: center;
     padding: 3px 8px;
 }
-.job-desc-div2{
-width: 10%;
-display: flex;
-flex-direction: column;
-align-items: center;
-position: relative;
-}
-.job-desc-div1{
-width: 90%;
-padding-left: 2rem;
-}
 
-.job-desc-body{
+.job-desc-div2 {
+    width: 10%;
     display: flex;
     flex-direction: column;
-    gap: 20px; 
+    align-items: center;
+    /* position: relative; */
+}
+
+.job-desc-div1 {
+    width: 90%;
+    padding-left: 2rem;
+}
+
+.job-desc-body {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
     align-items: flex-start;
     width: 91%;
 }
 
-.job-desc-body h6{
+.job-desc-body h6 {
     font-family: "Inter-b";
     font-size: 15px;
 }
 
-.job-details{
+.job-details {
 
     display: flex;
     flex-direction: column;
     gap: 5px;
 }
-.job-desc-body p{
-    
+
+.job-desc-body p {
+
     font-size: 0.85rem;
     font-family: "Inter-regular";
 }
 
-.job-desc-body .desc{
+.job-desc-body .desc {
     padding-left: 50px;
 }
-.job-details span{
-    font-family: "Inter-b";    
+
+.job-details span {
+    font-family: "Inter-b";
 }
 
-.skill-counter{
+.skill-counter {
     font-family: "Inter-md";
     color: #FBBC05;
     font-size: 0.7rem;
 }
 
-.skill-status{
+.skill-status {
     height: 10px;
     width: 10px;
     border-radius: 50%;
 }
 
-.skill-status.red{
+.skill-status.red {
     background-color: #F60404;
 }
 
-.skill-status.green{
+.skill-status.green {
     background-color: #07F407;
 }
 
-.apply-button{
+.apply-button {
     margin-top: 10%;
 }
