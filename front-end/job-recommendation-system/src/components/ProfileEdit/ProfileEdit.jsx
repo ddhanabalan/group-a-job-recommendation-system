@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form'
-import { useState,useEffect} from 'react'
+import { useState, useEffect } from 'react'
 import { Button, TextField, MenuItem } from '@mui/material'
 import { useLocation, useNavigate } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
@@ -19,7 +19,7 @@ export default function ProfileEdit({ data, register, errors }) {
     useEffect(() => {
         SetUser(getStorage("userType"))
     }, [])
-
+    console.log("error in head", data.first_name)
     return (
         <>
             {/*SignUp Form part-2(Personal info from seekers/Company info from employers)*/}
@@ -48,7 +48,8 @@ export default function ProfileEdit({ data, register, errors }) {
                                             }
                                         })} />
                                 <p className="error-message">{errors.first_name?.message || ""}</p>
-                            </div> :
+                            </div>
+                            :
                             <div id="item-3">
                                 <p className="text-head">Company Name<span className="text-danger"> *</span></p>
                                 <TextField className="personal-details-input profile-edit-input" variant="outlined" type='text'

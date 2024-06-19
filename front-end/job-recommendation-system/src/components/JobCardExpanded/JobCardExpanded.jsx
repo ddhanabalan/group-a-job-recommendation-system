@@ -68,7 +68,7 @@ export default function JobCardExpanded({ data, createJobRequest=null, userData,
             <div className="job-desc-body">
                 <div className="job-details">
                     <p><span >Location:</span> {data.location}</p>
-                    <p><span >Employment type:</span>{data.empType}</p>
+                    <p><span >Employment type: </span>{data.empType}</p>
                     <p><span >Experience:</span> {data.exp}</p>
                     <p><span >Work Style:</span> {data.workStyle}</p>
                     <p><span >Working Days:</span> {data.workingDays}</p>
@@ -76,13 +76,15 @@ export default function JobCardExpanded({ data, createJobRequest=null, userData,
                 </div>
 
                 <div className="job-description">
-                    <h6>Job Description</h6>
-                    <p className="desc">{data.jobDesc}</p>
+                        <h6>Job Description</h6>
+                        <pre className='overview-formatted desc'>{data.jobDesc}</pre>
+                    {/* <p className="desc">{data.jobDesc}</p> */}
                 </div> 
 
                 <div className="job-requirements">
-                    <h6>Job Requirements</h6>
-                    <p className='desc'>{data.jobReq}</p>
+                        <h6>Job Requirements</h6>
+                        <pre className='overview-formatted desc'>{data.jobReq}</pre>
+                    {/* <p className='desc'>{data.jobReq}</p> */}
                 </div> 
 
                 {data.skills && skillIndicator? 

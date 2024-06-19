@@ -45,6 +45,8 @@
 }
 .openings-exception-msg{
     margin: 1.5rem 0rem;
+    font-size: 1rem;
+    color: grey;
     font-family: Inter-light-italic;
 }
 

@@ -23,26 +23,27 @@ import ForgetPasswordResponse from './components/ForgetPassword/ForgetPasswordRe
 import ReviewApplications from './pages/ReviewApplications/ReviewApplications';
 import OtherEmployerProfile from './pages/profile page/OtherEmployerProfile';
 function App() {
-  useEffect(() => {
-    setInterval(async () => {
-      if (getStorage("refToken")) {
-        try {
-          const response = await axios.get('/refresh_token', {
-            headers: {
-              'Authorization': `Bearer ${getStorage("refToken")}`
-            }
-          })
-          updateAuth(response.data)
-        } catch (e) {
-          console.log(e)
-        }
-      }
-      }, 25*60000)//refresh token every 30 minutes
-  })
-  const updateAuth = (data) => {
-    setStorage("refToken", data.refresh_token)
-    setStorage("userToken", data.access_token)
-  }
+  // useEffect(() => {
+  //   setInterval(() => {
+  //     if (getStorage("refToken")) {
+  //       refreshTokens()
+  //     }
+  //   }, 30000)//refresh token every 1 minute
+  // }, [])
+  // const refreshTokens = async () => {
+  //   try {
+  //     const response = await axios.get('/refresh_token', {
+  //       headers: {
+  //         'Authorization': `Bearer ${getStorage("refToken")}`
+  //       }
+  //     })
+  //     console.log(response)
+  //     response && setStorage("refToken", response.data.refresh_token)
+  //     response && setStorage("userToken", response.data.access_token)
+  //   } catch (e) {
+  //     console.log(e)
+  //   }
+  // }
   useEffect(() => {
     SetUser(getStorage("userType"))
   }, []);
@@ -74,7 +75,7 @@ function App() {
           <Route path="/verify/:accessToken" element={<VerifyAccount />} />
           {/* routes common to signed-in users */}
           <Route element={<PrivateRoutes />}>
-            <Route path="/profile" element={user!==null && user === "seeker" ? <ProfileSection data={{}} /> : <EmployerProfileSection data={{}} />} />
+            <Route path="/profile" element={user !== null && user === "seeker" ? <ProfileSection data={{}} /> : <EmployerProfileSection data={{}} />} />
             <Route path="/profile/:username" element={<OtherUserProfile data={{}} />} />
             <Route path="/e/profile/:username" element={<OtherEmployerProfile data={{}} />} />
             <Route path="/employer-profile" element={<EmployerProfileSection data={{}} />} />
@@ -82,12 +83,12 @@ function App() {
           {/* routes exclusive to seekers */}
           <Route element={<SeekerRoutes />}>
             <Route path="/jobs" element={<JobSection />} />
-            <Route path="/seeker/openings" element={<ReviewApplications userType="seeker"/>} />
+            <Route path="/seeker/openings" element={<ReviewApplications userType="seeker" />} />
           </Route>
           {/* routes exclusive to recruiters */}
           <Route element={<EmployerRoutes />}>
             <Route path="/candidates" element={<CandidateSection />} />
-            
+
             <Route path="/employer/job-vacancy" element={<CreateJobVacancy />} />
             <Route path="/employer/review-applications" element={<ReviewApplications userType="employer" />} />
           </Route>

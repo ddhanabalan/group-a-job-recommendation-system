@@ -232,7 +232,7 @@ export default function ProfileSection({ data }) {
                             }
                         </div>
                         <div className="profile-pane profile-right-pane">
-                            <FeatureBox data={{ title: "Achievements", addIcon: true, editIcon: true }} />
+                            {/* <FeatureBox data={{ title: "Achievements", addIcon: true, editIcon: true }} /> */}
                             <AddPOI callAPI={callAPI} showSuccessMsg={showSuccessMsg} showFailMsg={showFailMsg} />
                         </div>
                     </div>
