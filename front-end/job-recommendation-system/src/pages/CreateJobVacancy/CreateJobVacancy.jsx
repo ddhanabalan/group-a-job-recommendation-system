@@ -7,7 +7,7 @@ export default function CreateJobVacancy() {
     const userID = location.state.userID;
     const userType = location["pathname"].includes("employer")?"employer":"seeker";
     const userData ={usertype:userType} //if users employer or seeker
-    const demoInfo = {companyName: "Google LLC"} //default company profile for employers
+    //const demoInfo = {companyName: "Google LLC"} //default company profile for employers
     
     
    
@@ -15,7 +15,7 @@ export default function CreateJobVacancy() {
     return (
         <div id="page" className="create-vacancy-page">
             
-            <JobVacancyForm data={demoInfo}/>
+            <JobVacancyForm />
             
         </div>
     )

@@ -14,7 +14,7 @@ import { jobAPI, userAPI } from "../../api/axios";
 import { LocalConvenienceStoreOutlined } from "@mui/icons-material";
 
 export default function ReviewApplications({userType}) {
-    const USERID = getStorage("userID");
+    const COMPANYID = (userType==="employer"?getStorage("userID"):getStorage("guestUserID"));
     const receivedData = useLocation();
     const [userData, setUserData] = useState({'type': userType, 'skills': []});
     console.log("received data",receivedData)
@@ -61,7 +61,8 @@ export default function ReviewApplications({userType}) {
         {GetSeekerSkills();
         GetSeekerDetails();}
         try {
-            const response = await jobAPI.get(`/job_vacancy/company/${companyId}`);
+            
+            const response = await (userType==="employer" ? jobAPI.get(`/job_vacancy/company`, {headers:{'Authorization': `Bearer ${getStorage("userToken")}`}}): jobAPI.get(`/job_vacancy/company/${companyId}`));
             const mod_response = response.data.map(e=>({id: e.job_id, jobTitle: e.job_name, companyName: e.company_name, tags: e.tags, currency: e.salary.split('-')[0], salary: [e.salary.split('-')[1],e.salary.split('-')[2]], postDate: e.created_at.split('T')[0] , last_date: e.last_date.split('T')[0], location: e.location, empType: e.emp_type, exp: e.experience, workStyle: e.work_style, workingDays: e.working_days, jobDesc: e.job_desc ,jobReq:e.requirement,skills: e.skills.length?e.skills: [{'skill': ""}], applicationsReceived: e.job_seekers}))
             setJobVacancies(mod_response);
             console.log(response);
@@ -76,8 +77,13 @@ export default function ReviewApplications({userType}) {
 
     const DeleteJobAPI = async (job_id) =>{
         try{
-            const response = await jobAPI.delete(`job_vacancy/${job_id}`);
-            callJobVacancyAPI(USERID); 
+            
+            const response = await jobAPI.delete(`job_vacancy/${job_id}`, {
+                                                                            headers:{
+                                                                                'Authorization': `Bearer ${getStorage("userToken")}`
+                                                                            }
+                                                                          });
+            callJobVacancyAPI(COMPANYID); 
             setEntry(null);
             console.log("deleted successfully", job_id, "resp: ", response)
         }
@@ -125,7 +131,7 @@ export default function ReviewApplications({userType}) {
     }
     const CreateJobRequest= async (jobId)=>{
         try {
-            const response = await jobAPI.post('/job_request', {"job_id": Number(jobId),
+            const response = await jobAPI.post('/job_request/', {"job_id": Number(jobId),
                                                                  "status": "Applied"
                 },
                 {
@@ -137,7 +143,7 @@ export default function ReviewApplications({userType}) {
             );
             console.log("successfully created job request");
             console.log(response);
-            callJobVacancyAPI(USERID);  
+            callJobVacancyAPI(COMPANYID);  
             
             
         } catch (e) {
@@ -158,7 +164,7 @@ export default function ReviewApplications({userType}) {
                 }         
                 });
             console.log("updated response", response)
-            const mod_response = response.data.map(e=>({applicantID: e.user_id, username: e.username, candidateName: (e.first_name + " " + e.last_name), location: e.location, experience: e.experience}))
+            const mod_response = response.data.map(e=>({applicantID: e.user_id, username: e.username, candidateName: (e.first_name + " " + e.last_name), city: e.city, country: e.country, location: e.location, experience: e.experience, profile_picture: e.profile_picture}))
             setApplicants(mod_response);
             console.log("applicants receiveed", mod_response);
             
@@ -194,15 +200,17 @@ export default function ReviewApplications({userType}) {
         const expEntry = jobVacancies.filter(e=>(e["id"]===selection?e:false));
         console.log("expEntry ", expEntry)
         setJobEntry(expEntry[0]);
-        if(userData.type == "employer")console.log("yep done");RequestJobApplications(expEntry[0].applicationsReceived);
-        console.log("selected entry: ", selectedEntry, " selected job: ", selectedJobEntry);
+        if(userData.type == "employer")console.log("yep done");
+        if(expEntry[0].applicationsReceived.length)RequestJobApplications(expEntry[0].applicationsReceived);
+        
     }
+    console.log("selected entry: ", selectedEntry, " selected job: ", selectedJobEntry);    
     
     const listToDescParentFunc=()=>{
         setSideBar(true);
     }
     //console.log("filtered applicants",filteredApplicants);
-    useEffect(() => {callJobVacancyAPI(USERID)}, []);//only runs during initial render
+    useEffect(() => {callJobVacancyAPI(COMPANYID)}, []);//only runs during initial render
     useEffect(()=>{if(selectedEntry==null)
         {setEntry(jobVacancies[0]?jobVacancies[0].id:null)
          setJobEntry(jobVacancies[0]?jobVacancies[0]:null)
@@ -250,7 +258,7 @@ export default function ReviewApplications({userType}) {
                 <div className="back-button-review" onClick={()=>setSideBar(false)}><BackBtn outlineShape={"square"} butColor={"white"}/></div>
                 </>
                 :
-                <OpeningsListBar data={filtered} userType={userType} userID={USERID} pageType="review" chooseEntry={chooseEntry} searchBar={searchBar} listToDescParentFunc={listToDescParentFunc} preselectedEntry={selectedEntry} filterFunc={filterStateSet} deleteJobFunc={DeleteJobAPI}/>
+                <OpeningsListBar data={filtered} userType={userType} userID={COMPANYID} pageType="review" chooseEntry={chooseEntry} searchBar={searchBar} listToDescParentFunc={listToDescParentFunc} preselectedEntry={selectedEntry} filterFunc={filterStateSet} deleteJobFunc={DeleteJobAPI}/>
                 }
             </div>
             {filterstat?

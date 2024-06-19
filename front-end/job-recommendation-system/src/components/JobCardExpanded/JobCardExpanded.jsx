@@ -6,6 +6,7 @@ import MailIcon from '@mui/icons-material/Mail';
 import DoneIcon from '@mui/icons-material/Done';
 import { Button } from '@mui/material';
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 export default function JobCardExpanded({ data, createJobRequest=null, userData, handleSub=null }) {
     console.log("data received by form", userData, "jobdata",data)
@@ -22,7 +23,7 @@ export default function JobCardExpanded({ data, createJobRequest=null, userData,
     //console.log(userSkills)
     //function for senting applicant details from the form to company
 
-    /*useEffect(()=>{if(userData.type=="seeker")setSubmit(((data.applicationsReceived).map(e=>e.user_id)).includes(userData.id))})*/ //UNCOMMENT THIS AFTER BACKEND FIX FOR MISSING DATA IN THE RESPONSE(i.e.applicationsReceived, tags, skills) 
+    useEffect(()=>{if(userData.type=="seeker")setSubmit(((data.applicationsReceived).map(e=>e.user_id)).includes(userData.id))}) //UNCOMMENT THIS AFTER BACKEND FIX FOR MISSING DATA IN THE RESPONSE(i.e.applicationsReceived, tags, skills) 
     //console.log(userData.id, "applied=", submit, (data.applicationsReceived)?.map(e=>e.user_id) || "", "status", ((data.applicationsReceived)?.map(e=>e.user_id)).includes(userData.id))
 
     function handleApplication(){
@@ -40,7 +41,9 @@ export default function JobCardExpanded({ data, createJobRequest=null, userData,
             <div className="job-desc-header">
                 <div className='job-desc-div1'>
                     <h1 className='job-desc-h1'>{data.jobTitle}</h1>
+                    <Link to={`/e/profile/${data.companyUsername}`} state={{"purpose": "visit", "company_id": data.companyID}}>
                     <p className='job-desc-company-name-p'>{data.companyName}</p>
+                    </Link>
                     {data.tags?
                         <div></div>
                         /*<Stack className="job-desc-tags" direction="row" spacing={1}>

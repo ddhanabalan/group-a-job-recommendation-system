@@ -42,7 +42,9 @@ export default function Filter({ title, userType=null, passFilteredDataFn = null
     useEffect(() => {
         const tags = domains.map(e => e.tag);
         const location = locations.map(e => e.tag);
-        const filterData = { tags, ...preferences, location, 'sortOrder': sortOrder, 'salaryCutOff' : salaryCutOff};
+        const extras = {'sortOrder': sortOrder, 'salaryCutOff' : salaryCutOff};
+        const filterData = (userType=="employer")?{ tags, ...preferences, location}: {tags, ...preferences, location, ...extras};
+    
         const finalFilterData = Object.keys(filterData)
         .filter(key => filterData[key].length !== 0).reduce((acc, key) => {acc[key] = filterData[key];return acc;}, {});     
         console.log("final filter dat", finalFilterData)   
