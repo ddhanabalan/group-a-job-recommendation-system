@@ -92,7 +92,7 @@ async def read_job_vacancy(job_vacancy_id: int, db: Session = Depends(get_db)):
 @job_vacancy_router.put("/{job_vacancy_id}")
 async def update_job_vacancy(
     job_vacancy_id: int,
-    job_vacancy: jobschema.JobVacancyCreate,
+    job_vacancy: jobschema.JobVacancyUpdate,
     db: Session = Depends(get_db),
     authorization: str = Header(...)
 ):
@@ -103,7 +103,7 @@ async def update_job_vacancy(
         )
     data = job_vacancy.dict()
     skills = data.pop("skill", [])
-
+    skills_delete = data.pop("skills_delete", [])
     if not jobcrud.vacancy.update(
         db, job_vacancy_id, jobschema.JobVacancyCreate(**data)
     ):
@@ -111,9 +111,10 @@ async def update_job_vacancy(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Data not updated to Database",
         )
-
+    for skill in skills_delete:
+        jobcrud.skills.delete(db, skill)
     for skill in skills:
-        jobcrud.skills.update(db, skill.id, skill)
+        jobcrud.skills.create(db, skill)
     jobcrud.vacancy.update(db, job_vacancy_id, job_vacancy)
     return {"details": "Job Vacancy Updated successfully"}
 
