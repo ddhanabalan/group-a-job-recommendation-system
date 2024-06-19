@@ -48,6 +48,7 @@ async def read_filtered_job_vacancies(
     )
     for job in filtered_jobs:
         job.skills = jobcrud.skills.get_all(db, job.job_id)
+        job.job_seekers = jobcrud.request.get_all_by_job_id(db, job.job_id)
     return filtered_jobs
 
 
@@ -167,4 +168,9 @@ async def delete_job_vacancy(
     }
 
 
-# Get job vacancies by company ID
+# Get All data from job vacancy for model
+@job_vacancy_router.get("/model/data")
+async def read_job_vacancies_by_company_id(
+    db: Session = Depends(get_db)
+):
+    return jobcrud.vacancy.get_all_for_model(db)
