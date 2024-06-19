@@ -35,7 +35,7 @@ export default function DeleteAccount() {
            
             SetValidationError(false)
             setTimeout(() => {
-                navigate(`/login`)
+                navigate(`/`)
             }, 5000)
         } catch (e) {
             console.log(e);

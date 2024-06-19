@@ -78,7 +78,7 @@ function LoginForm({ callAPI }) {
         
 
 
-        <a href="" className="lk">forgot your password?</a>
+        <a href="/forgot_password" className="lk">forgot your password?</a>
         <a className="sigup-redirect" href={userType==="employer"?"/signup/organization":"/signup"}>New User? SignUp</a>
         {/* <Link to={'../signup/' + userType} state={{ "userType": userType }}></Link> */}
 

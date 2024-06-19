@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { setStorage, getStorage } from './storage/storage';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { PrivateRoutes, SeekerRoutes, EmployerRoutes } from './utils/PrivateRoutes';
+import axios from './api/axios';
 import CandidateSection from './pages/CandidateSection/CandidateSection';
 import CreateJobVacancy from './pages/CreateJobVacancy/CreateJobVacancy';
 import Error from './pages/Error/Error';
@@ -17,10 +18,30 @@ import OtherUserProfile from './pages/profile page/OtherUserProfile';
 import ProfileSection from './pages/profile page/ProfileSection';
 import EmployerProfileSection from './pages/profile page/EmployerProfileSection';
 import VerifyAccount from './pages/VerifyAccount/VerifyAccount';
+import ForgetPassword from './components/ForgetPassword/ForgetPassword';
+import ForgetPasswordResponse from './components/ForgetPassword/ForgetPasswordResponse';
 import ReviewApplications from './pages/ReviewApplications/ReviewApplications';
 import OtherEmployerProfile from './pages/profile page/OtherEmployerProfile';
 function App() {
-
+  useEffect(() => {
+    setInterval(async () => {
+      try {
+        const response = getStorage("refToken") !== "undefined" && await axios.get('/refresh_token', {
+          headers: {
+            'Authorization': `Bearer ${getStorage("refToken")}`
+          }
+        })
+        getStorage("refToken")!=="undefined" && updateAuth(response.data)
+        console.log(response)
+      } catch (e) {
+        console.log(e)
+      }
+    }, 20000)
+  })
+  const updateAuth = (data) => {
+    setStorage("refToken", data.refreshToken)
+    setStorage("userToken", data.accessToken)
+  }
   useEffect(() => {
     SetUser(getStorage("userType"))
   }, []);
@@ -41,6 +62,9 @@ function App() {
           <Route path="/login" element={<LoginPage fixUser={fixUser} />} />
           <Route path="/login/organization" element={<LoginPage fixUser={fixUser} />} />
           <Route path='/delete' element={<DeleteAccount />} />
+          <Route path='/forgot_password' element={<ForgetPassword />} />
+          <Route path='/forgot_password/verify/:token' element={<ForgetPasswordResponse />} />
+
           {/* seeker signup  */}
           <Route path="/signup" element={<SignUpPage />} />
           <Route path="/signup/organization" element={<SignUpPage />} />
@@ -49,7 +73,7 @@ function App() {
           <Route path="/verify/:accessToken" element={<VerifyAccount />} />
           {/* routes common to signed-in users */}
           <Route element={<PrivateRoutes />}>
-            <Route path="/profile" element={user&&user === "seeker" ? <ProfileSection data={{}} /> : <EmployerProfileSection data={{}} />} />
+            <Route path="/profile" element={user && user === "seeker" ? <ProfileSection data={{}} /> : <EmployerProfileSection data={{}} />} />
             <Route path="/profile/:username" element={<OtherUserProfile data={{}} />} />
             <Route path="/e/profile/:username" element={<OtherEmployerProfile data={{}} />} />
             <Route path="/employer-profile" element={<EmployerProfileSection data={{
@@ -63,7 +87,7 @@ function App() {
           {/* routes exclusive to recruiters */}
           <Route element={<EmployerRoutes />}>
             <Route path="/candidates" element={<CandidateSection />} />
-            <Route path="/seeker/openings" element={<ReviewApplications userType="seeker"/>} />
+            <Route path="/seeker/openings" element={<ReviewApplications userType="seeker" />} />
             <Route path="/employer/job-vacancy" element={<CreateJobVacancy />} />
             <Route path="/employer/review-applications" element={<ReviewApplications userType="employer" />} />
           </Route>
