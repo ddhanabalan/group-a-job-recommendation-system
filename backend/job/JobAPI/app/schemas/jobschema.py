@@ -28,6 +28,7 @@ class JobVacancyCreate(JobVacancyBase):
 class JobVacancyUpdate(JobVacancyCreate):
     skills_delete: Optional[List[int]]
     skills: Optional[List[str]]
+
 class JobVacancy(JobVacancyBase):
     job_id: Optional[int] = None
     created_at: Optional[datetime] = None
@@ -80,6 +81,6 @@ class JobVacancySearch(JobVacancy):
     skills: Optional[JobSkills] = None
 
 
-class JobVacancyUpdate(JobVacancyBase):
+class JobVacancySeeker(JobVacancyBase):
     skills: Optional[List[JobSkills]] = []
     job_seekers: Optional[List[JobRequest]] = []

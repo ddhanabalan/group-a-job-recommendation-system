@@ -14,13 +14,12 @@ from .. import (
     decode64_image,
 )
 
-
 router = APIRouter(prefix="/details")
 
 
 @router.get("/", response_model=seekerschema.SeekersDetails)
 async def get_seeker_details(
-    db: Session = Depends(get_db), authorization: str = Header(...)
+        db: Session = Depends(get_db), authorization: str = Header(...)
 ):
     username = await get_current_user(authorization=authorization)
     user_details = crud.seeker.details.get_by_username(db=db, username=username["user"])
@@ -42,7 +41,7 @@ async def get_seeker_details_list(
     if name:
         filters.append(
             lambda user_details: name.lower() in (
-                        user_details.first_name.lower() + ' ' + user_details.last_name.lower())
+                    user_details.first_name.lower() + ' ' + user_details.last_name.lower())
         )
     if experience is not None:
         (min_experience, max_experience) = experience.split('-') if '-' in experience else (experience, None)
@@ -56,7 +55,7 @@ async def get_seeker_details_list(
     if location:
         filters.append(
             lambda user_details: user_details.location.lower() == (
-                        user_details.city.lower() + ', ' + user_details.country.lower())
+                    user_details.city.lower() + ', ' + user_details.country.lower())
         )
 
     # Fetch user details based on filters
@@ -96,21 +95,44 @@ async def get_seeker_details_list(
     return seeker_views
 
 
-@router.post("/list", response_model=List[seekerschema.SeekersDetails])
+@router.post("/list", response_model=List[seekerschema.SeekerView])
 async def get_seeker_details_list_by_ids(
-    user_ids: seekerschema.JobUserDetailsIn, db: Session = Depends(get_db)
+        user_ids: seekerschema.JobUserDetailsIn, db: Session = Depends(get_db)
 ):
     user_details = []
     for user_id in user_ids.user_ids:
-        user_details.append(crud.seeker.details.get(db=db, user_id=user_id))
-    return user_details
+        user_details = crud.seeker.details.get(db=db, user_id=user_id)
+        user_id = user_details.user_id
+        user_skills = crud.seeker.skill.get_all(db=db, user_id=user_id)
+
+        if user_details.profile_picture is not None:
+            profile_pic = user_details.profile_picture
+            profile_picture64 = await encode64_image(profile_pic)
+        else:
+            profile_picture64 = None
+
+        seeker_view = seekerschema.SeekerView(
+            user_id=user_details.user_id,
+            username=user_details.username,
+            profile_picture=profile_picture64,
+            first_name=user_details.first_name,
+            last_name=user_details.last_name,
+            experience=user_details.experience,
+            city=user_details.city,
+            country=user_details.country,
+            skill=user_skills,
+            created_at=user_details.created_at,
+            updated_at=user_details.updated_at
+        )
+        user_details.append(seeker_view)
+        return user_details
 
 
 @router.put("/", status_code=status.HTTP_200_OK)
 async def update_seeker_details(
-    user_details: dict,
-    db: Session = Depends(get_db),
-    authorization: str = Header(...),
+        user_details: dict,
+        db: Session = Depends(get_db),
+        authorization: str = Header(...),
 ):
     username = await get_current_user(authorization=authorization)
     existing_user = crud.seeker.details.get_by_username(db=db, username=username["user"])
@@ -134,7 +156,7 @@ async def update_seeker_details(
 
 @router.delete("/", status_code=status.HTTP_200_OK)
 async def delete_seeker_details(
-    db: Session = Depends(get_db), authorization: str = Header(...)
+        db: Session = Depends(get_db), authorization: str = Header(...)
 ):
     # Start a transaction
     user = await get_current_user(authorization)
