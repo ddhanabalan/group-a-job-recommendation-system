@@ -61,7 +61,7 @@ export default function ProfileHead({ access, data, blurFn, logOutFn, subForm, i
         <form noValidate autoComplete='on' className="profile-head-section"  >
             <div className="banner" style={{ backgroundColor: bannerColor }}>
                 {access === "viewOnly" &&
-                    <IconButton aria-label="back" className='banner-back-btn' onClick={() => navigate("/profile")}>
+                    <IconButton aria-label="back" className='banner-back-btn' onClick={() => navigate(-1)}>
                         <ArrowBackIosNewRoundedIcon />
                     </IconButton>
                 }

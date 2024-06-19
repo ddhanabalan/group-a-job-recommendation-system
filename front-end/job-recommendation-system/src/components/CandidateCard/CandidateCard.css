@@ -52,6 +52,7 @@
     width: 4.375rem;
     border-radius: 50%;
     background-color: #D9D9D9;
+    overflow: hidden;
 }
 .job-card-img-container img{
     height: 100%;

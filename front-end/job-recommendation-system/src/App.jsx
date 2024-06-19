@@ -49,7 +49,7 @@ function App() {
           <Route path="/verify/:accessToken" element={<VerifyAccount />} />
           {/* routes common to signed-in users */}
           <Route element={<PrivateRoutes />}>
-            <Route path="/profile" element={user === "seeker" ? <ProfileSection data={{}} /> : <EmployerProfileSection data={{}} />} />
+            <Route path="/profile" element={user&&user === "seeker" ? <ProfileSection data={{}} /> : <EmployerProfileSection data={{}} />} />
             <Route path="/profile/:username" element={<OtherUserProfile data={{}} />} />
             <Route path="/e/profile/:username" element={<OtherEmployerProfile data={{}} />} />
             <Route path="/employer-profile" element={<EmployerProfileSection data={{
