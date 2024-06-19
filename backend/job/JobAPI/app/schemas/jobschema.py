@@ -25,9 +25,11 @@ class JobVacancyBase(BaseModel):
 class JobVacancyCreate(JobVacancyBase):
     skills: Optional[List[str]]
 
+
 class JobVacancyUpdate(JobVacancyBase):
     skills_delete: Optional[List[int]]
     skills: Optional[List[str]]
+
 
 class JobVacancy(JobVacancyBase):
     job_id: Optional[int] = None
@@ -36,6 +38,7 @@ class JobVacancy(JobVacancyBase):
 
     class Config:
         from_attributes = True
+
 
 class JobSkillsBase(BaseModel):
     job_id: Optional[int] = None

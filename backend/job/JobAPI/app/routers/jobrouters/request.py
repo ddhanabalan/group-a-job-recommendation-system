@@ -13,7 +13,7 @@ from .. import (
 job_request_router = APIRouter(prefix="/job_request")
 
 
-@job_request_router.post("/",status_code=status.HTTP_201_CREATED)
+@job_request_router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_job_request(
     job_request: jobschema.JobRequest,
     authorization: str = Header(...),
@@ -47,7 +47,7 @@ async def update_job_request(
     job_request_id: int,
     job_request: jobschema.JobRequestCreate,
     db: Session = Depends(get_db),
-        authorization: str = Header(...),
+    authorization: str = Header(...),
 ):
     await check_authorization(authorization=authorization)
     db_job_request = jobcrud.request.update(db, job_request_id, job_request)
@@ -60,7 +60,9 @@ async def update_job_request(
 
 # Delete job request by ID
 @job_request_router.delete("/{job_request_id}")
-async def delete_job_request(job_request_id: int, db: Session = Depends(get_db),authorization: str = Header(...)):
+async def delete_job_request(
+    job_request_id: int, db: Session = Depends(get_db), authorization: str = Header(...)
+):
     await check_authorization(authorization=authorization)
     db_job_request = jobcrud.request.get(db, job_request_id)
     if db_job_request is None:
@@ -73,7 +75,9 @@ async def delete_job_request(job_request_id: int, db: Session = Depends(get_db),
 
 # Get job requests by user ID
 @job_request_router.get("/user", response_model=List[jobschema.JobRequest])
-async def read_job_requests_by_user_id( db: Session = Depends(get_db),authorization: str = Header(...)):
+async def read_job_requests_by_user_id(
+    db: Session = Depends(get_db), authorization: str = Header(...)
+):
     user = await get_current_user(authorization=authorization)
     user_id = user.get("user_id")
     return jobcrud.request.get_all(db, user_id)

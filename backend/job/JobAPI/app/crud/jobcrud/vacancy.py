@@ -57,9 +57,7 @@ def create(db: Session, job_vacancy: jobmodel.JobVacancy) -> bool:
         return False
 
 
-def update(
-    db: Session, job_vacancy_id: int, job_vacancy: dict
-) -> bool:
+def update(db: Session, job_vacancy_id: int, job_vacancy: dict) -> bool:
     """
     Update a job vacancy in the database.py.
 
@@ -72,11 +70,13 @@ def update(
         jobmodel.JobVacancy: Updated job vacancy object.
     """
     try:
-        job_vacancy = db.query(jobmodel.JobVacancy).filter(
-            jobmodel.JobVacancy.job_id == job_vacancy_id
-        ).first()
+        job_vacancy = (
+            db.query(jobmodel.JobVacancy)
+            .filter(jobmodel.JobVacancy.job_id == job_vacancy_id)
+            .first()
+        )
         for key, value in job_vacancy.dict().items():
-            if key not in ["job_id","created_at"] and value is not None:
+            if key not in ["job_id", "created_at"] and value is not None:
                 setattr(job_vacancy, key, value)
         db.commit()
         return True
@@ -108,18 +108,18 @@ def delete(db: Session, job_vacancy_id: int) -> bool:
 
 
 def get_filtered_jobs(
-        db: Session,
-        emp_type: Optional[List[str]] = None,
-        loc_type: Optional[List[str]] = None,
-        location: Optional[List[str]] = None,
-        working_day: Optional[List[str]] = None,
-        salary: Optional[int] = None,
-        experience: Optional[List[str]] = None,
-        filter_job_id: Optional[List[str]] = None,
-        sort: Optional[str] = None,
-        order: Optional[str] = "asc",
-        limit: Optional[int] = None,
-        title: Optional[str] = None
+    db: Session,
+    emp_type: Optional[List[str]] = None,
+    loc_type: Optional[List[str]] = None,
+    location: Optional[List[str]] = None,
+    working_day: Optional[List[str]] = None,
+    salary: Optional[int] = None,
+    experience: Optional[List[str]] = None,
+    filter_job_id: Optional[List[str]] = None,
+    sort: Optional[str] = None,
+    order: Optional[str] = "asc",
+    limit: Optional[int] = None,
+    title: Optional[str] = None,
 ) -> List[Type[jobschema.JobVacancySearch]]:
     """
     Retrieve job vacancies from the database, filtered by various criteria, with sorting and limit options.
@@ -157,8 +157,10 @@ def get_filtered_jobs(
         query = query.filter(jobmodel.JobVacancy.working_day.in_(working_day))
     if salary is not None:
         middle_salary_expr = cast(
-            func.SUBSTRING_INDEX(func.SUBSTRING_INDEX(jobmodel.JobVacancy.salary, '-', 2), '-', -1),
-            Integer
+            func.SUBSTRING_INDEX(
+                func.SUBSTRING_INDEX(jobmodel.JobVacancy.salary, "-", 2), "-", -1
+            ),
+            Integer,
         )
         query = query.filter(middle_salary_expr >= salary)
     if title:
@@ -169,8 +171,10 @@ def get_filtered_jobs(
         sort_order = asc if order == "asc" else desc
         if sort == "salary":
             middle_salary_expr = cast(
-                func.SUBSTRING_INDEX(func.SUBSTRING_INDEX(jobmodel.JobVacancy.salary, '-', 2), '-', -1),
-                Integer
+                func.SUBSTRING_INDEX(
+                    func.SUBSTRING_INDEX(jobmodel.JobVacancy.salary, "-", 2), "-", -1
+                ),
+                Integer,
             )
             query = query.order_by(sort_order(middle_salary_expr))
         elif sort == "working_day":
