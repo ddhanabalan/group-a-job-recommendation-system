@@ -78,3 +78,9 @@ class UserInRecruiter(UserIn):
 
 class ForgetPassword(BaseModel):
     new_password: str
+
+
+class UserUpdate(BaseModel):
+    username: Optional[str] = None
+    password: Optional[str] = None
+    email: Optional[EmailStr] = None

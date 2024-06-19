@@ -2,7 +2,7 @@ from datetime import datetime, timedelta
 import httpx
 from typing import Union, Type
 
-from fastapi import FastAPI, Depends, HTTPException, status, Request, Header
+from fastapi import FastAPI, Depends, HTTPException, status, Request, Header, Body
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from fastapi.middleware.cors import CORSMiddleware
 from authlib.integrations.starlette_client import OAuth, OAuthError
@@ -423,7 +423,7 @@ async def register(
 
 
 @app.post("/forgot_password", status_code=status.HTTP_200_OK)
-async def forgot_password(email: EmailStr, db: Session = Depends(get_db)):
+async def forgot_password(email: EmailStr = Body(...), db: Session = Depends(get_db)):
     credential_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Email"
     )
@@ -505,3 +505,30 @@ async def delete_user(user=Depends(get_current_active_user), authorization: str 
             detail="Data Deletion Failed",
         )
     return {"detail": "deleted successfully"}
+
+
+@app.put("/user",status_code=status.HTTP_200_OK)
+async def update_user(user_update: authschema.UserUpdate,user=Depends(get_current_active_user),authorization: str = Header(...), db: Session = Depends(get_db)):
+    update_details = user_update.dict(exclude_unset=True)
+    password = user_update.pop("password", None)
+    if update_details is not None:
+        response = await httpx.AsyncClient().post(
+            url=f"http://{USER_API_HOST}:{PORT}/{user.user_type}/details", headers={"Authorization": authorization},json=update_details
+        )
+        res_data = response.json()
+        if res_data is None:
+            raise HTTPException(
+                status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
+                detail="User Init was not Successful",
+            )
+    if password is not None:
+        hashed_pwd = get_password_hashed(password)
+        update_details["hashed_password"] = hashed_pwd
+
+    res = authcrud.update(db=db, user_id=user.user_id, user_update=update_details)
+    if not res:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Data Update Failed",
+        )
+    return {"detail": "updated successfully"}
