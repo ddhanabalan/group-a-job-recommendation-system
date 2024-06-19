@@ -91,6 +91,17 @@ async def read_job_vacancies_by_company_id(
         job.job_seekers = jobcrud.request.get_all_by_job_id(db, job.job_id)
     return job_vacancy
 
+@job_vacancy_router.get("/company/{company_id}")
+async def read_job_vacancies_by_company_id(
+    company_id: int, db: Session = Depends(get_db)
+):
+
+    job_vacancy = jobcrud.vacancy.get_all(db, company_id)
+    for job in job_vacancy:
+        job.skills = jobcrud.skills.get_all(db, job.job_id)
+        job.job_seekers = jobcrud.request.get_all_by_job_id(db, job.job_id)
+    return job_vacancy
+
 
 # Read job vacancy by ID
 @job_vacancy_router.get("/{job_vacancy_id}", response_model=jobschema.JobVacancy)
@@ -128,7 +139,7 @@ async def update_job_vacancy(
     for skill in skills_delete:
         jobcrud.skills.delete(db, skill)
     for skill in skills:
-        jobcrud.skills.create(db, skill)
+        jobcrud.skills.create(db, jobschema.JobSkillsCreate(**{"job_id": job_vacancy_id, "skill": skill}))
     return {"details": "Job Vacancy Updated successfully"}
 
 
