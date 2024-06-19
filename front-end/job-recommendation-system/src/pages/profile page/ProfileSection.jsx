@@ -194,7 +194,7 @@ export default function ProfileSection({ data }) {
                         <div className="profile-pane profile-middle-pane">
                             <ExperienceBox childData={newData.former_jobs} reloadFn={callAPI} showSuccessMsg={showSuccessMsg} showFailMsg={showFailMsg} />
                             <FeatureBoxMiddlePane //component defaults to QualificationBox
-                                childData={newData.prev_education}
+                                childData={newData.prev_education} reloadFn={callAPI}
                                 showSuccessMsg={showSuccessMsg} showFailMsg={showFailMsg}
                             />
                             {/* <FeatureBoxMiddlePane data={{ title: "Licenses and certifications ", edit: true, isLanguage: false, cardData: { qualification_label: "Name", qualification_provider: "Issuing organization" } }}
@@ -233,7 +233,7 @@ export default function ProfileSection({ data }) {
                         </div>
                         <div className="profile-pane profile-right-pane">
                             <FeatureBox data={{ title: "Achievements", addIcon: true, editIcon: true }} />
-                            <AddPOI callAPI={callAPI} showSuccessMsg={showSuccessMsg} showFailMsg={showFailMsg}  />
+                            <AddPOI callAPI={callAPI} showSuccessMsg={showSuccessMsg} showFailMsg={showFailMsg} />
                         </div>
                     </div>
                 </div>

@@ -9,7 +9,7 @@ import QualificationCard from '../QualificationCard/QualificationCard';
 import QualificationAdd from '../QualificationAdd/QualificationAdd';
 import NothingToShow from '../NothingToShow/NothingToShow';
 import './FeatureBoxMiddlePane.css';
-export default function FeatureBoxMiddlePane({ access,childData,showSuccessMsg,showFailMsg }) {
+export default function FeatureBoxMiddlePane({ access,childData,showSuccessMsg,showFailMsg,reloadFn }) {
     useEffect(() => {
         if (childData) {
             SetQdata(childData)
@@ -19,6 +19,7 @@ export default function FeatureBoxMiddlePane({ access,childData,showSuccessMsg,s
     const [newQual, SetNewQual] = useState(false)
     const addQualification = async (e) => {
         //accepts new qualification data and adds it into existing array of qualifications
+        console.log(e)
         try {
             const data = { 'education_title': e.education_title, 'education_provider': e.education_provider, 'start_year': e.start_year, 'end_year': e.end_year }
             console.log(data)
@@ -27,7 +28,8 @@ export default function FeatureBoxMiddlePane({ access,childData,showSuccessMsg,s
                     'Authorization': `Bearer ${getStorage("userToken")}`
                 }
             })
-            response.request.status===201&&showSuccessMsg()
+            response.request.status === 201 && showSuccessMsg()
+            reloadFn()
             console.log(response)
             SetNewQual(false)
             SetQdata([...qdata, e])
@@ -45,13 +47,13 @@ export default function FeatureBoxMiddlePane({ access,childData,showSuccessMsg,s
     const deleteQual = async (id) => {
         //deletes existing Qualification from array by referring to the id passed in
         try {
-           const response = await userAPI.delete(`/seeker/former-job/${id}`, {
+           const response = await userAPI.delete(`/seeker/education/${id}`, {
                 headers: {
                     'Authorization': `Bearer ${getStorage("userToken")}`
                 }
             })
               response.request.status===200&&showSuccessMsg()
-            SetQdata(qdata.filter(e => { return id !== e.id }))
+            response.request.status === 200 &&SetQdata(qdata.filter(e => { return id !== e.id }))
         } catch (e) {
             console.log(e)
             showFailMsg()
