@@ -101,11 +101,11 @@ async def update_job_vacancy(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Job Vacancy not found"
         )
-    data = job_vacancy.dict()
+    data = job_vacancy.dict(exclude_unset=True)
     skills = data.pop("skill", [])
     skills_delete = data.pop("skills_delete", [])
     if not jobcrud.vacancy.update(
-        db, job_vacancy_id, jobschema.JobVacancyCreate(**data)
+        db, job_vacancy_id, data
     ):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

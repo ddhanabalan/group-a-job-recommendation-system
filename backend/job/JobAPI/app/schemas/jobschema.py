@@ -25,7 +25,7 @@ class JobVacancyBase(BaseModel):
 class JobVacancyCreate(JobVacancyBase):
     skills: Optional[List[str]]
 
-class JobVacancyUpdate(JobVacancyCreate):
+class JobVacancyUpdate(JobVacancyBase):
     skills_delete: Optional[List[int]]
     skills: Optional[List[str]]
 
