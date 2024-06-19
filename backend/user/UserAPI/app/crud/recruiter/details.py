@@ -1,3 +1,5 @@
+from typing import List
+
 from .. import recruitermodel, recruiterschema, Session, SQLAlchemyError
 
 
@@ -65,6 +67,23 @@ def get(db: Session, user_id: int) -> recruitermodel.RecruiterDetails | None:
     except SQLAlchemyError:
         return
 
+def get_all(db: Session) -> List[recruitermodel.RecruiterDetails] | []:
+    """
+    Retrieve recruiter details by user ID.
+
+    Args:
+        db (Session): SQLAlchemy database.py session.
+        user_id (int): User ID of the recruiter.
+
+    Returns:
+        recruitermodel.RecruiterDetails or None: Recruiter details if found, else None.
+    """
+    try:
+        return (
+            db.query(recruitermodel.RecruiterDetails).all()
+        )
+    except SQLAlchemyError:
+        return []
 
 def create(db: Session, recruiter_details: recruiterschema.RecruiterDetails) -> bool:
     """

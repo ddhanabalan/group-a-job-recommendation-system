@@ -20,7 +20,7 @@ async def user_seeker_certificate(
 ):
     user = await get_current_user(authorization=authorization)
     user_id = user.get("user_id")
-    user_certificate = crud.certificate.get_all(db=db, user_id=user_id)
+    user_certificate = crud.seeker.certificate.get_all(db=db, user_id=user_id)
     return user_certificate
 
 
@@ -29,7 +29,7 @@ async def get_seeker_certificate(
     certificate_id: int, db: Session = Depends(get_db), authorization: str = Header(...)
 ):
     await check_authorization(authorization=authorization)
-    user_certificate = crud.certificate.get(db=db, certificate_id=certificate_id)
+    user_certificate = crud.seeker.certificate.get(db=db, certificate_id=certificate_id)
     return user_certificate
 
 
@@ -42,7 +42,7 @@ async def create_seeker_certificate(
     user = await get_current_user(authorization)
     user_id = user.get("user_id")
     certificate.user_id = user_id
-    created_certificate = crud.certificate.create(db, certificate)
+    created_certificate = crud.seeker.certificate.create(db, certificate)
     if not created_certificate:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -53,7 +53,7 @@ async def create_seeker_certificate(
 
 @router.delete("/{certificate_id}", status_code=status.HTTP_200_OK)
 async def delete_seeker_certificate(certificate_id: int, db: Session = Depends(get_db)):
-    deleted = crud.certificate.delete(db, certificate_id)
+    deleted = crud.seeker.certificate.delete(db, certificate_id)
     if not deleted:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -70,7 +70,7 @@ async def update_seeker_certificate(
     authorization: str = Header(...),
 ):
     await check_authorization(authorization)
-    updated_certificate = crud.certificate.update(
+    updated_certificate = crud.seeker.certificate.update(
         db, certificate_id, certificate=certificate
     )
     if not updated_certificate:
