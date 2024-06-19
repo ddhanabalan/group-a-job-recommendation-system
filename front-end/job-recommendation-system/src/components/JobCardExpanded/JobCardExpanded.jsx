@@ -95,7 +95,7 @@ export default function JobCardExpanded({ data=[], createJobRequest=null, userDa
                                 <div className='desc'><Stack className="job-desc-tags" direction="row" spacing={1}>
                                     {data.skills.map(e => {if(e.skill != ""/* && e.skill !=""*/)
                                         {return (<div className="job-desc-skill-tags-child" key={typeof(e)=="string"?uuid():e.id}>
-                                                {typeof(e)=="string"?e:e.skill} {userData.type=="employer"?
+                                                {typeof(e)=="string"?e:e.skill} {userData.type==="employer"?
                                                         <></>
                                                         :
                                                         <div className={userData.skills.map(skill => {return skill.toLowerCase()}).includes(typeof(e)=="string"?e.toLowerCase():e.skill.toLowerCase())?"skill-status green":"skill-status red"}></div>

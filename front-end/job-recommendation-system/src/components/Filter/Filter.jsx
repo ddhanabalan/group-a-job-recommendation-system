@@ -4,12 +4,10 @@ import { utilsAPI } from '../../api/axios';
 import AddTags from '../AddTags/AddTags';
 import MultipleOptions from '../MultipleOptions/MultipleOptions';
 import filtersvg from '../../images/filter.svg';
-
 import Radio from '@mui/material/Radio';
 import RadioGroup from '@mui/material/RadioGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import FormControl from '@mui/material/FormControl';
-import FormLabel from '@mui/material/FormLabel';
 import { v4 as uuid } from 'uuid';
 import Slider from '@mui/material/Slider';
 export default function Filter({ title, userType=null, passFilteredDataFn = null }) {

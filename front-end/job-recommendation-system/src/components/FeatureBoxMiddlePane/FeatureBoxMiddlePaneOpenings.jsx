@@ -1,15 +1,4 @@
-import { useState } from 'react';
-import { v4 as uuid } from 'uuid';
-import IconButton from '@mui/material/IconButton';
-import Stack from '@mui/material/Stack';
-import EditIcon from '@mui/icons-material/Edit';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
-import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
-import QualificationCard from '../QualificationCard/QualificationCard';
-import LanguageAdd from '../LanguageAdd/LanguageAdd';
-import QualificationAdd from '../QualificationAdd/QualificationAdd';
-import LanguageCard from '../LanguageCard/LanguageCard';
-import CreateFormTextFields from '../CreateJobVacancyForm/CreateFormTextFields';
 import JobCard from '../JobCard/JobCard';
 import { Button } from '@mui/material'
 import { Link } from 'react-router-dom';
