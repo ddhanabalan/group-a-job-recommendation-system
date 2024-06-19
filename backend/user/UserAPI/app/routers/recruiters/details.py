@@ -22,8 +22,9 @@ router = APIRouter(prefix="/details")
 async def get_recruiter_details(
     db: Session = Depends(get_db), authorization: str = Header(...)
 ):
-    username = await get_current_user(authorization=authorization, user_type="recruiter")
-    user_details = crud.recruiter.details.get_by_username(db=db, username=username["user"])
+    user = await get_current_user(authorization=authorization, user_type="recruiter")
+    user_id = user.get("user_id")
+    user_details = crud.recruiter.details.get(db=db, user_id=user_id)
     return user_details
 
 
