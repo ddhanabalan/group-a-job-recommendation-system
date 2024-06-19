@@ -57,7 +57,7 @@ def create(db: Session, job_vacancy: jobmodel.JobVacancy) -> bool:
         return False
 
 
-def update(db: Session, job_vacancy_id: int, job_vacancy: dict) -> bool:
+def update(db: Session, job_vacancy_id: int, update_job_vacancy: dict) -> bool:
     """
     Update a job vacancy in the database.py.
 
@@ -75,7 +75,7 @@ def update(db: Session, job_vacancy_id: int, job_vacancy: dict) -> bool:
             .filter(jobmodel.JobVacancy.job_id == job_vacancy_id)
             .first()
         )
-        for key, value in job_vacancy.dict().items():
+        for key, value in update_job_vacancy.items():
             if key not in ["job_id", "created_at"] and value is not None:
                 setattr(job_vacancy, key, value)
         db.commit()
