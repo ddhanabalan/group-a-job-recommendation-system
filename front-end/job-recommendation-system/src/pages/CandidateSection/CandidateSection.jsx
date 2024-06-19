@@ -29,7 +29,7 @@ export default function CandidateSection() {
         try {
             const response = await userAPI.get('/seeker/details/list',
                 {
-                    params: {"name": searchVal, ...filterparam },
+                    params: searchVal!=""?{"name": searchVal, ...filterparam }:{...filterparam},
                     paramsSerializer: params => {
                         // Custom params serializer if needed
                         return Object.entries(params).map(([key, value]) => {

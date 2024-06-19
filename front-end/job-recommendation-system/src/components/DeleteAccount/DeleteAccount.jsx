@@ -18,7 +18,7 @@ export default function DeleteAccount() {
     const deleteAccount = async () => {
         console.log(userPassword)
         try {
-            const validate = await axios.post('/token', qs.stringify({ "username": "backupsreyas@gmail.com", "password": userPassword }), {
+            const validate = await axios.post('/token', qs.stringify({ "username": getStorage("userEmail"), "password": userPassword }), {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 }

@@ -35,6 +35,7 @@ export default function ProfileSection({ data }) {
     const redirectFn = (data) => {
         setStorage("userID", data.user_id)
         setStorage("username", data.username)
+        setStorage("userEmail", data.email)
         console.log("Users:", data)
         SetnewData(data)
     }

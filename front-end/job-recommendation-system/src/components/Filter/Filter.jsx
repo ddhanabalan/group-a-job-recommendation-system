@@ -104,8 +104,8 @@ export default function Filter({ title, userType=null, passFilteredDataFn = null
     }
 
     const handleSort = (value)=>{
-        if(value=="new")SetSortOrder("new");
-        else SetSortOrder("old")
+        if(value=="new")SetSortOrder("asc");
+        else SetSortOrder("desc");
     }
 
 
