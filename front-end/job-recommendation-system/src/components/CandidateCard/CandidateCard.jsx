@@ -29,7 +29,7 @@ export default function CandidateCard({ type = null, jobEntryId = null, crLink =
     return (
         <div className="card job-card" style={background} onClick={() => setProfile(true)}>
             <div className='job-card-div1'>
-                <h1 className='card-h1'>{data.candidateName}</h1>
+                <h1 className='card-h1'>{data.first_name} {data.last_name}</h1>
                 <Stack direction="row" spacing={1}>
                     <Chip className="chip-with-icon" icon={<LocationOnIcon />} label={data.city + ',' + data.country || "not available"} />
                     <Chip className="chip-with-icon" icon={<WorkIcon />} label={data.experience + " years"} />

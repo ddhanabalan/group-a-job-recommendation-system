@@ -50,7 +50,7 @@ export default function JobVacancyForm({ data = {} }) {
     const [preferences, setPreferences] = useState({ "skills": skills, "tags": tags, "empType": dta.empType, "exp": dta.exp, "workStyle": dta.workStyle, "workingDays": dta.workingDays });
     const [preview, setPreview] = useState(false);
     const [finalApplicationData, setData] = useState({});
-    const [poi, SetPOI] = useState('');
+    const [poi, SetPOI] = useState(dta.poi?dta.poi:'');
     const [poisList, SetPoisList] = useState([]);
     const poiListAPI = async () => {
         try {
@@ -176,12 +176,13 @@ export default function JobVacancyForm({ data = {} }) {
     const handleSkillData = (tags, tagType) => {
         //function for adding selected skill tags into submitting form data
         console.log("skills and tags", tags, "check", checkSkillsList)
-        checkSkillsList.every(skill => {if(Object.keys(tags).length == 0 || !(tags.map(tag => tag.id).includes(skill.id))){if(!deletedSkills.includes(skill.id) && skill.id){setDeletedSkills([...deletedSkills,skill.id])}}})
-        tags.every(skill => {if(typeof(skill.id)!="number")setAddedSkills([...addedSkills, skill.tag])})
-        //console.log("only added tags", addedSkills )
+        checkSkillsList.forEach(skill => {if(Object.keys(tags).length == 0 || !(tags.map(tag => tag.id).includes(skill.id))){if(!deletedSkills.includes(skill.id) && skill.id){setDeletedSkills([...deletedSkills,skill.id])}}})
+        tags.forEach(skill => {if(typeof(skill.id)!="number" && skill.id && !addedSkills.includes(skill.tag) )setAddedSkills([...addedSkills, skill.tag])})
+    
         //console.log("preferences befre changing", preferences)
         setPreferences({ ...preferences, [tagType]: tags.map(tagObj => { return (tagObj['tag']) }) });
     }
+    console.log("only added tags", addedSkills )
     console.log("deleted skills", deletedSkills,)
     const dateValidation = (closing_date) => {
         const today = new Date();
@@ -238,12 +239,12 @@ export default function JobVacancyForm({ data = {} }) {
         //Application submission data
         const submissionData={
                                 "company_id": USERID,
-                                "company_name": finalApplicationData['companyName'],
-                                "emp_type": finalApplicationData['empType'][0],
+                                "company_name": (Object.keys(companyData).length) ? companyData.company_name : finalApplicationData['companyName'],
+                                "emp_type": (typeof(finalApplicationData["empType"])=="object")?finalApplicationData["empType"][0]:finalApplicationData["empType"],
                                 "salary": finalApplicationData["currency"] + "-" + ((finalApplicationData["salary"][1]==="")?finalApplicationData["salary"][0]:finalApplicationData["salary"].join("-")),
-	                            "working_days": finalApplicationData["workingDays"][0],
-                                "work_style": finalApplicationData["workStyle"][0],
-                                "experience": finalApplicationData["exp"][0],
+	                            "working_days": (typeof(finalApplicationData["workingDays"])=="object")?finalApplicationData["workingDays"][0]:finalApplicationData["workingDays"],
+                                "work_style": (typeof(finalApplicationData["workStyle"])=="object")?finalApplicationData["workStyle"][0]:finalApplicationData["workStyle"],
+                                "experience": (typeof(finalApplicationData["exp"])=="object")?finalApplicationData["exp"][0]:finalApplicationData["exp"],
                                 "job_name": finalApplicationData['jobTitle'],
                                 "job_position": finalApplicationData['poi'],
                                 "location": finalApplicationData['location'],
@@ -266,6 +267,7 @@ export default function JobVacancyForm({ data = {} }) {
     useEffect(() => { if (submit === true) { navigate("../employer/review-applications") } }, [submit]);
     useEffect(() => {skillsAPI()}, [skill])
     useEffect(() => {callCompanyAPI()}, [])
+    useEffect(() => {setAddedSkills(prevSkills => prevSkills.filter(skill => preferences.skills.includes(skill)));}, [preferences]);
     
     //useEffect(() => {setPreferences({ ...preferences, "skills_delete": deletedSkills })}, [deletedSkills])
     return (

@@ -4,13 +4,13 @@ import getStorage from '../../storage/storage';
 import CandidateCard from '../CandidateCard/CandidateCard';
 import AiCandidates from '../AiCandidates/AiCandidates';
 import '../Jobs/Jobs.css';
-export default function Candidates({ type }) {
+export default function Candidates({ type, candidateData }) {
     
     const demoInfo = [{ candidateName: "Amy Williams", location: "Kerala, India", tags: ["on-site", "software / IT", "Monday-Friday"], experience: 2 }];
     return (
         <div className="cards-container">
             {/* <AiCandidates childData={[demoInfo]} /> */}
-            {demoInfo.map((e) => <CandidateCard data={e} type={type} />)}
+            {candidateData.map((e) => <CandidateCard data={e} type={type} />)}
         </div>
     )
 }

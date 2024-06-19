@@ -1,143 +1,243 @@
-import './SeekerJobStatusSection.css'
-import { useState, useEffect } from 'react';
-import getStorage from '../../storage/storage';
-import { jobAPI, userAPI } from '../../api/axios';
+//import Filter from "../components/Filter";
+//import StatsAI from "../components/StatsAI";
+import "./SeekerJobStatusSection.css";
+import {getStorage, setStorage} from "../../storage/storage";
 import Filter from "../../components/Filter/Filter";
-import StatsAI from "../../components/StatsAI/StatsAI";
-import SearchBar from "../../components/SearchBar/SearchBar";
-import Jobs from "../../components/Jobs/Jobs";
-import NavigationBar from "../../components/NavigationBar/NavigationBar";
-import BackBtn from '../../components/BackBtn/BackBtn';
-import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import { IconButton } from '@mui/material';
+import OpeningsListBar from "../../components/OpeningsListBar/OpeningsListBar";
+import JobCardExpanded from "../../components/JobCardExpanded/JobCardExpanded";
+import BackBtn from "../../components/BackBtn/BackBtn";
+import { useLocation } from "react-router-dom";
+import { useEffect, useState } from "react";
+import CandidateCard from "../../components/CandidateCard/CandidateCard";
+import { set } from "react-hook-form";
+import { jobAPI, userAPI } from "../../api/axios";
+import { LocalConvenienceStoreOutlined } from "@mui/icons-material";
 
-export default function SeekerJobStatusSection() {
-
-    const [userData, setUserData] = useState({ 'type': 'seeker', 'skills': [] });
-    const [jobVacancies, setJobVacancies] = useState([]);
+export default function SeekerJobStatusSection({userType}) {
+    const COMPANYID = (userType==="employer"?getStorage("userID"):getStorage("guestUserID"));
+    const receivedData = useLocation();
+    const [userData, setUserData] = useState({'type': userType, 'skills': []});
+    console.log("received data",receivedData)
+    //const [selectedEntry, setEntry] = useState(null);
+    const [selectedEntry, setEntry] = useState(receivedData["state"]?receivedData.state.highlightedId || null: null);//userData is for knowing if employer or seeker and further passing it down to components
+    //console.log("selected entry", selectedEntry);
     const [searchVal, setSearch] = useState("");
+    //demoInfo is example vacancy profiles
+    const [jobVacancies, setJobVacancies] = useState([]);
+    const [jobApplicants, setApplicants] = useState([]);
+    /*const demoInfo = [{ },
+                      { id: 1, jobTitle: "Java Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "RS", salary: ["5000","10000"], postDate: "13/9/23" , location: 'Moscow', empType: 'Internship', exp: '1-5 years', jobDesc: "This is for demo purpose" ,jobReq:"This is for demo purpose",skills: ["java", "AI"], applicationsReceived: [1,2,3,4,5,7,8,9]},
+                      { id: 2, jobTitle: "Ruby Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "RS", salary: ["5000","10000"], postDate: "13/9/23" , location: 'Uganda', empType: 'Temporary', exp: 'Fresher', jobDesc: "This is for demo purpose" ,jobReq:"This is for demo purpose",skills: ["ruby", "AI", "Django"], applicationsReceived: [1,2,3,4,5,7,9]},
+                      { id: 3, jobTitle: "Golang Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "RS", salary: ["5000","10000"], postDate: "13/9/23" , location: 'Alaska', empType: 'Internship', exp: '5-10 years', jobDesc: "This is for demo purpose" ,jobReq:"This is for demo purpose",skills: ["python", "AI", "Django"], applicationsReceived: [1,2,3,4,9]},
+                      { id: 4, jobTitle: "Game Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "RS", salary: ["5000","10000"], postDate: "13/9/23" , location: 'Germany', empType: 'Full-time', exp: '5-10 years', jobDesc: "This is for demo purpose" ,jobReq:"This is for demo purpose",skills: ["react", "AI", "Django"], applicationsReceived: [1,2,3,4,5,]},
+                      { id: 5, jobTitle: "Python Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "RS", salary: ["5000","10000"], postDate: "13/9/23" , location: 'London', empType: 'Full-time', exp: '5-10 years', jobDesc: "This is for demo purpose" ,jobReq:"This is for demo purpose",skills: ["python", "AI", "Django"], applicationsReceived: [1,4,5,7,8,9]},
+                      { id: 6, jobTitle: "Java Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "RS", salary: ["5000","10000"], postDate: "13/9/23" , location: 'Alaska', empType: 'Temporary', exp: 'Fresher', jobDesc: "This is for demo purpose" ,jobReq:"This is for demo purpose",skills: ["reactor", "AI", "Django"], applicationsReceived: [1,2,8,9]},
+                      { id: 7, jobTitle: "Ruby Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "RS", salary: ["5000","10000"], postDate: "13/9/23" , location: 'London', empType: 'Full-time', exp: '5-10 years', jobDesc: "This is for demo purpose" ,jobReq:"This is for demo purpose",skills: ["python", "AI", "Django"], applicationsReceived: [1,3,8,9]},
+                      { id: 8, jobTitle: "Golang Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "RS", salary: ["5000","10000"], postDate: "13/9/23" , location: 'India', empType: 'Internship', exp: '1-5 years', jobDesc: "This is for demo purpose" ,jobReq:"This is for demo purpose",skills: ["python", "AI", "Django"], applicationsReceived: [1,2,9]},
+                      { id: 9,jobTitle: "Game Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "RS", salary: ["5000","10000"], postDate: "13/9/23" , location: 'London', empType: 'Full-time', exp: '5-10 years', jobDesc: "This is for demo purpose" ,jobReq:"This is for demo purpose",skills: ["python", "AI", "Django"], applicationsReceived: [1,5,7,8,9]},]*/
+    const profileInfo = [{ applicantID: 1,candidateName: "Amy Williams", location: "Kerala, India", tags: ["on-site", "software / IT", "Monday-Friday"], experience:2},
+                      { applicantID: 2,candidateName: "Galvin Serie", location: "Kerala, India", tags: ["on-site", "software / IT", "Monday-Friday"], experience:2},
+                      { applicantID: 3,candidateName: "Cole Nicol", location: "Kerala, India", tags: ["on-site", "software / IT", "Monday-Friday"], experience:2},
+                      { applicantID: 4,candidateName: "Salvin Drone", location: "Kerala, India", tags: ["on-site", "software / IT", "Monday-Friday"], experience:2},
+                      { applicantID: 5,candidateName: "Sepen Zen", location: "Kerala, India", tags: ["on-site", "software / IT", "Monday-Friday"], experience:2},
+                      { applicantID: 6,candidateName: "Zeke John", location: "Kerala, India", tags: ["on-site", "software / IT", "Monday-Friday"], experience:2},
+                      { applicantID: 7,candidateName: "Keire Helen", location: "Kerala, India", tags: ["on-site", "software / IT", "Monday-Friday"], experience:2},
+                      { applicantID: 8,candidateName: "Karen Laneb", location: "Kerala, India", tags: ["on-site", "software / IT", "Monday-Friday"], experience:2},
+                      { applicantID: 9,candidateName: "Javan Dille", location: "Kerala, India", tags: ["on-site", "software / IT", "Monday-Friday"], experience:2} 
+                    ]
+
+
+    
+    const [filterstat, setFilter] = useState(false);
     const [filterparam, setParam] = useState({});
-    const filtered = (jobVacancies.length != 0 ? jobVacancies.filter(id => id["skills"].map((tag) => (tag["skill"].toLowerCase().includes(searchVal.toLowerCase()))).filter(Boolean).length ? id : false) : []);
-
-    const [descriptionOn, setDesc] = useState(false);
-
-    const filterDataSet = (fdata) => {
-        setParam({ ...fdata });
-    }
-    console.log("filter", filterparam);
-    function OpenDesc(desc_state) {
-        setDesc(desc_state);
-        //console.log("description status job section", desc_state);
-    }
-    const searchBar = (searchValue) => {
-        setSearch(searchValue);
-    }
-    const callJobVacancyAPI = async () => {
-        GetSeekerSkills();
-        GetSeekerDetails();
+    const filtered = (jobVacancies.length!=0?jobVacancies.filter(id => id["skills"].map((tag)=>(tag["skill"].toLowerCase().includes(searchVal.toLowerCase()))).filter(Boolean).length?id:false):[]);
+    
+    //const filtered = []
+    const [selectedJobEntry,setJobEntry] = useState(null);
+    //const [filteredApplicants, setfilteredApplicants]=useState(profileInfo.filter(applicants=>(selectedJobEntry["applicationsReceived"].includes(applicants["applicantID"])?applicants:false)));
+    const [sidebarState, setSideBar] = useState(false);
+    const callJobVacancyAPI= async (companyId)=>{
+        if(userType==="seeker")
+        {GetSeekerSkills();
+        GetSeekerDetails();}
         try {
-            const response = await jobAPI.get('http://localhost:8002/job_vacancy/',
-                {
-                    params: { ...filterparam },
-                    paramsSerializer: params => {
-                        // Custom params serializer if needed
-                        return Object.entries(params).map(([key, value]) => {
-                            if (Array.isArray(value)) {
-                                return value.map(val => `${key}=${encodeURIComponent(val)}`).join('&');
-                            }
-                            return `${key}=${encodeURIComponent(value)}`;
-                        }).join('&');
-                    }
-                });
-            const mod_response = response.data.map(e => ({ id: e.job_id, jobTitle: e.job_name, companyName: e.company_name, tags: /*(e.tags.length ? e.tags : */[{ 'tag': "" }], currency: e.salary.split('-')[0], salary: [e.salary.split('-')[1], e.salary.split('-')[2]], postDate: e.created_at.split('T')[0], last_date: e.last_date.split('T')[0], location: e.location, empType: e.emp_type, exp: e.experience, jobDesc: e.job_desc, jobReq: e.requirement, skills: /*e.skills.length ? e.skills : */[{ 'skill': "" }], applicationsReceived: e.job_seekers }))
-            setJobVacancies(mod_response);
-            console.log(response);
-            console.log(" after new job vacancies", mod_response);
+            
+            const response = await jobAPI.get('/job_request/user', {headers:{'Authorization': `Bearer ${getStorage("userToken")}`}});
+            console.log("update",response);
+            const new_response = response.data.map(e=>readJobsAPI(e.job_id,e.status))
+            console.log("after new jobs", new_response)
+            
+            
+            //console.log(" after new job vacancies", mod_response);
             console.log("filtered", filtered);
         } catch (e) {
-
-            console.log("jobs failed", e);
+            console.log("jobs failed", e)
+            
             alert(e.message);
         }
     }
-    const GetSeekerDetails = async () => {
 
+    const readJobsAPI = async(job_vacancy_id, status)=>{
         try {
+            
+            const r = await jobAPI.get(`/job_vacancy/${job_vacancy_id}`, {headers:{'Authorization': `Bearer ${getStorage("userToken")}`}});
+            console.log("job detail",r);
+            const mod_response = {id: r.data.job_id, status: status, jobTitle: r.data.job_name, companyName: r.data.company_name, tags: r.data.tags, currency: r.data.salary.split('-')[0], salary: [r.data.salary.split('-')[1],r.data.salary.split('-')[2]], postDate: r.data.created_at.split('T')[0] , last_date: r.data.last_date.split('T')[0], location: r.data.location, empType: r.data.emp_type, exp: r.data.experience, workStyle: r.data.work_style, workingDays: r.data.working_days, jobDesc: r.data.job_desc ,jobReq: r.data.requirement,skills: /*r.data.skills.length?r.data.skills: */[{'skill': ""}]};
+            console.log("modded job", mod_response)
+            console.log("present job vac", jobVacancies)
+            setJobVacancies(prevJobVacancies => [...prevJobVacancies, mod_response]);
+            
+            //console.log(" after new job vacancies", mod_response);
+            //console.log("filtered", filtered);
+        } catch (e) {
+            console.log("jobs failed", e)
+            
+            alert(e.message);
+        }
+    }
+
+    
+    
+    const GetSeekerDetails = async ()=>{
+        
+        try{
             const response = await userAPI.get('/seeker/details', {
-                headers: {
+                headers:{
                     'Authorization': `Bearer ${getStorage("userToken")}`
                 }
             })
-            console.log("resp dat", response)
-            setUserData({ 'id': response.data.user_id, 'type': userData.type, 'skills': [] })
-
+         console.log("resp dat", response)
+         setUserData({'id': response.data.user_id, 'type': userData.type, 'skills': []})
+         
         }
-        catch (e) {
+        catch(e){
             console.log("user req failed", e);
         }
     }
-    const GetSeekerSkills = async () => {
-        try {
+    const GetSeekerSkills = async ()=>{
+        try{
             const response = await userAPI.get('/seeker/skill', {
-                headers: {
+                headers:{
                     'Authorization': `Bearer ${getStorage("userToken")}`
                 }
-            })
-            //console.log("skills received", response.data)
-            setUserData({ 'id': response.data?.user_id || Number(getStorage("userID")), 'type': 'seeker', 'skills': response.data })
-
-        }
-
-        catch (e) {
+        })
+        //console.log("skills received", response.data)
+        setUserData({'id': response.data?.user_id || Number(getStorage("userID")), 'type': 'seeker', 'skills': response.data})
+        
+    }
+    
+        catch(e){
             console.log("skill error", e)
         }
         console.log("user datum", userData);
     }
+    
 
-    const CreateJobRequest = async (jobId) => {
-        try {
-            const response = await jobAPI.post('/job_request', {
-                "job_id": Number(jobId),
-                "status": "Applied"
-            },
-                {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${getStorage("userToken")}`
-                    }
-                }
-            );
-            console.log("successfully created job request");
-            console.log(response);
-            callJobVacancyAPI();
-
-
-        } catch (e) {
-            console.log("jobs failed", e)
-
-            alert(e.message);
-        }
+    
+        
+    //console.log("applicants confirmed", jobApplicants)
+    //console.log("sidebar", sidebarState)
+    //console.log("filtered", filtered);
+    const filterStateSet=(fstate)=>{
+        setFilter(fstate);
+    }
+    const filterDataSet=(fdata)=>{
+        setParam({...fdata});
+    }
+    //console.log("filter parameters", filterparam);
+    const chooseEntry =(entry)=>{
+        //function for passing selected job opening card from child component to parent componenet
+        setEntry(entry);
     }
 
-    useEffect(() => { callJobVacancyAPI() }, [filterparam]);
+    const searchBar =(searchValue)=>{
+        setSearch(searchValue);
+    }
+    const expJob=(selection)=>{
+        //console.log("select", selection);
+        console.log("selected job vacncyt after mod", jobVacancies, "selection", selection)
+        const expEntry = jobVacancies.filter(e=>(e["id"]===selection?e:false));
+        console.log("expEntry ", expEntry)
+        setJobEntry(expEntry[0]);
+        if(userData.type == "employer")console.log("yep done");
+        
+        
+    }
+    console.log("selected entry: ", selectedEntry, " selected job: ", selectedJobEntry);    
+    
+    const listToDescParentFunc=()=>{
+        setSideBar(true);
+    }
+    //console.log("filtered applicants",filteredApplicants);
+    useEffect(() => {callJobVacancyAPI(COMPANYID)}, []);//only runs during initial render
+    useEffect(()=>{if(selectedEntry==null)
+        {setEntry(jobVacancies[0]?jobVacancies[0].id:null)
+         setJobEntry(jobVacancies[0]?jobVacancies[0]:null)
+         console.log("job entry refreshed", jobVacancies)
+        }
+        else{
+            //setJobEntry(jobVacancies[selectedEntry]);
+            if(jobVacancies.length!=0)
+            {expJob(selectedEntry);
+            console.log("job entry refreshed", jobVacancies)}
+        }},[jobVacancies])
+    useEffect(()=>{if(jobVacancies.length!=0 && selectedEntry!=null)expJob(selectedEntry)},[selectedEntry]);
+    
+    /*const resultGen=()=>{
+        
+            let result = demoInfo.filter(id => id["skills"].map((tag)=>(tag.includes(searchVal))).filter(Boolean).length?id:false)
+            //console.log(result)
+            setFilter(result);
+        
+        
+        //console.log(typeof(searchVal))
+        
 
+    }
+    useEffect(() => resultGen, [searchVal])
+    */
+    //console.log(`search=${searchVal}`);
+    //console.log(filtered)
+    //const result = demoInfo.filter((profiles) => profiles["tags"].map((tag)=>(tag.includes(searchVal))).filter(Boolean).length?profiles:null)
+    //console.log(result)
+    //const tags = [{"skills": ["hello", "hil", "how"]}, {"skills": ["helo", "hi", "how"]}, {"skills": ["kioo", "ka", "how"]},]
+    //const newtags = tags.filter(id => id["skills"].map((tag)=>(tag.includes(searchVal))).filter(Boolean).length?id:false)
+    //console.log(newtags)
+    //console.log(searchVal);
+
+    
+    //console.log(`search=${searchVal}`);
+   
     return (
         <div id="page">
-            <NavigationBar active="job/candidate" />
-
-            <div className="job-search">
-                {descriptionOn ?
-                    <div className="back-icon">
-                        <IconButton aria-label="back" onClick={() => { OpenDesc(false) }} sx={{ display: "flex", alignItems: "center", borderRadius: "50%", backgroundColor: "white", width: 35, height: 35 }}>
-                            <ArrowBackIosIcon sx={{ color: "black", position: "relative", left: "0.2rem" }} />
-                        </IconButton>
-                    </div>
+            <div className={`review-left-bar${sidebarState?" wide":""}`}>
+                {sidebarState?
+                <>
+                <JobCardExpanded data={selectedJobEntry} userData={userData}/>
+                <div className="back-button-review" onClick={()=>setSideBar(false)}><BackBtn outlineShape={"square"} butColor={"white"}/></div>
+                </>
+                :
+                <OpeningsListBar data={jobVacancies} userType={userType} userID={COMPANYID} pageType="review" chooseEntry={chooseEntry} searchBar={searchBar} listToDescParentFunc={listToDescParentFunc} preselectedEntry={selectedEntry} filterFunc={filterStateSet} />
+                }
+            </div>
+            {filterstat?
+            <div className="filter enabled">
+                <Filter title="Filter" passFilteredDataFn={filterDataSet}/>
+            </div>
+            :
+            <></>
+            }
+            
+            <div className={`applications-box${filterstat?" blur":""}${sidebarState?" wide":""}`}>
+            
+                
+                {selectedEntry!=null && filtered.length!=0?
+                    <JobCardExpanded data={selectedJobEntry}  userData={userData} type="approval"/>
                     :
                     <></>
                 }
-                <SearchBar toSearch="Search Jobs" onSearch={searchBar} />
+            
             </div>
-            <Jobs data={filtered} dataType="approval" createJobRequest={CreateJobRequest} dataToParentFn={OpenDesc} desc_state={descriptionOn} userData={userData} />
         </div>
     )
 }

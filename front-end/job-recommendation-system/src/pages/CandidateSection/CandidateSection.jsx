@@ -44,9 +44,11 @@ export default function CandidateSection() {
                     }
                 });
             //const mod_response = response.data.map(e => ({ id: e.job_id, jobTitle: e.job_name, companyName: e.company_name, tags: /*(e.tags.length ? e.tags : */[{ 'tag': "" }], currency: e.salary.split('-')[0], salary: [e.salary.split('-')[1], e.salary.split('-')[2]], postDate: e.created_at.split('T')[0], last_date: e.last_date.split('T')[0], location: e.location, empType: e.emp_type, exp: e.experience, jobDesc: e.job_desc, jobReq: e.requirement, skills: e.skills.length ? e.skills : [{ 'skill': "" }], workStyle: e.work_style, workingDays: e.working_days, applicationsReceived: e.job_seekers }))
-            //setCandidates(mod_response);
+            const mod_response = response.data.map(e=>({applicantID: e.user_id, username: e.username, first_name: e.first_name, last_name: e.last_name,city: e.city, country: e.country, location: e.location, experience: e.experience, profile_picture: e.profile_picture}))
+
+            setCandidates(mod_response);
             console.log(response);
-            console.log(" after new candidates", mod_response);
+            //console.log(" after new candidates", mod_response);
             //console.log("filtered", filtered);
         } catch (e) {
 
@@ -55,7 +57,7 @@ export default function CandidateSection() {
         }
     }
     
-        
+      console.log("candidates", candidates)  
 
     /*const CreateJobRequest = async (jobId) => {
         try {
@@ -93,7 +95,7 @@ export default function CandidateSection() {
             <div className="candidate-search">
                 <SearchBar toSearch="Search Candidates" onSearch={searchBar} />
             </div>
-            <Candidates/>
+            <Candidates candidateData={candidates}/>
         </div>
         
     )

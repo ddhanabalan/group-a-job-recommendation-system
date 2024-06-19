@@ -22,6 +22,7 @@ import ForgetPassword from './components/ForgetPassword/ForgetPassword';
 import ForgetPasswordResponse from './components/ForgetPassword/ForgetPasswordResponse';
 import ReviewApplications from './pages/ReviewApplications/ReviewApplications';
 import OtherEmployerProfile from './pages/profile page/OtherEmployerProfile';
+import SeekerJobStatusSection from './pages/SeekerJobStatusSection/SeekerJobStatusSection';
 function App() {
   useEffect(() => {
     setInterval(async () => {
@@ -83,6 +84,7 @@ function App() {
           <Route element={<SeekerRoutes />}>
             <Route path="/jobs" element={<JobSection />} />
             <Route path="/seeker/openings" element={<ReviewApplications userType="seeker"/>} />
+            <Route path="/seeker/applications" element={<SeekerJobStatusSection userType="seeker"/>} />
           </Route>
           {/* routes exclusive to recruiters */}
           <Route element={<EmployerRoutes />}>

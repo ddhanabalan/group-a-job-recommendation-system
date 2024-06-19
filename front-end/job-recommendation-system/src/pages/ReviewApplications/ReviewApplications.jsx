@@ -63,7 +63,7 @@ export default function ReviewApplications({userType}) {
         try {
             
             const response = await (userType==="employer" ? jobAPI.get(`/job_vacancy/company`, {headers:{'Authorization': `Bearer ${getStorage("userToken")}`}}): jobAPI.get(`/job_vacancy/company/${companyId}`));
-            const mod_response = response.data.map(e=>({id: e.job_id, jobTitle: e.job_name, companyName: e.company_name, tags: e.tags, currency: e.salary.split('-')[0], salary: [e.salary.split('-')[1],e.salary.split('-')[2]], postDate: e.created_at.split('T')[0] , last_date: e.last_date.split('T')[0], location: e.location, empType: e.emp_type, exp: e.experience, workStyle: e.work_style, workingDays: e.working_days, jobDesc: e.job_desc ,jobReq:e.requirement,skills: e.skills.length?e.skills: [{'skill': ""}], applicationsReceived: e.job_seekers}))
+            const mod_response = response.data.map(e=>({id: e.job_id, jobTitle: e.job_name, companyName: e.company_name, tags: e.tags, currency: e.salary.split('-')[0], salary: [e.salary.split('-')[1],e.salary.split('-')[2]], postDate: e.created_at.split('T')[0] , last_date: e.last_date.split('T')[0], location: e.location, poi: e.job_position, empType: e.emp_type, exp: e.experience, workStyle: e.work_style, workingDays: e.working_days, jobDesc: e.job_desc ,jobReq:e.requirement,skills: e.skills.length?e.skills: [{'skill': ""}], applicationsReceived: e.job_seekers}))
             setJobVacancies(mod_response);
             console.log(response);
             console.log(" after new job vacancies", mod_response);
@@ -164,7 +164,7 @@ export default function ReviewApplications({userType}) {
                 }         
                 });
             console.log("updated response", response)
-            const mod_response = response.data.map(e=>({applicantID: e.user_id, username: e.username, candidateName: (e.first_name + " " + e.last_name), city: e.city, country: e.country, location: e.location, experience: e.experience, profile_picture: e.profile_picture}))
+            const mod_response = response.data.map(e=>({applicantID: e.user_id, username: e.username, candidateName: (e.first_name + " " + e.last_name), first_name: e.first_name, last_name: e.last_name,city: e.city, country: e.country, location: e.location, experience: e.experience, profile_picture: e.profile_picture}))
             setApplicants(mod_response);
             console.log("applicants receiveed", mod_response);
             
@@ -201,7 +201,7 @@ export default function ReviewApplications({userType}) {
         console.log("expEntry ", expEntry)
         setJobEntry(expEntry[0]);
         if(userData.type == "employer")console.log("yep done");
-        if(expEntry[0].applicationsReceived.length)RequestJobApplications(expEntry[0].applicationsReceived);
+        if(expEntry[0].applicationsReceived)RequestJobApplications(expEntry[0].applicationsReceived);
         
     }
     console.log("selected entry: ", selectedEntry, " selected job: ", selectedJobEntry);    
