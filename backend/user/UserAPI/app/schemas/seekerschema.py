@@ -155,3 +155,16 @@ class SeekersProfile(SeekersDetails):
     language: Optional[List[SeekersLanguage]]
     user_type:Optional[str]
 
+
+class SeekerView(BaseModel):
+    user_id: Optional[int] = None
+    username: Optional[str] = None
+    profile_picture: Optional[str] = None
+    first_name: Optional[str] = None
+    last_name: Optional[str] = None
+    experience: Optional[int] = 0
+    city: Optional[str] = None
+    country: Optional[str] = None
+    skill: Optional[List[SeekersSkill]]
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None

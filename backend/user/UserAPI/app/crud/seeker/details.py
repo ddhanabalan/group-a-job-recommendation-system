@@ -67,6 +67,25 @@ def get(db: Session, user_id: int) -> Type[seekermodel.SeekersDetails] | None:
     except SQLAlchemyError:
         return
 
+def get_all(db: Session) -> List[Type[seekermodel.SeekersDetails]] | []:
+    """None
+    Retrieve seeker details based on user ID.
+
+    Args:
+        db (Session): SQLAlchemy database.py session.
+        user_id (int): User ID of the seeker.
+
+    Returns:
+        seekermodel.SeekersDetails: Seeker details if found, else None.
+    """
+    try:
+        return (
+            db.query(seekermodel.SeekersDetails)
+            .all()
+        )
+    except SQLAlchemyError:
+        return []
+
 
 def create(db: Session, seeker_details: seekerschema.SeekersDetails) -> bool:
     """

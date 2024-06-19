@@ -18,9 +18,9 @@ router = APIRouter()
 async def user_seeker_loc_type(
     db: Session = Depends(get_db), authorization: str = Header(...)
 ):
-    username = await get_current_user(authorization=authorization)
-    user_id = crud.seeker.base.get_userid_from_username(db=db, username=username)
-    user_loc_type = crud.loctype.get_all(db=db, user_id=user_id)
+    user = await get_current_user(authorization=authorization)
+    user_id = user.get("user_id")
+    user_loc_type = crud.seeker.loctype.get_all(db=db, user_id=user_id)
     return user_loc_type
 
 
@@ -31,7 +31,7 @@ async def create_seeker_loc_type(
     authorization: str = Header(...),
 ):
     await check_authorization(authorization)
-    created_loc_type = crud.loctype.create(db, loc_type)
+    created_loc_type = crud.seeker.loctype.create(db, loc_type)
     if not created_loc_type:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -45,8 +45,8 @@ async def delete_seeker_loc_type(
     loc_type_id: int, db: Session = Depends(get_db), authorization: str = Header(...)
 ):
     username = await get_current_user(authorization=authorization)
-    user_id = crud.seeker.base.get_userid_from_username(db=db, username=username)
-    loc_type_data = crud.loctype.get(db=db, id=loc_type_id)
+    user_id = crud.seeker.seeker.base.get_userid_from_username(db=db, username=username)
+    loc_type_data = crud.seeker.loctype.get(db=db, id=loc_type_id)
 
     # Check if loc_type_data is None
     if loc_type_data is None:
@@ -60,7 +60,7 @@ async def delete_seeker_loc_type(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Person Arent Allow to acc",
         )
-    deleted = crud.loctype.delete(db, loc_type_id)
+    deleted = crud.seeker.loctype.delete(db, loc_type_id)
     if not deleted:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -77,7 +77,7 @@ async def update_seeker_loc_type(
     authorization: str = Header(...),
 ):
     await check_authorization(authorization)
-    updated_loc_type = crud.loctype.update(db, loc_type_id, loc_type)
+    updated_loc_type = crud.seeker.loctype.update(db, loc_type_id, loc_type)
     if not updated_loc_type:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
