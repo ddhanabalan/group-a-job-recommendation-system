@@ -84,3 +84,6 @@ class UserUpdate(BaseModel):
     username: Optional[str] = None
     password: Optional[str] = None
     email: Optional[EmailStr] = None
+
+class ForgotPasswordIn(BaseModel):
+    email: EmailStr

@@ -423,12 +423,12 @@ async def register(
 
 
 @app.post("/forgot_password", status_code=status.HTTP_200_OK)
-async def forgot_password(email: EmailStr = Body(...), db: Session = Depends(get_db)):
+async def forgot_password(forgot_password: authschema.ForgotPasswordIn, db: Session = Depends(get_db)):
     credential_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Email"
     )
     try:
-        user = authcrud.get_by_email(db=db, email=email)
+        user = authcrud.get_by_email(db=db, email=forgot_password.email)
         if not user:
             raise credential_exception
         if not user.verified:
