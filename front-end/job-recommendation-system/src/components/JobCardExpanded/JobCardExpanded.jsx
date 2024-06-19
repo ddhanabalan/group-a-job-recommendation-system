@@ -14,7 +14,7 @@ export default function JobCardExpanded({ data=[], createJobRequest=null, userDa
     //console.log(userData.appliedJobs.includes("4"))
     const [submit, setSubmit] = useState(false);
     //const [tag_state,setTagState] = useState(false);
-    const userSkills = (userData.type==="employer" && data.length?null:data.skills?.map(skill => userData.skills.includes(skill)?true:false).filter(Boolean).length)
+    const userSkills = (userData.type==="employer" || data.length)?(null):(data.skills?.map(skill => userData.skills.includes(skill)?true:false).filter(Boolean).length)
     const [skillIndicator, setSkillIndicator] = useState(true);
     
 
@@ -38,8 +38,7 @@ export default function JobCardExpanded({ data=[], createJobRequest=null, userDa
         <>
         
         <div className="job-desc-container">
-            {data.length?
-                    <>
+            
                     <div className="job-desc-header">
                         <div className='job-desc-div1'>
                             <h1 className='job-desc-h1'>{data?.jobTitle || ""}</h1>
@@ -61,7 +60,7 @@ export default function JobCardExpanded({ data=[], createJobRequest=null, userDa
                 </div>
                 <div className='job-desc-div2'>
                     <div className='job-desc-img-container'>
-                        {/* <img src="" alt="" /> */}
+                        {data['profile_picture'] ? <img src={data['profile_picture']} alt="" /> : <></>}
                     </div>
                     <p className='job-desc-time-p'>{data.postDate}</p>
                 </div>
@@ -114,10 +113,8 @@ export default function JobCardExpanded({ data=[], createJobRequest=null, userDa
                             <></>
                         }    
                     </div>
-                    </>
-                    :
-                    <></>
-            }
+                    
+                    
             {userData.type=="employer"?
                 <></>
                 :

@@ -229,7 +229,7 @@ export default function JobVacancyForm({ data = {} }) {
         //console.log("preferences", preferences)
         //console.log("form data", data)
         if (Object.keys(prefError).length === 0) {
-            setData({ ...data, ...preferences, ...prefilleddata });
+            setData({ ...data, ...preferences, ...prefilleddata,'profile_picture': profile_picture });
             { preview ? console.log(finalApplicationData) : setPreview(true) }
         }
     }
