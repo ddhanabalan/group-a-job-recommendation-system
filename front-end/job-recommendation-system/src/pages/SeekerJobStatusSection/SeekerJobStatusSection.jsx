@@ -24,6 +24,7 @@ export default function SeekerJobStatusSection({userType}) {
     const [searchVal, setSearch] = useState("");
     //demoInfo is example vacancy profiles
     const [jobVacancies, setJobVacancies] = useState([]);
+    const [newVacancy, setNewVacancy] = useState({});
     const [jobApplicants, setApplicants] = useState([]);
     /*const demoInfo = [{ },
                       { id: 1, jobTitle: "Java Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "RS", salary: ["5000","10000"], postDate: "13/9/23" , location: 'Moscow', empType: 'Internship', exp: '1-5 years', jobDesc: "This is for demo purpose" ,jobReq:"This is for demo purpose",skills: ["java", "AI"], applicationsReceived: [1,2,3,4,5,7,8,9]},
@@ -50,7 +51,7 @@ export default function SeekerJobStatusSection({userType}) {
     
     const [filterstat, setFilter] = useState(false);
     const [filterparam, setParam] = useState({});
-    const filtered = (jobVacancies.length!=0?jobVacancies.filter(id => id["skills"].map((tag)=>(tag["skill"].toLowerCase().includes(searchVal.toLowerCase()))).filter(Boolean).length?id:false):[]);
+    //const filtered = (jobVacancies.length!=0?jobVacancies.filter(id => id["skills"].map((tag)=>(tag["skill"].toLowerCase().includes(searchVal.toLowerCase()))).filter(Boolean).length?id:false):[]);
     
     //const filtered = []
     const [selectedJobEntry,setJobEntry] = useState(null);
@@ -69,7 +70,7 @@ export default function SeekerJobStatusSection({userType}) {
             
             
             //console.log(" after new job vacancies", mod_response);
-            console.log("filtered", filtered);
+            //console.log("filtered", filtered);
         } catch (e) {
             console.log("jobs failed", e)
             
@@ -77,6 +78,9 @@ export default function SeekerJobStatusSection({userType}) {
         }
     }
 
+    const updateVacancy =(response)=>{
+        setNewVacancy(response);
+    }
     const readJobsAPI = async(job_vacancy_id, status)=>{
         try {
             
@@ -85,7 +89,8 @@ export default function SeekerJobStatusSection({userType}) {
             const mod_response = {id: r.data.job_id, status: status, jobTitle: r.data.job_name, companyName: r.data.company_name, tags: r.data.tags, currency: r.data.salary.split('-')[0], salary: [r.data.salary.split('-')[1],r.data.salary.split('-')[2]], postDate: r.data.created_at.split('T')[0] , last_date: r.data.last_date.split('T')[0], location: r.data.location, empType: r.data.emp_type, exp: r.data.experience, workStyle: r.data.work_style, workingDays: r.data.working_days, jobDesc: r.data.job_desc ,jobReq: r.data.requirement,skills: /*r.data.skills.length?r.data.skills: */[{'skill': ""}]};
             console.log("modded job", mod_response)
             console.log("present job vac", jobVacancies)
-            setJobVacancies(prevJobVacancies => [...prevJobVacancies, mod_response]);
+            updateVacancy(mod_response);
+            
             
             //console.log(" after new job vacancies", mod_response);
             //console.log("filtered", filtered);
@@ -182,7 +187,9 @@ export default function SeekerJobStatusSection({userType}) {
             console.log("job entry refreshed", jobVacancies)}
         }},[jobVacancies])
     useEffect(()=>{if(jobVacancies.length!=0 && selectedEntry!=null)expJob(selectedEntry)},[selectedEntry]);
-    
+    useEffect(() => 
+        setJobVacancies([...jobVacancies, newVacancy]), [newVacancy])
+    console.log("updated vacancies", jobVacancies)
     /*const resultGen=()=>{
         
             let result = demoInfo.filter(id => id["skills"].map((tag)=>(tag.includes(searchVal))).filter(Boolean).length?id:false)
@@ -211,14 +218,11 @@ export default function SeekerJobStatusSection({userType}) {
     return (
         <div id="page">
             <div className={`review-left-bar${sidebarState?" wide":""}`}>
-                {sidebarState?
-                <>
-                <JobCardExpanded data={selectedJobEntry} userData={userData}/>
-                <div className="back-button-review" onClick={()=>setSideBar(false)}><BackBtn outlineShape={"square"} butColor={"white"}/></div>
-                </>
-                :
+            {jobVacancies.length?
                 <OpeningsListBar data={jobVacancies} userType={userType} userID={COMPANYID} pageType="review" chooseEntry={chooseEntry} searchBar={searchBar} listToDescParentFunc={listToDescParentFunc} preselectedEntry={selectedEntry} filterFunc={filterStateSet} />
-                }
+                :
+                <></>
+            }
             </div>
             {filterstat?
             <div className="filter enabled">
@@ -231,7 +235,7 @@ export default function SeekerJobStatusSection({userType}) {
             <div className={`applications-box${filterstat?" blur":""}${sidebarState?" wide":""}`}>
             
                 
-                {selectedEntry!=null && filtered.length!=0?
+                {selectedEntry!=null && filtered.length!=0 && jobVacancies.length?
                     <JobCardExpanded data={selectedJobEntry}  userData={userData} type="approval"/>
                     :
                     <></>

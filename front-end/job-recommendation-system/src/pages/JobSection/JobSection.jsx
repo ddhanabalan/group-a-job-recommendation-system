@@ -38,7 +38,7 @@ export default function JobSection() {
         try {
             const response = await jobAPI.get('/job_vacancy/',
                 {
-                    params: {"title": searchVal, ...filterparam },
+                    params: searchVal!=""?{"title": searchVal, ...filterparam }:{...filterparam},
                     paramsSerializer: params => {
                         // Custom params serializer if needed
                         return Object.entries(params).map(([key, value]) => {

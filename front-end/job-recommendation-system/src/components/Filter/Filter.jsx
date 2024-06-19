@@ -23,7 +23,7 @@ export default function Filter({ title, userType=null, passFilteredDataFn = null
     const [location, SetLocation] = useState('');
     const [locations, SetLocations] = useState([{ tag: "Bangalore", id: uuid() }, { tag: "Chennai", id: uuid() }]); 
     const [salaryCutOff, SetSalaryCutOff] = useState(DEFAULTSLIDERVALUE * SALARYMULTIPLIER);
-    const [sortOrder, SetSortOrder] = useState('None');
+    const [sortOrder, SetSortOrder] = useState('asc');
     const [skillsList, setSkillsList] = useState([])
     const skillsAPI = async () => {
         try {
@@ -42,7 +42,7 @@ export default function Filter({ title, userType=null, passFilteredDataFn = null
     useEffect(() => {
         const tags = domains.map(e => e.tag);
         const location = locations.map(e => e.tag);
-        const extras = {'sortOrder': sortOrder, 'salaryCutOff' : salaryCutOff};
+        const extras = {'sort': "created_at", "order": sortOrder, 'salary' : salaryCutOff};
         const filterData = (userType=="employer")?{ tags, ...preferences, location}: {tags, ...preferences, location, ...extras};
     
         const finalFilterData = Object.keys(filterData)
@@ -105,6 +105,11 @@ export default function Filter({ title, userType=null, passFilteredDataFn = null
         SetPreferences({ ...preferences, [dataType]: Object.entries(checkedItems).filter(([key, value]) => value === true).map(([key]) => key) });
     }
 
+    const handleSort = (value)=>{
+        if(value=="new")SetSortOrder("new");
+        else SetSortOrder("old")
+    }
+
 
     return (
         <div className="FilterContainer">
@@ -119,7 +124,7 @@ export default function Filter({ title, userType=null, passFilteredDataFn = null
                     <br/>
                     <div className='sorting-options'>
                     <FormControl>
-                        <RadioGroup onChange={(e,val)=>SetSortOrder(val)}>
+                        <RadioGroup onChange={(e,val)=>handleSort(val)}>
                             <FormControlLabel value="new" control={<Radio />} label="Newest jobs first"  />
                             <FormControlLabel value="old" control={<Radio />} label="Oldest jobs first" />      
                         </RadioGroup>
@@ -139,8 +144,8 @@ export default function Filter({ title, userType=null, passFilteredDataFn = null
                     </>
                     :
                     <>
-                    <MultipleOptions heading={"job location"} options={["On-site", "Hybrid", "Work from home"]} dataType="loc_type" onChange={handleCheckboxChange} />
-                    <MultipleOptions heading={"working days"} options={["Monday - Friday", "Monday - Saturday"]} dataType="workTime" onChange={handleCheckboxChange} />
+                    <MultipleOptions heading={"Preferred Work Environment"} options={["On-site", "Hybrid", "Work from home"]} dataType="work_style" onChange={handleCheckboxChange} />
+                    <MultipleOptions heading={"Working Days"} options={["Monday-Friday", "Monday-Saturday"]} dataType="working_days" onChange={handleCheckboxChange} />
                     <AddTags locationFieldAutoValue={googleLocationAutoField} updatelocationFieldAutoValue={setGoogleAutoField} value={location} tags={locations} deleteFn={handleDeleteLocation} changeFn={handleChangeLocation} updateFn={handleLocation} data={{ heading: "Preferred job locations", inputPlaceholder: "Kerala", isLocation: true }} />
                     <MultipleOptions heading={"Employment Type"} options={["Full-time", "Internship", "Temporary"]} dataType="emp_type" onChange={handleCheckboxChange} />
 
