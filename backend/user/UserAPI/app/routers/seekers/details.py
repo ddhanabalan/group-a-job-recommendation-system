@@ -101,28 +101,28 @@ async def get_seeker_details_list_by_ids(
 ):
     user_details = []
     for user_id in user_ids.user_ids:
-        user_details = crud.seeker.details.get(db=db, user_id=user_id)
-        user_id = user_details.user_id
+        user_detail = crud.seeker.details.get(db=db, user_id=user_id)
+        user_id = user_detail.user_id
         user_skills = crud.seeker.skill.get_all(db=db, user_id=user_id)
 
-        if user_details.profile_picture is not None:
-            profile_pic = user_details.profile_picture
+        if user_detail.profile_picture is not None:
+            profile_pic = user_detail.profile_picture
             profile_picture64 = await encode64_image(profile_pic)
         else:
             profile_picture64 = None
 
         seeker_view = seekerschema.SeekerView(
-            user_id=user_details.user_id,
-            username=user_details.username,
+            user_id=user_detail.user_id,
+            username=user_detail.username,
             profile_picture=profile_picture64,
-            first_name=user_details.first_name,
-            last_name=user_details.last_name,
-            experience=user_details.experience,
-            city=user_details.city,
-            country=user_details.country,
+            first_name=user_detail.first_name,
+            last_name=user_detail.last_name,
+            experience=user_detail.experience,
+            city=user_detail.city,
+            country=user_detail.country,
             skill=user_skills,
-            created_at=user_details.created_at,
-            updated_at=user_details.updated_at
+            created_at=user_detail.created_at,
+            updated_at=user_detail.updated_at
         )
         user_details.append(seeker_view)
         return user_details
