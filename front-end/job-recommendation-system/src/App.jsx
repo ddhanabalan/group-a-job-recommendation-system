@@ -25,22 +25,23 @@ import OtherEmployerProfile from './pages/profile page/OtherEmployerProfile';
 function App() {
   useEffect(() => {
     setInterval(async () => {
-      try {
-        const response = getStorage("refToken") !== "undefined" && await axios.get('/refresh_token', {
-          headers: {
-            'Authorization': `Bearer ${getStorage("refToken")}`
-          }
-        })
-        getStorage("refToken")!=="undefined" && updateAuth(response.data)
-        console.log(response)
-      } catch (e) {
-        console.log(e)
+      if (getStorage("refToken")) {
+        try {
+          const response = await axios.get('/refresh_token', {
+            headers: {
+              'Authorization': `Bearer ${getStorage("refToken")}`
+            }
+          })
+          updateAuth(response.data)
+        } catch (e) {
+          console.log(e)
+        }
       }
-    }, 20000)
+      }, 25*60000)//refresh token every 30 minutes
   })
   const updateAuth = (data) => {
-    setStorage("refToken", data.refreshToken)
-    setStorage("userToken", data.accessToken)
+    setStorage("refToken", data.refresh_token)
+    setStorage("userToken", data.access_token)
   }
   useEffect(() => {
     SetUser(getStorage("userType"))
