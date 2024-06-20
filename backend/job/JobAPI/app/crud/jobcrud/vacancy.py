@@ -164,13 +164,13 @@ def get_filtered_jobs(
     if emp_type:
         query = query.filter(jobmodel.JobVacancy.emp_type.in_(emp_type))
     if loc_type:
-        query = query.filter(jobmodel.JobVacancy.loc_type.in_(loc_type))
+        query = query.filter(jobmodel.JobVacancy.work_style.in_(loc_type))
     if location:
         query = query.filter(jobmodel.JobVacancy.location.in_(location))
     if experience:
         query = query.filter(jobmodel.JobVacancy.experience.in_(experience))
     if working_day:
-        query = query.filter(jobmodel.JobVacancy.working_day.in_(working_day))
+        query = query.filter(jobmodel.JobVacancy.working_days.in_(working_day))
     if salary is not None:
         middle_salary_expr = cast(
             func.SUBSTRING_INDEX(

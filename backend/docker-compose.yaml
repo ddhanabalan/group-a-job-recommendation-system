@@ -90,14 +90,15 @@ services:
 
   modelapi:
     build:
-      context: ./user
+      context: ./model
       dockerfile: Dockerfile
     ports:
       - "8004:8000"
     depends_on:
-      - mysql_server
+      mysql_server:
+        condition: service_healthy
     volumes:
-      - ./Model/ModelAPI:/app
+      - ./model/ModelAPI:/app
     environment:
       SQL_HOST: mysql_server
       AUTH_API_HOST: authapi
