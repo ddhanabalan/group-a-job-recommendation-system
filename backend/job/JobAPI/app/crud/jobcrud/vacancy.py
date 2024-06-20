@@ -164,7 +164,7 @@ def get_filtered_jobs(
     if emp_type:
         query = query.filter(jobmodel.JobVacancy.emp_type.in_(emp_type))
     if loc_type:
-        query = query.filter(jobmodel.JobVacancy.loc_type.in_(loc_type))
+        query = query.filter(jobmodel.JobVacancy.work_style.in_(loc_type))
     if location:
         query = query.filter(jobmodel.JobVacancy.location.in_(location))
     if experience:
