@@ -1,9 +1,19 @@
+import logging
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from .database import engine
-from .models import jobmodel
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+import httpx
+
+
+from .scheduler import job_recommendation_scheduler
 from .routers import router
+from .database import engine
+
+
+from .models import Base
+
+Base.metadata.create_all(bind=engine)
 
 origins = [
     "*",
@@ -15,6 +25,9 @@ origins = [
     "http://localhost:5500",
 ]
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 app = FastAPI()
 
 app.add_middleware(
@@ -24,6 +37,19 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-jobmodel.Base.metadata.create_all(bind=engine)
+
+
+
+
+@app.on_event("startup")
+async def startup_event():
+    logger.info("Scheduler started!")
+    job_recommendation_scheduler.start()
+
+
+@app.on_event("shutdown")
+async def shutdown_event():
+    job_recommendation_scheduler.shutdown()
+    logger.info("Scheduler stopped!")
 
 app.include_router(router=router)
