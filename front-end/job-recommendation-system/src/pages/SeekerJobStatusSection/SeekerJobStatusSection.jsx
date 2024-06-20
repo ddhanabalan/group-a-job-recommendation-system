@@ -12,6 +12,7 @@ import CandidateCard from "../../components/CandidateCard/CandidateCard";
 import { set } from "react-hook-form";
 import { jobAPI, userAPI } from "../../api/axios";
 import { LocalConvenienceStoreOutlined } from "@mui/icons-material";
+import NavigationBar from "../../components/NavigationBar/NavigationBar";
 
 export default function SeekerJobStatusSection({userType}) {
     const COMPANYID = (userType==="employer"?getStorage("userID"):getStorage("guestUserID"));
@@ -36,16 +37,7 @@ export default function SeekerJobStatusSection({userType}) {
                       { id: 7, jobTitle: "Ruby Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "RS", salary: ["5000","10000"], postDate: "13/9/23" , location: 'London', empType: 'Full-time', exp: '5-10 years', jobDesc: "This is for demo purpose" ,jobReq:"This is for demo purpose",skills: ["python", "AI", "Django"], applicationsReceived: [1,3,8,9]},
                       { id: 8, jobTitle: "Golang Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "RS", salary: ["5000","10000"], postDate: "13/9/23" , location: 'India', empType: 'Internship', exp: '1-5 years', jobDesc: "This is for demo purpose" ,jobReq:"This is for demo purpose",skills: ["python", "AI", "Django"], applicationsReceived: [1,2,9]},
                       { id: 9,jobTitle: "Game Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "RS", salary: ["5000","10000"], postDate: "13/9/23" , location: 'London', empType: 'Full-time', exp: '5-10 years', jobDesc: "This is for demo purpose" ,jobReq:"This is for demo purpose",skills: ["python", "AI", "Django"], applicationsReceived: [1,5,7,8,9]},]*/
-    const profileInfo = [{ applicantID: 1,candidateName: "Amy Williams", location: "Kerala, India", tags: ["on-site", "software / IT", "Monday-Friday"], experience:2},
-                      { applicantID: 2,candidateName: "Galvin Serie", location: "Kerala, India", tags: ["on-site", "software / IT", "Monday-Friday"], experience:2},
-                      { applicantID: 3,candidateName: "Cole Nicol", location: "Kerala, India", tags: ["on-site", "software / IT", "Monday-Friday"], experience:2},
-                      { applicantID: 4,candidateName: "Salvin Drone", location: "Kerala, India", tags: ["on-site", "software / IT", "Monday-Friday"], experience:2},
-                      { applicantID: 5,candidateName: "Sepen Zen", location: "Kerala, India", tags: ["on-site", "software / IT", "Monday-Friday"], experience:2},
-                      { applicantID: 6,candidateName: "Zeke John", location: "Kerala, India", tags: ["on-site", "software / IT", "Monday-Friday"], experience:2},
-                      { applicantID: 7,candidateName: "Keire Helen", location: "Kerala, India", tags: ["on-site", "software / IT", "Monday-Friday"], experience:2},
-                      { applicantID: 8,candidateName: "Karen Laneb", location: "Kerala, India", tags: ["on-site", "software / IT", "Monday-Friday"], experience:2},
-                      { applicantID: 9,candidateName: "Javan Dille", location: "Kerala, India", tags: ["on-site", "software / IT", "Monday-Friday"], experience:2} 
-                    ]
+   
 
 
     
@@ -57,6 +49,7 @@ export default function SeekerJobStatusSection({userType}) {
     const [selectedJobEntry,setJobEntry] = useState(null);
     //const [filteredApplicants, setfilteredApplicants]=useState(profileInfo.filter(applicants=>(selectedJobEntry["applicationsReceived"].includes(applicants["applicantID"])?applicants:false)));
     const [sidebarState, setSideBar] = useState(false);
+    const [queryJob, setQueryJob] = useState({});
     const callJobVacancyAPI= async (companyId)=>{
         if(userType==="seeker")
         {GetSeekerSkills();
@@ -65,9 +58,12 @@ export default function SeekerJobStatusSection({userType}) {
             
             const response = await jobAPI.get('/job_request/user', {headers:{'Authorization': `Bearer ${getStorage("userToken")}`}});
             console.log("update",response);
-            const new_response = response.data.map(e=>readJobsAPI(e.job_id,e.status))
-            console.log("after new jobs", new_response)
-            
+            const new_response = response.data.map(async(e) => {const jobDetails= await readJobsAPI(e.job_id,e.status)
+                                                                return jobDetails;
+                                                                })
+            const detailedJobs = await Promise.all(new_response)
+            console.log("after new jobs", detailedJobs)
+            setJobVacancies(detailedJobs);
             
             //console.log(" after new job vacancies", mod_response);
             //console.log("filtered", filtered);
@@ -78,18 +74,16 @@ export default function SeekerJobStatusSection({userType}) {
         }
     }
 
-    const updateVacancy =(response)=>{
-        setNewVacancy(response);
-    }
+    
     const readJobsAPI = async(job_vacancy_id, status)=>{
         try {
             
             const r = await jobAPI.get(`/job_vacancy/${job_vacancy_id}`, {headers:{'Authorization': `Bearer ${getStorage("userToken")}`}});
             console.log("job detail",r);
-            const mod_response = {id: r.data.job_id, status: status, jobTitle: r.data.job_name, companyName: r.data.company_name, tags: r.data.tags, currency: r.data.salary.split('-')[0], salary: [r.data.salary.split('-')[1],r.data.salary.split('-')[2]], postDate: r.data.created_at.split('T')[0] , last_date: r.data.last_date.split('T')[0], location: r.data.location, empType: r.data.emp_type, exp: r.data.experience, workStyle: r.data.work_style, workingDays: r.data.working_days, jobDesc: r.data.job_desc ,jobReq: r.data.requirement,skills: /*r.data.skills.length?r.data.skills: */[{'skill': ""}]};
+            const mod_response = {id: r.data.job_id, status: status, jobTitle: r.data.job_name, companyUsername: r.data.company_username, companyName: r.data.company_name, tags: r.data.tags, currency: r.data.salary.split('-')[0], salary: [r.data.salary.split('-')[1],r.data.salary.split('-')[2]], postDate: r.data.created_at.split('T')[0] , last_date: r.data.last_date.split('T')[0], location: r.data.location, empType: r.data.emp_type, exp: r.data.experience, workStyle: r.data.work_style, workingDays: r.data.working_days, jobDesc: r.data.job_desc ,jobReq: r.data.requirement,skills: /*r.data.skills.length?r.data.skills: */[{'skill': ""}]};
             console.log("modded job", mod_response)
             console.log("present job vac", jobVacancies)
-            updateVacancy(mod_response);
+            return mod_response
             
             
             //console.log(" after new job vacancies", mod_response);
@@ -187,8 +181,7 @@ export default function SeekerJobStatusSection({userType}) {
             console.log("job entry refreshed", jobVacancies)}
         }},[jobVacancies])
     useEffect(()=>{if(jobVacancies.length!=0 && selectedEntry!=null)expJob(selectedEntry)},[selectedEntry]);
-    useEffect(() => 
-        setJobVacancies([...jobVacancies, newVacancy]), [newVacancy])
+    //useEffect(() => {if(Object.keys(newVacancy).length !=0)setJobVacancies([...jobVacancies, newVacancy]);}, [newVacancy])
     console.log("updated vacancies", jobVacancies)
     /*const resultGen=()=>{
         
@@ -218,7 +211,7 @@ export default function SeekerJobStatusSection({userType}) {
     return (
         <div id="page">
             <div className={`review-left-bar${sidebarState?" wide":""}`}>
-            {jobVacancies.length?
+            {jobVacancies.length!=0?
                 <OpeningsListBar data={jobVacancies} userType={userType} userID={COMPANYID} pageType="review" chooseEntry={chooseEntry} searchBar={searchBar} listToDescParentFunc={listToDescParentFunc} preselectedEntry={selectedEntry} filterFunc={filterStateSet} />
                 :
                 <></>
@@ -231,11 +224,11 @@ export default function SeekerJobStatusSection({userType}) {
             :
             <></>
             }
-            
+            <NavigationBar active="job-applications"/>
             <div className={`applications-box${filterstat?" blur":""}${sidebarState?" wide":""}`}>
             
                 
-                {selectedEntry!=null && filtered.length!=0 && jobVacancies.length?
+                {selectedEntry!=null /*&& filtered.length!=0*/ && jobVacancies.length!=0?
                     <JobCardExpanded data={selectedJobEntry}  userData={userData} type="approval"/>
                     :
                     <></>

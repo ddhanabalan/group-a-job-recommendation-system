@@ -90,7 +90,7 @@ export default function CandidateSection() {
             <div className="job-filter">
             <Filter title="Filter applicants" userType="employer" passFilteredDataFn={filterDataSet} />            
             </div>
-            <NavigationBar active="employer-profile" />
+            <NavigationBar active="candidates" />
             <StatsAI value="candidates"/>
             <div className="candidate-search">
                 <SearchBar toSearch="Search Candidates" onSearch={searchBar} />

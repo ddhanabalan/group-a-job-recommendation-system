@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-// let ip="192.168.0.101";
+//let ip="172.16.4.8";
 let ip="localhost";
 
 export const authAPI =axios.create({
