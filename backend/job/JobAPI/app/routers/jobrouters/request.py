@@ -29,6 +29,14 @@ async def create_job_request(
         )
     return {"detail": "Job Request created successfully"}
 
+@job_request_router.get("/user", response_model=List[jobschema.JobRequest])
+async def read_job_requests_by_user_id(
+    authorization: str = Header(...),db: Session = Depends(get_db)
+):
+    user = await get_current_user(authorization=authorization)
+    user_id = user.get("user_id")
+    return jobcrud.request.get_all(db, user_id)
+
 
 # Read job request by ID
 @job_request_router.get("/{job_request_id}", response_model=jobschema.JobRequest)
@@ -74,10 +82,3 @@ async def delete_job_request(
 
 
 # Get job requests by user ID
-@job_request_router.get("/user", response_model=List[jobschema.JobRequest])
-async def read_job_requests_by_user_id(
-    db: Session = Depends(get_db), authorization: str = Header(...)
-):
-    user = await get_current_user(authorization=authorization)
-    user_id = user.get("user_id")
-    return jobcrud.request.get_all(db, user_id)

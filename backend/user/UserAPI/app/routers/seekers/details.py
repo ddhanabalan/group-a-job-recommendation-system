@@ -54,8 +54,7 @@ async def get_seeker_details_list(
             )
     if location:
         filters.append(
-            lambda user_details: user_details.location.lower() == (
-                    user_details.city.lower() + ', ' + user_details.country.lower())
+            lambda user_details: location.lower() in user_details.city.lower() or location.lower() in user_details.country.lower()
         )
 
     # Fetch user details based on filters
@@ -102,7 +101,8 @@ async def get_seeker_details_list_by_ids(
     user_details = []
     for user_id in user_ids.user_ids:
         user_detail = crud.seeker.details.get(db=db, user_id=user_id)
-        user_id = user_detail.user_id
+        if user_detail is None:
+            raise HTTPException(status_code=404, detail="User not found")
         user_skills = crud.seeker.skill.get_all(db=db, user_id=user_id)
 
         if user_detail.profile_picture is not None:
@@ -125,7 +125,7 @@ async def get_seeker_details_list_by_ids(
             updated_at=user_detail.updated_at
         )
         user_details.append(seeker_view)
-        return user_details
+    return user_details
 
 
 @router.put("/", status_code=status.HTTP_200_OK)

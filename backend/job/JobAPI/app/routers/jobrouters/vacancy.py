@@ -78,7 +78,11 @@ async def create_job_vacancy(
         jobcrud.skills.create(db, job_skill_data)
 
     return {"details": "Job Created"}
-
+@job_vacancy_router.get("/model/data")
+async def read_job_vacancies_by_company_id(
+    db: Session = Depends(get_db)
+):
+    return jobcrud.vacancy.get_all_for_model(db)
 
 @job_vacancy_router.get("/company")
 async def read_job_vacancies_by_company_id(
@@ -138,9 +142,17 @@ async def update_job_vacancy(
             detail="Data not updated to Database",
         )
     for skill in skills_delete:
-        jobcrud.skills.delete(db, skill)
+        if not jobcrud.skills.delete(db, skill):
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Data not deleted from Database",
+            )
     for skill in skills:
-        jobcrud.skills.create(db, jobschema.JobSkillsCreate(**{"job_id": job_vacancy_id, "skill": skill}))
+        if not jobcrud.skills.create(db, jobschema.JobSkillsCreate(job_id=job_vacancy_id, skill=skill)):
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Data not updated to Database",
+            )
     return {"details": "Job Vacancy Updated successfully"}
 
 
@@ -158,10 +170,19 @@ async def delete_job_vacancy(
         )
 
     # Delete associated skills
-    jobcrud.skills.delete_by_vacancy_id(db, job_vacancy_id)
+    if not jobcrud.skills.delete_by_vacancy_id(db, job_vacancy_id):
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Data not deleted from Database",
+        )
 
     # Finally, delete the job vacancy
-    jobcrud.vacancy.delete(db, job_vacancy_id)
+    if not jobcrud.vacancy.delete(db, job_vacancy_id):
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Data not deleted from Database",
+        )
+
 
     return {
         "details": "Job Vacancy and all associated skills and tags deleted successfully"
@@ -169,8 +190,4 @@ async def delete_job_vacancy(
 
 
 # Get All data from job vacancy for model
-@job_vacancy_router.get("/model/data")
-async def read_job_vacancies_by_company_id(
-    db: Session = Depends(get_db)
-):
-    return jobcrud.vacancy.get_all_for_model(db)
+
