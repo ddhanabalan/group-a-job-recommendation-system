@@ -16,7 +16,7 @@ export default function ExperienceBox({ access, childData, reloadFn, showSuccess
     }, [childData])
     const [expdata, SetExpdata] = useState([]);
     const [newExp, SetNewExp] = useState(false)
-    const [totalExp, SetTotalExp] = useState()
+    const [totalExp, SetTotalExp] = useState(0)
     useEffect(() => {
         updateProfile()
     }, [totalExp])
@@ -28,9 +28,28 @@ export default function ExperienceBox({ access, childData, reloadFn, showSuccess
             console.log(e)
         }
     }
-    const calcExperience = (e) => {
-        SetTotalExp(totalExp + (e.end_year - e.start_year))
+    const updateTotalExperience = async(data) => {
+        try {
+            const response = await userAPI.put('/seeker/details', {"experience": data },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${getStorage("userToken")}`
+                    }
+                }
+            );
+
+
+        } catch (e) {
+            console.log(e)
+            // alert(e.message)
+        }
     }
+
+    useEffect(() => {
+        console.log("totalExp", totalExp)
+        updateTotalExperience(totalExp)
+    },[totalExp])
+    
     const addExperience = async (e) => {
         //accepts new Experience data and adds it into existing array of Experiences
         try {
@@ -39,7 +58,7 @@ export default function ExperienceBox({ access, childData, reloadFn, showSuccess
                     'Authorization': `Bearer ${getStorage("userToken")}`
                 }
             });
-            calcExperience(e)
+            // SetTotalExp(parseInt(totalExp) + (parseInt(e.end_year) - parseInt(e.start_year)))
             response.request.status === 201 && showSuccessMsg()
             console.log(response)
             SetNewExp(false)
@@ -75,6 +94,7 @@ export default function ExperienceBox({ access, childData, reloadFn, showSuccess
         //updates existing Experience data from array. new data is passed in along with existing data id
         const { id, ...passData } = data
         console.log("passData", passData)
+       
         try {
             const response = await userAPI.put(`/seeker/former-job/${id}`, passData, {
                 headers: {
