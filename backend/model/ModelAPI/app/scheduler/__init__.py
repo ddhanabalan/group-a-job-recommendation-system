@@ -1,4 +1,4 @@
 from .jobrecommendation import job_recommendation_scheduler
 
-from ..schemas import jobrecommendation
+from ..schemas import schemas
 

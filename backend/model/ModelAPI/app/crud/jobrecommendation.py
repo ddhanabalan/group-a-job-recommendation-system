@@ -3,13 +3,22 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from typing import List, Type, Optional
 
-from ..models import jobrecommendation
+from ..models import model
 
-def get_all(db: Session, applicant_id: int = None) -> List[Type[jobrecommendation.JobRecommendationJobOutput]]:
-    query = db.query(jobrecommendation.JobRecommendationJobOutput)
-    if applicant_id is not None:
-        query = query.filter(jobrecommendation.JobRecommendationJobOutput.applicant_id == applicant_id).all()
+def create_job_input(db: Session, job_recommendation_job_input: model.JobRecommendationJobInput):
     try:
-        return query.all()
+        db.add(job_recommendation_job_input)
+        db.commit()
+        return True
     except SQLAlchemyError as e:
-        return []
+        db.rollback()
+        return False
+
+def create_seeker_input(db: Session, job_recommendation_seeker_input: model.SeekerInputPOI):
+    try:
+        db.add(job_recommendation_seeker_input)
+        db.commit()
+        return True
+    except SQLAlchemyError as e:
+        db.rollback()
+        return False
