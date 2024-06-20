@@ -170,7 +170,7 @@ def get_filtered_jobs(
     if experience:
         query = query.filter(jobmodel.JobVacancy.experience.in_(experience))
     if working_day:
-        query = query.filter(jobmodel.JobVacancy.working_day.in_(working_day))
+        query = query.filter(jobmodel.JobVacancy.working_days.in_(working_day))
     if salary is not None:
         middle_salary_expr = cast(
             func.SUBSTRING_INDEX(
