@@ -1,3 +1,10 @@
+"""
+Configuration module for the AuthAPI application.
+
+This module contains the configuration values needed to run the application.
+Values are read from the environment variables and stored in constants.
+"""
+
 import os
 from dotenv import load_dotenv
 
@@ -12,6 +19,7 @@ RELOAD = bool(os.environ.get("RELOAD"))
 SECRET_KEY = os.environ.get("SECRET_KEY")
 ALGORITHM = os.environ.get("ALGORITHM")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ.get("ACCESS_TOKEN_EXPIRE_MINUTES"))
+REFRESH_TOKEN_EXPIRE_MINUTES = int(os.environ.get("REFRESH_TOKEN_EXPIRE_MINUTES"))
 
 # Retrieving SQL Connection Info from env
 SQL_HOST = os.environ.get("SQL_HOST")

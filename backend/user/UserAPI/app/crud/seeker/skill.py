@@ -8,7 +8,7 @@ def get_all(db: Session, user_id: int) -> List[Type[seekermodel.SeekersSkill]]:
     Retrieve skills of a seeker.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         user_id (int): User ID of the seeker.
 
     Returns:
@@ -29,7 +29,7 @@ def get(db: Session, skill_id: int) -> Type[seekermodel.SeekersSkill] | None:
     Retrieve skills of a seeker.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         skill_id (int): Skill Id to get from the DB.
 
     Returns:
@@ -47,10 +47,10 @@ def get(db: Session, skill_id: int) -> Type[seekermodel.SeekersSkill] | None:
 
 def create(db: Session, skill: seekerschema.SeekersSkill) -> bool:
     """
-    Create a new skill record for a seeker in the database.
+    Create a new skill record for a seeker in the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         skill (seekerschema.SeekersSkill): Skill details to be created.
 
     Returns:
@@ -68,10 +68,10 @@ def create(db: Session, skill: seekerschema.SeekersSkill) -> bool:
 
 def update(db: Session, id: int, updated_skill: seekerschema.SeekersSkill) -> bool:
     """
-    Update skill details of a seeker in the database.
+    Update skill details of a seeker in the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         id (int): User ID of the seeker.
         updated_skill (seekerschema.SeekersSkill): Updated skill details.
 
@@ -79,9 +79,11 @@ def update(db: Session, id: int, updated_skill: seekerschema.SeekersSkill) -> bo
         bool: True if update is successful, False otherwise.
     """
     try:
+        update_data = {k: v for k, v in updated_skill.dict().items() if v is not None}
+
         db.query(seekermodel.SeekersSkill).filter(
             seekermodel.SeekersSkill.id == id
-        ).update(updated_skill.dict())
+        ).update(update_data)
         db.commit()
         return True
     except SQLAlchemyError:
@@ -91,10 +93,10 @@ def update(db: Session, id: int, updated_skill: seekerschema.SeekersSkill) -> bo
 
 def delete(db: Session, id: int) -> bool:
     """
-    Delete skill details of a seeker from the database.
+    Delete skill details of a seeker from the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         id (int): User ID of the seeker.
 
     Returns:
@@ -103,6 +105,28 @@ def delete(db: Session, id: int) -> bool:
     try:
         db.query(seekermodel.SeekersSkill).filter(
             seekermodel.SeekersSkill.id == id
+        ).delete()
+        db.commit()
+        return True
+    except SQLAlchemyError:
+        db.rollback()
+        return False
+
+
+def delete_by_user_id(db: Session, user_id: int) -> bool:
+    """
+    Delete skill details of a seeker from the database.py.
+
+    Args:
+        db (Session): SQLAlchemy database.py session.
+        id (int): User ID of the seeker.
+
+    Returns:
+        bool: True if deletion is successful, False otherwise.
+    """
+    try:
+        db.query(seekermodel.SeekersSkill).filter(
+            seekermodel.SeekersSkill.user_id == user_id
         ).delete()
         db.commit()
         return True

@@ -1,3 +1,5 @@
+from typing import List
+
 from fastapi import APIRouter, Depends, HTTPException, status, Header
 
 from .. import (
@@ -14,20 +16,25 @@ from .. import (
 router = APIRouter()
 
 
-@router.get("/poi", response_model=seekerschema.SeekersPOI)
+@router.get("/poi", response_model=List[seekerschema.SeekersPOI])
 async def user_seeker_poi(
     db: Session = Depends(get_db), authorization: str = Header(...)
 ):
-    username = await get_current_user(authorization=authorization)
-    user_id = crud.seeker.base.get_userid_from_username(db=db, username=username)
+    user = await get_current_user(authorization=authorization)
+    user_id = user.get("user_id")
     user_poi = crud.seeker.poi.get_all(db=db, user_id=user_id)
     return user_poi
 
 
 @router.post("/poi", status_code=status.HTTP_201_CREATED)
 async def create_seeker_poi(
-    poi: seekerschema.SeekersPOI, db: Session = Depends(get_db)
+    poi: seekerschema.SeekersPOI,
+    db: Session = Depends(get_db),
+    authorization: str = Header(...),
 ):
+    user = await get_current_user(authorization=authorization)
+    user_id = user.get("user_id")
+    poi.user_id = user_id
     created_poi = crud.seeker.poi.create(db, poi)
     if not created_poi:
         raise HTTPException(
@@ -38,7 +45,10 @@ async def create_seeker_poi(
 
 
 @router.delete("/poi/{poi_id}", status_code=status.HTTP_200_OK)
-async def delete_seeker_poi(poi_id: int, db: Session = Depends(get_db)):
+async def delete_seeker_poi(
+    poi_id: int, db: Session = Depends(get_db), authorization: str = Header(...)
+):
+    await check_authorization(authorization=authorization)
     deleted = crud.seeker.poi.delete(db, poi_id)
     if not deleted:
         raise HTTPException(

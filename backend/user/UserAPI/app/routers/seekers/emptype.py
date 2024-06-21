@@ -19,7 +19,7 @@ async def user_seeker_emp_type(
 ):
     username = await get_current_user(authorization=authorization)
     user_id = crud.seeker.base.get_userid_from_username(db=db, username=username)
-    user_emp_type = crud.emptype.get(db=db, user_id=user_id)
+    user_emp_type = crud.seeker.emptype.get(db=db, user_id=user_id)
     return user_emp_type
 
 
@@ -27,7 +27,7 @@ async def user_seeker_emp_type(
 async def create_seeker_emp_type(
     emp_type: seekerschema.SeekersEmpType, db: Session = Depends(get_db)
 ):
-    created_emp_type = crud.emptype.create(db, emp_type)
+    created_emp_type = crud.seeker.emptype.create(db, emp_type)
     if not created_emp_type:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -38,7 +38,7 @@ async def create_seeker_emp_type(
 
 @router.delete("/emp-type/{emp_type_id}", status_code=status.HTTP_200_OK)
 async def delete_seeker_emp_type(emp_type_id: int, db: Session = Depends(get_db)):
-    deleted = crud.emptype.delete(db, emp_type_id)
+    deleted = crud.seeker.emptype.delete(db, emp_type_id)
     if not deleted:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -55,7 +55,7 @@ async def update_seeker_emp_type(
     authorization: str = Header(...),
 ):
     await check_authorization(authorization)
-    updated_emp_type = crud.emptype.update(db, emp_type_id, emp_type)
+    updated_emp_type = crud.seeker.emptype.update(db, emp_type_id, emp_type)
     if not updated_emp_type:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,

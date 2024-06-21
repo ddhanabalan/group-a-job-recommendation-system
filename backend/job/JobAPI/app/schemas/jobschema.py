@@ -4,66 +4,59 @@ from datetime import datetime
 
 
 class JobVacancyBase(BaseModel):
-    company_id: Optional[int]
-    job_name: Optional[str]
-    job_desc: Optional[str]
-    company_name: Optional[str]
-    requirement: Optional[str]
-    salary: Optional[str]
-    experience: Optional[str]
-    job_position: Optional[str]
-    location: Optional[str]
-    emp_type: Optional[str]
-    last_date: Optional[FutureDatetime]
+    company_id: Optional[int] = None
+    job_name: Optional[str] = None
+    job_desc: Optional[str] = None
+    company_username: Optional[str] = None
+    company_name: Optional[str] = None
+    requirement: Optional[str] = None
+    salary: Optional[str] = None
+    working_days: Optional[str] = None
+    work_style: Optional[str] = None
+    experience: Optional[str] = None
+    job_position: Optional[str] = None
+    location: Optional[str] = None
+    emp_type: Optional[str] = None
+    last_date: Optional[FutureDatetime] = None
     closed: Optional[bool] = False
-    no_of_request: Optional[Optional[int]] = 0
+    no_of_request: Optional[int] = 0
 
 
 class JobVacancyCreate(JobVacancyBase):
-    tags: Optional[List[str]]
-    skill: Optional[List[str]]
+    skills: Optional[List[str]]
+
+
+class JobVacancyUpdate(JobVacancyBase):
+    skills_delete: Optional[List[int]]
+    skills: Optional[List[str]]
 
 
 class JobVacancy(JobVacancyBase):
-    job_id: Optional[int]
-    created_at: Optional[datetime]
-    updated_at: Optional[datetime]
+    job_id: Optional[int] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
 
 
-class JobTagsBase(BaseModel):
-    job_id: Optional[int]
-    tags: Optional[str]
+class JobSkillsBase(BaseModel):
+    job_id: Optional[int] = None
+    skill: str
 
 
-class JobTagsCreate(JobTagsBase):
+class JobSkillsCreate(JobSkillsBase):
     pass
 
 
-class JobTags(JobTagsBase):
-    id: Optional[int]
-    created_at: Optional[datetime]
-    updated_at: Optional[datetime]
-
-    class Config:
-        from_attributes = True
+class JobSkillsUpdate(BaseModel):
+    skill: str
 
 
-class JobSkillBase(BaseModel):
-    job_id: Optional[int]
-    skill: Optional[str]
-
-
-class JobSkillCreate(JobSkillBase):
-    pass
-
-
-class JobSkill(JobSkillBase):
-    id: Optional[int]
-    created_at: Optional[datetime]
-    updated_at: Optional[datetime]
+class JobSkills(JobSkillsBase):
+    id: Optional[int] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
@@ -75,19 +68,22 @@ class JobRequestBase(BaseModel):
 
 
 class JobRequestCreate(JobRequestBase):
-    user_id: Optional[int]
+    user_id: Optional[int] = None
 
 
 class JobRequest(JobRequestBase):
-    id: Optional[int]
-    created_at: Optional[datetime]
-    updated_at: Optional[datetime]
+    id: Optional[int] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
     class Config:
         from_attributes = True
 
 
-class JobVacancyUpdate(JobVacancyBase):
-    tags: Optional[List[JobTags]]
-    skill: Optional[List[JobSkill]]
-    job_seekers: Optional[List[JobRequest]]
+class JobVacancySearch(JobVacancy):
+    skills: Optional[JobSkills] = None
+
+
+class JobVacancySeeker(JobVacancyBase):
+    skills: Optional[List[JobSkills]] = []
+    job_seekers: Optional[List[JobRequest]] = []

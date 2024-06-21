@@ -5,4 +5,4 @@ from typing import List, Type
 from ..models import jobmodel
 from ..schemas import jobschema
 
-from .jobcrud import vacancy, request, tags, skill
+from .jobcrud import vacancy, request, skills

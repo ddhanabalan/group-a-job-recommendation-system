@@ -18,16 +18,22 @@ router = APIRouter()
 async def user_seeker_education(
     db: Session = Depends(get_db), authorization: str = Header(...)
 ):
-    username = await get_current_user(authorization=authorization)
-    user_id = crud.seeker.base.get_userid_from_username(db=db, username=username)
+    user = await get_current_user(authorization=authorization)
+    user_id = user.get("user_id")
     user_education = crud.seeker.education.get_all(db=db, user_id=user_id)
     return user_education
 
 
 @router.post("/education", status_code=status.HTTP_201_CREATED)
 async def create_seeker_education(
-    education: seekerschema.SeekersEducation, db: Session = Depends(get_db)
+    education: seekerschema.SeekersEducation,
+    db: Session = Depends(get_db),
+    authorization: str = Header(...),
 ):
+    user = await get_current_user(authorization)
+    user_id = user.get("user_id")
+    education.user_id = user_id
+    print(education)
     created_education = crud.seeker.education.create(db, education)
     if not created_education:
         raise HTTPException(
@@ -38,7 +44,12 @@ async def create_seeker_education(
 
 
 @router.delete("/education/{education_id}", status_code=status.HTTP_200_OK)
-async def delete_seeker_education(education_id: int, db: Session = Depends(get_db)):
+async def delete_seeker_education(
+    education_id: int,
+    db: Session = Depends(get_db),
+    authorization: str = Header(...),
+):
+    await check_authorization(authorization)
     deleted = crud.seeker.education.delete(db, education_id)
     if not deleted:
         raise HTTPException(
@@ -48,7 +59,7 @@ async def delete_seeker_education(education_id: int, db: Session = Depends(get_d
     return {"detail": "Education details deleted successfully"}
 
 
-@router.put("/education/{education_id}", response_model=seekerschema.SeekersEducation)
+@router.put("/education/{education_id}")
 async def update_seeker_education(
     education_id: int,
     education: seekerschema.SeekersEducation,
@@ -62,4 +73,4 @@ async def update_seeker_education(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Education details not found",
         )
-    return updated_education
+    return {"details": "Education Updated Successfully"}

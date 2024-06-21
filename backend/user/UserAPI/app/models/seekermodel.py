@@ -5,7 +5,6 @@ from sqlalchemy import (
     Date,
     DateTime,
     ForeignKey,
-    Text,
     LargeBinary,
 )
 from sqlalchemy.orm import relationship
@@ -23,12 +22,13 @@ class SeekersDetails(Base):
     email = Column(String(32), unique=True)
     bio = Column(String(512))
     phone = Column(String(16))
+    profile_banner_color = Column(String(10))
     address = Column(String(256))
     city = Column(String(128))
     country = Column(String(128))
-    profile_picture = Column(LargeBinary)
+    profile_picture = Column(LargeBinary(length=(2 ** 24) - 1))
     institution = Column(String(256))
-    experience = Column(String(256))
+    experience = Column(Integer, default=0)
     education = Column(String(256))
     contact_email = Column(String(32), default=email)
     dob = Column(Date)
@@ -65,7 +65,10 @@ class SeekersEducation(Base):
 
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("seekers_details.user_id"), index=True)
-    education = Column(String(32))
+    education_title = Column(String(32))
+    education_provider = Column(String(128))
+    start_year = Column(String(4))
+    end_year = Column(String(4))
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -85,10 +88,10 @@ class SeekersFormerJob(Base):
 
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("seekers_details.user_id"), index=True)
-    jobName = Column(String(32))
-    jobCompanyName = Column(String(256))
-    jobExperience = Column(String(32))
-    jobTime = Column(String(64))
+    job_name = Column(String(32))
+    company_name = Column(String(256))
+    start_year = Column(String(32))
+    end_year = Column(String(64))
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
@@ -99,5 +102,29 @@ class SeekersLocType(Base):
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("seekers_details.user_id"), index=True)
     loc_type = Column(String(32))
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
+class SeekersCertificate(Base):
+    __tablename__ = "seekers_certificate"
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("seekers_details.user_id"), index=True)
+    certificate_name = Column(String(32))
+    certificate_issuer = Column(String(32))
+    credential_url = Column(String(64))
+    issue_date = Column(String(32))
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
+class SeekersLanguage(Base):
+    __tablename__ = "seekers_language"
+
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("seekers_details.user_id"), index=True)
+    language = Column(String(32))
+    language_proficiency = Column(String(32))
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

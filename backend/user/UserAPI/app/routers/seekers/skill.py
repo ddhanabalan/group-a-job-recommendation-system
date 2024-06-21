@@ -18,16 +18,21 @@ router = APIRouter()
 async def user_seeker_skill(
     db: Session = Depends(get_db), authorization: str = Header(...)
 ):
-    username = await get_current_user(authorization=authorization)
-    user_id = crud.seeker.base.get_userid_from_username(db=db, username=username)
+    user = await get_current_user(authorization=authorization)
+    user_id = user.get("user_id")
     user_skills = crud.seeker.skill.get_all(db=db, user_id=user_id)
     return user_skills
 
 
 @router.post("/skill", status_code=status.HTTP_201_CREATED)
 async def create_seeker_skill(
-    skill: seekerschema.SeekersSkill, db: Session = Depends(get_db)
+    skill: seekerschema.SeekersSkill,
+    db: Session = Depends(get_db),
+    authorization: str = Header(...),
 ):
+    user = await get_current_user(authorization=authorization)
+    user_id = user.get("user_id")
+    skill.user_id = user_id
     created_skill = crud.seeker.skill.create(db, skill)
     if not created_skill:
         raise HTTPException(
@@ -38,7 +43,10 @@ async def create_seeker_skill(
 
 
 @router.delete("/skill/{skill_id}", status_code=status.HTTP_200_OK)
-async def delete_seeker_skill(skill_id: int, db: Session = Depends(get_db)):
+async def delete_seeker_skill(
+    skill_id: int, db: Session = Depends(get_db), authorization: str = Header(...)
+):
+    await check_authorization(authorization=authorization)
     deleted = crud.seeker.skill.delete(db, skill_id)
     if not deleted:
         raise HTTPException(
@@ -48,7 +56,7 @@ async def delete_seeker_skill(skill_id: int, db: Session = Depends(get_db)):
     return {"detail": "Skill deleted successfully"}
 
 
-@router.put("/skill/{skill_id}", response_model=seekerschema.SeekersSkill)
+@router.put("/skill/{skill_id}")
 async def update_seeker_skill(
     skill_id: int,
     skill: seekerschema.SeekersSkill,
@@ -62,4 +70,4 @@ async def update_seeker_skill(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Skill not found",
         )
-    return updated_skill
+    return {"detail": "Skill Updated Successfully"}

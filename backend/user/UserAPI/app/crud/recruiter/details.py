@@ -1,3 +1,5 @@
+from typing import List
+
 from .. import recruitermodel, recruiterschema, Session, SQLAlchemyError
 
 
@@ -8,7 +10,7 @@ def get_by_username(
     Retrieve recruiter details by username.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         username (str): Username of the recruiter.
 
     Returns:
@@ -21,7 +23,7 @@ def get_by_username(
             .first()
         )
     except SQLAlchemyError:
-        return
+        return None
 
 
 def get_by_emails(db: Session, email: str) -> recruitermodel.RecruiterDetails | None:
@@ -29,7 +31,7 @@ def get_by_emails(db: Session, email: str) -> recruitermodel.RecruiterDetails | 
     Retrieve recruiter details by email.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         email (str): Email of the recruiter.
 
     Returns:
@@ -42,7 +44,7 @@ def get_by_emails(db: Session, email: str) -> recruitermodel.RecruiterDetails | 
             .first()
         )
     except SQLAlchemyError:
-        return
+        return None
 
 
 def get(db: Session, user_id: int) -> recruitermodel.RecruiterDetails | None:
@@ -50,7 +52,7 @@ def get(db: Session, user_id: int) -> recruitermodel.RecruiterDetails | None:
     Retrieve recruiter details by user ID.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         user_id (int): User ID of the recruiter.
 
     Returns:
@@ -63,7 +65,23 @@ def get(db: Session, user_id: int) -> recruitermodel.RecruiterDetails | None:
             .first()
         )
     except SQLAlchemyError:
-        return
+        return None
+
+
+def get_all(db: Session) -> List[recruitermodel.RecruiterDetails] | []:
+    """
+    Retrieve all recruiter details.
+
+    Args:
+        db (Session): SQLAlchemy database.py session.
+
+    Returns:
+        List[recruitermodel.RecruiterDetails] or []: List of all recruiter details if found, else empty list.
+    """
+    try:
+        return db.query(recruitermodel.RecruiterDetails).all()
+    except SQLAlchemyError:
+        return []
 
 
 def create(db: Session, recruiter_details: recruiterschema.RecruiterDetails) -> bool:
@@ -71,7 +89,7 @@ def create(db: Session, recruiter_details: recruiterschema.RecruiterDetails) -> 
     Create a new recruiter details record in the database.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         recruiter_details (recruiterschema.RecruiterDetails): Recruiter details to be created.
 
     Returns:
@@ -89,24 +107,26 @@ def create(db: Session, recruiter_details: recruiterschema.RecruiterDetails) -> 
         return False
 
 
-def update_recruiter_details(
-    db: Session, user_id: int, recruiter_details: recruiterschema.RecruiterDetails
-) -> bool:
+def update(db: Session, user_id: int, recruiter_details: dict) -> bool:
     """
     Update recruiter details in the database.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         user_id (int): User ID of the recruiter.
-        recruiter_details (recruiterschema.RecruiterDetails): Updated recruiter details.
+        recruiter_details (dict): Updated recruiter details.
 
     Returns:
-        bool: if Updated successfully then True else false
+        bool: If updated successfully then True else false
     """
     try:
-        db.query(recruitermodel.RecruiterDetails).filter(
-            recruitermodel.RecruiterDetails.user_id == user_id
-        ).update(recruiter_details.dict())
+        user = (
+            db.query(recruitermodel.RecruiterDetails)
+            .filter(recruitermodel.RecruiterDetails.user_id == user_id)
+            .first()
+        )
+        for k, v in recruiter_details.items():
+            setattr(user, k, v)
         db.commit()
         return True
     except SQLAlchemyError:
@@ -114,16 +134,16 @@ def update_recruiter_details(
         return False
 
 
-def delete_recruiter_details(db: Session, user_id: int) -> bool:
+def delete(db: Session, user_id: int) -> bool:
     """
     Delete recruiter details from the database.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         user_id (int): User ID of the recruiter.
 
     Returns:
-        bool: If Deleted Successfully true else false
+        bool: If deleted successfully then True else false
     """
     try:
         db.query(recruitermodel.RecruiterDetails).filter(

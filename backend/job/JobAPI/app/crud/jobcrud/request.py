@@ -7,10 +7,10 @@ from .. import jobschema, jobmodel
 
 def get_all(db: Session, user_id: int) -> List[Type[jobschema.JobRequest]]:
     """
-    Retrieve job requests associated with a user ID from the database.
+    Retrieve job requests associated with a user ID from the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         user_id (int): ID of the user whose job requests are to be retrieved.
 
     Returns:
@@ -41,10 +41,10 @@ def get_all_by_job_id(
 
 def get(db: Session, job_request_id: int) -> Type[jobmodel.JobRequest] | None:
     """
-    Retrieve a job request from the database by ID.
+    Retrieve a job request from the database.py by ID.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         job_request_id (int): ID of the job request to retrieve.
 
     Returns:
@@ -62,10 +62,10 @@ def get(db: Session, job_request_id: int) -> Type[jobmodel.JobRequest] | None:
 
 def create(db: Session, job_request: jobschema.JobRequestCreate) -> bool:
     """
-    Create a new job request in the database.
+    Create a new job request in the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         job_request (jobschema.JobRequest): Details of the job request to create.
 
     Returns:
@@ -84,12 +84,14 @@ def create(db: Session, job_request: jobschema.JobRequestCreate) -> bool:
 # Update
 
 
-def update(db: Session, job_request_id: int, job_request: jobschema.JobRequestCreate):
+def update(
+    db: Session, job_request_id: int, job_request: jobschema.JobRequestCreate
+) -> bool:
     """
-    Update a job request in the database.
+    Update a job request in the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         job_request_id (int): ID of the job request to update.
         job_request (jobschema.JobRequestCreate): Updated job request details.
 
@@ -109,12 +111,12 @@ def update(db: Session, job_request_id: int, job_request: jobschema.JobRequestCr
         return False
 
 
-def delete(db: Session, job_request_id: int):
+def delete(db: Session, job_request_id: int) -> bool:
     """
-    Delete a job request from the database.
+    Delete a job request from the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         job_request_id (int): ID of the job request to delete.
 
     Returns:
