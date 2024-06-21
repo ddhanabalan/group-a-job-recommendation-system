@@ -17,11 +17,4 @@ from .seeker import (
     certificate,
     language,
 )
-from .recruiter import (
-    base,
-    details,
-    emptype,
-    achievements,
-    speciality,
-    loctype
-)
+from .recruiter import base, details, emptype, achievements, speciality, loctype

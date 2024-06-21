@@ -1,6 +1,6 @@
-from ..models import skill,position
-from ..schemas import skill,position
-from ..crud import skill,position
+from ..models import skill, position
+from ..schemas import skill, position
+from ..crud import skill, position
 
 from .skill import router as skillrouter
 from .position import router as positionrouter

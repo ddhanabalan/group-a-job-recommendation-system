@@ -39,8 +39,6 @@ app.add_middleware(
 )
 
 
-
-
 @app.on_event("startup")
 async def startup_event():
     logger.info("Scheduler started!")
@@ -51,5 +49,6 @@ async def startup_event():
 async def shutdown_event():
     job_recommendation_scheduler.shutdown()
     logger.info("Scheduler stopped!")
+
 
 app.include_router(router=router)

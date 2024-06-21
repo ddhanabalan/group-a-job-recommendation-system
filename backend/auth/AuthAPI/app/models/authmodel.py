@@ -6,6 +6,23 @@ from ..database import Base
 
 
 class UserAuth(Base):
+    """
+    Class representing the 'user_auth' table in the database.
+
+    Attributes:
+        id (int): The primary key of the user authentication record.
+        username (str): The username of the user.
+        hashed_password (str): The hashed password of the user.
+        email (str): The email address of the user.
+        refresh_token (str): The refresh token for the user's session.
+        disabled (bool): Flag indicating if the user account is disabled.
+        user_id (int): The foreign key referencing the user's ID.
+        user_type (Enum): The type of user (seeker or recruiter).
+        verified (bool): Flag indicating if the user's email is verified.
+        last_login (datetime): The timestamp of the user's last login.
+        created_at (datetime): The timestamp of when the user account was created.
+        updated_at (datetime): The timestamp of when the user account was last updated.
+    """
     __tablename__ = "user_auth"
 
     id = Column(Integer, primary_key=True, index=True)

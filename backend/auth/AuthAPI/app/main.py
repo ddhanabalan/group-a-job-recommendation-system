@@ -88,7 +88,7 @@ def get_password_hashed(password):
 
 
 async def authenticate_user(
-        username: str, password: str, db: Session = Depends(get_db)
+    username: str, password: str, db: Session = Depends(get_db)
 ):
     print("in")
     user = authcrud.get_by_email(db=db, email=username)
@@ -137,7 +137,7 @@ def validate_access_token(token):
 
 
 async def get_current_user(
-        token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
+    token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
 ) -> Type[authmodel.UserAuth]:
     credential_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -160,7 +160,7 @@ async def get_current_user(
 
 
 async def get_current_active_user(
-        current_user: authschema.UserInDB = Depends(get_current_user),
+    current_user: authschema.UserInDB = Depends(get_current_user),
 ) -> authschema.UserInDB:
     if current_user.disabled:
         raise HTTPException(
@@ -170,7 +170,7 @@ async def get_current_active_user(
 
 
 async def get_refresh_user(
-        token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
+    token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
 ) -> Type[authmodel.UserAuth]:
     credential_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
@@ -195,7 +195,7 @@ async def get_refresh_user(
 
 @app.post("/token", response_model=authschema.Token)
 async def login_for_access_token(
-        form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
+    form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
 ):
     user = await authenticate_user(form_data.username, form_data.password, db=db)
     if not user:
@@ -291,7 +291,9 @@ async def auth(request: Request, db: Session = Depends(get_db)):
 
 
 @app.get("/verify/{user_type}", status_code=status.HTTP_200_OK)
-async def verify_token(user_type: authschema.UserTypeEnum, current_user=Depends(get_current_active_user)):
+async def verify_token(
+    user_type: authschema.UserTypeEnum, current_user=Depends(get_current_active_user)
+):
     print(current_user.user_type)
     if current_user.user_type != user_type:
         raise HTTPException(
@@ -326,8 +328,8 @@ async def email_verify(token: str, db: Session = Depends(get_db)):
 
 @app.post("/seeker/register", status_code=status.HTTP_201_CREATED)
 async def register(
-        user: authschema.UserInSeeker,
-        db: Session = Depends(get_db),
+    user: authschema.UserInSeeker,
+    db: Session = Depends(get_db),
 ):
     existing_user = authcrud.get_by_username(db=db, username=user.username)
     if existing_user:
@@ -375,8 +377,8 @@ async def register(
 
 @app.post("/recruiter/register", status_code=status.HTTP_201_CREATED)
 async def register(
-        user: authschema.UserInRecruiter,
-        db: Session = Depends(get_db),
+    user: authschema.UserInRecruiter,
+    db: Session = Depends(get_db),
 ):
     existing_user = authcrud.get_by_username(db=db, username=user.username)
     if existing_user:
@@ -423,7 +425,9 @@ async def register(
 
 
 @app.post("/forgot_password", status_code=status.HTTP_200_OK)
-async def forgot_password_email(forgot_pass: authschema.ForgotPasswordIn, db: Session = Depends(get_db)):
+async def forgot_password_email(
+    forgot_pass: authschema.ForgotPasswordIn, db: Session = Depends(get_db)
+):
     credential_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Email"
     )
@@ -447,7 +451,9 @@ async def forgot_password_email(forgot_pass: authschema.ForgotPasswordIn, db: Se
 
 
 @app.post("/forgot_password/verify/{token}", status_code=status.HTTP_200_OK)
-async def forgot_password_verify(token: str, password: authschema.ForgetPassword, db: Session = Depends(get_db)):
+async def forgot_password_verify(
+    token: str, password: authschema.ForgetPassword, db: Session = Depends(get_db)
+):
     credential_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Link"
     )
@@ -459,7 +465,9 @@ async def forgot_password_verify(token: str, password: authschema.ForgetPassword
         user = authcrud.get_by_username(db=db, username=username)
         if not user:
             raise credential_exception
-        res = authcrud.update(db=db, user_id=user.user_id, user_update={"hashed_password": hashed_pwd}, )
+        res = authcrud.update(
+            db=db, user_id=user.id, user_update={"hashed_password": hashed_pwd}
+        )
         if not res:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -487,10 +495,14 @@ async def get_user_type(username: str, db: Session = Depends(get_db)):
 
 
 @app.delete("/user", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_user(user=Depends(get_current_active_user), authorization: str = Header(...),
-                      db: Session = Depends(get_db)):
+async def delete_user(
+    user=Depends(get_current_active_user),
+    authorization: str = Header(...),
+    db: Session = Depends(get_db),
+):
     response = await httpx.AsyncClient().post(
-        url=f"http://{USER_API_HOST}:{PORT}/{user.user_type}/details", headers={"Authorization": {authorization}}
+        url=f"http://{USER_API_HOST}:{PORT}/{user.user_type}/details",
+        headers={"Authorization": {authorization}},
     )
     res_data = response.json()
     if res_data is None:
@@ -507,13 +519,20 @@ async def delete_user(user=Depends(get_current_active_user), authorization: str 
     return {"detail": "deleted successfully"}
 
 
-@app.put("/user",status_code=status.HTTP_200_OK)
-async def update_user(user_update: authschema.UserUpdate,user=Depends(get_current_active_user),authorization: str = Header(...), db: Session = Depends(get_db)):
+@app.put("/user", status_code=status.HTTP_200_OK)
+async def update_user(
+    user_update: authschema.UserUpdate,
+    user=Depends(get_current_active_user),
+    authorization: str = Header(...),
+    db: Session = Depends(get_db),
+):
     update_details = user_update.dict(exclude_unset=True)
     password = user_update.pop("password", None)
     if update_details is not None:
         response = await httpx.AsyncClient().post(
-            url=f"http://{USER_API_HOST}:{PORT}/{user.user_type}/details", headers={"Authorization": authorization},json=update_details
+            url=f"http://{USER_API_HOST}:{PORT}/{user.user_type}/details",
+            headers={"Authorization": authorization},
+            json=update_details,
         )
         res_data = response.json()
         if res_data is None:

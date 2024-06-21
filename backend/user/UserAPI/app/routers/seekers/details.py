@@ -19,7 +19,7 @@ router = APIRouter(prefix="/details")
 
 @router.get("/", response_model=seekerschema.SeekersDetails)
 async def get_seeker_details(
-        db: Session = Depends(get_db), authorization: str = Header(...)
+    db: Session = Depends(get_db), authorization: str = Header(...)
 ):
     username = await get_current_user(authorization=authorization)
     user_details = crud.seeker.details.get_by_username(db=db, username=username["user"])
@@ -28,11 +28,11 @@ async def get_seeker_details(
 
 @router.get("/list", response_model=List[seekerschema.SeekerView])
 async def get_seeker_details_list(
-        name: Optional[str] = Query(None),
-        experience: Optional[str] = Query(None),
-        location: Optional[str] = Query(None),
-        db: Session = Depends(get_db),
-        authorization: str = Header(...)
+    name: Optional[str] = Query(None),
+    experience: Optional[str] = Query(None),
+    location: Optional[str] = Query(None),
+    db: Session = Depends(get_db),
+    authorization: str = Header(...),
 ):
     await check_authorization(authorization=authorization, user_type="recruiter")
 
@@ -40,21 +40,22 @@ async def get_seeker_details_list(
     filters = []
     if name:
         filters.append(
-            lambda user_details: name.lower() in (
-                    user_details.first_name.lower() + ' ' + user_details.last_name.lower())
+            lambda user_details: name.lower()
+            in (user_details.first_name.lower() + " " + user_details.last_name.lower())
         )
     if experience is not None:
-        (min_experience, max_experience) = experience.split('-') if '-' in experience else (experience, None)
-        filters.append(
-            lambda user_details: user_details.experience >= min_experience
+        (min_experience, max_experience) = (
+            experience.split("-") if "-" in experience else (experience, None)
         )
+        filters.append(lambda user_details: user_details.experience >= min_experience)
         if max_experience is not None:
             filters.append(
                 lambda user_details: user_details.experience <= max_experience
             )
     if location:
         filters.append(
-            lambda user_details: location.lower() in user_details.city.lower() or location.lower() in user_details.country.lower()
+            lambda user_details: location.lower() in user_details.city.lower()
+            or location.lower() in user_details.country.lower()
         )
 
     # Fetch user details based on filters
@@ -87,7 +88,7 @@ async def get_seeker_details_list(
             country=user_details.country,
             skill=user_skills,
             created_at=user_details.created_at,
-            updated_at=user_details.updated_at
+            updated_at=user_details.updated_at,
         )
         seeker_views.append(seeker_view)
 
@@ -96,7 +97,7 @@ async def get_seeker_details_list(
 
 @router.post("/list", response_model=List[seekerschema.SeekerView])
 async def get_seeker_details_list_by_ids(
-        user_ids: seekerschema.JobUserDetailsIn, db: Session = Depends(get_db)
+    user_ids: seekerschema.JobUserDetailsIn, db: Session = Depends(get_db)
 ):
     user_details = []
     for user_id in user_ids.user_ids:
@@ -122,7 +123,7 @@ async def get_seeker_details_list_by_ids(
             country=user_detail.country,
             skill=user_skills,
             created_at=user_detail.created_at,
-            updated_at=user_detail.updated_at
+            updated_at=user_detail.updated_at,
         )
         user_details.append(seeker_view)
     return user_details
@@ -130,12 +131,14 @@ async def get_seeker_details_list_by_ids(
 
 @router.put("/", status_code=status.HTTP_200_OK)
 async def update_seeker_details(
-        user_details: dict,
-        db: Session = Depends(get_db),
-        authorization: str = Header(...),
+    user_details: dict,
+    db: Session = Depends(get_db),
+    authorization: str = Header(...),
 ):
     username = await get_current_user(authorization=authorization)
-    existing_user = crud.seeker.details.get_by_username(db=db, username=username["user"])
+    existing_user = crud.seeker.details.get_by_username(
+        db=db, username=username["user"]
+    )
     if not existing_user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
@@ -156,7 +159,7 @@ async def update_seeker_details(
 
 @router.delete("/", status_code=status.HTTP_200_OK)
 async def delete_seeker_details(
-        db: Session = Depends(get_db), authorization: str = Header(...)
+    db: Session = Depends(get_db), authorization: str = Header(...)
 ):
     # Start a transaction
     user = await get_current_user(authorization)

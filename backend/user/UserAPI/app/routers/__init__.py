@@ -11,7 +11,7 @@ from ..utils import (
     get_current_user,
     decode64_image,
     encode64_image,
-    get_user_type
+    get_user_type,
 )
 from . import profile
 from .seekers import (
@@ -27,11 +27,8 @@ from .seekers import (
     language,
 )
 
-from .recruiters import (
-    base,
-    details,
-    speciality
-)
+from .recruiters import base, details, speciality
+
 base_router = APIRouter()
 seeker_router = APIRouter(prefix="/seeker")
 recruiter_router = APIRouter(prefix="/recruiter")

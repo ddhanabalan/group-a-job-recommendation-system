@@ -7,7 +7,7 @@ from ..models import authmodel
 from ..schemas import authschema
 
 
-def create(db: Session, user: authschema.UserInDB):
+def create(db: Session, user: authschema.UserInDB) -> bool:
     """
     Create a new authentication user in the database.py.
 
@@ -62,7 +62,7 @@ def get_by_username(db: Session, username: str) -> Type[authmodel.UserAuth] | No
 
 def get_by_email(db: Session, email: EmailStr) -> Type[authmodel.UserAuth] | None:
     """
-    Retrieve an authentication user by username.
+    Retrieve an authentication user by email.
 
     Args:
         db (Session): SQLAlchemy database.py session.
@@ -72,13 +72,21 @@ def get_by_email(db: Session, email: EmailStr) -> Type[authmodel.UserAuth] | Non
         authmodel.UserAuth: User object if found, None otherwise.
     """
     return (
-        db.query(authmodel.UserAuth)
-        .filter(authmodel.UserAuth.email == email)
-        .first()
+        db.query(authmodel.UserAuth).filter(authmodel.UserAuth.email == email).first()
     )
 
 
 def get_verified_by_username(db: Session, username: str) -> bool:
+    """
+    Retrieve if the user is verified by username.
+
+    Args:
+        db (Session): SQLAlchemy database.py session.
+        username (str): Username of the user to retrieve.
+
+    Returns:
+        bool: True if the user is verified, False otherwise.
+    """
     return (
         db.query(authmodel.UserAuth)
         .filter(authmodel.UserAuth.username == username)
@@ -94,23 +102,24 @@ def update(db: Session, user_id: int, user_update: dict) -> bool:
     Args:
         db (Session): SQLAlchemy database.py session.
         user_id (int): ID of the user to update.
-        user_update (authmodel.UserInDB): Updated user details.
+        user_update (dict): Updated user details.
 
     Returns:
         bool: True if update is successful, False otherwise.
     """
     try:
-
-        user = db.query(authmodel.UserAuth).filter(
-            authmodel.UserAuth.id == user_id
-        ).first()
+        user = (
+            db.query(authmodel.UserAuth)
+            .filter(authmodel.UserAuth.id == user_id)
+            .first()
+        )
         if user:
             for k, v in user_update.items():
                 if k != "user_id" or v is not None:
                     setattr(user, k, v)
         db.commit()
         return True
-    except SQLAlchemyError:
+    except SQLAlchemyError as e:
         db.rollback()
         return False
 

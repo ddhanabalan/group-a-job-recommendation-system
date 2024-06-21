@@ -28,7 +28,9 @@ async def user_seeker_poi(
 
 @router.post("/poi", status_code=status.HTTP_201_CREATED)
 async def create_seeker_poi(
-    poi: seekerschema.SeekersPOI, db: Session = Depends(get_db),authorization: str = Header(...)
+    poi: seekerschema.SeekersPOI,
+    db: Session = Depends(get_db),
+    authorization: str = Header(...),
 ):
     user = await get_current_user(authorization=authorization)
     user_id = user.get("user_id")
@@ -43,7 +45,9 @@ async def create_seeker_poi(
 
 
 @router.delete("/poi/{poi_id}", status_code=status.HTTP_200_OK)
-async def delete_seeker_poi(poi_id: int, db: Session = Depends(get_db),authorization: str = Header(...)):
+async def delete_seeker_poi(
+    poi_id: int, db: Session = Depends(get_db), authorization: str = Header(...)
+):
     await check_authorization(authorization=authorization)
     deleted = crud.seeker.poi.delete(db, poi_id)
     if not deleted:

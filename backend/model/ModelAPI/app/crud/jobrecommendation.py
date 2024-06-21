@@ -5,7 +5,10 @@ from typing import List, Type, Optional
 
 from ..models import model
 
-def create_job_input(db: Session, job_recommendation_job_input: model.JobRecommendationJobInput):
+
+def create_job_input(
+    db: Session, job_recommendation_job_input: model.JobRecommendationJobInput
+):
     try:
         db.add(job_recommendation_job_input)
         db.commit()
@@ -14,7 +17,10 @@ def create_job_input(db: Session, job_recommendation_job_input: model.JobRecomme
         db.rollback()
         return False
 
-def create_seeker_input(db: Session, job_recommendation_seeker_input: model.SeekerInputPOI):
+
+def create_seeker_input(
+    db: Session, job_recommendation_seeker_input: model.SeekerInputPOI
+):
     try:
         db.add(job_recommendation_seeker_input)
         db.commit()

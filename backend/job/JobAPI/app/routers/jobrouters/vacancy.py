@@ -78,11 +78,12 @@ async def create_job_vacancy(
         jobcrud.skills.create(db, job_skill_data)
 
     return {"details": "Job Created"}
+
+
 @job_vacancy_router.get("/model/data")
-async def read_job_vacancies_by_company_id(
-    db: Session = Depends(get_db)
-):
+async def read_job_vacancies_by_company_id(db: Session = Depends(get_db)):
     return jobcrud.vacancy.get_all_for_model(db)
+
 
 @job_vacancy_router.get("/company")
 async def read_job_vacancies_by_company_id(
@@ -95,6 +96,7 @@ async def read_job_vacancies_by_company_id(
         job.skills = jobcrud.skills.get_all(db, job.job_id)
         job.job_seekers = jobcrud.request.get_all_by_job_id(db, job.job_id)
     return job_vacancy
+
 
 @job_vacancy_router.get("/company/{company_id}")
 async def read_job_vacancies_by_company_id(
@@ -148,7 +150,9 @@ async def update_job_vacancy(
                 detail="Data not deleted from Database",
             )
     for skill in skills:
-        if not jobcrud.skills.create(db, jobschema.JobSkillsCreate(job_id=job_vacancy_id, skill=skill)):
+        if not jobcrud.skills.create(
+            db, jobschema.JobSkillsCreate(job_id=job_vacancy_id, skill=skill)
+        ):
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="Data not updated to Database",
@@ -183,11 +187,9 @@ async def delete_job_vacancy(
             detail="Data not deleted from Database",
         )
 
-
     return {
         "details": "Job Vacancy and all associated skills and tags deleted successfully"
     }
 
 
 # Get All data from job vacancy for model
-

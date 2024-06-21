@@ -29,9 +29,10 @@ async def create_job_request(
         )
     return {"detail": "Job Request created successfully"}
 
+
 @job_request_router.get("/user", response_model=List[jobschema.JobRequest])
 async def read_job_requests_by_user_id(
-    authorization: str = Header(...),db: Session = Depends(get_db)
+    authorization: str = Header(...), db: Session = Depends(get_db)
 ):
     user = await get_current_user(authorization=authorization)
     user_id = user.get("user_id")

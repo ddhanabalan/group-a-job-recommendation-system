@@ -1,7 +1,7 @@
 from .. import recruitermodel, recruiterschema, Session, SQLAlchemyError
 
 
-def create(db: Session, user: recruiterschema.RecruiterBase,profile_picture) -> bool:
+def create(db: Session, user: recruiterschema.RecruiterBase, profile_picture) -> bool:
     """
     Create a new seeker's details in the database.py.
 

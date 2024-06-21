@@ -16,6 +16,7 @@ class RecruiterBase(BaseModel):
     city: Optional[str] = None
     phone: Optional[str] = None
 
+
 class RecruiterBaseInDB(RecruiterBase):
     profile_picture: Optional[str] = None
 
@@ -35,6 +36,7 @@ class RecruiterDetails(RecruiterBase):
     class Config:
         from_attributes = True
 
+
 class RecruiterLocType(BaseModel):
     id: int
     user_id: int
@@ -45,6 +47,7 @@ class RecruiterLocType(BaseModel):
     class Config:
         from_attributes = True
 
+
 class RecruiterEmpType(BaseModel):
     id: int
     user_id: int
@@ -54,6 +57,7 @@ class RecruiterEmpType(BaseModel):
 
     class Config:
         from_attributes = True
+
 
 class RecruiterSpeciality(BaseModel):
     id: Optional[int] = None

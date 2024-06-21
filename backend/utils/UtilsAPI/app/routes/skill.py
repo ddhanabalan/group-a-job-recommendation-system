@@ -11,10 +11,19 @@ from ..utils import get_db
 router = APIRouter(prefix="/skills")
 
 models.Base.metadata.create_all(bind=engine)
+
+
 @router.get("/")
-async def get_skills(q: Optional[str] = None, limit: Optional[int] = 100, db: Session = Depends(get_db)):
+async def get_skills(
+    q: Optional[str] = None, limit: Optional[int] = 100, db: Session = Depends(get_db)
+):
     if q:
-        return db.query(models.Skill).filter(models.Skill.name.startswith(q)).limit(limit).all()
+        return (
+            db.query(models.Skill)
+            .filter(models.Skill.name.startswith(q))
+            .limit(limit)
+            .all()
+        )
     else:
         return db.query(models.Skill).limit(limit).all()
 

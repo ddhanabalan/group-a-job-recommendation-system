@@ -6,6 +6,7 @@ from pydantic import EmailStr
 from ..models import skill as model
 from ..schemas import skill as schema
 
+
 def create(db: Session, skill: schema.SkillCreate):
     """
     Create a new skill in the database.py.
@@ -43,13 +44,14 @@ def update(db: Session, skill_id: int, skill: schema.SkillUpdate):
         skill_db = db.query(model.Skill).filter(model.Skill.id == skill_id).first()
         if not skill_db:
             return False
-        for k,v in skill.dict(exclude_unset=True).items():
+        for k, v in skill.dict(exclude_unset=True).items():
             setattr(skill_db, k, v)
         db.commit()
         return True
     except SQLAlchemyError:
         db.rollback()
         return False
+
 
 def delete(db: Session, skill_id: int):
     """
@@ -73,6 +75,6 @@ def delete(db: Session, skill_id: int):
         db.rollback()
         return False
 
+
 def get_all(db: Session):
     return db.query(model.Skill).all()
-

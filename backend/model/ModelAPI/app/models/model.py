@@ -1,4 +1,13 @@
-from sqlalchemy import Column, String, Integer, Date, DateTime, Boolean, Enum, ForeignKey
+from sqlalchemy import (
+    Column,
+    String,
+    Integer,
+    Date,
+    DateTime,
+    Boolean,
+    Enum,
+    ForeignKey,
+)
 
 from datetime import datetime
 
@@ -11,7 +20,7 @@ class JobRecommendationJobInput(Base):
     id = Column(Integer, primary_key=True, index=True)
     job_id = Column(Integer)
     job_name = Column(String(32))
-    job_position= Column(String(32))
+    job_position = Column(String(32))
     company_name = Column(String(128))
     city = Column(String(64))
     work_style = Column(String(32))
@@ -37,6 +46,7 @@ class JobRecommendationJobOutput(Base):
     job_id = Column(Integer)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
 
 class JobRecommendationSeekerOutput(Base):
     __tablename__ = "job_recommendation_seeker_output"

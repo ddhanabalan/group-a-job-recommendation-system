@@ -6,23 +6,23 @@ from pydantic import BaseModel
 
 class JobDetails(BaseModel):
     id: Optional[int] = None
-    job_id :Optional[int]
-    job_name : Optional[str]
-    job_position : Optional[str]
-    company_name : Optional[str]
-    city : Optional[str]
-    work_style : Optional[str]
-    job_description : Optional[str]
-    created_at : Optional[datetime] = None
-    updated_at : Optional[datetime] = None
+    job_id: Optional[int]
+    job_name: Optional[str]
+    job_position: Optional[str]
+    company_name: Optional[str]
+    city: Optional[str]
+    work_style: Optional[str]
+    job_description: Optional[str]
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
 
 class SeekerDetails(BaseModel):
     id: Optional[int] = None
-    user_id :Optional[int]
-    position : Optional[str]
-    created_at : Optional[datetime] = None
-    updated_at : Optional[datetime] = None
+    user_id: Optional[int]
+    position: Optional[str]
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
 
 class JobOutput(BaseModel):
@@ -30,6 +30,7 @@ class JobOutput(BaseModel):
     user_id: Optional[int]
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
+
 
 class SeekerOutput(BaseModel):
     job_position: Optional[str]
@@ -65,6 +66,7 @@ class TestInput(BaseModel):
     Position_Of_Interest: Optional[str]
     text: Optional[str]
 
+
 class JobDetailsResponse(BaseModel):
     jobs: List[TestInput]
-    applicants : List[ApplicantDetails]
+    applicants: List[ApplicantDetails]

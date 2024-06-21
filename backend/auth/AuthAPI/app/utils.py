@@ -12,6 +12,14 @@ from .crud import authcrud
 
 
 async def send_verify(token: str, username: str, to_email: EmailStr):
+    """
+    Sends an email for user account verification.
+
+    Args:
+        token (str): The verification token.
+        username (str): The username of the user.
+        to_email (EmailStr): The email address of the user.
+    """
     msg = EmailMessage()
     msg["Subject"] = "Career Go Account Verification Required"
     msg["From"] = EMAIL_ADDRESS
@@ -42,6 +50,14 @@ contact us.
 
 
 async def send_pwd_reset(token: str, username: str, to_email: EmailStr):
+    """
+    Sends an email for password reset.
+
+    Args:
+        token (str): The password reset token.
+        username (str): The username of the user.
+        to_email (EmailStr): The email address of the user.
+    """
     msg = EmailMessage()
     msg["Subject"] = "Career Go Password Reset Request"
     msg["From"] = EMAIL_ADDRESS
@@ -72,11 +88,19 @@ contact us.
 
 
 def validate_user_update(username: str, db: Session):
+    """
+    Validates the user update and updates the verified status to True.
+
+    Args:
+        username (str): The username of the user.
+        db (Session): The database session.
+
+    Returns:
+        bool: True if the update is successful, False otherwise.
+    """
     try:
         user = authcrud.get_by_username(db=db, username=username)
-        update = authcrud.update(
-            db=db, user_id=user.id, user_update={"verified": True}
-        )
+        update = authcrud.update(db=db, user_id=user.id, user_update={"verified": True})
         if not update:
             return False
         return True

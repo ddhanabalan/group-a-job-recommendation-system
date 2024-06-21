@@ -34,8 +34,12 @@ async def update_recruiter_details(
     db: Session = Depends(get_db),
     authorization: str = Header(...),
 ):
-    username = await get_current_user(authorization=authorization, user_type="recruiter")
-    existing_user = crud.recruiter.details.get_by_username(db=db, username=username["user"])
+    username = await get_current_user(
+        authorization=authorization, user_type="recruiter"
+    )
+    existing_user = crud.recruiter.details.get_by_username(
+        db=db, username=username["user"]
+    )
     if not existing_user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
@@ -71,4 +75,3 @@ async def delete_recruiter_details(
             detail="Failed to delete user details",
         )
     return {"detail": "User details deleted successfully"}
-
