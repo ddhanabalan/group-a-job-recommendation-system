@@ -12,6 +12,7 @@ import CandidateCard from "../../components/CandidateCard/CandidateCard";
 import { set } from "react-hook-form";
 import { jobAPI, userAPI } from "../../api/axios";
 import { LocalConvenienceStoreOutlined } from "@mui/icons-material";
+import NavigationBar from "../../components/NavigationBar/NavigationBar";
 
 export default function ReviewApplications({userType}) {
     const COMPANYID = (userType==="employer"?getStorage("userID"):getStorage("guestUserID"));
@@ -63,6 +64,7 @@ export default function ReviewApplications({userType}) {
         try {
             
             const response = await (userType==="employer" ? jobAPI.get(`/job_vacancy/company`, {headers:{'Authorization': `Bearer ${getStorage("userToken")}`}}): jobAPI.get(`/job_vacancy/company/${companyId}`));
+            console.log("received job response", response)
             const mod_response = response.data.map(e=>({id: e.job_id, jobTitle: e.job_name, companyName: e.company_name, tags: e.tags, currency: e.salary.split('-')[0], salary: [e.salary.split('-')[1],e.salary.split('-')[2]], postDate: e.created_at.split('T')[0] , last_date: e.last_date.split('T')[0], location: e.location, poi: e.job_position, empType: e.emp_type, exp: e.experience, workStyle: e.work_style, workingDays: e.working_days, jobDesc: e.job_desc ,jobReq:e.requirement,skills: e.skills.length?e.skills: [{'skill': ""}], applicationsReceived: e.job_seekers}))
             setJobVacancies(mod_response);
             console.log(response);
@@ -74,6 +76,7 @@ export default function ReviewApplications({userType}) {
             alert(e.message);
         }
     }
+
 
     const DeleteJobAPI = async (job_id) =>{
         try{
@@ -164,13 +167,40 @@ export default function ReviewApplications({userType}) {
                 }         
                 });
             console.log("updated response", response)
-            const mod_response = response.data.map(e=>({applicantID: e.user_id, username: e.username, candidateName: (e.first_name + " " + e.last_name), first_name: e.first_name, last_name: e.last_name,city: e.city, country: e.country, location: e.location, experience: e.experience, profile_picture: e.profile_picture}))
+            const mod_response = response.data.map(e=>({applicantID: e.user_id, username: e.username, candidateName: (e.first_name + " " + e.last_name), first_name: e.first_name, last_name: e.last_name,city: e.city, country: e.country, location: e.location, experience: e.experience, profile_picture: e.profile_picture, job_request_id: applicantList[response.data.indexOf(e)].id, job_status: applicantList[response.data.indexOf(e)].status}))
+            
             setApplicants(mod_response);
             console.log("applicants receiveed", mod_response);
             
         } catch (e) {
             
             console.log("applicants failed", e)
+            
+            alert(e.message);
+        }
+    }
+
+    const jobApprovalAPI = async (job_req_id, job_status, user_id)=>{
+        const req_data = {
+                                "job_id": selectedJobEntry.id,
+                                "status": job_status,
+                                "user_id": user_id
+                            }
+        console.log("job status data", req_data)
+        try {
+            const response = await jobAPI.put(`/job_request/${job_req_id}`, req_data, {
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getStorage("userToken")}`
+                }         
+                });
+            console.log("updated response", response)
+            //const mod_response = response.data.map(e=>({applicantID: e.user_id, username: e.username, candidateName: (e.first_name + " " + e.last_name), first_name: e.first_name, last_name: e.last_name,city: e.city, country: e.country, location: e.location, experience: e.experience, profile_picture: e.profile_picture}))
+            
+            
+        } catch (e) {
+            
+            console.log("failed to sent approval status", e)
             
             alert(e.message);
         }
@@ -268,13 +298,13 @@ export default function ReviewApplications({userType}) {
             :
             <></>
             }
-            
+            <NavigationBar active={userType=="employer"?"review-applications":"none"}/>
             <div className={`applications-box${filterstat?" blur":""}${sidebarState?" wide":""}`}>
             {userType=="employer"?
                 
                 (selectedEntry!=null && filtered.length!=0 && jobApplicants.length!=0?
                     
-                    jobApplicants.map(e=><CandidateCard type="review" key={e.applicantID} jobEntryId={selectedEntry} crLink={receivedData["pathname"]}  data={e}/>)
+                    jobApplicants.map(e=><CandidateCard type="review" key={e.applicantID} jobEntryId={selectedEntry} crLink={receivedData["pathname"]} jobApprovalFunction={jobApprovalAPI} data={e}/>)
                     :
                     <></>
                 )

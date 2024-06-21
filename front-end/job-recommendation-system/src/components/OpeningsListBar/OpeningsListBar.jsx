@@ -21,7 +21,7 @@ function HighlightableJobCard({ id, highlighted, type, data, listToDescFunc, del
 
 export default function OpeningsListBar({ data, userType, userID, chooseEntry, searchBar, preselectedEntry, filterFunc, pageType, listToDescParentFunc = null, deleteJobFunc = null }) {
 
-    //console.log("received jobs in data", data);
+    console.log("received jobs to openings list bar", data);
     const finalInfo = { ...data }
     //console.log("opening bar data",data)
     //console.log("data passed to opening cards", finalInfo)

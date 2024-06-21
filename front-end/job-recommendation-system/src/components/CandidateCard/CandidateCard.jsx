@@ -11,8 +11,9 @@ import { Button } from '@mui/material';
 import { v4 as uuid } from 'uuid';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-export default function CandidateCard({ type = null, jobEntryId = null, crLink = null, data, background, profilePictureStyle }) {
+export default function CandidateCard({ type = null, jobEntryId = null, crLink = null, data, jobApprovalFunction = null,background, profilePictureStyle }) {
     const [profile, setProfile] = useState(false)
+    const [approval, setApproval] = useState('')
     console.log("cand data", data)
     const navigate = useNavigate();
     const showProfile = () => {
@@ -20,10 +21,14 @@ export default function CandidateCard({ type = null, jobEntryId = null, crLink =
     }
 
     useEffect(() => {
-        if (profile) navigate(`/profile/${data.username}`
+        if (profile && approval=='') navigate(`/profile/${data.username}`
             , { state: { presentjobId: jobEntryId, link: crLink } })
         setProfile(false)
     }, [profile])
+    useEffect(() => {if(jobApprovalFunction)
+        {if(approval==="approved")jobApprovalFunction(data.job_request_id, "approved", data.applicantID);
+         else if(approval==="rejected")jobApprovalFunction(data.job_request_id, "rejected", data.applicantID);
+        }}, [approval])
 
     console.log("experience", data.experience)
     return (
@@ -50,10 +55,10 @@ export default function CandidateCard({ type = null, jobEntryId = null, crLink =
                         <Button variant="contained" onClick={showProfile} sx={{ color: 'black', backgroundColor: '#d2cece', width: 'fit-content', paddingY: "2px", paddingX: "10px", textTransform: "none" }} endIcon={<Person2RoundedIcon />}>
                             <p>View full profile</p>
                         </Button>
-                        <Button variant="contained" sx={{ color: 'black', backgroundColor: '#38b000', width: '100%', paddingY: "2px", paddingX: "10px", textTransform: "none" }} endIcon={<DoneIcon />}>
+                        <Button variant="contained" onClick={()=>setApproval('approved')} sx={{ color: 'black', backgroundColor: '#38b000', width: '100%', paddingY: "2px", paddingX: "10px", textTransform: "none" }} endIcon={<DoneIcon />}>
                             <p>Approve</p>
                         </Button>
-                        <Button variant="contained" sx={{ color: 'black', backgroundColor: '#fc2828', width: '100%', paddingY: "2px", paddingX: "10px", textTransform: "none" }} endIcon={<CloseIcon />}>
+                        <Button variant="contained" onClick={()=>setApproval('rejected')} sx={{ color: 'black', backgroundColor: '#fc2828', width: '100%', paddingY: "2px", paddingX: "10px", textTransform: "none" }} endIcon={<CloseIcon />}>
                             <p>Reject</p>
                         </Button>
                     </div>

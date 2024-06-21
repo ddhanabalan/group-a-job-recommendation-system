@@ -19,7 +19,7 @@ export default function Filter({ title, userType=null, passFilteredDataFn = null
     const [preferences, SetPreferences] = useState({});
     const [domains, SetDomains] = useState([]);
     const [location, SetLocation] = useState('');
-    const [locations, SetLocations] = useState([{ tag: "Bangalore", id: uuid() }, { tag: "Chennai", id: uuid() }]); 
+    const [locations, SetLocations] = useState([]); 
     const [salaryCutOff, SetSalaryCutOff] = useState(DEFAULTSLIDERVALUE * SALARYMULTIPLIER);
     const [sortOrder, SetSortOrder] = useState('asc');
     const [skillsList, setSkillsList] = useState([])

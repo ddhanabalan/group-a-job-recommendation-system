@@ -154,6 +154,33 @@
     background-color: #07F407;
 }
 
+.job-approval-status-label{
+    padding: 0.1rem 0.5rem;
+    text-align: center;
+    border-radius: 7px;
+    margin-top: 4rem;
+    margin-bottom: 2rem;
+    color: #8c8b8b;
+    font-family: Inter-b;
+    font-size: 1.3rem;
+}
+.job-status-text{
+    font-family: Inter-sb;
+}
+
+.job-status-text.color-black{
+    color: rgb(68, 68, 68);
+}
+
+.job-status-text.color-green{
+    color: green;
+}
+
+.job-status-text.color-red{
+    color: red;
+}
+
 .apply-button {
     margin-top: 10%;
 }
+

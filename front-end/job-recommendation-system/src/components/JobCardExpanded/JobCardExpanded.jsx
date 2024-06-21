@@ -4,6 +4,7 @@ import Stack from '@mui/material/Stack';
 import { v4 as uuid } from 'uuid';
 import MailIcon from '@mui/icons-material/Mail';
 import DoneIcon from '@mui/icons-material/Done';
+import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
 import { Button } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
@@ -23,8 +24,8 @@ export default function JobCardExpanded({ data=[], createJobRequest=null, userDa
     //console.log(userSkills)
     //function for senting applicant details from the form to company
 
-    useEffect(()=>{if(userData.type=="seeker" && type != "approval" && data.length)setSubmit(((data.applicationsReceived).map(e=>e.user_id)).includes(userData.id))}) //UNCOMMENT THIS AFTER BACKEND FIX FOR MISSING DATA IN THE RESPONSE(i.e.applicationsReceived, tags, skills) 
-    //console.log(userData.id, "applied=", submit, (data.applicationsReceived)?.map(e=>e.user_id) || "", "status", ((data.applicationsReceived)?.map(e=>e.user_id)).includes(userData.id))
+    useEffect(()=>{if(userData.type=="seeker" && type != "approval" && data.length!=0)setSubmit(((data.applicationsReceived).map(e=>e.user_id)).includes(userData.id))}, [data]) //UNCOMMENT THIS AFTER BACKEND FIX FOR MISSING DATA IN THE RESPONSE(i.e.applicationsReceived, tags, skills) 
+    //console.log(userData.id, "applied=", submit, (data.applicationsReceived)?.map(e=>e.user_id) || "", "status", ((data.applicationsReceived)?.map(e=>e.user_id)).includes(userData.id), "submit status", submit)
 
     function handleApplication(){
         setSubmit(true);
@@ -33,12 +34,19 @@ export default function JobCardExpanded({ data=[], createJobRequest=null, userDa
         
     }
 
+    function handleStatus(status){
+        if(status=="applied")return "black";
+        else if(status=="approved")return "green";
+        else if(status=="rejected")return "red";
+    }
+
     useEffect(() => setSkillIndicator(true), [data])
     return (
         <>
         
         <div className="job-desc-container">
-            
+            {data.length!=0?
+                    <>
                     <div className="job-desc-header">
                         <div className='job-desc-div1'>
                             <h1 className='job-desc-h1'>{data?.jobTitle || ""}</h1>
@@ -98,7 +106,7 @@ export default function JobCardExpanded({ data=[], createJobRequest=null, userDa
                                                 {typeof(e)=="string"?e:e.skill} {userData.type==="employer"?
                                                         <></>
                                                         :
-                                                        <div className={userData.skills.map(skill => {return skill.toLowerCase()}).includes(typeof(e)=="string"?e.toLowerCase():e.skill.toLowerCase())?"skill-status green":"skill-status red"}></div>
+                                                        (Object.keys(userData).includes('skills')?<div className={userData.skills.map(skill => {return skill.toLowerCase()}).includes(typeof(e)=="string"?e.toLowerCase():e.skill.toLowerCase())?"skill-status green":"skill-status red"}></div>:<></>)      
                                                     }
                                                 </div>)}
                                         else{
@@ -113,9 +121,25 @@ export default function JobCardExpanded({ data=[], createJobRequest=null, userDa
                             <></>
                         }    
                     </div>
+
+            {userData.type=="seeker" && type =="approval"?
+                <>
+                <div className='job-approval-status-label'>
+                    Status: <span className={`job-status-text color-${handleStatus(data.status.toLowerCase())}`}>{data.status}</span>
+                </div>
+                <div className="cancel-application-button">
+                <Button variant="outlined" onClick={()=>{}} sx={{color: "black", border: "2px solid #254CE1"}} endIcon={<CancelRoundedIcon/>}>
+                <p>Cancel Application</p>
+                </Button>
+                </div>
+                </>
+                
+                :
+                <></>
+            }       
                     
                     
-            {userData.type=="employer"?
+            {userData.type=="employer" || type =="approval"?
                 <></>
                 :
                 <div className="apply-button">
@@ -124,6 +148,11 @@ export default function JobCardExpanded({ data=[], createJobRequest=null, userDa
                 </Button>
                 </div>
             }
+            </>
+            :
+            <></>
+            }
+            
             
         </div>
         </>
