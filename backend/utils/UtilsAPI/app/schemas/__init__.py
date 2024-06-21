@@ -1,3 +1,3 @@
-from .skill import Skill,SkillCreate
+from .skill import Skill, SkillCreate
 
-from .position import Position,PositionCreate,PositionUpdate
+from .position import Position, PositionCreate, PositionUpdate

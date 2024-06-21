@@ -11,13 +11,14 @@ from . import (
     Session,
     decode64_image,
     encode64_image,
-    get_user_type
+    get_user_type,
 )
 
 
 router = APIRouter()
 
-@router.get("/profile/{username}",response_class=RedirectResponse)
+
+@router.get("/profile/{username}", response_class=RedirectResponse)
 async def profile(username: str):
     user_type = await get_user_type(username)
     print(user_type)

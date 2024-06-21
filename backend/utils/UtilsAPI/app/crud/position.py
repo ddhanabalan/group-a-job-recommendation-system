@@ -6,6 +6,7 @@ from pydantic import EmailStr
 from ..models import position as model
 from ..schemas import position as schema
 
+
 def create(db: Session, position: schema.PositionCreate):
     """
     Create a new position in the database.py.
@@ -40,16 +41,19 @@ def update(db: Session, position_id: int, position: schema.PositionUpdate):
         bool: True if update is successful, False otherwise.
     """
     try:
-        position_db = db.query(model.Position).filter(model.Position.id == position_id).first()
+        position_db = (
+            db.query(model.Position).filter(model.Position.id == position_id).first()
+        )
         if not position_db:
             return False
-        for k,v in position.dict(exclude_unset=True).items():
+        for k, v in position.dict(exclude_unset=True).items():
             setattr(position_db, k, v)
         db.commit()
         return True
     except SQLAlchemyError:
         db.rollback()
         return False
+
 
 def delete(db: Session, position_id: int):
     """
@@ -63,7 +67,9 @@ def delete(db: Session, position_id: int):
         bool: True if deletion is successful, False otherwise.
     """
     try:
-        position_db = db.query(model.Position).filter(model.Position.id == position_id).first()
+        position_db = (
+            db.query(model.Position).filter(model.Position.id == position_id).first()
+        )
         if not position_db:
             return False
         db.delete(position_db)
@@ -73,6 +79,6 @@ def delete(db: Session, position_id: int):
         db.rollback()
         return False
 
+
 def get_all(db: Session):
     return db.query(model.Position).all()
-

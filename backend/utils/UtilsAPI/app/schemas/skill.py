@@ -2,11 +2,10 @@ from pydantic import BaseModel
 from datetime import datetime
 
 
-
-
 class SkillCreate(BaseModel):
     name: str
     category: str
+
 
 class Skill(SkillCreate):
     id: int
@@ -15,6 +14,7 @@ class Skill(SkillCreate):
 
     class Config:
         from_attributes = True
+
 
 class SkillUpdate(SkillCreate):
     class Config:

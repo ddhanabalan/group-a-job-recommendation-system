@@ -106,10 +106,11 @@ def delete(db: Session, job_vacancy_id: int) -> bool:
         db.rollback()
         return False
 
+
 # Get all Data for model
-def get_all_for_model (
+def get_all_for_model(
     db: Session,
-) -> List[Type[jobmodel.JobVacancy]]|[]:
+) -> List[Type[jobmodel.JobVacancy]] | []:
     """
     Retrieve all job vacancies from the database.py.
 
@@ -123,6 +124,8 @@ def get_all_for_model (
         return db.query(jobmodel.JobVacancy).all()
     except SQLAlchemyError:
         return []
+
+
 def get_filtered_jobs(
     db: Session,
     emp_type: Optional[List[str]] = None,

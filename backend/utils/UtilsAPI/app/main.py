@@ -1,6 +1,6 @@
 from typing import Optional
 
-from fastapi import FastAPI, Depends,HTTPException
+from fastapi import FastAPI, Depends, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy.orm import Session
 
@@ -21,7 +21,6 @@ origins = [
 app = FastAPI()
 
 
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -32,5 +31,3 @@ app.add_middleware(
 
 
 app.include_router(router=router)
-
-

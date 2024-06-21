@@ -1,1 +1,1 @@
-from . import jobrecommendation
+from . import schemas

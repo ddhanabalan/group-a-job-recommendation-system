@@ -1,3 +1,10 @@
+"""
+Configuration module for the AuthAPI application.
+
+This module contains the configuration values needed to run the application.
+Values are read from the environment variables and stored in constants.
+"""
+
 import os
 from dotenv import load_dotenv
 

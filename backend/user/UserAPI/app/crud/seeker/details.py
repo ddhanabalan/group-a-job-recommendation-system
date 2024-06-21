@@ -67,6 +67,7 @@ def get(db: Session, user_id: int) -> Type[seekermodel.SeekersDetails] | None:
     except SQLAlchemyError:
         return
 
+
 def get_all(db: Session) -> List[Type[seekermodel.SeekersDetails]] | []:
     """None
     Retrieve seeker details based on user ID.
@@ -79,10 +80,7 @@ def get_all(db: Session) -> List[Type[seekermodel.SeekersDetails]] | []:
         seekermodel.SeekersDetails: Seeker details if found, else None.
     """
     try:
-        return (
-            db.query(seekermodel.SeekersDetails)
-            .all()
-        )
+        return db.query(seekermodel.SeekersDetails).all()
     except SQLAlchemyError:
         return []
 

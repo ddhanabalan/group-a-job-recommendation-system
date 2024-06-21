@@ -1,3 +1,11 @@
+"""
+This module contains the database connection and session maker.
+
+Attributes:
+    engine (sqlalchemy.engine.Engine): The SQLAlchemy engine that creates the connection to the database.
+    SessionLocal (sqlalchemy.orm.session.sessionmaker): The session maker that creates scoped database sessions.
+    Base (sqlalchemy.ext.declarative.api.DeclarativeMeta): The base class for declarative database models.
+"""
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
