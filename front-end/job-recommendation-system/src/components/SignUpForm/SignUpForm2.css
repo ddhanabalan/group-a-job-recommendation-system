@@ -1,6 +1,5 @@
-
-.page-container{
-    height: fit-content;
+.page-container {
+    height: 100%;
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -21,14 +20,24 @@
     height: fit-content;
     padding: 20px 80px 10px;
 }
-.info-box form{
+
+.info-box form {
     display: flex;
     flex-direction: column;
     gap: 30px;
 }
-.personal-detail-picture{
+
+.personal-detail-picture {
     display: flex;
     justify-content: flex-end;
+    position: relative;
+    margin-bottom: 1rem;
+}
+
+.warning-pic-format {
+    position: absolute;
+    right: 0;
+    bottom: -1.5rem;
 }
 
 .personal-detail-picture label,
@@ -61,7 +70,7 @@
 
 .personal-details-input>div {
     height: 2.5rem;
-    background-color: #D9D9D9;
+    background-color: #d9d9d900;
     width: 18.75rem;
 }
 
@@ -70,17 +79,20 @@
     height: 6rem;
     position: relative;
 }
-.p-image{
+
+.p-image {
     width: 100%;
     height: 100%;
     border-radius: 50%;
     overflow: hidden;
 }
-.personal-picture img{
+
+.personal-picture img {
     width: 100%;
     height: 100%;
-    object-fit:cover;
+    object-fit: cover;
 }
+
 .text-head {
     font-weight: bold;
     font-family: Inter-sb;
@@ -101,31 +113,32 @@
 }
 
 @media only screen and (max-width: 960px) {
-    .personal-info-container{
+    .personal-info-container {
         grid-template-columns: repeat(1, auto);
     }
 
-    #item-1{
-      grid-row: 2;  
+    #item-1 {
+        grid-row: 2;
     }
 
-    #item-2{
+    #item-2 {
         grid-row: 1;
     }
-    .personal-detail-picture{
+
+    .personal-detail-picture {
         display: flex;
         flex-direction: column;
         align-items: center;
         gap: 10px;
     }
 
-    .page-container{
+    .page-container {
         overflow-y: scroll;
     }
 
-    .info-header{
+    .info-header {
         align-self: center;
     }
-   
 
-  }
+
+}

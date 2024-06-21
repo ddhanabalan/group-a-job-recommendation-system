@@ -1,9 +1,9 @@
 .login_container {
     position: relative;
     width: fit-content;
-    height: 42rem;
+    height: inherit;
     align-self: flex-start;
-    margin-left:100px;
+    
     padding: 20px 40px 250px 40px;
     border: none;
     border-radius: 20px;
@@ -57,3 +57,9 @@
     color: #2299F8 !important;
     font-size: 14px ;
 }
+
+@media only screen and (max-width: 800px) {
+    .sigup-redirect{
+      bottom: 20%;
+    }
+  }

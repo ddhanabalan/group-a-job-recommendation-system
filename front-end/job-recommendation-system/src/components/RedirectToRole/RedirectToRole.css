@@ -1,41 +1,58 @@
 .WelcomeContainer {
-    width: 55rem;
-    height: 42rem;
-    background-color: white;
+    width: 25rem;
+    height: 30rem;
     border-radius: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: absolute;
+    right: 5rem;
+    top: 10rem;
+    background: rgba(255, 255, 255, 0.25);
+    box-shadow: 5px 4px 50px 0 rgba(31, 38, 135, 0.37);
+    backdrop-filter: blur(9px);
+    -webkit-backdrop-filter: blur(9px);
+    border: 1px solid rgba(11, 11, 11, 0.18);
+}
+
+.WelcomeContainer h4 {
+    font-size: .8rem;
+    margin-bottom: 2rem;
 }
 
 .redirect-to-role-h1 {
-    font-family: Inter-light-italic;
-    margin: 5rem 0;
+    font-family: Inter-md;
+    font-size: 2rem;
+    margin: 3rem 0;
 }
 
-h1>span {
-    font-family: Inter-b;
-}
+
 
 p {
     margin: 0;
     font-size: .75rem;
 }
-button{
+
+.WelcomeContainer button {
     font-family: Inter-md !important;
     font-size: 1.6rem !important;
 }
-.btn{
-    width:100%
+
+.btn {
+    width: 100%
 }
+
 .btn-green {
     background-color: #07F407;
     border-color: #07F407;
 }
-.btn-green:hover,.btn-green:active{
-    background-color: #02bd02 !important;
-    border-color: #02bd02 !important;
+
+.btn-green:hover,
+.btn-green:active {
+    background-color: #28d028 !important;
+    border-color: #28d028 !important;
 }
-.div-btn{
+
+.div-btn {
     margin-bottom: 2rem;
 }

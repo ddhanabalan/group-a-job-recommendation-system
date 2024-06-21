@@ -3,7 +3,7 @@
 import "./JobOpenings.css";
 import Filter from "../../components/Filter/Filter";
 import OpeningsListBar from "../../components/OpeningsListBar/OpeningsListBar";
-import JobDesciptionForm from "../../components/JobDescription/JobDesciption";
+import JobCardExpanded from "../../components/JobCardExpanded/JobCardExpanded";
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 
@@ -98,7 +98,7 @@ export default function JobOpeningsSection() {
             }
             
             <div className={`job-desc-box${filterstat?" blur":""}`}>
-            {selectedEntry!=null && filtered.length!=0?<JobDesciptionForm data={selectedJobEntry} userData={userData}/>:<></>}
+            {selectedEntry!=null && filtered.length!=0?<JobCardExpanded data={selectedJobEntry} userData={userData}/>:<></>}
             </div>
         </div>
     )

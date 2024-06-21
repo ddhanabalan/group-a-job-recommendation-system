@@ -10,40 +10,91 @@
     width: 100%;
     background-color: aquamarine;
 }
-.banner button{
+
+.banner button {
     background-color: rgba(255, 255, 255, 0.63);
+}
+.banner-back-btn{
+    position: absolute;
+    top: .4rem;
+    left: .5rem;
+}
+.banner-back-btn svg{
+    color: black;
 }
 .profile-head-info {
     width: 100%;
     display: flex;
-   justify-content: flex-start;
-   position: relative;
+    justify-content: flex-start;
+    position: relative;
 }
-.profile_info_edit{
+
+.profile_info_edit {
     width: 100%;
 }
-.profile-name input{
+
+.profile-name input {
     font-size: 2.1rem;
     height: min-content;
     padding-bottom: 0;
 }
-.profile-name div{
+
+.profile-name div {
     margin-top: .2rem;
 }
+
+.profile-location {
+    display: flex;
+    align-items: center;
+    padding: .1rem .3rem;
+    border-radius: 15px;
+    background-color: #e9ecef;
+}
+
 .profile-location input {
     font-size: 1.1rem;
 }
+
+.profile-bio {
+    margin-top: .6rem;
+}
+
 .profile-bio textarea {
     font-size: .8rem;
 }
+
 .profile-head-info-div {
     display: flex;
     flex-direction: column;
 }
 
+.profile-head-info-div label,
+.profile-head-info-div label:hover,
+.profile-head-info-div label:active {
+    height: 30px;
+    background-color: rgb(0, 0, 0);
+    font-size: .8rem;
+    position: absolute;
+    bottom: 2rem;
+    z-index: 2;
+    left: 1rem;
+    border-radius: 50%;
+    min-width: 0;
+    width: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+}
+
+.profile-head-info-div label span {
+    margin: 0;
+    padding: 0;
+}
+
 .profile-head-info-div1 {
     height: 100%;
-    width: 10rem;
+    margin: 0 1rem;
     align-items: center;
 }
 
@@ -60,11 +111,19 @@
     position: relative;
     bottom: 2rem;
 }
-.profile-img-container img{
+
+.profile-img-container-skeleton {
+    width: 8rem !important;
+    height: 8rem !important;
+    background-color: #D9D9D9;
+}
+
+.profile-img-container img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
+
 .profile-location {
     font-size: 1.1rem;
 }
