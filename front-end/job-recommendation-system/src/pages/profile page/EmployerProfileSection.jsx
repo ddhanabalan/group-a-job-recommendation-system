@@ -113,7 +113,7 @@ export default function EmployerProfileSection({ data }) {
         SetnewData({ ...newData, city: data.city, company_name: data.company_name, country: data.country, bio: data.bio, profile_picture: data.profile_picture, profile_banner_color: data.profile_banner_color })
         console.log("data", data);
         try {
-            const response = await userAPI.put('/recruiter/details', data,
+            const response = await userAPI.put('/recruiter/details/', data,
                 {
                     headers: {
                         'Authorization': `Bearer ${getStorage("userToken")}`
