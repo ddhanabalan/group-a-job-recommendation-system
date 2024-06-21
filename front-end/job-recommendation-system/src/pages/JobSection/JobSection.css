@@ -5,6 +5,12 @@
     align-items: center;
     justify-content: center;
 }
+
+.job-search-top-bar{
+    width: inherit;
+    align-items: center;
+    justify-content: center;
+}
 .job-filter{
     width: 25%;
     align-self: start;
@@ -14,3 +20,4 @@
     top: 3%;
     left: 27%;
 }
+

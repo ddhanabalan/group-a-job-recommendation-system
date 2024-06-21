@@ -17,7 +17,8 @@
 }
 
 .opening-card.highlighted{
-    background-color: #a6a6a6;
+    background-color: #b9b9b9;
+    border: 0.2px solid rgb(164, 162, 162);
 }
 
 .opening-card-h1{

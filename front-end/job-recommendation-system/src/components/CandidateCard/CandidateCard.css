@@ -7,6 +7,10 @@
 .job-card-info-div-parameter{
     color: #7B7777;
 }
+
+.cs{
+    color: #fc2828;
+}
 .job-card-info-div{
     display: flex;
     justify-content: space-between;
@@ -44,8 +48,14 @@
 }
 .job-card-img-container{
     align-self: center;
-    height: 6.2rem;
-    width: 6.2rem;
+    height: 4.375rem;
+    width: 4.375rem;
     border-radius: 50%;
     background-color: #D9D9D9;
+    overflow: hidden;
+}
+.job-card-img-container img{
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
 }

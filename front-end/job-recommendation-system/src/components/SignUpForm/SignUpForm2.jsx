@@ -13,6 +13,7 @@ import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import profilePlaceholder from '../../images/profile_placeholder.svg';
 import greentick from '../../images/green-confirm.json'
 import failanim from '../../images/fail-animation.json'
+import moment from 'moment/moment.js';
 
 function SignUpForm2() {
   const VisuallyHiddenInput = styled('input')({
@@ -28,13 +29,13 @@ function SignUpForm2() {
   });
 
   const { register, formState: { errors }, handleSubmit, watch } = useForm({ mode: 'onTouched' | 'onSubmit' });
-
+  const signupAge = 18;
   const countries = ['India', 'USA', 'Australia', 'China', 'Japan']
   const genders = ['Male', 'Female', 'Transgender', 'Others']
   const industries = ['Automobile', 'Agriculture', 'Medical', 'Defense', 'Aeronautical', 'Chemical']
   const location = useLocation();
   const navigate = useNavigate();
-  const userType = location["pathname"].includes("employer") ? "employer" : "seeker";
+  const userType = location["pathname"].includes("organization") ? "employer" : "seeker";
 
   //error messages received after submitting form
   /*const serverErrorMsgs= {200: "Account creation request sent successfully",
@@ -63,33 +64,40 @@ function SignUpForm2() {
 
 
   // const { info, setInfo } = useState(); 
+  const dateValidation = (dob) => {
+    const age = parseInt(moment(new Date()).diff(moment(dob), 'years'));
+    //console.log(age, ">=", signupAge, ":", age>=signupAge)
 
+    return age;
+  }
 
   async function subForm(data) {
     //form data submission and redirecting to login
 
     SetLoading(true)
     console.log(location)
-    const newdata = { ...data, ...location.state, 'profile_picture': img,'profile_banner_color':bannerColor};
+    const newdata = { ...data, ...location.state, 'profile_picture': img, 'profile_banner_color': bannerColor };
+    const checkUserType = newdata.userType
+    console.log("checked type", checkUserType)
     delete newdata.userType
     console.log("full data", newdata);
     try {
-      const res = await axios.post('/seeker/register', newdata, {
+      const res = await axios.post(`/${checkUserType == "seeker" ? "seeker" : "recruiter"}/register`, newdata, {
         headers: {
           'Content-Type': 'application/json'
         }
       })
       setServerMsg({ ...res });
-      setTimeout(() => {
-        navigate('/login/seeker')
+      res.request.status === 201 && setTimeout(() => {
+        navigate(`/login`)
       }, 5000)
 
     } catch (e) {
       setServerMsg({ ...e.response });
       console.log(e)
-      setTimeout(() => {
-        navigate('/login/seeker')
-      }, 5000)
+      // setTimeout(() => {
+      //   navigate(`/login`)
+      // }, 5000)
       // alert(e.message)
     }
 
@@ -102,12 +110,12 @@ function SignUpForm2() {
 
   }
 
-
+  const pageClass = `page-container ${userType === "seeker" ? 'signup-page-user' : 'signup-page'}`;
   console.log("serverMessage", serverMsg)
   return (
     <>
       {/*SignUp Form part-2(Personal info from seekers/Company info from employers)*/}
-      <div className='page-container'>
+      <div className={pageClass} >
         {loading && <LoaderAnimation />}
         {Object.keys(serverMsg).length !== 0 ? /*loads server error messages and displays at top*/
           <div className="alert-boxes">
@@ -158,6 +166,7 @@ function SignUpForm2() {
                     <img src={img ? img : profilePlaceholder} alt="profile picture" />
                   </div>
                 </div>
+                <p className='warning-pic-format'>supported formats: .jpg, .jpeg, .webp</p>
               </div>
               <div id="item-3">
                 {
@@ -205,24 +214,25 @@ function SignUpForm2() {
                           {
                             required: "please enter last name",
                             pattern: {
-                              value: /^[a-zA-Z]+$/,
-                              message: "Only letters allowed"
+                              value: /^[a-zA-Z\s]+$/,
+                              message: "Only letters and whitespace allowed"
                             }
                           })} />
                       <p className="error-message">{errors.last_name?.message || ""}</p>
                     </div>
                     :
-                    /*Address*/
+                    /*Country*/
                     <div>
-                      <p className="text-head">Address<span className="text-danger"> *</span></p>
-                      <TextField className="personal-details-input" variant="outlined"
-
-                        error={'address' in errors}
-                        {...register("address",
+                      <p className="text-head">Industry<span className="text-danger"> *</span></p>
+                      <TextField className="personal-details-input" variant="outlined" select defaultValue=""
+                        error={'industry' in errors}
+                        {...register("industry",
                           {
-                            required: "please enter address",
-                          })} />
-                      <p className="error-message">{errors.address?.message || ""}</p>
+                            required: "please select industry"
+                          })}>
+                        {industries.map((op) => (<MenuItem key={op} value={op}>{op}</MenuItem>))}
+                      </TextField>
+                      <p className="error-message">{errors.industry?.message || ""}</p>
                     </div>
                 }
               </div>
@@ -292,6 +302,7 @@ function SignUpForm2() {
                           {
 
                             required: "please enter dob",
+                            validate: (val) => dateValidation(val) >= signupAge || "Age should be above 18 to register",
                           })} />
                       <p className="error-message">{errors.dob?.message || ""}</p>
                     </div>
@@ -331,18 +342,17 @@ function SignUpForm2() {
                       <p className="error-message">{errors.gender?.message || ""}</p>
                     </div>
                     :
-                    /*Industry*/
+                    /*Address*/
                     <div>
-                      <p className="text-head">Industry<span className="text-danger"> *</span></p>
-                      <TextField className="personal-details-input" variant="outlined" select defaultValue=""
-                        error={'industry' in errors}
-                        {...register("industry",
+                      <p className="text-head">Address<span className="text-danger"> *</span></p>
+                      <TextField className="personal-details-input" variant="outlined"
+
+                        error={'address' in errors}
+                        {...register("address",
                           {
-                            required: "please select industry"
-                          })}>
-                        {industries.map((op) => (<MenuItem key={op} value={op}>{op}</MenuItem>))}
-                      </TextField>
-                      <p className="error-message">{errors.industry?.message || ""}</p>
+                            required: "please enter address",
+                          })} />
+                      <p className="error-message">{errors.address?.message || ""}</p>
                     </div>
                 }
               </div>

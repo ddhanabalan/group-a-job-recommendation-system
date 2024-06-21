@@ -9,7 +9,7 @@ import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import './QualificationCard.css';
-export default function QualificationCard({ cardData, data, deleteFn, submitFn }) {
+export default function QualificationCard({ access, data, deleteFn, submitFn }) {
     const { register, formState: { errors }, handleSubmit, getValues } = useForm({ mode: 'onTouched' });
     const [isNotEditing, SetIsNotEditing] = useState(true);
     const editData = () => {
@@ -30,45 +30,47 @@ export default function QualificationCard({ cardData, data, deleteFn, submitFn }
                         </IconButton>
                     </div>
                     <div className="qualification-card-content">
-                        <h2 className='qualification-card-h2'>{data.qualification}</h2>
-                        <h3 className='qualification-card-h3'>{data.qualification_provider}</h3>
+                        <h2 className='qualification-card-h2'>{data.education_title}</h2>
+                        <h3 className='qualification-card-h3'>{data.education_provider}</h3>
                         <p className='qualification-card-p'>{data.start_year + " - " + data.end_year}</p>
                     </div>
                     <div className="qualification-card-action-btns">
-                        <Stack direction="column" spacing={2}>
-                            <IconButton aria-label="edit" onClick={() => SetIsNotEditing(false)}>
-                                <EditIcon fontSize='small' />
-                            </IconButton>
-                            <IconButton aria-label="delete" onClick={() => deleteFn(data.id)}>
-                                <DeleteRoundedIcon sx={{ color: 'red' }} fontSize='small' />
-                            </IconButton>
-                        </Stack>
+                        {access !== "viewOnly" &&
+                            <Stack direction="column" spacing={2}>
+                                <IconButton aria-label="edit" onClick={() => SetIsNotEditing(false)}>
+                                    <EditIcon fontSize='small' />
+                                </IconButton>
+                                <IconButton aria-label="delete" onClick={() => deleteFn(data.id)}>
+                                    <DeleteRoundedIcon sx={{ color: 'red' }} fontSize='small' />
+                                </IconButton>
+                            </Stack>
+                        }
                     </div>
                 </div >
                 :
                 <form className='qualification-add-form qualification-card' noValidate autoComplete='on' onSubmit={handleSubmit(editData)}>
                     <div className="qualification-card-image"></div>
                     <div className="qualification-card-content">
-                        <TextField className='qualification-add-h2' defaultValue={data.qualification}
+                        <TextField className='qualification-add-h2' defaultValue={data.education_title}
                             sx={{ marginBottom: '.7rem' }}
-                            placeholder="Ex: Harvard University"
+                            placeholder="Ex: B.Tech in Electronics"
                             variant="outlined"
-                            label={cardData.qualification_provider}
+                            label="Course/Degree"
                             InputLabelProps={{ shrink: true }}
                             size='small'
-                            error={'qualification' in errors}
-                            {...register("qualification", {
+                            error={'education_title' in errors}
+                            {...register("education_title", {
                                 required: "qualification cannot be empty"
                             })} />
-                        <TextField className='qualification-add-h3' defaultValue={data.qualification_provider}
+                        <TextField className='qualification-add-h3' defaultValue={data.education_provider}
                             sx={{ marginBottom: '.7rem' }}
                             placeholder="Ex: Harvard University"
                             variant="outlined"
-                            label={cardData.qualification_provider}
+                            label="School/College"
                             InputLabelProps={{ shrink: true }}
                             size='small'
-                            error={'qualification_provider' in errors}
-                            {...register("qualification_provider", {
+                            error={'education_provider' in errors}
+                            {...register("education_provider", {
                                 required: "qualification cannot be empty"
                             })} />
                         <div className='qualification-year'>
@@ -83,7 +85,7 @@ export default function QualificationCard({ cardData, data, deleteFn, submitFn }
                                     required: "cannot be empty"
                                 })} />
                             <p>-</p>
-                            <TextField className='qualification-add-p' defaultValue={data.end_year} 
+                            <TextField className='qualification-add-p' defaultValue={data.end_year}
                                 placeholder="2010"
                                 variant="outlined"
                                 label="End year"
@@ -96,14 +98,16 @@ export default function QualificationCard({ cardData, data, deleteFn, submitFn }
                         </div>
                     </div>
                     <div className="qualification-card-action-btns">
-                        <Stack direction="column" spacing={2}>
-                            <IconButton aria-label="check" type='submit'>
-                                <CheckRoundedIcon fontSize='small' />
-                            </IconButton>
-                            <IconButton aria-label="edit" onClick={() => SetIsNotEditing(true)}>
-                                <CloseRoundedIcon sx={{ color: 'red' }} fontSize='small' />
-                            </IconButton>
-                        </Stack>
+                        {access !== "viewOnly" &&
+                            <Stack direction="column" spacing={2}>
+                                <IconButton aria-label="check" type='submit'>
+                                    <CheckRoundedIcon fontSize='small' />
+                                </IconButton>
+                                <IconButton aria-label="edit" onClick={() => SetIsNotEditing(true)}>
+                                    <CloseRoundedIcon sx={{ color: 'red' }} fontSize='small' />
+                                </IconButton>
+                            </Stack>}
+
                     </div>
                 </form>}
         </>
