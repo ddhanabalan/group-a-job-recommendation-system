@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
@@ -7,8 +7,9 @@ import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { format } from 'date-fns';
 export default function LicenseAdd({ submitFn, cancelFn }) {
-    const { register, formState: { errors }, handleSubmit } = useForm({ mode: 'onTouched' });
+    const { control, register, formState: { errors }, handleSubmit, setValue } = useForm({ mode: 'onTouched' });
 
     return (
 
@@ -36,7 +37,7 @@ export default function LicenseAdd({ submitFn, cancelFn }) {
                         required: "Issuer name cannot be empty"
                     })} />
                 <div className='qualification-year'>
-                    <TextField className='qualification-add-p'
+                    {/* <TextField className='qualification-add-p'
                         placeholder="Nov 2023"
                         variant="outlined"
                         label="Issue date"
@@ -45,10 +46,42 @@ export default function LicenseAdd({ submitFn, cancelFn }) {
                         error={'issue_date' in errors}
                         {...register("issue_date", {
                             required: "cannot be empty"
-                        })} />
-                    {/* <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <DatePicker label={'"month" and "year"'} views={['month', 'year']}/>
-                    </LocalizationProvider> */}
+                        })} /> */}
+                    <LocalizationProvider dateAdapter={AdapterDayjs}>
+                        <Controller
+                            name="issue_date"
+                            control={control}
+                            defaultValue={null}
+                            render={({ field: { onChange, value } }) => (
+                                <DatePicker label="Issue date" views={['month', 'year']}
+                                    disableFuture
+                                    value={value}
+                                // onChange={onChange}
+                                    onChange={(date) => {
+                                        console.log("date", date)
+                                        const formattedDate = date ? format(new Date(date["$y"], date["$M"]), 'MMMM yyyy') : '';
+                                        console.log("formattedDate", formattedDate)
+                                        setValue('issue_date', formattedDate);
+                                        onChange(formattedDate);
+                                }}
+                                    sx={{ width: '50%' }}
+                                    slotProps={{
+                                        textField: { size: 'small', InputLabelProps: { shrink: true }, placeholder: "Nov 2023" }
+                                    }}
+                                    renderInput={(params) =>
+                                        <TextField className='qualification-add-p'
+                                            {...params}
+                                            variant="outlined"
+                                            error={'issue_date' in errors}
+                                            {...register("issue_date", {
+                                                required: "cannot be empty"
+                                            })} />
+                                    }
+                                />
+                            )}
+                        />
+
+                    </LocalizationProvider>
                     <TextField className='qualification-add-p'
                         variant="outlined"
                         label="Credential URL - include https://"

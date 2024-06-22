@@ -52,9 +52,9 @@ export default function CandidateCard({ type = null, jobEntryId = null, crLink =
                 </div>
                 {type === "review" ?
                     <div className="application-review-buttons">
-                        <Button variant="contained" onClick={showProfile} sx={{ color: 'black', backgroundColor: '#d2cece', width: 'fit-content', paddingY: "2px", paddingX: "10px", textTransform: "none" }} endIcon={<Person2RoundedIcon />}>
+                        {/* <Button variant="contained" onClick={showProfile} sx={{ color: 'black', backgroundColor: '#d2cece', width: 'fit-content', paddingY: "2px", paddingX: "10px", textTransform: "none" }} endIcon={<Person2RoundedIcon />}>
                             <p>View full profile</p>
-                        </Button>
+                        </Button> */}
                         <Button variant="contained" onClick={()=>setApproval('approved')} sx={{ color: 'black', backgroundColor: '#38b000', width: '100%', paddingY: "2px", paddingX: "10px", textTransform: "none" }} endIcon={<DoneIcon />}>
                             <p>Approve</p>
                         </Button>

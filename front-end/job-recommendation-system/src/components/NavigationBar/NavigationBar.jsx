@@ -21,19 +21,6 @@ export default function NavigationBar({ active, redirect = null }) {
         //code below needs to be optimized, will focus on this later
         
             <Stack direction="row" className='nav-bar'>
-                {
-                    redirect ?
-                        <div className="nav-back">
-                            <Link to={redirect.link} state={{ highlightedId: redirect.presentjobId }}>
-
-                                <BackBtn />
-
-                            </Link>
-                        </div>
-                        :
-                        <></>
-
-                }
                 <Link to="/profile">
                     <IconButton aria-label="profile" className={`nav-btn-profile ${active=="profile"?"nav-btn-active":""}`} >
                         <AccountCircleRoundedIcon fontSize='large' />
