@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
@@ -9,18 +9,26 @@ import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import LinkRoundedIcon from '@mui/icons-material/LinkRounded';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { format } from 'date-fns';
+import dayjs from 'dayjs';
 import './LicenseCard.css';
 export default function LicenseCard({ access, data, deleteFn, submitFn }) {
-    const { register, formState: { errors }, handleSubmit, getValues } = useForm({ mode: 'onTouched' });
+    const { register, formState: { errors }, handleSubmit, getValues, control } = useForm({ mode: 'onTouched' });
     const [isNotEditing, SetIsNotEditing] = useState(true);
     const editData = () => {
         //passing the edited values along with id of the data
         console.log("hello from editData")
         let values = getValues();
-        values = { ...values, id: data.id }
+        const formattedDate = values.issue_date ? format(new Date(values.issue_date["$y"], values.issue_date["$M"]), 'MMMM yyyy') : '';
+        console.log("formattedDate", formattedDate)
+        values = { ...values, id: data.id, issue_date: formattedDate }
         submitFn(values)
         SetIsNotEditing(true)
     }
+
     return (
         <>
             {isNotEditing ?
@@ -86,7 +94,7 @@ export default function LicenseCard({ access, data, deleteFn, submitFn }) {
                                 required: "Issuer name cannot be empty"
                             })} />
                         <div className='qualification-year'>
-                            <TextField className='qualification-add-p' defaultValue={data.issue_date}
+                            {/* <TextField className='qualification-add-p' defaultValue={data.issue_date}
                                 placeholder="Nov 2023"
                                 variant="outlined"
                                 label="Issue date"
@@ -95,7 +103,37 @@ export default function LicenseCard({ access, data, deleteFn, submitFn }) {
                                 error={'issue_date' in errors}
                                 {...register("issue_date", {
                                     required: "cannot be empty"
-                                })} />
+                                })} /> */}{console.log("dayjsdate", dayjs(data.issue_date, 'MMMM YYYY'))}
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <Controller
+                                    name="issue_date"
+                                    control={control}
+                                    defaultValue={data.issue_date && dayjs(data.issue_date, 'MMMM YYYY')}
+                                    render={({ field: { onChange, value } }) => (
+                                        <DatePicker label="Issue date" views={['year', 'month']}
+                                            disableFuture
+                                            value={value}
+                                            openTo='year'
+                                            onChange={(date) => {
+                                                onChange(dayjs(date));
+                                            }}
+                                            sx={{ width: '50%' }}
+                                            slotProps={{
+                                                textField: { size: 'small', InputLabelProps: { shrink: true }, placeholder: "Nov 2023" }
+                                            }}
+                                            renderInput={(params) =>
+                                                <TextField className='qualification-add-p'
+                                                    {...params}
+                                                    variant="outlined"
+                                                    error={'issue_date' in errors}
+                                                    {...register("issue_date", {
+                                                        required: "cannot be empty"
+                                                    })} />
+                                            }
+                                        />
+                                    )}
+                                />
+                            </LocalizationProvider>
                             <p>-</p>
                             <TextField className='qualification-add-p' defaultValue={data.credential_url}
                                 variant="outlined"

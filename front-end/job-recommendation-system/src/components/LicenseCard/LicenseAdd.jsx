@@ -9,11 +9,17 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { format } from 'date-fns';
 export default function LicenseAdd({ submitFn, cancelFn }) {
-    const { control, register, formState: { errors }, handleSubmit, setValue } = useForm({ mode: 'onTouched' });
-
+    const { control, register, formState: { errors }, handleSubmit } = useForm({ mode: 'onTouched' });
+    const formatData = (data) => {
+        console.log(data.issue_date)
+        const formattedDate = data.issue_date ? format(new Date(data.issue_date["$y"], data.issue_date["$M"]), 'MMMM yyyy') : '';
+        console.log("formattedDate", formattedDate)
+        submitFn({ ...data, issue_date: formattedDate })
+      
+    }
     return (
 
-        <form className='qualification-add-form qualification-card' noValidate autoComplete='on' onSubmit={handleSubmit(submitFn)}>
+        <form className='qualification-add-form qualification-card' noValidate autoComplete='on' onSubmit={handleSubmit(formatData)}>
             <div className="qualification-card-image"></div>
             <div className="qualification-card-content">
                 <TextField sx={{ marginBottom: '.7rem' }} className='qualification-add-h2'
@@ -37,33 +43,18 @@ export default function LicenseAdd({ submitFn, cancelFn }) {
                         required: "Issuer name cannot be empty"
                     })} />
                 <div className='qualification-year'>
-                    {/* <TextField className='qualification-add-p'
-                        placeholder="Nov 2023"
-                        variant="outlined"
-                        label="Issue date"
-                        InputLabelProps={{ shrink: true }}
-                        size='small'
-                        error={'issue_date' in errors}
-                        {...register("issue_date", {
-                            required: "cannot be empty"
-                        })} /> */}
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <Controller
                             name="issue_date"
                             control={control}
                             defaultValue={null}
                             render={({ field: { onChange, value } }) => (
-                                <DatePicker label="Issue date" views={['month', 'year']}
+                                <DatePicker label="Issue date" views={['year', 'month']}
                                     disableFuture
                                     value={value}
-                                // onChange={onChange}
                                     onChange={(date) => {
-                                        console.log("date", date)
-                                        const formattedDate = date ? format(new Date(date["$y"], date["$M"]), 'MMMM yyyy') : '';
-                                        console.log("formattedDate", formattedDate)
-                                        setValue('issue_date', formattedDate);
-                                        onChange(formattedDate);
-                                }}
+                                        onChange(date);
+                                    }}
                                     sx={{ width: '50%' }}
                                     slotProps={{
                                         textField: { size: 'small', InputLabelProps: { shrink: true }, placeholder: "Nov 2023" }
@@ -80,8 +71,8 @@ export default function LicenseAdd({ submitFn, cancelFn }) {
                                 />
                             )}
                         />
-
                     </LocalizationProvider>
+
                     <TextField className='qualification-add-p'
                         variant="outlined"
                         label="Credential URL - include https://"
