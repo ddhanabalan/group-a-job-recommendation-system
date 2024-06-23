@@ -3,6 +3,8 @@
 }
 
 .signup-container {
+    box-shadow: 10px 10px 30px 5px rgba(0, 0, 0, 0.2);
+    border: solid 1px rgb(210, 210, 210);
     border-radius: 15px;
     padding: 20px 235px;
     width: 60%;

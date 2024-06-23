@@ -20,6 +20,7 @@
     "autosuggest-highlight": "^3.3.4",
     "axios": "^1.6.8",
     "bootstrap": "^5.3.3",
+    "date-fns": "^3.6.0",
     "dayjs": "^1.11.10",
     "fast-average-color": "^9.4.0",
     "lodash": "^4.17.21",

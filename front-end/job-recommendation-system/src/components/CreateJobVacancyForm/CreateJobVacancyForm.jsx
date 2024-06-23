@@ -472,7 +472,7 @@ export default function JobVacancyForm({ data = {} }) {
                                                 {
                                                     validate: (val) => { if (val != null && val.length != 0) return (dateValidation(val) || "Please enter a future date") },
                                                 })} />
-                                        {watch('last_date') == null || watch('last_date').length == 0 ? (<p className='helper-text'><i>&nbsp;&nbsp;default value is 30 days after post date</i></p>) : <></>}
+                                        {watch('last_date') == null || watch('last_date').length == 0 ? (<p className='helper-text'>&nbsp;&nbsp;default value is 30 days after post date</p>) : <></>}
                                         <p className="error-message">{errors.last_date?.message}</p>
                                     </div>
                                 </div>
