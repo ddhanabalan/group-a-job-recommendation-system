@@ -9,7 +9,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { format } from 'date-fns';
 export default function ExperienceAdd({ submitFn, cancelFn }) {
-    const { register, formState: { errors }, handleSubmit, setValue, control } = useForm({ mode: 'onTouched' });
+    const { register, formState: { errors }, handleSubmit, control } = useForm({ mode: 'onTouched' });
     const formatData = (data) => {
         const formattedStartYear = data.start_year ? format(new Date(data.start_year.year(), data.start_year.month()), 'yyyy') : '';
         // console.log("formattedstart", formattedStartYear)
@@ -44,16 +44,6 @@ export default function ExperienceAdd({ submitFn, cancelFn }) {
                         required: "Company name cannot be empty"
                     })} />
                 <div className='qualification-year'>
-                    {/* <TextField className='qualification-add-p'
-                        placeholder="2000"
-                        variant="outlined"
-                        label="Start year"
-                        InputLabelProps={{ shrink: true }}
-                        size='small'
-                        error={'start_year' in errors}
-                        {...register("start_year", {
-                            required: "cannot be empty"
-                        })} /> */}
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <Controller
                             name="start_year"
@@ -84,16 +74,6 @@ export default function ExperienceAdd({ submitFn, cancelFn }) {
                         />
                     </LocalizationProvider>
                     <p>-</p>
-                    {/* <TextField className='qualification-add-p'
-                        placeholder="2010"
-                        variant="outlined"
-                        label="End year"
-                        InputLabelProps={{ shrink: true }}
-                        size='small'
-                        error={'end_year' in errors}
-                        {...register("end_year", {
-                            required: "cannot be empty"
-                        })} /> */}
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <Controller
                             name="end_year"

@@ -80,7 +80,11 @@ export default function LicenseAdd({ submitFn, cancelFn }) {
                         size='small'
                         error={'credential_url' in errors}
                         {...register("credential_url", {
-                            required: "cannot be empty"
+                            required: "cannot be empty",
+                            pattern: {
+                                value: /^https?:\/\//,
+                                message: "Invalid URL"
+                            }
                         })} />
                 </div>
 

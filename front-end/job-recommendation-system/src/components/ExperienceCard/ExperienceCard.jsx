@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { useState } from 'react';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
@@ -8,14 +8,22 @@ import CorporateFareRoundedIcon from '@mui/icons-material/CorporateFareRounded';
 import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-export default function ExperienceCard({ access,data, deleteFn, submitFn }) {
-    const { register, formState: { errors }, handleSubmit, getValues } = useForm({ mode: 'onTouched' });
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { format } from 'date-fns';
+import dayjs from 'dayjs';
+export default function ExperienceCard({ access, data, deleteFn, submitFn }) {
+    const { register, formState: { errors }, handleSubmit, getValues, control } = useForm({ mode: 'onTouched' });
     const [isNotEditing, SetIsNotEditing] = useState(true);
     const editData = () => {
         //passing the edited values along with id of the data
-        console.log("hello from editData")
         let values = getValues();
-        values = { ...values, id: data.id }
+        const formattedStartYear = values.start_year ? format(new Date(values.start_year.year(), values.start_year.month()), 'yyyy') : '';
+        // console.log("formattedstart", formattedStartYear)
+        const formattedEndYear = values.end_year ? format(new Date(values.end_year.year(), values.end_year.month()), 'yyyy') : '';
+        // console.log("formattedEND", formattedEndYear)
+        values = { ...values, id: data.id, start_year: formattedStartYear, end_year: formattedEndYear }
         submitFn(values)
         SetIsNotEditing(true)
     }
@@ -73,7 +81,7 @@ export default function ExperienceCard({ access,data, deleteFn, submitFn }) {
                                 required: "Company name cannot be empty"
                             })} />
                         <div className='qualification-year'>
-                            <TextField className='qualification-add-p' defaultValue={data.start_year}
+                            {/* <TextField className='qualification-add-p' defaultValue={data.start_year}
                                 placeholder="2000"
                                 variant="outlined"
                                 label="Start year"
@@ -82,9 +90,38 @@ export default function ExperienceCard({ access,data, deleteFn, submitFn }) {
                                 error={'start_year' in errors}
                                 {...register("start_year", {
                                     required: "cannot be empty"
-                                })} />
+                                })} /> */}
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <Controller
+                                    name="start_year"
+                                    control={control}
+                                    defaultValue={data.start_year && dayjs(data.start_year, "YYYY")}
+                                    render={({ field: { onChange, value } }) => (
+                                        <DatePicker label="Start year" views={['year']}
+                                            disableFuture
+                                            value={value}
+                                            onChange={(date) => {
+                                                onChange(date);
+                                            }}
+                                            sx={{ width: '45%' }}
+                                            slotProps={{
+                                                textField: { size: 'small', InputLabelProps: { shrink: true }, placeholder: "2000" }
+                                            }}
+                                            renderInput={(params) =>
+                                                <TextField className='qualification-add-p'
+                                                    {...params}
+                                                    variant="outlined"
+                                                    error={'start_year' in errors}
+                                                    {...register("start_year", {
+                                                        required: "cannot be empty"
+                                                    })} />
+                                            }
+                                        />
+                                    )}
+                                />
+                            </LocalizationProvider>
                             <p>-</p>
-                            <TextField className='qualification-add-p' defaultValue={data.end_year} 
+                            {/* <TextField className='qualification-add-p' defaultValue={data.end_year} 
                                 placeholder="2010"
                                 variant="outlined"
                                 label="End year"
@@ -93,7 +130,36 @@ export default function ExperienceCard({ access,data, deleteFn, submitFn }) {
                                 error={'end_year' in errors}
                                 {...register("end_year", {
                                     required: "cannot be empty"
-                                })} />
+                                })} /> */}
+                            <LocalizationProvider dateAdapter={AdapterDayjs}>
+                                <Controller
+                                    name="end_year"
+                                    control={control}
+                                    defaultValue={data.end_year && dayjs(data.end_year, "YYYY")}
+                                    render={({ field: { onChange, value } }) => (
+                                        <DatePicker label="End year" views={['year']}
+                                            disableFuture
+                                            value={value}
+                                            onChange={(date) => {
+                                                onChange(date);
+                                            }}
+                                            sx={{ width: '45%' }}
+                                            slotProps={{
+                                                textField: { size: 'small', InputLabelProps: { shrink: true }, placeholder: "2000" }
+                                            }}
+                                            renderInput={(params) =>
+                                                <TextField className='qualification-add-p'
+                                                    {...params}
+                                                    variant="outlined"
+                                                    error={'end_year' in errors}
+                                                    {...register("end_year", {
+                                                        required: "cannot be empty"
+                                                    })} />
+                                            }
+                                        />
+                                    )}
+                                />
+                            </LocalizationProvider>
                         </div>
                     </div>
                     <div className="qualification-card-action-btns">

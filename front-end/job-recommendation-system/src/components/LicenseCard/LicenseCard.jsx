@@ -20,7 +20,6 @@ export default function LicenseCard({ access, data, deleteFn, submitFn }) {
     const [isNotEditing, SetIsNotEditing] = useState(true);
     const editData = () => {
         //passing the edited values along with id of the data
-        console.log("hello from editData")
         let values = getValues();
         const formattedDate = values.issue_date ? format(new Date(values.issue_date["$y"], values.issue_date["$M"]), 'MMMM yyyy') : '';
         console.log("formattedDate", formattedDate)
@@ -142,7 +141,11 @@ export default function LicenseCard({ access, data, deleteFn, submitFn }) {
                                 size='small'
                                 error={'credential_url' in errors}
                                 {...register("credential_url", {
-                                    required: "cannot be empty"
+                                    required: "cannot be empty",
+                                    pattern: {
+                                        value: /^https?:\/\//,
+                                        message:"Invalid URL"
+                                    }
                                 })} />
                         </div>
                     </div>
