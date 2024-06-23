@@ -78,6 +78,26 @@ background-color: #eae9e9 !important;
     background-color: white;
 }
 
+.empty-container-message{
+    position: absolute;
+    top: 30%;
+    text-align: center;
+    color: gray;
+    filter: grayscale(100%);
+    
+}
+
+.empty-container-message img{
+    width: 30%;
+    height: 50%;
+    border-radius: 50%;
+    /*box-shadow: 0rem 0.001rem 0.5rem rgb(120, 120, 120);*/
+    margin-bottom: 1rem;
+    opacity: 50%;
+    
+    
+}
+
 .card-holder{
     width: 95%;
 }

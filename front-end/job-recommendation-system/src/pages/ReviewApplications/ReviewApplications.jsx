@@ -13,6 +13,9 @@ import { set } from "react-hook-form";
 import { jobAPI, userAPI } from "../../api/axios";
 import { LocalConvenienceStoreOutlined } from "@mui/icons-material";
 import NavigationBar from "../../components/NavigationBar/NavigationBar";
+import employerNoVacanciesFiller from "../../images/business_handshake.png";
+import noApplicationsFiller from "../../images/app_search.png";
+import careerGoLogo from "../../images/careergo_logo.svg";
 
 export default function ReviewApplications({userType}) {
     const COMPANYID = (userType==="employer"?getStorage("userID"):getStorage("guestUserID"));
@@ -306,7 +309,19 @@ export default function ReviewApplications({userType}) {
                     
                     jobApplicants.map(e=><CandidateCard type="review" key={e.applicantID} jobEntryId={selectedEntry} crLink={receivedData["pathname"]} jobApprovalFunction={jobApprovalAPI} data={e}/>)
                     :
-                    <></>
+                    (filtered.length==0?
+                        <div className="no-vacancies-message">
+                            <img className="careergo-web-logo-rev-pg" src={careerGoLogo}/>
+
+                            <img src={employerNoVacanciesFiller}/>
+                            <p>Find the ideal candidates through CareerGo</p>
+                        </div>
+                        :
+                        <div className="no-applications-message">
+                            <img src={noApplicationsFiller}/>
+                            <p>You haven't received any job applications</p>
+                        </div>
+                    )
                 )
                 :
                 (selectedEntry!=null && filtered.length!=0?

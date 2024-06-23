@@ -8,14 +8,16 @@ import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
 import { Button } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import {getStorage} from '../../storage/storage';
 
-export default function JobCardExpanded({ data=[], createJobRequest=null, userData, handleSub=null, type }) {
+export default function JobCardExpanded({ data=[], createJobRequest=null, deleteJobRequest=null, userData, handleSub=null, type }) {
     console.log("data received by form", userData, "jobdata",data)
-   
+    const COMPANY_PROFILE_PIC = (userData.type==="employer"?getStorage("profile pic"):(data.profile_picture?data.profile_picture:null));
+    console.log("company_profile_pic", COMPANY_PROFILE_PIC)
     //console.log(userData.appliedJobs.includes("4"))
     const [submit, setSubmit] = useState(false);
     //const [tag_state,setTagState] = useState(false);
-    const userSkills = (userData.type==="employer" || data.length)?(null):(data.skills?.map(skill => userData.skills.includes(skill)?true:false).filter(Boolean).length)
+    const userSkills = (userData.type==="employer" || data.length)?(null):(data.skills?.map(e => (userData.skills.map(_ => _.skill.toLowerCase())).includes(e.skill.toLowerCase())?true:false).filter(Boolean).length)
     const [skillIndicator, setSkillIndicator] = useState(true);
     
 
@@ -68,7 +70,7 @@ export default function JobCardExpanded({ data=[], createJobRequest=null, userDa
                 </div>
                 <div className='job-desc-div2'>
                     <div className='job-desc-img-container'>
-                        {data['profile_picture'] ? <img src={data['profile_picture']} alt="" /> : <></>}
+                        <img src={COMPANY_PROFILE_PIC}/> 
                     </div>
                     <p className='job-desc-time-p'>{data.postDate}</p>
                 </div>
@@ -106,7 +108,7 @@ export default function JobCardExpanded({ data=[], createJobRequest=null, userDa
                                                 {typeof(e)=="string"?e:e.skill} {userData.type==="employer"?
                                                         <></>
                                                         :
-                                                        (Object.keys(userData).includes('skills')?<div className={userData.skills.map(skill => {return skill.toLowerCase()}).includes(typeof(e)=="string"?e.toLowerCase():e.skill.toLowerCase())?"skill-status green":"skill-status red"}></div>:<></>)      
+                                                        (Object.keys(userData).includes('skills')?<div className={userData.skills.map(skill => {return skill.skill.toLowerCase()}).includes(typeof(e)=="string"?e.toLowerCase():e.skill.toLowerCase())?"skill-status green":"skill-status red"}></div>:<></>)      
                                                     }
                                                 </div>)}
                                         else{
@@ -128,8 +130,8 @@ export default function JobCardExpanded({ data=[], createJobRequest=null, userDa
                     Status: <span className={`job-status-text color-${handleStatus(data.status.toLowerCase())}`}>{data.status}</span>
                 </div>
                 <div className="cancel-application-button">
-                <Button variant="outlined" onClick={()=>{}} sx={{color: "black", border: "2px solid #254CE1"}} endIcon={<CancelRoundedIcon/>}>
-                <p>Cancel Application</p>
+                <Button variant="outlined" onClick={()=>{deleteJobRequest(data.job_req_id)}} sx={{color: "black", border: "2px solid #254CE1"}} endIcon={<CancelRoundedIcon/>}>
+                    <p>Cancel Application</p>
                 </Button>
                 </div>
                 </>

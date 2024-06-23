@@ -1,0 +1,33 @@
+.no-job-applications-message{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    
+}
+.no-job-applications-message p{
+    position: absolute;
+    bottom: 25%;
+    color: rgb(76, 76, 76);
+    font-size: 0.9rem;
+}
+
+.no-job-applications-message img{
+    width: 40%;
+    height: 50%;
+    filter: grayscale(100%);
+    opacity: 80%;
+    position: absolute;
+    bottom: 25%;
+    z-index: 99;
+    
+}
+
+.careergo-web-logo{
+    opacity: 50% !important;
+    width: 15% !important;
+    height: 15% !important;
+    right: 44%;
+    
+    bottom: 69% !important;
+    z-index: 98 !important;
+}
