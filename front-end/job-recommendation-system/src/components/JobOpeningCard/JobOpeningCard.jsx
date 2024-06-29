@@ -39,9 +39,13 @@ export default function JobOpeningCard({ data, type=null, highlighted, listToDes
                 <div className={`opening-card-div2${type==="review"?" review":""}`}>
                     {type?
                     <div className='feature-side'>
+                        {data.applicationsReceived.length?
                         <div className='application-indicator'>
                             <p>{data.applicationsReceived.length}</p>
                         </div>
+                        :
+                        <div></div>
+                        }
                         {highlighted?
                             <Button variant="contained"  onClick={listToDescFunc} sx={{ color: 'black', backgroundColor: 'white', width: 'fit-content', paddingY: "2px", paddingX: "0 10px", textTransform: "none" }} endIcon={<EditIcon />}>
                                 <p style={{minWidth:'6rem'}}>View Job Info</p>

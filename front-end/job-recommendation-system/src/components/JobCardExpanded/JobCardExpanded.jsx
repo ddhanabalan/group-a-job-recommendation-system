@@ -8,6 +8,7 @@ import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
 import { Button } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import {getStorage} from '../../storage/storage';
 
 export default function JobCardExpanded({ data = [], createJobRequest = null, userData, handleSub = null, type }) {
     console.log("data received by form", userData, "jobdata", data)

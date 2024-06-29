@@ -13,6 +13,8 @@ import { set } from "react-hook-form";
 import { jobAPI, userAPI } from "../../api/axios";
 import { LocalConvenienceStoreOutlined } from "@mui/icons-material";
 import NavigationBar from "../../components/NavigationBar/NavigationBar";
+import noApplicationsFiller from "../../images/careerfill.png";
+import careerGoLogo from "../../images/careergo_logo.svg"
 
 export default function SeekerJobStatusSection({userType}) {
     const COMPANYID = (userType==="employer"?getStorage("userID"):getStorage("guestUserID"));
@@ -58,7 +60,7 @@ export default function SeekerJobStatusSection({userType}) {
             
             const response = await jobAPI.get('/job_request/user', {headers:{'Authorization': `Bearer ${getStorage("userToken")}`}});
             console.log("update",response);
-            const new_response = response.data.map(async(e) => {const jobDetails= await readJobsAPI(e.job_id,e.status)
+            const new_response = response.data.map(async(e) => {const jobDetails= await readJobsAPI(e.job_id,e.status, e.id)
                                                                 return jobDetails;
                                                                 })
             const detailedJobs = await Promise.all(new_response)
@@ -74,13 +76,30 @@ export default function SeekerJobStatusSection({userType}) {
         }
     }
 
+    const deleteJobRequestAPI = async(job_request_id) => {
+        try {
+            
+            const r = await jobAPI.delete(`/job_request/${job_request_id}`, {headers:{'Authorization': `Bearer ${getStorage("userToken")}`}});
+            callJobVacancyAPI();
+            setEntry(null);
+            
+            //console.log(" after new job vacancies", mod_response);
+            //console.log("filtered", filtered);
+        } catch (e) {
+            console.log("job request deletion  failed", e)
+            
+            alert(e.message);
+        }
+
+    }
+
     
-    const readJobsAPI = async(job_vacancy_id, status)=>{
+    const readJobsAPI = async(job_vacancy_id, status, job_request_id)=>{
         try {
             
             const r = await jobAPI.get(`/job_vacancy/${job_vacancy_id}`, {headers:{'Authorization': `Bearer ${getStorage("userToken")}`}});
             console.log("job detail",r);
-            const mod_response = {id: r.data.job_id, status: status, jobTitle: r.data.job_name, companyUsername: r.data.company_username, companyName: r.data.company_name, tags: r.data.tags, currency: r.data.salary.split('-')[0], salary: [r.data.salary.split('-')[1],r.data.salary.split('-')[2]], postDate: r.data.created_at.split('T')[0] , last_date: r.data.last_date.split('T')[0], location: r.data.location, empType: r.data.emp_type, exp: r.data.experience, workStyle: r.data.work_style, workingDays: r.data.working_days, jobDesc: r.data.job_desc ,jobReq: r.data.requirement,skills: /*r.data.skills.length?r.data.skills: */[{'skill': ""}]};
+            const mod_response = {id: r.data.job_id, job_req_id: job_request_id,status: status, jobTitle: r.data.job_name, companyUsername: r.data.company_username, companyName: r.data.company_name, tags: r.data.tags, currency: r.data.salary.split('-')[0], salary: [r.data.salary.split('-')[1],r.data.salary.split('-')[2]], postDate: r.data.created_at.split('T')[0] , last_date: r.data.last_date.split('T')[0], location: r.data.location, empType: r.data.emp_type, exp: r.data.experience, workStyle: r.data.work_style, workingDays: r.data.working_days, jobDesc: r.data.job_desc ,jobReq: r.data.requirement,skills: /*r.data.skills.length?r.data.skills: */[{'skill': ""}]};
             console.log("modded job", mod_response)
             console.log("present job vac", jobVacancies)
             return mod_response
@@ -211,11 +230,12 @@ export default function SeekerJobStatusSection({userType}) {
     return (
         <div id="page">
             <div className={`review-left-bar${sidebarState?" wide":""}`}>
-            {jobVacancies.length!=0?
+            {/*{jobVacancies.length!=0?
                 <OpeningsListBar data={jobVacancies} userType={userType} userID={COMPANYID} pageType="review" chooseEntry={chooseEntry} searchBar={searchBar} listToDescParentFunc={listToDescParentFunc} preselectedEntry={selectedEntry} filterFunc={filterStateSet} />
                 :
                 <></>
-            }
+            }*/}
+                <OpeningsListBar data={jobVacancies} userType={userType} userID={COMPANYID} pageType="review" chooseEntry={chooseEntry} searchBar={searchBar} listToDescParentFunc={listToDescParentFunc} preselectedEntry={selectedEntry} filterFunc={filterStateSet} />
             </div>
             {filterstat?
             <div className="filter enabled">
@@ -229,9 +249,13 @@ export default function SeekerJobStatusSection({userType}) {
             
                 
                 {selectedEntry!=null /*&& filtered.length!=0*/ && jobVacancies.length!=0?
-                    <JobCardExpanded data={selectedJobEntry}  userData={userData} type="approval"/>
+                    <JobCardExpanded data={selectedJobEntry}  deleteJobRequest={deleteJobRequestAPI} userData={userData} type="approval"/>
                     :
-                    <></>
+                    <div className="no-job-applications-message">
+                            <img src={noApplicationsFiller}/>
+                            <img className="careergo-web-logo" src={careerGoLogo}/>
+                            <p>Boost your career options with CareerGo</p>
+                    </div>
                 }
             
             </div>

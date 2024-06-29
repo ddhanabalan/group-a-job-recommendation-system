@@ -8,6 +8,7 @@ import { IconButton, Button, Icon } from '@mui/material';
 import SortIcon from '@mui/icons-material/Sort';
 import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import AppIcon from "../../images/app_board.png";
 
 
 function HighlightableJobCard({ id, highlighted, type, data, listToDescFunc, deleteJobFunc, onclick }) {
@@ -107,7 +108,23 @@ export default function OpeningsListBar({ data, userType, userID, chooseEntry, s
                 </div>
 
                 <div className="openings-container">
-                    {Object.keys(finalInfo).map((card) => (<HighlightableJobCard key={finalInfo[card]["id"]} id={finalInfo[card]["id"]} onclick={highlightDiv} highlighted={highlightedId == finalInfo[card]["id"]} type={userType == "employer" ? pageType : null} deleteJobFunc={deleteJobFunc} listToDescFunc={listToDescFunc} data={{ ...finalInfo[card], 'userType': userType, 'highlightedId': highlightedId }} />))}
+                    {Object.keys(finalInfo).length!=0?
+                        Object.keys(finalInfo).map((card) => (<HighlightableJobCard key={finalInfo[card]["id"]} id={finalInfo[card]["id"]} onclick={highlightDiv} highlighted={highlightedId == finalInfo[card]["id"]} type={userType == "employer" ? pageType : null} deleteJobFunc={deleteJobFunc} listToDescFunc={listToDescFunc} data={{ ...finalInfo[card], 'userType': userType, 'highlightedId': highlightedId }} />))
+                        :
+                        (userType=="employer"?
+                        <div className="empty-container-message">
+                            <img src={AppIcon}/>
+                            <p>You haven't created any vacancies yet.</p>
+                            <p>Start by clicking 'Create job vacancy' button.</p>
+                        </div>
+                        :
+                        <div className="empty-container-message">
+                            <img src={AppIcon}/>
+                            <p>You haven't applied for any jobs yet.</p> 
+                        </div>
+                        )
+
+                    }
                 </div>
 
             </div>

@@ -105,6 +105,7 @@
     gap: 20px;
     align-items: flex-start;
     width: 91%;
+    padding-right: 2rem;
 }
 
 .job-desc-body h6 {
