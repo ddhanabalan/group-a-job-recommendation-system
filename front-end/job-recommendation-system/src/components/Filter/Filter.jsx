@@ -12,7 +12,7 @@ import { v4 as uuid } from 'uuid';
 import Slider from '@mui/material/Slider';
 export default function Filter({ title, userType=null, passFilteredDataFn = null }) {
     const SALARYMULTIPLIER= 1000;
-    const DEFAULTSLIDERVALUE = 20;
+    const DEFAULTSLIDERVALUE = 10;
     const USERCURRENCY ='₹';
     const [googleLocationAutoField, SetGoogleLocationAutoField] = useState(null);
     const [domain, SetDomain] = useState('');

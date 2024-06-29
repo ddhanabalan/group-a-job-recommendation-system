@@ -24,3 +24,9 @@
     background-image: url('../images/Signup_seeker_background.svg');
     background-size: cover;
 }
+
+.login-page {
+    background-color: white !important;
+    background-image: url('../images/login-background.svg');
+    background-size: cover;
+}

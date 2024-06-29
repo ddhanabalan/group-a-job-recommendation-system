@@ -119,7 +119,7 @@ function SignUpForm() {
 
         
           <div className="login-redirect">
-            <Link to={'../login/' + userType} state={{ "userType": userType }}><p>Already a user? Sign in</p></Link>
+          <Link to={'../login'} state={{ "userType": userType }}><p className='link-login-signup'>Already a user? Sign in</p></Link>
           </div>
       </div>
     </>

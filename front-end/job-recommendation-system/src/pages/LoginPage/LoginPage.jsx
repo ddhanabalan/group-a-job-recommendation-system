@@ -53,7 +53,7 @@ export default function LoginPage({fixUser}) {
     }
 
     return (
-        <div id="page">
+        <div id="page" className='login-page'>
             {redirect && < Navigate to="/profile" />}
             {serverMsg ?
                 <div className='message-box-login'>

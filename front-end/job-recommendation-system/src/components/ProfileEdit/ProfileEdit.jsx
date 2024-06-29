@@ -33,7 +33,7 @@ export default function ProfileEdit({ data, register, errors }) {
 
                     <div className='personal-info-container'>
                         {/* First Name */}
-                        {user === "seeker" ?
+                        {user === "seeker" &&
                             (<div id="item-3">
                                 <p className="text-head">First Name<span className="text-danger"> *</span></p>
                                 <TextField className="personal-details-input profile-edit-input" variant="outlined" type='text'
@@ -49,7 +49,10 @@ export default function ProfileEdit({ data, register, errors }) {
                                         })} />
                                 <p className="error-message">{errors.first_name?.message || ""}</p>
                             </div>)
-                            :
+                        }
+
+                        {/* Company Name */}
+                        {user === "recruiter" &&
                             <div id="item-3">
                                 <p className="text-head">Company Name<span className="text-danger"> *</span></p>
                                 <TextField className="personal-details-input profile-edit-input" variant="outlined" type='text'
@@ -64,7 +67,7 @@ export default function ProfileEdit({ data, register, errors }) {
                                             }
                                         })} />
                                 <p className="error-message">{errors.company_name?.message || ""}</p>
-                            </div>}
+                        </div>}
 
                         {/* Last Name */}
                         {user === "seeker" &&

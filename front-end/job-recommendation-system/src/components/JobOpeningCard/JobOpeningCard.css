@@ -5,21 +5,22 @@
     margin: 10px 0;
     width: 100%;
     height: fit-content;
-    background-color: #D9D9D9;
+    background-color: #fffdfd;
     border-radius: 11px;
     padding: 7px 17px;
     cursor: pointer;
-    transition-duration: 300ms;
+    transition: all 0.2s ease-in-out;
+    border: 1px solid rgb(186, 185, 185);
 }
 
 .opening-card:hover {
     /*box-shadow: 0px 5px 8px 0px rgba(0, 0, 0, 0.6);*/
-    border: 0.1px solid rgb(164, 162, 162);
+    border: 1px solid rgb(133, 133, 133);
 }
 
 .opening-card.highlighted {
-    background-color: #b9b9b9;
-    border: 0.2px solid rgb(164, 162, 162);
+    background-color: #e8e8e8;
+    border: 1px solid rgb(0, 0, 0);
 }
 
 .opening-card-h1 {
