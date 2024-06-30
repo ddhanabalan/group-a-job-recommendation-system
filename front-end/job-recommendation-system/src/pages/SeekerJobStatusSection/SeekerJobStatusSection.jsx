@@ -13,7 +13,6 @@ import { set } from "react-hook-form";
 import { jobAPI, userAPI } from "../../api/axios";
 import { LocalConvenienceStoreOutlined } from "@mui/icons-material";
 import NavigationBar from "../../components/NavigationBar/NavigationBar";
-import noApplicationsFiller from "../../images/careerfill.png";
 import careerGoLogo from "../../images/careergo_logo.svg"
 
 export default function SeekerJobStatusSection({userType}) {
@@ -202,31 +201,7 @@ export default function SeekerJobStatusSection({userType}) {
     useEffect(()=>{if(jobVacancies.length!=0 && selectedEntry!=null)expJob(selectedEntry)},[selectedEntry]);
     //useEffect(() => {if(Object.keys(newVacancy).length !=0)setJobVacancies([...jobVacancies, newVacancy]);}, [newVacancy])
     console.log("updated vacancies", jobVacancies)
-    /*const resultGen=()=>{
-        
-            let result = demoInfo.filter(id => id["skills"].map((tag)=>(tag.includes(searchVal))).filter(Boolean).length?id:false)
-            //console.log(result)
-            setFilter(result);
-        
-        
-        //console.log(typeof(searchVal))
-        
 
-    }
-    useEffect(() => resultGen, [searchVal])
-    */
-    //console.log(`search=${searchVal}`);
-    //console.log(filtered)
-    //const result = demoInfo.filter((profiles) => profiles["tags"].map((tag)=>(tag.includes(searchVal))).filter(Boolean).length?profiles:null)
-    //console.log(result)
-    //const tags = [{"skills": ["hello", "hil", "how"]}, {"skills": ["helo", "hi", "how"]}, {"skills": ["kioo", "ka", "how"]},]
-    //const newtags = tags.filter(id => id["skills"].map((tag)=>(tag.includes(searchVal))).filter(Boolean).length?id:false)
-    //console.log(newtags)
-    //console.log(searchVal);
-
-    
-    //console.log(`search=${searchVal}`);
-   
     return (
         <div id="page">
             <div className={`review-left-bar${sidebarState?" wide":""}`}>
@@ -252,7 +227,6 @@ export default function SeekerJobStatusSection({userType}) {
                     <JobCardExpanded data={selectedJobEntry}  deleteJobRequest={deleteJobRequestAPI} userData={userData} type="approval"/>
                     :
                     <div className="no-job-applications-message">
-                            <img src={noApplicationsFiller}/>
                             <img className="careergo-web-logo" src={careerGoLogo}/>
                             <p>Boost your career options with CareerGo</p>
                     </div>

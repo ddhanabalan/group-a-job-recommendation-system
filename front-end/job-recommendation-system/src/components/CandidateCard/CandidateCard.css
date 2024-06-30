@@ -34,15 +34,13 @@
 }
 
 .application-review-buttons {
+    height: 100%;
     display: flex;
-    width: 10rem;
+    /* flex-direction: column; */
+    width: 7rem;
     justify-content: center;
-    gap: 0.5rem;
-    margin-top: .5rem;
-}
-
-.application-review-buttons button {
-    align-self: start;
+    align-items: center;
+    gap: 1rem;
 }
 
 .job-card-div1 {

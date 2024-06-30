@@ -1,7 +1,6 @@
-//import Filter from "../components/Filter";
-//import StatsAI from "../components/StatsAI";
+import Lottie from "lottie-react";
 import "./ReviewApplications.css";
-import {getStorage, setStorage} from "../../storage/storage";
+import {getStorage} from "../../storage/storage";
 import Filter from "../../components/Filter/Filter";
 import OpeningsListBar from "../../components/OpeningsListBar/OpeningsListBar";
 import JobCardExpanded from "../../components/JobCardExpanded/JobCardExpanded";
@@ -9,12 +8,9 @@ import BackBtn from "../../components/BackBtn/BackBtn";
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import CandidateCard from "../../components/CandidateCard/CandidateCard";
-import { set } from "react-hook-form";
 import { jobAPI, userAPI } from "../../api/axios";
-import { LocalConvenienceStoreOutlined } from "@mui/icons-material";
 import NavigationBar from "../../components/NavigationBar/NavigationBar";
-import employerNoVacanciesFiller from "../../images/business_handshake.png";
-import noApplicationsFiller from "../../images/app_search.png";
+import noApplicationsFiller from "../../images/no-applications-found.json";
 import careerGoLogo from "../../images/careergo_logo.svg";
 
 export default function ReviewApplications({userType}) {
@@ -257,31 +253,6 @@ export default function ReviewApplications({userType}) {
         }},[jobVacancies])
     useEffect(()=>{if(jobVacancies.length!=0 && selectedEntry!=null)expJob(selectedEntry)},[selectedEntry]);
     
-    /*const resultGen=()=>{
-        
-            let result = demoInfo.filter(id => id["skills"].map((tag)=>(tag.includes(searchVal))).filter(Boolean).length?id:false)
-            //console.log(result)
-            setFilter(result);
-        
-        
-        //console.log(typeof(searchVal))
-        
-
-    }
-    useEffect(() => resultGen, [searchVal])
-    */
-    //console.log(`search=${searchVal}`);
-    //console.log(filtered)
-    //const result = demoInfo.filter((profiles) => profiles["tags"].map((tag)=>(tag.includes(searchVal))).filter(Boolean).length?profiles:null)
-    //console.log(result)
-    //const tags = [{"skills": ["hello", "hil", "how"]}, {"skills": ["helo", "hi", "how"]}, {"skills": ["kioo", "ka", "how"]},]
-    //const newtags = tags.filter(id => id["skills"].map((tag)=>(tag.includes(searchVal))).filter(Boolean).length?id:false)
-    //console.log(newtags)
-    //console.log(searchVal);
-
-    
-    //console.log(`search=${searchVal}`);
-   
     return (
         <div id="page" >
             <div className={`review-left-bar${sidebarState?" wide":""}`}>
@@ -312,14 +283,12 @@ export default function ReviewApplications({userType}) {
                     (filtered.length==0?
                         <div className="no-vacancies-message">
                             <img className="careergo-web-logo-rev-pg" src={careerGoLogo}/>
-
-                            <img src={employerNoVacanciesFiller}/>
-                            <p>Find the ideal candidates through CareerGo</p>
+                            <p>Find ideal candidates through CareerGo</p>
                         </div>
                         :
                         <div className="no-applications-message">
-                            <img src={noApplicationsFiller}/>
-                            <p>You haven't received any job applications</p>
+                           <Lottie className="no-applications-ani" animationData={noApplicationsFiller} loop={true} />
+                            <p>You haven't received any job applications.</p>
                         </div>
                     )
                 )

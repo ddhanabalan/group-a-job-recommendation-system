@@ -8,7 +8,6 @@ import { IconButton, Button, Icon } from '@mui/material';
 import SortIcon from '@mui/icons-material/Sort';
 import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import AppIcon from "../../images/app_board.png";
 
 
 function HighlightableJobCard({ id, highlighted, type, data, listToDescFunc, deleteJobFunc, onclick }) {
@@ -78,7 +77,7 @@ export default function OpeningsListBar({ data, userType, userID, chooseEntry, s
             <div className="left-bar">
                 <div className="openings-search-tile">
                     <div className="search-bar">
-                        <div className="back-icon">
+                        <div className="back-icon-opening">
                             <Link to="/profile">
                                 <BackBtn />
                             </Link>
@@ -92,7 +91,7 @@ export default function OpeningsListBar({ data, userType, userID, chooseEntry, s
                             </IconButton>
                         </div>
                     </div>
-                    {userType == "employer" ?
+                    {userType == "employer" &&
                         <div className="create-vacancy-button" >
                             <Link to="../employer/job-vacancy" state={{ user_id: userID }}>
                                 <Button
@@ -102,8 +101,6 @@ export default function OpeningsListBar({ data, userType, userID, chooseEntry, s
                                     <p style={{ fontSize: '.8rem' }}>Create job vacancy</p>
                                 </Button></Link>
                         </div>
-                        :
-                        <></>
                     }
                 </div>
 
@@ -113,13 +110,11 @@ export default function OpeningsListBar({ data, userType, userID, chooseEntry, s
                         :
                         (userType=="employer"?
                         <div className="empty-container-message">
-                            <img src={AppIcon}/>
                             <p>You haven't created any vacancies yet.</p>
                             <p>Start by clicking 'Create job vacancy' button.</p>
                         </div>
                         :
                         <div className="empty-container-message">
-                            <img src={AppIcon}/>
                             <p>You haven't applied for any jobs yet.</p> 
                         </div>
                         )

@@ -56,6 +56,7 @@ export default function DeleteAccount() {
                     error={validationError ? true : false}
                     className='delete-textbox'
                     type='password'
+                    fullWidth
                     label="To verify it's really you"
                     InputLabelProps={{ shrink: true }}
                     sx={{ marginBottom: '3rem' }}
