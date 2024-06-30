@@ -70,6 +70,9 @@ class JobRequestBase(BaseModel):
 class JobRequestCreate(JobRequestBase):
     user_id: Optional[int] = None
 
+class JobRequestUpdate(BaseModel):
+    status: Optional[str] = "Applied"
+
 
 class JobRequest(JobRequestBase):
     id: Optional[int] = None

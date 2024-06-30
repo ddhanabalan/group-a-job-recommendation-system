@@ -85,7 +85,7 @@ def create(db: Session, job_request: jobschema.JobRequestCreate) -> bool:
 
 
 def update(
-    db: Session, job_request_id: int, job_request: jobschema.JobRequestCreate
+    db: Session, job_request_id: int, job_request: jobschema.JobRequestUpdate
 ) -> bool:
     """
     Update a job request in the database.py.
