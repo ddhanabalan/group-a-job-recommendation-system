@@ -70,6 +70,7 @@ class JobRequestBase(BaseModel):
 class JobRequestCreate(JobRequestBase):
     user_id: Optional[int] = None
 
+
 class JobRequestUpdate(BaseModel):
     status: Optional[str] = "Applied"
 
@@ -90,3 +91,18 @@ class JobVacancySearch(JobVacancy):
 class JobVacancySeeker(JobVacancyBase):
     skills: Optional[List[JobSkills]] = []
     job_seekers: Optional[List[JobRequest]] = []
+
+
+class JobInviteCreate(BaseModel):
+    job_id: int
+    company_id: Optional[int] = None
+    user_id: int
+
+    class Config:
+        from_attributes = True
+
+
+class JobInvite(JobInviteCreate):
+    id: Optional[int] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None

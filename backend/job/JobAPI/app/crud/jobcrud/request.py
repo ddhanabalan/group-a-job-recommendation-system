@@ -5,7 +5,7 @@ from typing import List, Type
 from .. import jobschema, jobmodel
 
 
-def get_all(db: Session, user_id: int) -> List[Type[jobschema.JobRequest]]:
+def get_all(db: Session, user_id: int) -> List[Type[jobschema.JobRequest]] | []:
     """
     Retrieve job requests associated with a user ID from the database.py.
 
