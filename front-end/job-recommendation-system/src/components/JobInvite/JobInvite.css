@@ -1,0 +1,188 @@
+.job-desc-container {
+    width: 100%;
+    height: inherit;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+    background-color: white;
+    border-radius: 11px 11px 0px 0px;
+    padding-bottom: 8rem;
+
+}
+
+.job-invite-details{
+    display: flex;
+    flex-direction: row;
+    align-items: start;
+    margin-bottom: 0.5rem;
+}
+.job-desc-header {
+    display: flex;
+    flex-direction: row;
+    box-sizing: border-box;
+    margin: 25px 0px 0px 0px;
+    width: 98%;
+    height: fit-content;
+    padding-right: 2rem;
+
+}
+
+.separator {
+    color: black;
+    width: 100%;
+}
+
+.job-desc-h1 {
+    font-size: 1.6rem;
+}
+
+.job-desc-company-name-p {
+    font-size: .938rem;
+    color: #7B7777;
+}
+
+.job-invite-img-container {
+    position: absolute;
+    top: 1rem;
+    width: 5.5rem;
+    height: 5.5rem;
+    border-radius: 50%;
+    background-color: #D9D9D9;
+    overflow: hidden;
+}
+
+
+.job-invite-img-container img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.job-desc-salary {
+    font-size: 1rem;
+    color: #2BA84A;
+    font-family: Inter-md;
+}
+
+.job-desc-time-p {
+    font-size: .8rem;
+    color: #7B7777;
+    position: absolute;
+    top: 6rem;
+}
+
+.job-desc-tags {
+    margin: 5px 0 10px 0;
+}
+
+.job-desc-tags-child {
+    font-family: Inter-regular !important;
+    border-radius: 3px !important;
+
+}
+
+.job-desc-skill-tags-child {
+    font-family: Inter-regular !important;
+    border-radius: 3px !important;
+    font-size: 0.8125rem;
+    background-color: #00000014;
+    display: flex;
+    flex-direction: row;
+    gap: 5px;
+    justify-content: center;
+    align-items: center;
+    padding: 3px 8px;
+}
+
+.job-desc-div2 {
+    width: 10%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* position: relative; */
+}
+
+.job-desc-div1 {
+    width: 90%;
+    padding-left: 2rem;
+}
+
+.job-desc-body {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: flex-start;
+    width: 91%;
+    padding-right: 2rem;
+}
+
+.job-desc-body h6 {
+    font-family: "Inter-b";
+    font-size: 15px;
+}
+
+.job-details {
+
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+}
+
+.job-vacancy-selection-container{
+    width: 100%;
+    margin-left: 1.5rem;
+
+
+}
+
+.selection-hint-text{
+ color: rgb(74, 74, 74);
+ font-family: Arial, Helvetica, sans-serif !important;
+ font-size: 0.8rem;
+ font-style: italic !important;
+}
+.selection-hint-text-red{
+    color: red;
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 0.8rem;
+    font-style: italic !important;
+   }
+
+.mailing-info-text{
+    margin-left: 1.5rem;
+}
+
+.mailing-info-text p{
+    color: rgb(74, 74, 74);
+    font-family: Arial, Helvetica, sans-serif !important;
+    font-size: 0.75rem!important;
+    font-style: italic !important;
+}
+
+.job-desc-body p {
+
+    font-size: 0.85rem;
+    font-family: "Inter-regular";
+}
+
+.job-desc-body .desc {
+    padding-left: 50px;
+}
+
+.job-details span {
+    font-family: "Inter-b";
+}
+
+
+.confirm-job-invite-button {
+    margin-top: 10%;
+}
+
+.detail-chips{
+    background-color: transparent !important;
+    font-family: inherit !important;
+    color: #7B7777 !important;
+}
+

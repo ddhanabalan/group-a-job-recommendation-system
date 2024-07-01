@@ -1,0 +1,27 @@
+.candidate-invite-box{
+    width: 65%;
+    height: 100%;
+    right: 0.5rem;
+    position: absolute;
+    align-self: end;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    overflow-y: auto;
+    
+    transition: width 0.3s;
+    transition-timing-function: ease;
+    
+}
+
+.candidate-invite-box.wide{
+    width: 54.4%;
+    right: 0.01rem;
+}
+.candidate-invite-box.blur{
+    
+    right: 0.463vh;
+    
+    filter: blur(0.5rem);
+    
+}

@@ -6,7 +6,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import { Link } from 'react-router-dom';
 import { v4 as uuid } from 'uuid';
 
-export default function JobOpeningCard({ data, type = null, highlighted, listToDescFunc = null, deleteJobFunc = null }, props) {
+export default function JobOpeningCard({ data, type = null, highlighted=null, listToDescFunc = null, deleteJobFunc = null }, props) {
     //opening cards show in opening page    
     //console.log("data to opening card", data)
 
@@ -21,7 +21,7 @@ export default function JobOpeningCard({ data, type = null, highlighted, listToD
                         <p className='opening-card-company-name-p'>{data.companyName}</p>
 
                         <p className='opening-card-salary'>{data.currency} {data.salary[0]} {data.salary[1] ? "- " + data.salary[1] : ""} per month</p>
-                        {data.userType == "employer" ?
+                        {data.userType == "employer" && type!="invite"?
                             <div className="opening-vacancy-buttons">
                                 <Button variant="contained" disableElevation onClick={deleteJobFunc ? () => deleteJobFunc(data.id) : undefined} className="opening-delete-button" sx={{ color: '#f6cacc', backgroundColor: '#ff0000', width: 'fit-content', paddingY: "2px", paddingX: "10px", textTransform: "none", borderRadius: 20 }} endIcon={<DeleteOutlineIcon />}>
                                     Delete
@@ -39,7 +39,7 @@ export default function JobOpeningCard({ data, type = null, highlighted, listToD
                     <div className={`opening-card-div2${type === "review" ? " review" : ""}`}>
                         {type ?
                             <div className='feature-side'>
-                                {data.applicationsReceived.length ?
+                                {data.applicationsReceived.length && (type!="invite")?
                                     <div className='application-indicator'>
                                         <p>{data.applicationsReceived.length}</p>
                                     </div>

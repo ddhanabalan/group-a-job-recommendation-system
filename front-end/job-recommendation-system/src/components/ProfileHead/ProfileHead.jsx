@@ -5,7 +5,8 @@ import { getStorage } from '../../storage/storage';
 import { styled } from '@mui/material/styles';
 import { FastAverageColor } from 'fast-average-color';
 import { Button } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import MailIcon from '@mui/icons-material/Mail';
 import Skeleton from '@mui/material/Skeleton';
 import ProfileEdit from '../ProfileEdit/ProfileEdit';
 import AccountSettingsBtn from '../AccountSettingsBtn/AccountSettingsBtn';
@@ -122,6 +123,15 @@ export default function ProfileHead({ access, data, blurFn, logOutFn, subForm, i
                     <div className="profile-head-info-div profile-head-info-div2">
                         <ProfileEdit data={data} register={register} errors={errors} />
                     </div>
+                }
+                {access === "viewOnly" && user==="seeker"?
+                <Link to="/employer/job-invite" state={{...data}}>
+                    <div className='send-job-invite-button'>
+                            <Button variant="contained" style={{textTransform: "none", color:"white", backgroundColor: "inherit",padding: "0.2rem 1rem" }} endIcon={<MailIcon />}><p>Send Job Invite</p></Button>
+                    </div>
+                </Link>
+                :
+                <></>
                 }
                 <div className="profile-head-info-div profile-head-info-div3"></div>
             </div>

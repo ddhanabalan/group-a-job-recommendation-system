@@ -23,6 +23,8 @@ import ForgetPasswordResponse from './components/ForgetPassword/ForgetPasswordRe
 import ReviewApplications from './pages/ReviewApplications/ReviewApplications';
 import OtherEmployerProfile from './pages/profile page/OtherEmployerProfile';
 import SeekerJobStatusSection from './pages/SeekerJobStatusSection/SeekerJobStatusSection';
+import JobInviteSection from './pages/JobInviteSection/JobInviteSection';
+
 function App() {
   useEffect(() => {
     const refreshInterval = setInterval(() => {
@@ -88,8 +90,8 @@ function App() {
           {/* routes exclusive to seekers */}
           <Route element={<SeekerRoutes />}>
             <Route path="/jobs" element={<JobSection />} />
-            <Route path="/seeker/openings" element={<ReviewApplications userType="seeker" />} />
-            <Route path="/seeker/applications" element={<SeekerJobStatusSection userType="seeker" />} />
+            <Route path="/seeker/openings/:company_id/:job_id" element={<ReviewApplications userType="seeker"/>} />
+            <Route path="/seeker/applications" element={<SeekerJobStatusSection userType="seeker"/>} />
           </Route>
           {/* routes exclusive to recruiters */}
           <Route element={<EmployerRoutes />}>
@@ -97,6 +99,8 @@ function App() {
 
             <Route path="/employer/job-vacancy" element={<CreateJobVacancy />} />
             <Route path="/employer/review-applications" element={<ReviewApplications userType="employer" />} />
+            <Route path="/employer/job-invite" element={<JobInviteSection userType="employer" />} />
+            
           </Route>
 
           <Route path="*" element={<Error />} />

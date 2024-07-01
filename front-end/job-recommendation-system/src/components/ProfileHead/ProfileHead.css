@@ -131,3 +131,15 @@
 .profile-bio {
     font-size: .8rem;
 }
+
+.send-job-invite-button{
+    position: absolute;
+    left: 30%;
+    top: 6%;
+    background-color: rgb(227, 72, 95);
+    border-radius: 1rem;
+}
+
+.send-job-invite-button p{
+    font-size: 0.8rem;
+}

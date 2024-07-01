@@ -37,8 +37,8 @@
     flex-direction: column;
     align-items: center;
     overflow-y: auto;
-
-    transition: width 0.2s;
+    transition: width 0.3s;
+    transition-timing-function: ease;
 
 }
 

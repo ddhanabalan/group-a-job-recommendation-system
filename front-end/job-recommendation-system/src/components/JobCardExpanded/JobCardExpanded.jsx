@@ -10,13 +10,13 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {getStorage} from '../../storage/storage';
 
-export default function JobCardExpanded({ data = [], createJobRequest = null, userData, handleSub = null, type }) {
+export default function JobCardExpanded({ data = [], createJobRequest = null, deleteJobRequest=null, userData, handleSub = null, type }) {
     console.log("data received by form", userData, "jobdata", data)
 
     //console.log(userData.appliedJobs.includes("4"))
     const [submit, setSubmit] = useState(false);
     //const [tag_state,setTagState] = useState(false);
-    const userSkills = (userData.type === "employer" || data.length) ? (null) : (data.skills?.map(skill => userData.skills.includes(skill) ? true : false).filter(Boolean).length)
+    const userSkills = (userData.type === "employer" || data.length) ? (null) : (data.skills?.map(skill => userData.skills.map(skilltag=>skilltag.skill).includes(skill.skill) ? true : false).filter(Boolean).length)
     const [skillIndicator, setSkillIndicator] = useState(true);
 
 
@@ -108,7 +108,7 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, us
                                                     {typeof (e) == "string" ? e : e.skill} {userData.type === "employer" ?
                                                         <></>
                                                         :
-                                                        (Object.keys(userData).includes('skills') ? <div className={userData.skills.map(skill => { return skill.toLowerCase() }).includes(typeof (e) == "string" ? e.toLowerCase() : e.skill.toLowerCase()) ? "skill-status green" : "skill-status red"}></div> : <></>)
+                                                        (Object.keys(userData).includes('skills') ? <div className={userData.skills.map(skill => { return skill.skill.toLowerCase() }).includes(typeof (e) == "string" ? e.toLowerCase() : e.skill.toLowerCase()) ? "skill-status green" : "skill-status red"}></div> : <></>)
                                                     }
                                                 </div>)
                                             }
@@ -131,7 +131,7 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, us
                                     Status: <span className={`job-status-text color-${handleStatus(data.status.toLowerCase())}`}>{data.status}</span>
                                 </div>
                                 <div className="cancel-application-button">
-                                    <Button variant="outlined" onClick={() => { }} sx={{ color: "black", border: "2px solid #254CE1" }} endIcon={<CancelRoundedIcon />}>
+                                    <Button variant="outlined" onClick={() => {deleteJobRequest(data.job_req_id)}} sx={{ color: "black", border: "2px solid #254CE1" }} endIcon={<CancelRoundedIcon />}>
                                         <p>Cancel Application</p>
                                     </Button>
                                 </div>
