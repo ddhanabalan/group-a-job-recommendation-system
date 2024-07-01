@@ -11,11 +11,11 @@
   },
   "dependencies": {
     "@emotion/react": "^11.11.4",
-    "@emotion/styled": "^11.11.0",
+    "@emotion/styled": "^11.11.5",
     "@lottiefiles/lottie-player": "^2.0.4",
     "@mui/icons-material": "^5.15.10",
     "@mui/lab": "^5.0.0-alpha.170",
-    "@mui/material": "^5.15.12",
+    "@mui/material": "^5.15.21",
     "@mui/x-date-pickers": "^6.19.6",
     "autosuggest-highlight": "^3.3.4",
     "axios": "^1.6.8",
