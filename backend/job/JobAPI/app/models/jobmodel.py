@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, DateTime, Boolean, ForeignKey
+from sqlalchemy import Column, String, Integer, DateTime, Boolean, ForeignKey, LargeBinary
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from ..database import Base
@@ -12,6 +12,7 @@ class JobVacancy(Base):
     job_name = Column(String(256))
     job_desc = Column(String(1024))
     company_name = Column(String(256))
+    company_pic = Column(LargeBinary(length=(2 ** 24) - 1))
     company_username = Column(String(128))
     requirement = Column(String(5120))
     salary = Column(String(256))
@@ -45,5 +46,16 @@ class JobRequest(Base):
     job_id = Column(Integer, ForeignKey("job_vacancy.job_id"), index=True)
     user_id = Column(Integer, index=True)
     status = Column(String(64))
+    created_at = Column(DateTime, default=datetime.utcnow)
+    updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+
+
+class JobInvite(Base):
+    __tablename__ = "job_invite"
+
+    id = Column(Integer, primary_key=True)
+    job_id = Column(Integer, ForeignKey("job_vacancy.job_id"), index=True)
+    company_id = Column(Integer, index=True)
+    user_id = Column(Integer, index=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

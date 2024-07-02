@@ -5,7 +5,7 @@ from typing import List, Type
 from .. import jobschema, jobmodel
 
 
-def get_all(db: Session, user_id: int) -> List[Type[jobschema.JobRequest]]:
+def get_all(db: Session, user_id: int) -> List[Type[jobschema.JobRequest]] | []:
     """
     Retrieve job requests associated with a user ID from the database.py.
 
@@ -85,7 +85,7 @@ def create(db: Session, job_request: jobschema.JobRequestCreate) -> bool:
 
 
 def update(
-    db: Session, job_request_id: int, job_request: jobschema.JobRequestCreate
+    db: Session, job_request_id: int, job_request: jobschema.JobRequestUpdate
 ) -> bool:
     """
     Update a job request in the database.py.

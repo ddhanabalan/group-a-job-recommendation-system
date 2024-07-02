@@ -54,7 +54,7 @@ async def read_job_request(job_request_id: int, db: Session = Depends(get_db)):
 @job_request_router.put("/{job_request_id}")
 async def update_job_request(
     job_request_id: int,
-    job_request: jobschema.JobRequestCreate,
+    job_request: jobschema.JobRequestUpdate,
     db: Session = Depends(get_db),
     authorization: str = Header(...),
 ):
