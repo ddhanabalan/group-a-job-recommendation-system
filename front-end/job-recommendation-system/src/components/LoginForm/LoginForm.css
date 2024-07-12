@@ -10,15 +10,15 @@
     flex-direction: column;
     align-items: center;
     font-family: Inter-regular;
-    background-color: rgba(196, 196, 196, 0.425);
-    backdrop-filter: blur(10px);
-    border: solid 1px rgb(255, 255, 255);
+    background-color: rgba(255, 255, 255, 0.76);
+    backdrop-filter: blur(50px);
+    box-shadow: 0px 0px 20px 1px rgba(0, 0, 0, 0.2);
 }
 
 .login-details {
-    box-shadow: 0px 5px 12px 0px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.2);
     height: max-content;
-    border-radius: 10px;
+    border-radius: 15px;
     width: fit-content;
     display: flex;
     flex-direction: column;
@@ -28,7 +28,7 @@
 }
 
 .login-header {
-    font-size: 30px;
+    font-size: 1.75rem;
     font-family: Inter-black;
     margin-bottom: 1rem;
 }

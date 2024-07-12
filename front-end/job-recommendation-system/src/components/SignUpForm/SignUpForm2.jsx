@@ -364,9 +364,16 @@ function SignUpForm2() {
 
             {/*Submit button*/}
             <div>
-              <Button type='submit' className="continue-btn" variant="contained" sx={{ backgroundColor: 'black', borderRadius: 2 }} endIcon={<ArrowForwardIcon />}>
+              {/* <Button type='submit' className="continue-btn" variant="contained" sx={{ backgroundColor: 'black', borderRadius: 2 }} endIcon={<ArrowForwardIcon />}>
                 <p >Continue</p>
-              </Button>
+              </Button> */}
+              <button className='continue-btn continue-btn-extend'>
+                Sign up
+                <div class="arrow-wrapper">
+                  <div class="arrow"></div>
+
+                </div>
+              </button>
             </div>
           </form>
           <br />
