@@ -1,12 +1,12 @@
 import './JobOpeningCard.css';
-import { jobAPI } from '../../api/axios';
-import { Button } from '@mui/material';
+import { Button, IconButton } from '@mui/material';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import EditIcon from '@mui/icons-material/Edit';
+import RemoveRedEyeRoundedIcon from '@mui/icons-material/RemoveRedEyeRounded';
 import { Link } from 'react-router-dom';
-import { v4 as uuid } from 'uuid';
+import Tooltip from '@mui/material/Tooltip';
 
-export default function JobOpeningCard({ data, type = null, highlighted=null, listToDescFunc = null, deleteJobFunc = null }, props) {
+export default function JobOpeningCard({ data, type = null, highlighted = null, listToDescFunc = null, deleteJobFunc = null }, props) {
     //opening cards show in opening page    
     //console.log("data to opening card", data)
 
@@ -21,7 +21,7 @@ export default function JobOpeningCard({ data, type = null, highlighted=null, li
                         <p className='opening-card-company-name-p'>{data.companyName}</p>
 
                         <p className='opening-card-salary'>{data.currency} {data.salary[0]} {data.salary[1] ? "- " + data.salary[1] : ""} per month</p>
-                        {data.userType == "employer" && type!="invite"?
+                        {data.userType == "employer" && type != "invite" ?
                             <div className="opening-vacancy-buttons">
                                 <Button variant="contained" disableElevation onClick={deleteJobFunc ? () => deleteJobFunc(data.id) : undefined} className="opening-delete-button" sx={{ color: '#f6cacc', backgroundColor: '#ff0000', width: 'fit-content', paddingY: "2px", paddingX: "10px", textTransform: "none", borderRadius: 20 }} endIcon={<DeleteOutlineIcon />}>
                                     Delete
@@ -39,19 +39,20 @@ export default function JobOpeningCard({ data, type = null, highlighted=null, li
                     <div className={`opening-card-div2${type === "review" ? " review" : ""}`}>
                         {type ?
                             <div className='feature-side'>
-                                {data.applicationsReceived.length && (type!="invite")?
+                                {data.applicationsReceived.length && (type != "invite") ?
                                     <div className='application-indicator'>
                                         <p>{data.applicationsReceived.length}</p>
                                     </div>
                                     :
                                     <div></div>
                                 }
-                                {highlighted ?
-                                    <Button variant="contained" onClick={listToDescFunc} sx={{ color: 'black', backgroundColor: 'white', width: 'fit-content', paddingY: "2px", paddingX: "0 10px", textTransform: "none" }} endIcon={<EditIcon />}>
-                                        <p style={{ minWidth: '6rem' }}>View Job Info</p>
-                                    </Button>
-                                    :
-                                    <></>
+                                {highlighted &&
+                                    <Tooltip title="View job description" enterDelay={500} leaveDelay={200}>
+                                        <IconButton onClick={listToDescFunc} className='view-description-btn'
+                                            sx={{ color: 'black', backgroundColor: '#eae9e9', border: 'solid 1px black' }}>
+                                            <RemoveRedEyeRoundedIcon fontSize="small" />
+                                        </IconButton>
+                                    </Tooltip>
                                 }
                             </div>
                             :

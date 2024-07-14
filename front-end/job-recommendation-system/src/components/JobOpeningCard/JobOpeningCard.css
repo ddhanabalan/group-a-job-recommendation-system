@@ -96,6 +96,14 @@
     justify-content: center;
 }
 
+.view-description-btn {
+    width: 1.5rem;
+    height: 1.5rem;
+    align-self: flex-end !important;
+    box-sizing: content-box !important;
+    padding: .1rem !important;
+}
+
 .application-indicator p {
     color: white;
     font-size: 0.9rem;

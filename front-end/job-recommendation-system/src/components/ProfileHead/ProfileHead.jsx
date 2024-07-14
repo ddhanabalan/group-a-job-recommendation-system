@@ -18,14 +18,14 @@ import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import FmdGoodRoundedIcon from '@mui/icons-material/FmdGoodRounded';
 import profilePlaceholder from '../../images/profile_placeholder.svg';
 import './ProfileHead.css'
-import { Margin } from '@mui/icons-material';
 export default function ProfileHead({ access, data, blurFn, logOutFn, subForm, isNotEditing, setIsNotEditing }) {
     const [img, setImg] = useState();
     const [user, SetUser] = useState()
     useEffect(() => {
-        access !== "viewOnly" ? SetUser(getStorage("userType")) :
+      access !== "viewOnly" ? SetUser(getStorage("userType")) :
             SetUser(getStorage("guestUserType"))
-    }, [])
+    }, [getStorage("guestUserType")])
+    console.log("access", access)
     console.log("user", user)
     const [bannerColor, setBannerColor] = useState('');
     useEffect(() => {
@@ -124,14 +124,12 @@ export default function ProfileHead({ access, data, blurFn, logOutFn, subForm, i
                         <ProfileEdit data={data} register={register} errors={errors} />
                     </div>
                 }
-                {access === "viewOnly" && user==="seeker"?
+                {access === "viewOnly" && user==="seeker"&&
                 <Link to="/employer/job-invite" state={{...data}}>
                     <div className='send-job-invite-button'>
                             <Button variant="contained" style={{textTransform: "none", color:"white", backgroundColor: "inherit",padding: "0.2rem 1rem" }} endIcon={<MailIcon />}><p>Send Job Invite</p></Button>
                     </div>
                 </Link>
-                :
-                <></>
                 }
                 <div className="profile-head-info-div profile-head-info-div3"></div>
             </div>
