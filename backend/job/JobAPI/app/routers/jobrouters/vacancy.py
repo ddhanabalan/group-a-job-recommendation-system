@@ -49,7 +49,7 @@ async def read_filtered_job_vacancies(
     for job in filtered_jobs:
         job.skills = jobcrud.skills.get_all(db, job.job_id)
         # job.company_pic =
-        # job.job_seekers = jobcrud.request.get_all_by_job_id(db, job.job_id)
+        job.job_seekers = jobcrud.request.get_all_by_job_id(db, job.job_id)
     return filtered_jobs
 
 

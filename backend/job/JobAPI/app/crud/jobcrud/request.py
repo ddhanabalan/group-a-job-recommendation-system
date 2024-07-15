@@ -100,9 +100,12 @@ def update(
     """
     try:
 
-        db.query(jobmodel.JobRequest).filter(
+        job_request = db.query(jobmodel.JobRequest).filter(
             jobmodel.JobRequest.id == job_request_id
-        ).first().update(job_request.dict())
+        ).first()
+        for key, value in job_request.dict().items():
+            if key not in ["job_id", "created_at"] and value is not None:
+                setattr(job_request, key, value)
         db.commit()
         return True
 
