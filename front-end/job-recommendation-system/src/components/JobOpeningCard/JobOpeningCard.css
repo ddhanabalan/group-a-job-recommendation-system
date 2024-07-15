@@ -26,10 +26,10 @@
 
 .opening-card-h1 {
     font-size: 20px;
+    margin-bottom: .1rem;
 }
 
 .opening-card-company-name-p {
-    font-size: 13px;
     color: #7B7777;
 }
 
@@ -101,7 +101,7 @@
     height: 1.5rem;
     align-self: flex-end !important;
     box-sizing: content-box !important;
-    padding: .1rem !important;
+    padding: .04rem !important;
 }
 
 .application-indicator p {
@@ -133,6 +133,15 @@
     font-size: .8rem;
     margin-right: -5px;
 
+}
+
+.opening-delete-button:hover {
+    background-color: #f6cacc !important;
+    color: #ff0000 !important;
+}
+.opening-edit-button:hover,.view-description-btn:hover {
+    background-color: rgba(0, 0, 0, 0.04) !important;
+    border-color: #646cff;
 }
 
 @media only screen and (max-width: 960px) {

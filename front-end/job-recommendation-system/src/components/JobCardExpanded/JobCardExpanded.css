@@ -8,12 +8,12 @@
     overflow-y: auto;
     background-color: white;
     border-radius: 11px 11px 0px 0px;
-    padding : 0 1rem 8rem 0;
+    padding: 0 1rem 8rem 0;
 }
 
 .job-desc-header {
     width: 98%;
-    height: 6rem;
+    height: fit-content;
     display: flex;
     flex-direction: row;
     box-sizing: border-box;
@@ -27,6 +27,7 @@
 
 .job-desc-h1 {
     font-size: 1.6rem;
+    margin: .1rem;
 }
 
 .job-desc-company-name-p {
@@ -34,30 +35,18 @@
     color: #7B7777;
 }
 
-.job-desc-img-container {
-    width: 4.5rem;
-    height: 4.5rem;
-    border-radius: 50%;
-    background-color: #D9D9D9;
-    overflow: hidden;
-}
-
-
-.job-desc-img-container img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
 
 .job-desc-salary {
     font-size: 1rem;
     color: #2BA84A;
     font-family: Inter-md;
+    margin-top: .5rem;
 }
 
-.job-desc-time-p {
+.job-time-p {
     font-size: .8rem;
     color: #7B7777;
+    margin-top: .5rem;
 }
 
 .job-desc-tags {
@@ -97,6 +86,9 @@
     height: 100%;
     width: 90%;
     padding-left: 2rem;
+    display: flex;
+    flex-direction: column;
+    position: relative;
 }
 
 .job-desc-body {
@@ -128,6 +120,7 @@
 
 .job-desc-body .desc {
     padding-left: 50px;
+    margin-top: 1rem;
 }
 
 .job-details span {
@@ -136,8 +129,11 @@
 
 .skill-counter {
     font-family: "Inter-md";
-    color: #FBBC05;
+    color: #ad8302;
     font-size: 0.7rem;
+    padding: .2rem .4rem;
+    background-color: #fff2b2b6;
+    border-radius: 15px;
 }
 
 .skill-status {
@@ -164,7 +160,6 @@
     font-family: Inter-b;
     font-size: 1.3rem;
 }
-
 .job-status-text {
     font-family: Inter-sb;
 }
@@ -183,4 +178,7 @@
 
 .apply-button {
     margin-top: 10%;
+}
+.disable-apply-btn{
+    background-color:#D9D9D9 !important ;
 }

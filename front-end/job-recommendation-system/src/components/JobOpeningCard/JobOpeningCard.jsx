@@ -2,7 +2,7 @@ import './JobOpeningCard.css';
 import { Button, IconButton } from '@mui/material';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import EditIcon from '@mui/icons-material/Edit';
-import RemoveRedEyeRoundedIcon from '@mui/icons-material/RemoveRedEyeRounded';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Link } from 'react-router-dom';
 import Tooltip from '@mui/material/Tooltip';
 
@@ -50,7 +50,7 @@ export default function JobOpeningCard({ data, type = null, highlighted = null, 
                                     <Tooltip title="View job description" enterDelay={500} leaveDelay={200}>
                                         <IconButton onClick={listToDescFunc} className='view-description-btn'
                                             sx={{ color: 'black', backgroundColor: '#eae9e9', border: 'solid 1px black' }}>
-                                            <RemoveRedEyeRoundedIcon fontSize="small" />
+                                            <VisibilityIcon fontSize="small" />
                                         </IconButton>
                                     </Tooltip>
                                 }

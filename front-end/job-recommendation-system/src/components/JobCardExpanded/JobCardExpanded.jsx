@@ -8,19 +8,21 @@ import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
 import { Button } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import {getStorage} from '../../storage/storage';
+import IconButton from '@mui/material/IconButton';
+import CorporateFareRoundedIcon from '@mui/icons-material/CorporateFareRounded';
+import { getStorage } from '../../storage/storage';
 
-export default function JobCardExpanded({ data = [], createJobRequest = null, deleteJobRequest=null, userData, handleSub = null, type }) {
+export default function JobCardExpanded({ data = [], createJobRequest = null, deleteJobRequest = null, userData, handleSub = null, type }) {
     console.log("data received by form", userData, "jobdata", data)
 
     //console.log(userData.appliedJobs.includes("4"))
     const [submit, setSubmit] = useState(false);
     //const [tag_state,setTagState] = useState(false);
-    const userSkills = (userData.type === "employer" || data.length) ? (null) : (data.skills?.map(skill => userData.skills.map(skilltag=>skilltag.skill).includes(skill.skill) ? true : false).filter(Boolean).length)
+    const userSkills = (userData.type === "employer" || data.length) ? (null) : (data.skills?.map(skill => userData.skills.map(skilltag => skilltag.skill).includes(skill.skill) ? true : false).filter(Boolean).length)
     const [skillIndicator, setSkillIndicator] = useState(true);
 
 
-
+    console.log("data", data)
 
     //console.log(userSkills)
     //function for senting applicant details from the form to company
@@ -68,10 +70,13 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
                                 <p className='job-desc-salary'>{data.currency} {data.salary[0]}  {data.salary[1] ? "- " + data.salary[1] : ""} per month</p>
                             </div>
                             <div className='job-desc-div2'>
-                                <div className='job-desc-img-container'>
-                                    {data['profile_picture'] ? <img src={data['profile_picture']} alt="" /> : <></>}
+                                <div className='card-img-container qualification-card-image'>
+                                    {data['profile_picture'] ? <img src={data['profile_picture']} alt="" /> :
+                                        <IconButton disabled>
+                                            <CorporateFareRoundedIcon fontSize='large' />
+                                        </IconButton>}
                                 </div>
-                                <p className='job-desc-time-p'>{data.postDate}</p>
+                                <p className='job-time-p'>{data.postDate}</p>
                             </div>
                         </div>
                         <hr className="separator" />
@@ -99,7 +104,7 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
 
                             {data.skills && skillIndicator ?
                                 <div className="job-skills">
-                                    <h6>Skills&nbsp;{userData.type == "seeker" ? <span className='skill-counter'>&nbsp;  You have {userSkills} out of {data.skills.length} skills required for the job</span> : <></>}</h6>
+                                    <h6>Skills&nbsp;{userData.type == "seeker" ?  <span className='skill-counter'>You have {userSkills} out of {data.skills.length} skills required for the job</span> : <></>}</h6>
                                     {/*skill tags */}
                                     <div className='desc'><Stack className="job-desc-tags" direction="row" spacing={1}>
                                         {data.skills.map(e => {
@@ -131,7 +136,7 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
                                     Status: <span className={`job-status-text color-${handleStatus(data.status.toLowerCase())}`}>{data.status}</span>
                                 </div>
                                 <div className="cancel-application-button">
-                                    <Button variant="outlined" onClick={() => {deleteJobRequest(data.job_req_id)}} sx={{ color: "black", border: "2px solid #254CE1" }} endIcon={<CancelRoundedIcon />}>
+                                    <Button variant="outlined" onClick={() => { deleteJobRequest(data.job_req_id) }} sx={{ color: "black", border: "2px solid #254CE1" }} endIcon={<CancelRoundedIcon />}>
                                         <p>Cancel Application</p>
                                     </Button>
                                 </div>
@@ -146,9 +151,22 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
                             <></>
                             :
                             <div className="apply-button">
-                                <Button variant="outlined" onClick={submit ? () => { } : handleApplication} sx={{ color: submit ? "gray" : "black", border: "2px solid #254CE1" }} startIcon={submit ? <DoneIcon /> : <MailIcon />}>
+                                {/* <Button variant="outlined" disabled={submit}  onClick={submit ? () => { } : handleApplication} sx={{ color: submit ? "gray" : "black", border: "1px solid #254CE1",textTransform:'none' }} startIcon={submit ? <DoneIcon /> : <MailIcon />}>
                                     <p>{submit ? "Applied" : "Apply for the job"}</p>
-                                </Button>
+                                </Button> */}
+                                {!submit ?
+                                    <button className='continue-btn' onClick={submit ? () => { } : handleApplication} >
+                                        Apply
+                                        <div class="arrow-wrapper">
+                                            <div class="arrow"></div>
+
+                                        </div>
+                                    </button>
+                                    :
+                                    <button className='continue-btn disable-apply-btn' onClick={submit ? () => { } : handleApplication} >
+                                        Applied
+                                    </button>
+                                }
                             </div>
                         }
                     </>
