@@ -52,6 +52,17 @@ export default function JobVacancyForm({ data = {} }) {
     const [finalApplicationData, setData] = useState({});
     const [poi, SetPOI] = useState(dta.poi?dta.poi:'');
     const [poisList, SetPoisList] = useState([]);
+    const lowerLimit = watch("salary.0");
+    const [isUpperLimitEnabled, setIsUpperLimitEnabled] = useState(false);
+
+    useEffect(() => {
+        if (lowerLimit) {
+            setIsUpperLimitEnabled(true);
+        } else {
+            setIsUpperLimitEnabled(false);
+        }
+    }, [lowerLimit]);
+
     const poiListAPI = async () => {
         try {
             const response = await utilsAPI.get(`/api/v1/positions?q=${poi}`)
@@ -398,7 +409,7 @@ export default function JobVacancyForm({ data = {} }) {
                                     <p><span className={`details-header${prefError.exp ? "-error" : ""}`}>Work Style:</span></p>
                                     <div className="option-divs">
                                         <MultipleOptions options={["Hybrid", "Work from home", "Onsite"]} preselected={preferences.workStyle || null} dataType="workStyle" checkLimit={1} onChange={handleCheckboxChange} />
-                                        <p className="error-message">{prefError.workPref?.message}</p>
+                                        <p className="error-message">{prefError.workStyle?.message}</p>
                                     </div>
                                 </div>
                                 <div className="detail-divs">
@@ -431,7 +442,7 @@ export default function JobVacancyForm({ data = {} }) {
                                                     validate: (val) => val > salary_threshold || `Enter salary greater than ${salary_threshold}`,
                                                 })} />
                                             <span>to</span>
-                                            <CreateFormTextFields disabled={watch("salary.0") != null ? (watch("salary.0").length ? false : true) : true} inputPlaceholder="Upper limit" wparam="120px"
+                                            <CreateFormTextFields disabled={!isUpperLimitEnabled/*watch("salary.0") != null ? (watch("salary.0").length ? false : true) : true */} inputPlaceholder="Upper limit" wparam="120px"
                                                 defaultValue={dta.salary ? dta.salary[1] || null : null}
                                                 {...register("salary.1", {
 

@@ -6,19 +6,23 @@ import Checkbox from '@mui/material/Checkbox';
 import CheckCircleRoundedIcon from '@mui/icons-material/CheckCircleRounded';
 import RadioButtonUncheckedRoundedIcon from '@mui/icons-material/RadioButtonUncheckedRounded';
 import { v4 as uuid } from 'uuid';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 
 export default function MultipleOptions({ heading, options, onChange=() => {}, preselected=null, dataType=null, checkLimit=1, fSize=".938rem", margY="15px"}) {
     const [checkedItems, setCheckedItems] = useState(preselected?{[preselected]: true}:{});
+    const [update, setUpdate] = useState(false);
     //console.log(checkedItems)
 
     //function to handle changed check boxes way it 
     function handleChange(option){
         const updatedCheckedItems = {...checkedItems, [option]: !checkedItems[option]}
         setCheckedItems(updatedCheckedItems);
-        onChange(updatedCheckedItems, checkLimit, dataType);
+        setUpdate(true);
+        
     }
+    useEffect(()=>{if(update == true){onChange(checkedItems, checkLimit, dataType);
+                                      setUpdate(false);}}, [update]);
     return (
         <Box className='options-container' sx={{marginY: margY}}>
                 {heading==""?<></>:<p className="options-heading">{heading}</p>}

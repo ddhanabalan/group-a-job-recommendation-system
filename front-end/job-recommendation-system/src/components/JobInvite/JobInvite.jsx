@@ -15,7 +15,7 @@ import CreateFormTextFields from '../CreateJobVacancyForm/CreateFormTextFields';
 import { Link } from 'react-router-dom';
 import {getStorage} from '../../storage/storage';
 
-export default function JobInvite({ data=[], jobData=null, createJobRequest=null, deleteJobRequest=null, userData, handleSub=null, type }) {
+export default function JobInvite({ data=[], jobData=null, createJobRequest=null, deleteJobRequest=null, userData, handleSub=null, type, sentInvite=null }) {
     console.log("data received by form", userData, "jobdata",data)
     const CANDIDATE_PROFILE_PIC = (userData.type==="employer"?data.profile_picture:null);
     console.log("CANDIDATE_PROFILE_PIC", CANDIDATE_PROFILE_PIC)
@@ -42,6 +42,7 @@ export default function JobInvite({ data=[], jobData=null, createJobRequest=null
         else{
             setError(false);
             setfinalData({...jobData,...data, 'remarks': remarks})
+            
         }   
     }
     
@@ -51,6 +52,8 @@ export default function JobInvite({ data=[], jobData=null, createJobRequest=null
     function handleRemarks(text){
         setRemarks(text);
     }
+
+    useEffect(()=>{if(Object.keys(finalData).length)sentInvite(finalData);}, [finalData])
 
     
     return (

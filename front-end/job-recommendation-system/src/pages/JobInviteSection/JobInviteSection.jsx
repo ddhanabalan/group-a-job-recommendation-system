@@ -118,6 +118,32 @@ export default function JobInviteSection({userType}) {
     const listToDescParentFunc=()=>{
         setSideBar(true);
     }
+
+    const sentInvite = async (finalData)=>{
+        console.log("final data", finalData)
+        const req_data = {
+                                "job_id": finalData.id,
+                                "user_id": 1
+                            }
+        console.log("job status data", req_data)
+        try {
+            const response = await jobAPI.post(`/job_invite/`, req_data, {
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getStorage("userToken")}`
+                }         
+                });
+            console.log("updated response", response)
+            //const mod_response = response.data.map(e=>({applicantID: e.user_id, username: e.username, candidateName: (e.first_name + " " + e.last_name), first_name: e.first_name, last_name: e.last_name,city: e.city, country: e.country, location: e.location, experience: e.experience, profile_picture: e.profile_picture}))
+            
+            
+        } catch (e) {
+            
+            console.log("failed to sent invite", e)
+            
+            alert(e.message);
+        }
+    }
     //console.log("filtered applicants",filteredApplicants);
     useEffect(() => {callJobVacancyAPI(COMPANYID)}, []);//only runs during initial render
     useEffect(()=>{if(selectedEntry==null)
@@ -184,7 +210,7 @@ export default function JobInviteSection({userType}) {
                 
                 
                     
-                    <JobInvite data={receivedData.state} jobData={selectedJobEntry}  userData={userData}/>                    
+                    <JobInvite data={receivedData.state} jobData={selectedJobEntry}  userData={userData} sentInvite={sentInvite}/>                    
                 
             
             </div>

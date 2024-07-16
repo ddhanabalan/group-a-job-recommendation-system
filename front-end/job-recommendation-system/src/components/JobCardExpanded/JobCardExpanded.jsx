@@ -12,8 +12,8 @@ import IconButton from '@mui/material/IconButton';
 import CorporateFareRoundedIcon from '@mui/icons-material/CorporateFareRounded';
 import { getStorage } from '../../storage/storage';
 
-export default function JobCardExpanded({ data = [], createJobRequest = null, deleteJobRequest = null, userData, handleSub = null, type }) {
-    console.log("data received by form", userData, "jobdata", data)
+export default function JobCardExpanded({ data = [], createJobRequest = null, deleteJobRequest = null, userData, handleSub = null, type, invite=null }) {
+    console.log("data received by form", userData, "jobdata", data, "invite", invite)
 
     //console.log(userData.appliedJobs.includes("4"))
     const [submit, setSubmit] = useState(false);
@@ -147,14 +147,31 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
                         }
 
 
-                        {userData.type == "employer" || type == "approval" ?
-                            <></>
+                        {userData.type == "employer" || type == "approval" || invite ?
+                            (
+                                invite?
+                                 <>
+                                 <div className='invite-buttons-container'>
+                                    <button className='accept' onClick={()=>{}} >
+                                        Accept
+                                    </button>
+                                    <button className='reject' onClick={()=>{}} >
+                                        Reject
+                                    </button>
+
+                                 </div>
+                                 </>
+                                 
+                                 :
+                                 <></>
+                            )
                             :
                             <div className="apply-button">
                                 {/* <Button variant="outlined" disabled={submit}  onClick={submit ? () => { } : handleApplication} sx={{ color: submit ? "gray" : "black", border: "1px solid #254CE1",textTransform:'none' }} startIcon={submit ? <DoneIcon /> : <MailIcon />}>
                                     <p>{submit ? "Applied" : "Apply for the job"}</p>
                                 </Button> */}
-                                {!submit ?
+                                {
+                                (!submit ?
                                     <button className='continue-btn' onClick={submit ? () => { } : handleApplication} >
                                         Apply
                                         <div class="arrow-wrapper">
@@ -166,6 +183,7 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
                                     <button className='continue-btn disable-apply-btn' onClick={submit ? () => { } : handleApplication} >
                                         Applied
                                     </button>
+                                )
                                 }
                             </div>
                         }
