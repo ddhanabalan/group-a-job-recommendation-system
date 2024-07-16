@@ -4,12 +4,22 @@ import Stack from '@mui/material/Stack';
 import { v4 as uuid } from 'uuid';
 import IconButton from '@mui/material/IconButton';
 import CorporateFareRoundedIcon from '@mui/icons-material/CorporateFareRounded';
-export default function JobCard({ data, id, expandView, background, profilePictureStyle }) {
+import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+
+export default function JobCard({ data, id, expandView, background, profilePictureStyle, link=null }) {
+    const navigate = useNavigate();
+    const [redirect, setRedirect] = useState(false)
     const chips = [data.workStyle, data.workingDays, ...(data.skills.map(e => e.skill).slice(0, 2))]
+    useEffect(()=> {if(redirect===true)
+                        {setRedirect(false);
+                        navigate(link, { replace: true });}}, [redirect])
     console.log(chips)
     return (
-        <div className="card" onClick={() => expandView(data.id)} style={background}>
+        
+        <div className="card" onClick={() => {(link?setRedirect(true):expandView(data.id))}} style={background}>
             <div className='card-div1'>
+                
                 <h1 className='card-h1'>{data.jobTitle}</h1>
                 <p className='card-company-name-p'>{data.companyName}</p>
                 <Stack className="card-tags" direction="row" spacing={1}>

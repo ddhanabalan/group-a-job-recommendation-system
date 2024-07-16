@@ -1,7 +1,7 @@
 import axios from 'axios';
 
-let ip="192.168.1.7";
-// let ip="localhost";
+//let ip="192.168.1.7";
+let ip="localhost";
 
 export const authAPI =axios.create({
      baseURL: `http://${ip}:8000/`
