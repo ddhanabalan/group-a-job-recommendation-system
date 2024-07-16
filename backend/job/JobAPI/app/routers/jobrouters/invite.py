@@ -30,7 +30,21 @@ async def create_job_invite(
         )
     return {"detail": "Job Invite created successfully"}
 
-
+@job_invite_router.put("/{job_invite_id}", status_code=status.HTTP_200_OK)
+async def update_job_invite(
+    job_invite_id: int,
+    job_invite: jobschema.JobInviteUpdate,
+    authorization: str = Header(...),
+    db: Session = Depends(get_db),
+):
+    data = await get_current_user(authorization=authorization,user_type="recruiter")
+    res = jobcrud.invite.update(db,  job_invite_id,job_invite.dict(exclude_unset=True))
+    if not res:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Data not updated to Database",
+        )
+    return {"detail": "Job Invite updated successfully"}
 @job_invite_router.get("/user", response_model=List[jobschema.JobInvite])
 async def read_job_invites_by_user_id(
     authorization: str = Header(...), db: Session = Depends(get_db)

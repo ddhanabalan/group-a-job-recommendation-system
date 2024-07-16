@@ -56,6 +56,7 @@ class JobInvite(Base):
     id = Column(Integer, primary_key=True)
     job_id = Column(Integer, ForeignKey("job_vacancy.job_id"), index=True)
     company_id = Column(Integer, index=True)
+    status = Column(String(64))
     user_id = Column(Integer, index=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)

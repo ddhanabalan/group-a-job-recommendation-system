@@ -96,7 +96,14 @@ class JobVacancySeeker(JobVacancyBase):
 class JobInviteCreate(BaseModel):
     job_id: int
     company_id: Optional[int] = None
+    status: Optional[str] = "Pending"
     user_id: int
+
+    class Config:
+        from_attributes = True
+
+class JobInviteUpdate(BaseModel):
+    status: Optional[str] = None
 
     class Config:
         from_attributes = True
