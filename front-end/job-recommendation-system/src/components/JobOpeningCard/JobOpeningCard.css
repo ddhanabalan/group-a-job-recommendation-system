@@ -135,6 +135,14 @@
 
 }
 
+.invite-label{
+    background-color: red;
+    width: fit-content;
+    margin-top: 2%;
+    padding: 0.1rem 0.7rem;
+    border-radius: 0.3rem;
+}
+
 .opening-delete-button:hover {
     background-color: #f6cacc !important;
     color: #ff0000 !important;

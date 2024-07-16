@@ -10,16 +10,16 @@ import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 
 
-function HighlightableJobCard({ id, highlighted, type, data, listToDescFunc, deleteJobFunc, onclick }) {
+function HighlightableJobCard({ id, highlighted, type, data, listToDescFunc, deleteJobFunc, onclick, invite }) {
     //console.log("highlighted ", id, " : ", highlighted)
     return (
         <div className="card-holder" onClick={() => onclick(id)}>
-            <JobOpeningCard data={data} type={type} listToDescFunc={listToDescFunc} deleteJobFunc={deleteJobFunc} highlighted={highlighted} />
+            <JobOpeningCard data={data} type={type} listToDescFunc={listToDescFunc} deleteJobFunc={deleteJobFunc} highlighted={highlighted} invite={invite} />
         </div>
     )
 }
 
-export default function OpeningsListBar({ data, userType, userID, chooseEntry, searchBar, preselectedEntry, filterFunc, pageType, listToDescParentFunc = null, deleteJobFunc = null }) {
+export default function OpeningsListBar({ data, userType, userID, chooseEntry, searchBar, preselectedEntry, filterFunc, pageType, listToDescParentFunc = null, deleteJobFunc = null, invite=null }) {
 
     console.log("received jobs to openings list bar", data);
     const finalInfo = { ...data }
@@ -106,7 +106,7 @@ export default function OpeningsListBar({ data, userType, userID, chooseEntry, s
 
                 <div className="openings-container">
                     {Object.keys(finalInfo).length!=0?
-                        Object.keys(finalInfo).map((card) => (<HighlightableJobCard key={finalInfo[card]["id"]} id={finalInfo[card]["id"]} onclick={highlightDiv} highlighted={highlightedId == finalInfo[card]["id"]} type={userType == "employer" ? pageType : null} deleteJobFunc={deleteJobFunc} listToDescFunc={listToDescFunc} data={{ ...finalInfo[card], 'userType': userType, 'highlightedId': highlightedId }} />))
+                        Object.keys(finalInfo).map((card) => (<HighlightableJobCard key={finalInfo[card]["id"]} id={finalInfo[card]["id"]} onclick={highlightDiv} highlighted={highlightedId == finalInfo[card]["id"]} type={userType == "employer" ? pageType : null} deleteJobFunc={deleteJobFunc} listToDescFunc={listToDescFunc} data={{ ...finalInfo[card], 'userType': userType, 'highlightedId': highlightedId }} invite={invite} />))
                         :
                         (userType=="employer"?
                         <div className="empty-container-message">

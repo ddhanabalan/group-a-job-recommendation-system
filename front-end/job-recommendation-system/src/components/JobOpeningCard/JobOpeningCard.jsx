@@ -6,7 +6,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Link } from 'react-router-dom';
 import Tooltip from '@mui/material/Tooltip';
 
-export default function JobOpeningCard({ data, type = null, highlighted = null, listToDescFunc = null, deleteJobFunc = null }, props) {
+export default function JobOpeningCard({ data, type = null, highlighted = null, listToDescFunc = null, deleteJobFunc = null, invite=null }, props) {
     //opening cards show in opening page    
     //console.log("data to opening card", data)
 
@@ -33,7 +33,14 @@ export default function JobOpeningCard({ data, type = null, highlighted = null, 
                                 </Link>
                             </div>
                             :
-                            <></>
+                            (data.id == invite?
+                             <div className='invite-label'>
+                                <p>Invited</p>
+                             </div>
+                             :
+                             <></>
+                            )
+                            
                         }
                     </div>
                     <div className={`opening-card-div2${type === "review" ? " review" : ""}`}>

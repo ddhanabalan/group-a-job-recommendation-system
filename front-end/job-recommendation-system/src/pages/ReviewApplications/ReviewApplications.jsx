@@ -13,7 +13,8 @@ import NavigationBar from "../../components/NavigationBar/NavigationBar";
 import noApplicationsFiller from "../../images/no-applications-found.json";
 import careerGoLogo from "../../images/careergo_logo.svg";
 
-export default function ReviewApplications({userType}) {
+export default function ReviewApplications({userType, invite=null}) {
+    
     const link_data = useParams();
     console.log("received from url", link_data)
     const COMPANYID = (userType==="employer"?getStorage("userID"):(link_data.company_id?link_data.company_id: getStorage("guestUserID")));
@@ -269,7 +270,7 @@ export default function ReviewApplications({userType}) {
                 <div className="back-button-review" onClick={()=>setSideBar(false)}><BackBtn outlineShape={"square"} butColor={"white"}/></div>
                 </>
                 :
-                <OpeningsListBar data={filtered} userType={userType} userID={COMPANYID} pageType="review" chooseEntry={chooseEntry} searchBar={searchBar} listToDescParentFunc={listToDescParentFunc} preselectedEntry={selectedEntry} filterFunc={filterStateSet} deleteJobFunc={DeleteJobAPI}/>
+                <OpeningsListBar data={filtered} userType={userType} userID={COMPANYID} pageType="review" chooseEntry={chooseEntry} searchBar={searchBar} listToDescParentFunc={listToDescParentFunc} preselectedEntry={selectedEntry} filterFunc={filterStateSet} deleteJobFunc={DeleteJobAPI} invite={Number(link_data.job_id)}/>
                 }
             </div>
             {filterstat?
@@ -301,7 +302,7 @@ export default function ReviewApplications({userType}) {
                 )
                 :
                 (selectedJobEntry!=null && filtered.length!=0?
-                    <JobCardExpanded data={selectedJobEntry} createJobRequest={CreateJobRequest} userData={userData}/>
+                    <JobCardExpanded data={selectedJobEntry} createJobRequest={CreateJobRequest} userData={userData} invite={selectedJobEntry.id==link_data.job_id?invite: null}/>
                     :
                     <></>
                 )
