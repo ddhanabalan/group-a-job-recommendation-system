@@ -66,6 +66,7 @@
 .profile-head-info-div {
     display: flex;
     flex-direction: column;
+    position: relative;
 }
 
 .profile-head-info-div label,
@@ -99,7 +100,7 @@
 }
 
 .profile-head-info-div2 {
-    width: 50%;
+    width: fit-content;
     align-items: flex-start;
 }
 
@@ -134,12 +135,9 @@
 
 .send-job-invite-button{
     position: absolute;
-    left: 30%;
-    top: 6%;
-    background-color: rgb(227, 72, 95);
-    border-radius: 1rem;
-}
-
-.send-job-invite-button p{
-    font-size: 0.8rem;
+    top: 0;
+    right: -7rem;
+    font-size: .9rem;
+    margin-top: .4rem;
+    padding: .4em 1em;
 }

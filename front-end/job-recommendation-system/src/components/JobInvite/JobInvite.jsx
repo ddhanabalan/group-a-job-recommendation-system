@@ -68,11 +68,10 @@ export default function JobInvite({ data=[], jobData=null, createJobRequest=null
                                 <Chip className="detail-chips" icon={<WorkIcon />} label={data.experience + " years"} /> 
                             </div>
                         </div>
-                        <div className='job-desc-div2'>
-                            <div className='job-invite-img-container'>
+                            <div className='job-card-div2'>
+                                <div className='job-card-img-container'>
                                 <img src={CANDIDATE_PROFILE_PIC}/> 
                             </div>
-                            
                         </div>
                     </div>
                     <hr className="separator"/>

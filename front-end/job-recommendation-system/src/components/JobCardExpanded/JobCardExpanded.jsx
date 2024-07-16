@@ -70,8 +70,8 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
                                 <p className='job-desc-salary'>{data.currency} {data.salary[0]}  {data.salary[1] ? "- " + data.salary[1] : ""} per month</p>
                             </div>
                             <div className='job-desc-div2'>
-                                <div className='card-img-container qualification-card-image'>
-                                    {data['profile_picture'] ? <img src={data['profile_picture']} alt="" /> :
+                                <div className='card-img-container qualification-card-image  job-card-img-container'>
+                                    {data['profile_picture'] ? <img  src={data['profile_picture']} alt="" /> :
                                         <IconButton disabled>
                                             <CorporateFareRoundedIcon fontSize='large' />
                                         </IconButton>}

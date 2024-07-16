@@ -6,7 +6,7 @@ import { styled } from '@mui/material/styles';
 import { FastAverageColor } from 'fast-average-color';
 import { Button } from '@mui/material';
 import { useNavigate, Link } from 'react-router-dom';
-import MailIcon from '@mui/icons-material/Mail';
+import PersonAddAlt1RoundedIcon from '@mui/icons-material/PersonAddAlt1Rounded';
 import Skeleton from '@mui/material/Skeleton';
 import ProfileEdit from '../ProfileEdit/ProfileEdit';
 import AccountSettingsBtn from '../AccountSettingsBtn/AccountSettingsBtn';
@@ -110,6 +110,14 @@ export default function ProfileHead({ access, data, blurFn, logOutFn, subForm, i
                     (user === "seeker" ?
                         <div className="profile-head-info-div profile-head-info-div2">
                             <h1 className="profile-name">{data.first_name && data.last_name ? data.first_name + ' ' + data.last_name : <Skeleton className="profile-name" variant="text" sx={{ width: '20rem' }} />}</h1>
+                            {access === "viewOnly" && user === "seeker" &&
+                                <Link to="/employer/job-invite" state={{ ...data }}>
+                                    <button className='continue-btn send-job-invite-button' >
+                                        Invite
+                                        <PersonAddAlt1RoundedIcon fontSize='small'/>
+                                    </button>
+                                </Link>
+                            }
                             <p className="profile-location"><FmdGoodRoundedIcon fontSize='small' sx={{ marginRight: '.1rem' }} />{data.city && data.country ? data.city + ', ' + data.country : <Skeleton className="profile-location" variant="text" sx={{ width: '15rem' }} />}</p>
                             <p className="profile-bio">{data.bio ? data.bio : "Tell the world about yourself"}</p>
                         </div>
@@ -124,13 +132,7 @@ export default function ProfileHead({ access, data, blurFn, logOutFn, subForm, i
                         <ProfileEdit data={data} register={register} errors={errors} />
                     </div>
                 }
-                {access === "viewOnly" && user==="seeker"&&
-                <Link to="/employer/job-invite" state={{...data}}>
-                    <div className='send-job-invite-button'>
-                            <Button variant="contained" style={{textTransform: "none", color:"white", backgroundColor: "inherit",padding: "0.2rem 1rem" }} endIcon={<MailIcon />}><p>Send Job Invite</p></Button>
-                    </div>
-                </Link>
-                }
+               
                 <div className="profile-head-info-div profile-head-info-div3"></div>
             </div>
         </form >
