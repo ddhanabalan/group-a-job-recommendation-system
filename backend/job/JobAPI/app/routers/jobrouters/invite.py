@@ -20,7 +20,8 @@ async def create_job_invite(
     db: Session = Depends(get_db),
 ):
     data = await get_current_user(authorization=authorization,user_type="recruiter")
-    job_inv = jobschema.JobInviteCreate(**job_invite.dict(), company_id=data["user_id"])
+    job_inv = jobschema.JobInviteCreate(**job_invite.dict())
+    job_inv.company_id=data["user_id"]
     res = jobcrud.invite.create(db, job_inv)
     if not res:
         raise HTTPException(
