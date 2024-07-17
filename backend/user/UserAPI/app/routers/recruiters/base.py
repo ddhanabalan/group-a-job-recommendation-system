@@ -11,6 +11,7 @@ from .. import (
     decode64_image,
     encode64_image,
     get_current_user,
+check_authorization
 )
 
 router = APIRouter()
@@ -18,7 +19,7 @@ router = APIRouter()
 
 @router.post("/init", status_code=status.HTTP_201_CREATED)
 async def user_recruiters_init(
-    user: recruiterschema.RecruiterBaseInDB, db: Session = Depends(get_db)
+        user: recruiterschema.RecruiterBaseInDB, db: Session = Depends(get_db)
 ):
     if user.profile_picture is not None:
         contents = await decode64_image(user.profile_picture)
@@ -115,3 +116,15 @@ async def profile_by_username(username: str, db: Session = Depends(get_db)):
         emp_type=user_emp_type,
         user_type="recruiter"
     )
+
+
+@router.get("{company_id}/pic")
+async def get_recruiter_pic(company_id: int, db: Session = Depends(get_db),authorization: str = Header(...)):
+    await check_authorization(authorization=authorization)
+    details = crud.recruiter.details.get(db=db, user_id=company_id)
+    if details.profile_picture is not None:
+        profile_pic = details.profile_picture
+        profile_picture64 = await encode64_image(profile_pic)
+    else:
+        profile_picture64 = None
+    return profile_picture64
