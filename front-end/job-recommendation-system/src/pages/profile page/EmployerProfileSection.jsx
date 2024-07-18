@@ -1,15 +1,9 @@
 import { useState, useEffect } from 'react';
 import { jobAPI, userAPI } from '../../api/axios';
-import { v4 as uuid } from 'uuid';
 import { getStorage, setStorage } from '../../storage/storage';
-
 import { useParams,Navigate } from 'react-router-dom';
-import authAPI from '../../api/axios';
-import FeatureBox from '../../components/FeatureBox/FeatureBox';
-import FeatureBoxMiddlePane from '../../components/FeatureBoxMiddlePane/FeatureBoxMiddlePane';
 import ProfileHead from '../../components/ProfileHead/ProfileHead';
 import ContactCard from '../../components/ContactCard/ContactCard';
-import AddSkills from '../../components/AddSkills/AddSkills';
 import Lottie from 'lottie-react';
 import NavigationBar from '../../components/NavigationBar/NavigationBar';
 import DetailsCard from '../../components/DetailsCard/DetailsCard';
@@ -21,10 +15,7 @@ import LoaderAnimation from '../../components/LoaderAnimation/LoaderAnimation';
 import cloudAnimation from '../../images/cloud-animation.json';
 import './EmployerProfileSection.css';
 export default function EmployerProfileSection({ data }) {
-
-    
     const [newData, SetnewData] = useState(data);
-   
     const [isNotEditing, SetIsNotEditing] = useState(true)
     const [jobVacancies, SetJobVacancies] = useState([]);
     const updateEditStatus = (value) => {
@@ -57,58 +48,55 @@ export default function EmployerProfileSection({ data }) {
             alert(e.message)
         }
     }
-    const callJobVacancyAPI= async (companyId)=>{
-        try {
-            const response = await jobAPI.get(`/job_vacancy/company`, {
-                                                                        headers:{
-                                                                            
-                                                                            'Authorization': `Bearer ${getStorage("userToken")}` 
-                                                                        }
-                                                                      }           
-                                            );
-            const mod_response = response.data.map(e=>({id: e.job_id, jobTitle: e.job_name, companyId: e.company_id, companyName: e.company_name, tags: e.tags, currency: e.salary.split('-')[0], salary: [e.salary.split('-')[1],e.salary.split('-')[2]], postDate: e.created_at.split('T')[0] , last_date: e.last_date.split('T')[0], location: e.location, empType: e.emp_type, exp: e.experience, workStyle: e.work_style, workingDays: e.working_days, jobDesc: e.job_desc ,jobReq:e.requirement,skills: e.skills.length?e.skills: [{'skill': ""}], applicationsReceived: e.job_seekers}))
-            SetJobVacancies(mod_response);
-            console.log(response);
-            console.log(" after new job vacancies", mod_response);
-            
-        } catch (e) {
-            console.log("jobs failed for id",getStorage("userID"), e)
-            
-            alert(e.message);
+    useEffect(() => {
+        const profileAPI = async () => {
+            try {
+                const response = (user === undefined) ?
+                    await userAPI.get(`/recruiter/profile`, {
+                        headers: {
+                            'Authorization': `Bearer ${getStorage("userToken")}`
+                        }
+                    }) :
+                    await userAPI.get(`/profile/${user}`);
+                console.log("user profile", response)
+                redirectFn(response.data)
+            } catch (e) {
+                console.log(e)
+
+                alert(e.message)
+            }
         }
-    }
-    useEffect(() => callAPI, []);
+        profileAPI()
+    }, []);
+    useEffect(() => {
+        if (getStorage("userID")) { 
+            const callJobVacancyAPI = async (companyId) => {
+                try {
+                    const response = await jobAPI.get(`/job_vacancy/company`, {
+                        headers: {
+
+                            'Authorization': `Bearer ${getStorage("userToken")}`
+                        }
+                    }
+                    );
+                    const mod_response = response.data.map(e => ({ id: e.job_id, jobTitle: e.job_name, companyId: e.company_id, companyName: e.company_name, tags: e.tags, currency: e.salary.split('-')[0], salary: [e.salary.split('-')[1], e.salary.split('-')[2]], postDate: e.created_at.split('T')[0], last_date: e.last_date.split('T')[0], location: e.location, empType: e.emp_type, exp: e.experience, workStyle: e.work_style, workingDays: e.working_days, jobDesc: e.job_desc, jobReq: e.requirement, skills: e.skills.length ? e.skills : [{ 'skill': "" }], applicationsReceived: e.job_seekers }))
+                    SetJobVacancies(mod_response);
+                    console.log(response);
+                    console.log(" after new job vacancies", mod_response);
+
+                } catch (e) {
+                    console.log("jobs failed for id", getStorage("userID"), e)
+
+                    alert(e.message);
+                }
+            }
+            callJobVacancyAPI(getStorage("userID"))
+    }  }, [newData])
     const [isBodyBlur, SetIsBodyBlur] = useState(false)
+    const profileBodyClass = `employer-profile-body-section ${isBodyBlur && 'body-blur'}`
     const blurBody = (state) => {
         state ? SetIsBodyBlur(true) : SetIsBodyBlur(false)
     }
-    const [skill, SetSkill] = useState('');
-    const [skills, SetSkills] = useState([{ tag: "software", id: uuid() }, { tag: "data science", id: uuid() }]);
-
-
-    const handleDeleteSkill = (id) => {
-        //accepts id of Domain tag and delete them from the array 
-        SetSkills(prevSkills =>
-            prevSkills.filter(e => e.id !== id))
-    };
-
-    const handleChangeSkill = (v) => {
-        //stores the Domain value from the input field as user types
-        SetSkill(v)
-    };
-
-    const handleSkill = (n) => {
-        //accepts a new domain value from the input field and updates the domains array to display the newly added domain and resets the input box value when user clicks the add button
-        if (n !== "") {
-            SetSkills([...skills, { tag: n, id: uuid() }]);
-            SetSkill('')
-        }
-    };
-
-    // const subForm = async (data) => {
-    //     SetnewData(data)
-    //     console.log(data);
-    // }
     const subForm = async (data) => {
         SetnewData({ ...newData, city: data.city, company_name: data.company_name, country: data.country, bio: data.bio, profile_picture: data.profile_picture, profile_banner_color: data.profile_banner_color })
         console.log("data", data);
@@ -144,14 +132,12 @@ export default function EmployerProfileSection({ data }) {
         console.log('helo')
         SetRedirectHome(true)
     }
-
-    useEffect(() => {if(getStorage("userID"))callJobVacancyAPI(getStorage("userID"))}, [newData])
     return (
         <div id="employer-profile-page">
             {redirectHome && <Navigate to='/' />}
             <ProfileHead logOutFn={logOut} data={newData} blurFn={blurBody} subForm={subForm} isNotEditing={isNotEditing} setIsNotEditing={updateEditStatus} />
             <NavigationBar active="profile" />
-            <div className="employer-profile-body-section">
+            <div className={profileBodyClass}>
                 <div className="employer-profile-pane employer-profile-left-pane">
                     {/* <FeatureBox data={{ title: "At a Glance" }} /> */}
                     <DetailsCard data={{
