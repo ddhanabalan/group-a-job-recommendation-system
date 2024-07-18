@@ -5,8 +5,8 @@ import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Link } from 'react-router-dom';
 import Tooltip from '@mui/material/Tooltip';
-
-export default function JobOpeningCard({ data, type = null, highlighted = null, listToDescFunc = null, deleteJobFunc = null, invite=null }, props) {
+import CorporateFareRoundedIcon from '@mui/icons-material/CorporateFareRounded';
+export default function JobOpeningCard({ data, type = null, highlighted = null, listToDescFunc = null, deleteJobFunc = null, invite = null }, props) {
     //opening cards show in opening page    
     //console.log("data to opening card", data)
 
@@ -33,14 +33,33 @@ export default function JobOpeningCard({ data, type = null, highlighted = null, 
                                 </Link>
                             </div>
                             :
-                            (data.id == invite?
-                             <div className='invite-label'>
-                                <p>Invited</p>
-                             </div>
-                             :
-                             <></>
+                            (data.id == invite ?
+                                <div className="job-status-div job-status-reject job-status-opening-card">
+                                    <p>Invite</p>
+                                    <div className="skill-status blue"></div>
+                                </div>
+                                : <>
+                                    {data.status === "rejected" &&
+                                        <div className="job-status-div job-status-reject job-status-opening-card">
+                                            <p>Rejected</p>
+                                            <div className="skill-status red"></div>
+                                        </div>
+                                    }
+                                    {data.status === "approved" &&
+                                        <div className="job-status-div job-status-approve job-status-opening-card">
+                                            <p>Approved</p>
+                                            <div className="skill-status green"></div>
+                                        </div>
+                                    }
+                                    {data.status === "Applied" &&
+                                        <div className="job-status-div job-status-reject job-status-opening-card">
+                                            <p>Applied</p>
+                                            <div className="skill-status yellow"></div>
+                                        </div>
+                                    }
+                                </>
                             )
-                            
+
                         }
                     </div>
                     <div className={`opening-card-div2${type === "review" ? " review" : ""}`}>
@@ -63,8 +82,10 @@ export default function JobOpeningCard({ data, type = null, highlighted = null, 
                                 }
                             </div>
                             :
-                            <div className='opening-card-img-container'>
-                                {/* <img src="" alt="" /> */}
+                            <div className='card-img-container qualification-card-image opening-card-img' >
+                                <IconButton disabled>
+                                    <CorporateFareRoundedIcon fontSize='large' />
+                                </IconButton>
                             </div>
                         }
                     </div>

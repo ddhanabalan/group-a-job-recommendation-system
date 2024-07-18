@@ -33,13 +33,9 @@
     color: #7B7777;
 }
 
-.opening-card-img-container {
-    margin-top: 2px;
-    margin-right: 4px !important;
-    width: 5.8rem;
-    height: 5.7rem;
-    border-radius: 50%;
-    background-color: white;
+.opening-card-img {
+   background-color: rgba(255, 255, 255, 0.712);
+   border: solid 1px rgba(0, 0, 0, 0.644);
 }
 
 .opening-card-salary {
@@ -151,7 +147,20 @@
     background-color: rgba(0, 0, 0, 0.04) !important;
     border-color: #646cff;
 }
-
+.job-status-opening-card{
+    width:5rem;
+    margin-top: .5rem;
+    background-color: rgba(29, 28, 28, 0.082);
+}
+.job-status-opening-card p{
+    font-size: .75rem;
+}
+.yellow{
+    background-color: orange;
+}
+.blue{
+    background-color: blue;
+}
 @media only screen and (max-width: 960px) {
     .opening-vacancy-buttons {
         flex-flow: column;

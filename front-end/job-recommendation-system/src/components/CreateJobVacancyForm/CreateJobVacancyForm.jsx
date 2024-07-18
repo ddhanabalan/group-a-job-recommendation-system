@@ -422,7 +422,7 @@ export default function JobVacancyForm({ data = {} }) {
                                 <div className="skill-divs">
                                     <p><span>Skills:</span></p>
                                     <div className='create-job-skill-field'>
-                                        <AddSkills id="job-vacancy-skills" availableSkills={skillsList} value={skill} tags={skills} deleteFn={handleDeleteSkill} changeFn={handleChangeSkill} updateFn={handleSkill} onChange={handleSkillData} data={{ title: "Skills", pageType: "vacancy form", inputPlaceholder: "HTML" }} />
+                                        <AddSkills id="job-vacancy-skills" data={{ title: "Skills", pageType: "vacancy form", inputPlaceholder: "HTML" }} />
                                     </div>
                                 </div>
                                 <div className='salary-div'>

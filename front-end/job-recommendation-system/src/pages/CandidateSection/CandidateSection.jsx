@@ -3,11 +3,13 @@ import NavigationBar from "../../components/NavigationBar/NavigationBar";
 import StatsAI from "../../components/StatsAI/StatsAI";
 import SearchBar from "../../components/SearchBar/SearchBar";
 import Candidates from "../../components/Candidates/Candidates";
+import LoaderAnimation from '../../components/LoaderAnimation/LoaderAnimation';
 import { useState, useEffect } from "react";
 import {getStorage} from "../../storage/storage";
 import { userAPI } from "../../api/axios";
 import './CandidateSection.css';
 export default function CandidateSection() {
+    const [loading, SetLoading] = useState(true)
     const [userData, setUserData] = useState({ 'type': 'employer' });
     const [candidates, setCandidates] = useState([]);
     const [searchVal, setSearch] = useState("");
@@ -29,7 +31,7 @@ export default function CandidateSection() {
         try {
             const response = await userAPI.get('/seeker/details/list',
                 {
-                    params: searchVal!=""?{"name": searchVal, ...filterparam }:{...filterparam},
+                    params: searchVal != "" ? { "name": searchVal, ...filterparam } : { ...filterparam },
                     paramsSerializer: params => {
                         // Custom params serializer if needed
                         return Object.entries(params).map(([key, value]) => {
@@ -47,6 +49,7 @@ export default function CandidateSection() {
             const mod_response = response.data.map(e=>({applicantID: e.user_id, username: e.username, first_name: e.first_name, last_name: e.last_name,city: e.city, country: e.country, location: e.location, experience: e.experience, profile_picture: e.profile_picture}))
 
             setCandidates(mod_response);
+            SetLoading(false)
             console.log(response);
             //console.log(" after new candidates", mod_response);
             //console.log("filtered", filtered);
@@ -87,6 +90,7 @@ export default function CandidateSection() {
     useEffect(() => { callCandidatesAPI() }, [filterparam, searchVal]);
     return (
         <div id="page">
+            {loading && <LoaderAnimation />}
             <div className="job-filter">
             <Filter title="Filter applicants" userType="employer" passFilteredDataFn={filterDataSet} />            
             </div>
