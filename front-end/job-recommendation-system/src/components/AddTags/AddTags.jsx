@@ -15,7 +15,8 @@ export default function AddTags({ data, availableDomains, updateFn, changeFn, de
         { tagType ? onChange(tags, tagType) : onChange(tags) }
     }
 
-    useEffect(() => { updateTags(tags) }, [tags]);
+    useEffect(() => { console.log("updated with", tags);
+                        updateTags(tags); }, [tags]);
     return (
         <div>
             {/*Optional heading*/}
