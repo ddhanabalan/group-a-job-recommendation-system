@@ -14,6 +14,7 @@ import { jobAPI, userAPI } from "../../api/axios";
 import { LocalConvenienceStoreOutlined } from "@mui/icons-material";
 import NavigationBar from "../../components/NavigationBar/NavigationBar";
 import careerGoLogo from "../../images/careergo_logo.svg"
+import { stubTrue } from "lodash";
 
 export default function SeekerJobStatusSection({userType}) {
     const COMPANYID = (userType==="employer"?getStorage("userID"):getStorage("guestUserID"));
@@ -51,68 +52,113 @@ export default function SeekerJobStatusSection({userType}) {
     //const [filteredApplicants, setfilteredApplicants]=useState(profileInfo.filter(applicants=>(selectedJobEntry["applicationsReceived"].includes(applicants["applicantID"])?applicants:false)));
     const [sidebarState, setSideBar] = useState(false);
     const [queryJob, setQueryJob] = useState({});
-    const callJobVacancyAPI= async (companyId)=>{
-        if(userType==="seeker")
-        {GetSeekerSkills();
-        GetSeekerDetails();}
-        try {
-            
-            const response = await jobAPI.get('/job_request/user', {headers:{'Authorization': `Bearer ${getStorage("userToken")}`}});
-            console.log("update",response);
-            const new_response = response.data.map(async(e) => {const jobDetails= await readJobsAPI(e.job_id,e.status, e.id)
-                                                                return jobDetails;
-                                                                })
-            const detailedJobs = await Promise.all(new_response)
-            console.log("after new jobs", detailedJobs)
-            setJobVacancies(detailedJobs);
-            
-            //console.log(" after new job vacancies", mod_response);
-            //console.log("filtered", filtered);
-        } catch (e) {
-            console.log("jobs failed", e)
-            
-            alert(e.message);
+    const callJobVacancyAPI = async (companyId) => {
+        if (userType === "seeker") {
+          await Promise.all([GetSeekerDetails(), GetSeekerSkills()]);
         }
-    }
-
-    const deleteJobRequestAPI = async(job_request_id) => {
         try {
-            
-            const r = await jobAPI.delete(`/job_request/${job_request_id}`, {headers:{'Authorization': `Bearer ${getStorage("userToken")}`}});
-            callJobVacancyAPI();
-            setEntry(null);
-            
-            //console.log(" after new job vacancies", mod_response);
-            //console.log("filtered", filtered);
+          const req_response = await jobAPI.get('/job_request/user', { headers: { 'Authorization': `Bearer ${getStorage("userToken")}` } });
+          console.log("update job requests", req_response);
+          const invite_response = await jobAPI.get('/job_invite/user', { headers: { 'Authorization': `Bearer ${getStorage("userToken")}` } });
+          console.log("update job invites", invite_response);
+      
+          // Wait for all job details promises to resolve
+          const new_req_response = await Promise.all(
+            req_response.data.map(async (e) => {
+              const jobDetails = await readJobsAPI({ job_vacancy_id: e.job_id, job_status: e.status, job_request_id: e.id, type: "request" });
+              return jobDetails;
+            })
+          );
+      
+          const new_invite_response = await Promise.all(
+            invite_response.data.map(async (e) => {
+              const jobDetails = await readJobsAPI({ job_vacancy_id: e.job_id, job_status: e.status, type: "invite" });
+              return jobDetails;
+            })
+          );
+      
+          const detailedJobs = [...new_req_response, ...new_invite_response];
+          console.log("after new jobs", detailedJobs);
+          setJobVacancies(detailedJobs);
+      
         } catch (e) {
-            console.log("job request deletion  failed", e)
-            
-            alert(e.message);
+          console.log("jobs failed", e);
+          alert(e.message);
         }
-
-    }
-
-    
-    const readJobsAPI = async(job_vacancy_id, status, job_request_id)=>{
+      };
+      
+      const deleteJobRequestAPI = async (job_request_id) => {
         try {
-            
-            const r = await jobAPI.get(`/job_vacancy/${job_vacancy_id}`, {headers:{'Authorization': `Bearer ${getStorage("userToken")}`}});
-            console.log("job detail",r);
-            const mod_response = {id: r.data.job_id, job_req_id: job_request_id,status: status, jobTitle: r.data.job_name, companyUsername: r.data.company_username, companyName: r.data.company_name, tags: r.data.tags, currency: r.data.salary.split('-')[0], salary: [r.data.salary.split('-')[1],r.data.salary.split('-')[2]], postDate: r.data.created_at.split('T')[0] , last_date: r.data.last_date.split('T')[0], location: r.data.location, empType: r.data.emp_type, exp: r.data.experience, workStyle: r.data.work_style, workingDays: r.data.working_days, jobDesc: r.data.job_desc ,jobReq: r.data.requirement,skills: /*r.data.skills.length?r.data.skills: */[{'skill': ""}]};
-            console.log("modded job", mod_response)
-            console.log("present job vac", jobVacancies)
-            return mod_response
-            
-            
-            //console.log(" after new job vacancies", mod_response);
-            //console.log("filtered", filtered);
+          const r = await jobAPI.delete(`/job_request/${job_request_id}`, { headers: { 'Authorization': `Bearer ${getStorage("userToken")}` } });
+          await callJobVacancyAPI();
+          setEntry(null);
         } catch (e) {
-            console.log("jobs failed", e)
-            
-            alert(e.message);
+          console.log("job request deletion failed", e);
+          alert(e.message);
         }
-    }
-
+      };
+      
+      const readJobsAPI = async ({ job_vacancy_id, job_status, job_request_id = null, type = null }) => {
+        try {
+          const r = await jobAPI.get(`/job_vacancy/${job_vacancy_id}`, { headers: { 'Authorization': `Bearer ${getStorage("userToken")}` } });
+          let mod_response = {};
+          if (type=="invite") {
+            console.log("job invite detail", r);
+            mod_response = {
+              id: r.data.job_id,
+              jobTitle: r.data.job_name,
+              companyUsername: r.data.company_username,
+              companyName: r.data.company_name,
+              tags: r.data.tags,
+              currency: r.data.salary.split('-')[0],
+              salary: [r.data.salary.split('-')[1], r.data.salary.split('-')[2]],
+              postDate: r.data.created_at.split('T')[0],
+              last_date: r.data.last_date.split('T')[0],
+              location: r.data.location,
+              empType: r.data.emp_type,
+              exp: r.data.experience,
+              workStyle: r.data.work_style,
+              workingDays: r.data.working_days,
+              jobDesc: r.data.job_desc,
+              jobReq: r.data.requirement,
+              skills: /*r.data.skills.length ? r.data.skills :*/ [{ 'skill': "" }],
+              type: "invite"
+            };
+          } else {
+            console.log("job detail", r);
+            mod_response = {
+              id: r.data.job_id,
+              job_req_id: job_request_id,
+              status: job_status,
+              jobTitle: r.data.job_name,
+              companyUsername: r.data.company_username,
+              companyName: r.data.company_name,
+              tags: r.data.tags,
+              currency: r.data.salary.split('-')[0],
+              salary: [r.data.salary.split('-')[1], r.data.salary.split('-')[2]],
+              postDate: r.data.created_at.split('T')[0],
+              last_date: r.data.last_date.split('T')[0],
+              location: r.data.location,
+              empType: r.data.emp_type,
+              exp: r.data.experience,
+              workStyle: r.data.work_style,
+              workingDays: r.data.working_days,
+              jobDesc: r.data.job_desc,
+              jobReq: r.data.requirement,
+              skills: /*r.data.skills.length ? r.data.skills :*/ [{ 'skill': "" }],
+              type: "request"
+            };
+          }
+          console.log("modded job", mod_response);
+          console.log("present job vac", jobVacancies);
+          return mod_response;
+      
+        } catch (e) {
+          console.log("jobs failed", e);
+          alert(e.message);
+        }
+      };
+      
     
     
     const GetSeekerDetails = async ()=>{
