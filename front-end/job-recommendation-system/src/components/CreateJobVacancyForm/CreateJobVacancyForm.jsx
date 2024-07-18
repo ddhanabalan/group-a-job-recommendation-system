@@ -360,6 +360,7 @@ export default function JobVacancyForm({ data = {} }) {
                                     <CreateFormTextFields inputPlaceholder="Title" hparam="50px" fontsz="1.875rem" defaultValue={dta.jobTitle || ""} {...register("jobTitle", { required: "Job title is required", })} />
                                 </h1>
                                 <p className='error-message' style={{paddingLeft:'4px'}}>{errors.jobTitle?.message}</p>
+                                <p className='error-message' style={{paddingLeft:'4px'}}>{errors.jobTitle?.message}</p>
                                 <p className='create-job-vacancy-company-name-p'>{Object.keys(companyData).length ? companyData.company_name : ""}</p>
 
 
@@ -378,6 +379,7 @@ export default function JobVacancyForm({ data = {} }) {
                             <div className="create-job-vacancy-details">
 
                                 <div className='detail-divs'>
+                                <span className='details-header'>Position of Interest:</span>
                                 <span className='details-header'>Position of Interest:</span>
                                     <div className='option-divs'>
                                         <Autocomplete
@@ -415,9 +417,12 @@ export default function JobVacancyForm({ data = {} }) {
 
                                         />
                                         <p className="error-message vacancy-form-error" >{errors.poi?.message}</p>
+                                        <p className="error-message vacancy-form-error" >{errors.poi?.message}</p>
 
                                     </div>
                                 </div>
+                                <div className="detail-divs detail-divs-multiple">
+                                    <span className='details-header'>Location:</span>
                                 <div className="detail-divs detail-divs-multiple">
                                     <span className='details-header'>Location:</span>
                                     <div className='option-divs'>
@@ -434,9 +439,8 @@ export default function JobVacancyForm({ data = {} }) {
                                             bordRad="7px"
                                             fntFam="Inter-regular"
                                             fntSize="15px"
-                                            {...register("location", { required: "Location is required", })}
+                                            {...register("location", { required: "location is required", })}
                                         />
-                                    
                                         <p className="error-message  vacancy-form-error">{errors.location?.message}</p>
                                     </div>
                                 </div>
