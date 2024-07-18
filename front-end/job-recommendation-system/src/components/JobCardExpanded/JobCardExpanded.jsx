@@ -135,11 +135,13 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
                                 <div className='job-approval-status-label'>
                                     Status: <span className={`job-status-text color-${handleStatus(data.status.toLowerCase())}`}>{data.status}</span>
                                 </div>
-                                <div className="cancel-application-button">
-                                    <Button variant="outlined" onClick={() => { deleteJobRequest(data.job_req_id) }} sx={{ color: "black", border: "2px solid #254CE1" }} endIcon={<CancelRoundedIcon />}>
-                                        <p>Cancel Application</p>
-                                    </Button>
-                                </div>
+                                {data.status == "Applied" &&
+                                    <div className="cancel-application-button">
+                                        <Button variant="outlined" onClick={() => { deleteJobRequest(data.job_req_id) }} sx={{ color: "black", border: "2px solid #254CE1" }} endIcon={<CancelRoundedIcon />}>
+                                            <p>Cancel Application</p>
+                                        </Button>
+                                    </div>
+                                }
                             </>
 
                             :

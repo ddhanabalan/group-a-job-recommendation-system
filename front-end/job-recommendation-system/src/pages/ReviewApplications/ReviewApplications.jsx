@@ -286,7 +286,7 @@ export default function ReviewApplications({userType, invite=null}) {
                 
                 (selectedEntry!=null && filtered.length!=0 && jobApplicants.length!=0?
                     
-                    jobApplicants.map(e=><CandidateCard type="review" key={e.applicantID} jobEntryId={selectedEntry} crLink={receivedData["pathname"]} jobApprovalFunction={jobApprovalAPI} data={e}/>)
+                        jobApplicants.map(e => <CandidateCard type="review" key={e.applicantID} reloadFn={RequestJobApplications} jobEntryId={selectedEntry} crLink={receivedData["pathname"]} jobApprovalFunction={jobApprovalAPI} data={e}/>)
                     :
                     (filtered.length==0?
                         <div className="no-vacancies-message">

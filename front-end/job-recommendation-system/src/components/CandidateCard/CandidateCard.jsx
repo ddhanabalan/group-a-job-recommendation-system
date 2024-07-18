@@ -10,7 +10,7 @@ import { IconButton } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import Tooltip from '@mui/material/Tooltip';
-export default function CandidateCard({ type = null, jobEntryId = null, crLink = null, data, jobApprovalFunction = null, background, profilePictureStyle }) {
+export default function CandidateCard({ type = null, jobEntryId = null, crLink = null, data, jobApprovalFunction = null, background, profilePictureStyle,reloadFn }) {
     const [profile, setProfile] = useState(false)
     const [approval, setApproval] = useState('')
     console.log("cand data", data)
@@ -32,8 +32,9 @@ export default function CandidateCard({ type = null, jobEntryId = null, crLink =
     }, [approval])
 
     console.log("experience", data.experience)
+    const candidateCardClass = `card job-card ${data.job_status === "approved" && 'approved-candidate-card'} ${data.job_status === "rejected" && 'rejected-candidate-card'}`
     return (
-        <div className="card job-card" style={background} onClick={() => setProfile(true)}>
+        <div className={candidateCardClass} style={background} onClick={() => setProfile(true)}>
             <div className='job-card-div1'>
                 <h1 className='card-h1'>{data.first_name} {data.last_name}</h1>
                 <Stack direction="row" spacing={1}>
@@ -52,20 +53,40 @@ export default function CandidateCard({ type = null, jobEntryId = null, crLink =
                     <img src={data.profile_picture ? data.profile_picture : profilePlaceholder} alt="candidate profile" />
                 </div>
             </div>
-            {type === "review" &&
+            {type === "review" && data.job_status==="Applied" &&
                 <div className="application-review-buttons">
                     <Tooltip title="Approve" enterDelay={500} leaveDelay={200}>
-                        <IconButton className='application-approve-btn' onClick={() => setApproval('approved')}
+                        <IconButton className='application-approve-btn' onClick={() => {
+                            setApproval('approved')
+                            reloadFn()
+                         }}
                             sx={{ color: '#38b000', backgroundColor: "#d8f3dc" }}>
                             <DoneIcon />
                         </IconButton>
                     </Tooltip>
                     <Tooltip title="Reject" enterDelay={500} leaveDelay={200}>
-                        <IconButton className='application-reject-btn' onClick={() => setApproval('rejected')}
+                        <IconButton className='application-reject-btn' onClick={() => {
+                            setApproval('rejected')
+                            reloadFn()
+                         }}
                             sx={{ color: '#ff0000', backgroundColor: "#f6cacc" }}>
                             <CloseIcon />
                         </IconButton>
                     </Tooltip>
+                </div>
+            }
+            {
+                data.job_status === "approved" &&
+                <div className="job-status-div job-status-approve">
+                    <p>Approved</p>
+                    <div className="skill-status green"></div>
+                </div>
+            }
+            {
+                data.job_status === "rejected" &&
+                <div className="job-status-div job-status-reject">
+                    <p>Rejected</p>
+                    <div className="skill-status red"></div>
                 </div>
             }
         </div>
