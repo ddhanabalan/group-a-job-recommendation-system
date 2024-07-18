@@ -94,3 +94,59 @@
     left: 34.5%;
     box-shadow: 0.2rem 0.001rem 1rem 0.1rem #98979750;
 }
+.application-filter{
+    margin: 1rem 0;
+    width: 100%;
+    padding-left: 1rem;
+}
+.application-filter-btn {
+    padding: .5em 1.5em;
+    font-size: .85rem;
+    letter-spacing: .04rem;
+    font-weight: 500;
+    color: #000;
+    background-color: #fff;
+    border: none;
+    border-radius: 45px;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease 0s;
+    cursor: pointer;
+    outline: none;
+    margin-right: .5rem;
+}
+
+.application-filter-btn-approve:hover {
+    background-color: #23c483;
+    box-shadow: 0px 15px 20px rgba(46, 229, 157, 0.4);
+    color: #fff;
+}
+.application-filter-btn-approved{
+    color: #23c483;
+}
+.application-filter-btn-reject:hover {
+    background-color: #e01414;
+    box-shadow: 0px 15px 20px rgba(229, 46, 46, 0.4);
+    color: #fff;
+}
+.application-filter-btn-rejected {
+    color: #e01414;
+}
+.application-filter-btn-invite:hover {
+    background-color: #1444e0;
+    box-shadow: 0px 15px 20px rgba(46, 110, 229, 0.4);
+    color: #fff;
+}
+.application-filter-btn-invited {
+    color: #1444e0;
+}
+.application-filter-btn-apply:hover {
+    background-color: #d6761d;
+    box-shadow: 0px 15px 20px rgba(229, 113, 46, 0.4);
+    color: #fff;
+}
+.application-filter-btn-applied {
+    color: #d6761d;
+}
+.application-filter-btn:active {
+    transform: translateY(-1px);
+}
