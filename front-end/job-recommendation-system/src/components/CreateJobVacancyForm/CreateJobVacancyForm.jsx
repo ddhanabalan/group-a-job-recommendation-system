@@ -405,7 +405,7 @@ export default function JobVacancyForm({ data = {} }) {
                                                     borderRadius: "7px",
                                                     '.MuiInputBase-input': { fontFamily: "Inter-regular", fontSize: "15px"},
                                                 }}
-                                                {...register("poi", { required: "Field is required", })}
+                                                {...register("poi", { required: "field is required", })}
                                             />}
 
                                         />
@@ -429,9 +429,8 @@ export default function JobVacancyForm({ data = {} }) {
                                             bordRad="7px"
                                             fntFam="Inter-regular"
                                             fntSize="15px"
-                                            {...register("location", { required: "Location is required", })}
+                                            {...register("location", { required: "location is required", })}
                                         />
-                                    
                                         <p className="error-message  vacancy-form-error">{errors.location?.message}</p>
                                     </div>
                                 </div>
@@ -479,7 +478,7 @@ export default function JobVacancyForm({ data = {} }) {
                                             <CreateFormTextFields inputPlaceholder="Lower limit" wparam="120px"
                                                 defaultValue={dta.salary ? dta.salary[0] || null : null}
                                                 {...register("salary.0", {
-                                                    required: "Salary range is required",
+                                                    required: "salary range is required",
                                                     pattern: {
                                                         value: /^[0-9]+$/,
                                                         message: "Only numbers allowed"
@@ -535,13 +534,13 @@ export default function JobVacancyForm({ data = {} }) {
 
                                 <div className="create-job-vacancy-description-div">
                                     <p><span>Job description:</span></p>
-                                    <div className="create-job-desc-field"><CreateFormTextFields inputPlaceholder="Enter job details" fontsz="14px" wparam="100%" defaultValue={dta.jobDesc || ""} multipleLine={true} minrows={8}  /*justify={true}*/ {...register("jobDesc", { required: "Field required", })} /></div>
+                                    <div className="create-job-desc-field"><CreateFormTextFields inputPlaceholder="Enter job details" fontsz="14px" wparam="100%" defaultValue={dta.jobDesc || ""} multipleLine={true} minrows={8} {...register("jobDesc", { required: "Field required", })} /></div>
                                     <p className="create-job-desc-field error-message">{errors.jobDesc?.message}</p>
                                 </div>
 
                                 <div className="create-job-vacancy-description-div">
                                     <p><span>Job requirements:</span></p>
-                                    <div className="create-job-desc-field"><CreateFormTextFields inputPlaceholder="Enter criteria" fontsz="14px" wparam="100%" defaultValue={dta.jobReq || ""} multipleLine={true} minrows={8} /*justify={true}*/ {...register("jobReq", { required: "Field required", })} /></div>
+                                    <div className="create-job-desc-field"><CreateFormTextFields inputPlaceholder="Enter criteria" fontsz="14px" wparam="100%" defaultValue={dta.jobReq || ""} multipleLine={true} minrows={8} {...register("jobReq", { required: "Field required", })} /></div>
                                     <p className="create-job-desc-field error-message">{errors.jobReq?.message}</p>
                                 </div>
 

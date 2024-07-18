@@ -194,15 +194,8 @@ padding-left: 2rem;
     gap: 10px;
     margin-bottom: 1.5rem;
 }
-.post-vacancy-btn,.post-vacancy-confirm-btn{
-    --primary-color: #2BA84A !important;
-}
-.post-vacancy-edit-btn{
-    --primary-color:#d6761d !important;
-}
-.post-vacancy-edit-btn,.post-vacancy-confirm-btn{
-    padding: .4em 1em !important;
-}
+
+
 
 .create-job-vacancy-description-div p{
     margin-bottom: 14px;
