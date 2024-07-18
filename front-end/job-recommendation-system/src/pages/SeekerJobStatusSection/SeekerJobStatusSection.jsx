@@ -69,33 +69,33 @@ export default function SeekerJobStatusSection({userType}) {
           // Wait for all job details promises to resolve
           const new_req_response = await Promise.all(
             req_response.data.map(async (e) => {
-              const jobDetails = await readJobsAPI({ job_vacancy_id: e.job_id, job_status: e.status, application_id: e.id, type: "request", creation_time: e.created_at });
+              const jobDetails = await readJobsAPI({ job_vacancy_id: e.job_id, job_status: e.status, job_request_id: e.id, type: "request" });
               return jobDetails;
             })
           );
       
           const new_invite_response = await Promise.all(
             invite_response.data.map(async (e) => {
-              const jobDetails = await readJobsAPI({ job_vacancy_id: e.job_id, job_status: e.status, application_id: e.id, type: "invite", creation_time: e.created_at });
+              const jobDetails = await readJobsAPI({ job_vacancy_id: e.job_id, job_status: e.status, type: "invite" });
               return jobDetails;
             })
           );
       
-          const detailedJobs = dateProcessor([...new_req_response, ...new_invite_response]);
-          //detailedJobs.sort((a, b) => b.created_at.localeCompare(a.created_at));
+          const detailedJobs = [...new_req_response, ...new_invite_response];
           console.log("after new jobs", detailedJobs);
-          setJobVacancies(detailedJobs);  
-          setFilteredJobVacancies([])
+          setJobVacancies(detailedJobs);
+      
         } catch (e) {
+          console.log("jobs failed", e);
+          alert(e.message);
           console.log("jobs failed", e);
           alert(e.message);
         }
       };
       
-    
       const deleteJobRequestAPI = async (job_request_id) => {
         try {
-          const r = await jobAPI.delete(`/job_request/request/${job_request_id}`, { headers: { 'Authorization': `Bearer ${getStorage("userToken")}` } });
+          const r = await jobAPI.delete(`/job_request/${job_request_id}`, { headers: { 'Authorization': `Bearer ${getStorage("userToken")}` } });
           await callJobVacancyAPI();
           setEntry(null);
         } catch (e) {
@@ -104,7 +104,7 @@ export default function SeekerJobStatusSection({userType}) {
         }
       };
       
-      const readJobsAPI = async ({ job_vacancy_id, job_status, application_id = null, type = null, creation_time=null }) => {
+      const readJobsAPI = async ({ job_vacancy_id, job_status, job_request_id = null, type = null }) => {
         try {
           const r = await jobAPI.get(`/job_vacancy/${job_vacancy_id}`, { headers: { 'Authorization': `Bearer ${getStorage("userToken")}` } });
           let mod_response = {};
@@ -113,16 +113,13 @@ export default function SeekerJobStatusSection({userType}) {
             mod_response = {
               id: r.data.job_id,
               jobTitle: r.data.job_name,
-              job_invite_id: application_id,
-              invite_status: job_status,
-              application_created_at: creation_time,
               companyUsername: r.data.company_username,
               companyName: r.data.company_name,
               tags: r.data.tags,
               currency: r.data.salary.split('-')[0],
               salary: [r.data.salary.split('-')[1], r.data.salary.split('-')[2]],
-              postDate: r.data.created_at,
-              last_date: r.data.last_date,
+              postDate: r.data.created_at.split('T')[0],
+              last_date: r.data.last_date.split('T')[0],
               location: r.data.location,
               empType: r.data.emp_type,
               exp: r.data.experience,
@@ -130,7 +127,6 @@ export default function SeekerJobStatusSection({userType}) {
               workingDays: r.data.working_days,
               jobDesc: r.data.job_desc,
               jobReq: r.data.requirement,
-              closed: r.data.closed,
               skills: /*r.data.skills.length ? r.data.skills :*/ [{ 'skill': "" }],
               type: "invite"
             };
@@ -138,17 +134,16 @@ export default function SeekerJobStatusSection({userType}) {
             console.log("job detail", r);
             mod_response = {
               id: r.data.job_id,
-              job_req_id: application_id,
+              job_req_id: job_request_id,
               status: job_status,
               jobTitle: r.data.job_name,
               companyUsername: r.data.company_username,
               companyName: r.data.company_name,
               tags: r.data.tags,
-              application_created_at: creation_time,
               currency: r.data.salary.split('-')[0],
               salary: [r.data.salary.split('-')[1], r.data.salary.split('-')[2]],
-              postDate: r.data.created_at,
-              last_date: r.data.last_date,
+              postDate: r.data.created_at.split('T')[0],
+              last_date: r.data.last_date.split('T')[0],
               location: r.data.location,
               empType: r.data.emp_type,
               exp: r.data.experience,
@@ -156,7 +151,6 @@ export default function SeekerJobStatusSection({userType}) {
               workingDays: r.data.working_days,
               jobDesc: r.data.job_desc,
               jobReq: r.data.requirement,
-              closed: r.data.closed,
               skills: /*r.data.skills.length ? r.data.skills :*/ [{ 'skill': "" }],
               type: "request"
             };
@@ -170,33 +164,7 @@ export default function SeekerJobStatusSection({userType}) {
           alert(e.message);
         }
       };
-    
-    const handleInvite=async(status, job_invite_id)=>{
       
-        const req_data = {
-            "status": status,
-        }
-        console.log("job status data", req_data)
-        try {
-            const response = await jobAPI.put(`/job_invite/${job_invite_id}`, req_data, {
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${getStorage("userToken")}`
-                }
-            });
-            console.log("updated response", response)
-            //const mod_response = response.data.map(e=>({applicantID: e.user_id, username: e.username, candidateName: (e.first_name + " " + e.last_name), first_name: e.first_name, last_name: e.last_name,city: e.city, country: e.country, location: e.location, experience: e.experience, profile_picture: e.profile_picture}))
-            callJobVacancyAPI();
-
-        } catch (e) {
-
-            console.log("failed to invite", e)
-
-            alert(e.message);
-        }
-    
-
-    }
     
     
     const GetSeekerDetails = async ()=>{
