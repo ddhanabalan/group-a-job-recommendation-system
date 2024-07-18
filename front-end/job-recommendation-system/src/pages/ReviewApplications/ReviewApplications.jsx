@@ -1,26 +1,28 @@
-//import Filter from "../components/Filter";
-//import StatsAI from "../components/StatsAI";
+import Lottie from "lottie-react";
 import "./ReviewApplications.css";
-import {getStorage, setStorage} from "../../storage/storage";
+import {getStorage} from "../../storage/storage";
 import Filter from "../../components/Filter/Filter";
 import OpeningsListBar from "../../components/OpeningsListBar/OpeningsListBar";
 import JobCardExpanded from "../../components/JobCardExpanded/JobCardExpanded";
 import BackBtn from "../../components/BackBtn/BackBtn";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import CandidateCard from "../../components/CandidateCard/CandidateCard";
-import { set } from "react-hook-form";
 import { jobAPI, userAPI } from "../../api/axios";
-import { LocalConvenienceStoreOutlined } from "@mui/icons-material";
 import NavigationBar from "../../components/NavigationBar/NavigationBar";
+import noApplicationsFiller from "../../images/no-applications-found.json";
+import careerGoLogo from "../../images/careergo_logo.svg";
 
-export default function ReviewApplications({userType}) {
-    const COMPANYID = (userType==="employer"?getStorage("userID"):getStorage("guestUserID"));
+export default function ReviewApplications({userType, invite=null}) {
+    
+    const link_data = useParams();
+    console.log("received from url", link_data)
+    const COMPANYID = (userType==="employer"?getStorage("userID"):(link_data.company_id?link_data.company_id: getStorage("guestUserID")));
     const receivedData = useLocation();
     const [userData, setUserData] = useState({'type': userType, 'skills': []});
     console.log("received data",receivedData)
     //const [selectedEntry, setEntry] = useState(null);
-    const [selectedEntry, setEntry] = useState(receivedData["state"]?receivedData.state.highlightedId || null: null);//userData is for knowing if employer or seeker and further passing it down to components
+    const [selectedEntry, setEntry] = useState(receivedData["state"]?receivedData.state.highlightedId || null: (link_data.job_id?Number(link_data.job_id):null));//userData is for knowing if employer or seeker and further passing it down to components
     //console.log("selected entry", selectedEntry);
     const [searchVal, setSearch] = useState("");
     //demoInfo is example vacancy profiles
@@ -58,10 +60,12 @@ export default function ReviewApplications({userType}) {
     //const [filteredApplicants, setfilteredApplicants]=useState(profileInfo.filter(applicants=>(selectedJobEntry["applicationsReceived"].includes(applicants["applicantID"])?applicants:false)));
     const [sidebarState, setSideBar] = useState(false);
     const callJobVacancyAPI= async (companyId)=>{
-        if(userType==="seeker")
-        {GetSeekerSkills();
-        GetSeekerDetails();}
+        
         try {
+            if(userType==="seeker")
+            { 
+            await Promise.all([GetSeekerSkills()]);
+            }
             
             const response = await (userType==="employer" ? jobAPI.get(`/job_vacancy/company`, {headers:{'Authorization': `Bearer ${getStorage("userToken")}`}}): jobAPI.get(`/job_vacancy/company/${companyId}`));
             console.log("received job response", response)
@@ -99,7 +103,7 @@ export default function ReviewApplications({userType}) {
         
     }
     
-    const GetSeekerDetails = async ()=>{
+    /*const GetSeekerDetails = async ()=>{
         
         try{
             const response = await userAPI.get('/seeker/details', {
@@ -114,7 +118,8 @@ export default function ReviewApplications({userType}) {
         catch(e){
             console.log("user req failed", e);
         }
-    }
+    }*/
+
     const GetSeekerSkills = async ()=>{
         try{
             const response = await userAPI.get('/seeker/skill', {
@@ -122,8 +127,11 @@ export default function ReviewApplications({userType}) {
                     'Authorization': `Bearer ${getStorage("userToken")}`
                 }
         })
+        console.log("skills", response)
+        setUserData({ ...userData, 'id': response.data.length!=0?response.data[0].user_id :  Number(getStorage("userID")), 'skills': response.data?response.data: [] })
+
         //console.log("skills received", response.data)
-        setUserData({'id': response.data?.user_id || Number(getStorage("userID")), 'type': 'seeker', 'skills': response.data})
+        // setUserData({'id': response.data?.user_id || Number(getStorage("userID")), 'type': 'seeker', 'skills': response.data})
         
     }
     
@@ -182,9 +190,7 @@ export default function ReviewApplications({userType}) {
 
     const jobApprovalAPI = async (job_req_id, job_status, user_id)=>{
         const req_data = {
-                                "job_id": selectedJobEntry.id,
                                 "status": job_status,
-                                "user_id": user_id
                             }
         console.log("job status data", req_data)
         try {
@@ -248,37 +254,13 @@ export default function ReviewApplications({userType}) {
         }
         else{
             //setJobEntry(jobVacancies[selectedEntry]);
+            console.log("came here", jobVacancies)
             if(jobVacancies.length!=0)
             {expJob(selectedEntry);
             console.log("job entry refreshed", jobVacancies)}
         }},[jobVacancies])
     useEffect(()=>{if(jobVacancies.length!=0 && selectedEntry!=null)expJob(selectedEntry)},[selectedEntry]);
     
-    /*const resultGen=()=>{
-        
-            let result = demoInfo.filter(id => id["skills"].map((tag)=>(tag.includes(searchVal))).filter(Boolean).length?id:false)
-            //console.log(result)
-            setFilter(result);
-        
-        
-        //console.log(typeof(searchVal))
-        
-
-    }
-    useEffect(() => resultGen, [searchVal])
-    */
-    //console.log(`search=${searchVal}`);
-    //console.log(filtered)
-    //const result = demoInfo.filter((profiles) => profiles["tags"].map((tag)=>(tag.includes(searchVal))).filter(Boolean).length?profiles:null)
-    //console.log(result)
-    //const tags = [{"skills": ["hello", "hil", "how"]}, {"skills": ["helo", "hi", "how"]}, {"skills": ["kioo", "ka", "how"]},]
-    //const newtags = tags.filter(id => id["skills"].map((tag)=>(tag.includes(searchVal))).filter(Boolean).length?id:false)
-    //console.log(newtags)
-    //console.log(searchVal);
-
-    
-    //console.log(`search=${searchVal}`);
-   
     return (
         <div id="page" >
             <div className={`review-left-bar${sidebarState?" wide":""}`}>
@@ -288,7 +270,7 @@ export default function ReviewApplications({userType}) {
                 <div className="back-button-review" onClick={()=>setSideBar(false)}><BackBtn outlineShape={"square"} butColor={"white"}/></div>
                 </>
                 :
-                <OpeningsListBar data={filtered} userType={userType} userID={COMPANYID} pageType="review" chooseEntry={chooseEntry} searchBar={searchBar} listToDescParentFunc={listToDescParentFunc} preselectedEntry={selectedEntry} filterFunc={filterStateSet} deleteJobFunc={DeleteJobAPI}/>
+                <OpeningsListBar data={filtered} userType={userType} userID={COMPANYID} pageType="review" chooseEntry={chooseEntry} searchBar={searchBar} listToDescParentFunc={listToDescParentFunc} preselectedEntry={selectedEntry} filterFunc={filterStateSet} deleteJobFunc={DeleteJobAPI} invite={Number(link_data.job_id)}/>
                 }
             </div>
             {filterstat?
@@ -306,11 +288,21 @@ export default function ReviewApplications({userType}) {
                     
                     jobApplicants.map(e=><CandidateCard type="review" key={e.applicantID} jobEntryId={selectedEntry} crLink={receivedData["pathname"]} jobApprovalFunction={jobApprovalAPI} data={e}/>)
                     :
-                    <></>
+                    (filtered.length==0?
+                        <div className="no-vacancies-message">
+                            <img className="careergo-web-logo-rev-pg" src={careerGoLogo}/>
+                            <p>Find ideal candidates through CareerGo</p>
+                        </div>
+                        :
+                        <div className="no-applications-message">
+                           <Lottie className="no-applications-ani" animationData={noApplicationsFiller} loop={true} />
+                            <p>You haven't received any job applications.</p>
+                        </div>
+                    )
                 )
                 :
-                (selectedEntry!=null && filtered.length!=0?
-                    <JobCardExpanded data={selectedJobEntry} createJobRequest={CreateJobRequest} userData={userData}/>
+                (selectedJobEntry!=null && filtered.length!=0?
+                    <JobCardExpanded data={selectedJobEntry} createJobRequest={CreateJobRequest} userData={userData} invite={selectedJobEntry.id==link_data.job_id?invite: null}/>
                     :
                     <></>
                 )

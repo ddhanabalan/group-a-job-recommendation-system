@@ -5,30 +5,35 @@
     margin: 10px 0;
     width: 100%;
     height: fit-content;
-    background-color: #D9D9D9;
+    background-color: #fffdfd;
     border-radius: 11px;
     padding: 7px 17px;
     cursor: pointer;
-    transition-duration: 300ms;
-}
-.opening-card:hover{
-    /*box-shadow: 0px 5px 8px 0px rgba(0, 0, 0, 0.6);*/  
-    border: 0.1px solid rgb(164, 162, 162);
+    transition: all 0.2s ease-in-out;
+    border: 1px solid rgb(186, 185, 185);
 }
 
-.opening-card.highlighted{
-    background-color: #b9b9b9;
-    border: 0.2px solid rgb(164, 162, 162);
+.opening-card:hover {
+    /*box-shadow: 0px 5px 8px 0px rgba(0, 0, 0, 0.6);*/
+    background-color: #edf2fb;
+    border: 1px solid rgb(133, 133, 133);
 }
 
-.opening-card-h1{
+.opening-card.highlighted {
+    background-color: #d7e3fc;
+    border: 1px solid rgb(0, 0, 0);
+}
+
+.opening-card-h1 {
     font-size: 20px;
+    margin-bottom: .1rem;
 }
-.opening-card-company-name-p{
-    font-size:  13px;
+
+.opening-card-company-name-p {
     color: #7B7777;
 }
-.opening-card-img-container{
+
+.opening-card-img-container {
     margin-top: 2px;
     margin-right: 4px !important;
     width: 5.8rem;
@@ -36,34 +41,40 @@
     border-radius: 50%;
     background-color: white;
 }
-.opening-card-salary{
+
+.opening-card-salary {
     font-size: 0.9rem;
     color: #2BA84A;
     font-family: Inter-md;
 }
-.opening-card-time-p{
+
+.opening-card-time-p {
     font-size: .8rem;
     color: #7B7777;
     position: absolute;
     bottom: 10px;
 }
-.opening-card-tags{
+
+.opening-card-tags {
     margin: 5px 0 10px 0;
 }
-.opening-card-tags-child{
+
+.opening-card-tags-child {
     font-family: Inter-regular !important;
     border-radius: 3px !important;
 }
-.opening-card-div2{
-width: 20%;
-display: flex;
-flex-direction: column;
-align-items: center;
+
+.opening-card-div2 {
+    width: 20%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 
 }
 
 
-.opening-card-div2 .feature-side,.opening-card-div2.review .feature-side{
+.opening-card-div2 .feature-side,
+.opening-card-div2.review .feature-side {
     width: 100%;
     height: 100%;
     display: flex;
@@ -73,35 +84,44 @@ align-items: center;
     gap: 1rem;
 }
 
-.application-indicator{
+.application-indicator {
     align-self: end;
     width: 1.5rem;
     height: 1.5rem;
     border-radius: 50%;
-    background-color: #1565c0;
+    background-color: #000000;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
 }
 
-.application-indicator p{
+.view-description-btn {
+    width: 1.5rem;
+    height: 1.5rem;
+    align-self: flex-end !important;
+    box-sizing: content-box !important;
+    padding: .04rem !important;
+}
+
+.application-indicator p {
     color: white;
     font-size: 0.9rem;
     font-weight: 700;
 }
-.opening-card-div2.review{
+
+.opening-card-div2.review {
     width: 32%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    
-    }
-.opening-card-div1{
-width: 80%;
 }
 
-.opening-vacancy-buttons{
+.opening-card-div1 {
+    width: 80%;
+}
+
+.opening-vacancy-buttons {
     margin-top: 5px;
     display: flex;
     flex-direction: row;
@@ -109,24 +129,43 @@ width: 80%;
     align-items: center;
 }
 
-.opening-vacancy-buttons p{
-    font-size: 11px;
+.opening-vacancy-buttons p {
+    font-size: .8rem;
     margin-right: -5px;
-    
+
+}
+
+.invite-label{
+    background-color: red;
+    width: fit-content;
+    margin-top: 2%;
+    padding: 0.1rem 0.7rem;
+    border-radius: 0.3rem;
+}
+
+.opening-delete-button:hover {
+    background-color: #f6cacc !important;
+    color: #ff0000 !important;
+}
+.opening-edit-button:hover,.view-description-btn:hover {
+    background-color: rgba(0, 0, 0, 0.04) !important;
+    border-color: #646cff;
 }
 
 @media only screen and (max-width: 960px) {
     .opening-vacancy-buttons {
-      flex-flow: column;
-      
+        flex-flow: column;
+
     }
-    .opening-vacancy-buttons button, a{
+
+    .opening-vacancy-buttons button,
+    a {
         align-self: flex-start;
     }
 
-    .opening-card-img-container{
+    .opening-card-img-container {
         width: 3rem;
         height: 3rem;
     }
 
-  }
+}

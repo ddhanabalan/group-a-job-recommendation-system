@@ -13,7 +13,7 @@ import { IconButton } from '@mui/material';
 
 export default function JobSection() {
 
-    const [userData, setUserData] = useState({ 'type': 'seeker', 'skills': [] });
+    const [userData, setUserData] = useState({ 'type': 'seeker', 'id': Number(getStorage("userID")), 'skills': [] });
     const [jobVacancies, setJobVacancies] = useState([]);
     const [searchVal, setSearch] = useState("");
     const [filterparam, setParam] = useState({});
@@ -33,9 +33,9 @@ export default function JobSection() {
         setSearch(searchValue);
     }
     const callJobVacancyAPI = async () => {
-        GetSeekerSkills();
-        GetSeekerDetails();
+        
         try {
+            await Promise.all([GetSeekerSkills()]);
             const response = await jobAPI.get('/job_vacancy/',
                 {
                     params: searchVal!=""?{"title": searchVal, ...filterparam }:{...filterparam},
@@ -60,6 +60,7 @@ export default function JobSection() {
             alert(e.message);
         }
     }
+    /*
     const GetSeekerDetails = async () => {
 
         try {
@@ -69,13 +70,15 @@ export default function JobSection() {
                 }
             })
             console.log("resp dat", response)
-            setUserData({ 'id': response.data.user_id, 'type': userData.type, 'skills': [] })
+            setUserData({ ...userData, 'id': response.data.length!=0?response.data[0].user_id :  Number(getStorage("userID")) })
+  
 
         }
         catch (e) {
             console.log("user req failed", e);
         }
     }
+    */
     const GetSeekerSkills = async () => {
         try {
             const response = await userAPI.get('/seeker/skill', {
@@ -83,15 +86,17 @@ export default function JobSection() {
                     'Authorization': `Bearer ${getStorage("userToken")}`
                 }
             })
-            //console.log("skills received", response.data)
-            setUserData({ 'id': response.data?.user_id || Number(getStorage("userID")), 'type': 'seeker', 'skills': response.data })
+            console.log("skills received", response.data)
+            setUserData({ ...userData, 'id': response.data.length!=0?response.data[0].user_id :  Number(getStorage("userID")), 'skills': response.data?response.data: [] })
 
         }
 
         catch (e) {
+            
+
             console.log("skill error", e)
         }
-        console.log("user datum", userData);
+        
     }
 
     const CreateJobRequest = async (jobId) => {
@@ -118,7 +123,7 @@ export default function JobSection() {
             alert(e.message);
         }
     }
-
+    console.log("user datum", userData);
     useEffect(() => { callJobVacancyAPI() }, [filterparam, searchVal]);
 
     return (

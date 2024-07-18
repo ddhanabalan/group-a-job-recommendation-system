@@ -28,9 +28,9 @@ export default function ExperienceBox({ access, childData, reloadFn, showSuccess
             console.log(e)
         }
     }
-    const updateTotalExperience = async(data) => {
+    const updateTotalExperience = async (data) => {
         try {
-            const response = await userAPI.put('/seeker/details', {"experience": data },
+            const response = await userAPI.put('/seeker/details', { "experience": data },
                 {
                     headers: {
                         'Authorization': `Bearer ${getStorage("userToken")}`
@@ -48,8 +48,8 @@ export default function ExperienceBox({ access, childData, reloadFn, showSuccess
     useEffect(() => {
         console.log("totalExp", totalExp)
         updateTotalExperience(totalExp)
-    },[totalExp])
-    
+    }, [totalExp])
+
     const addExperience = async (e) => {
         //accepts new Experience data and adds it into existing array of Experiences
         try {
@@ -58,7 +58,8 @@ export default function ExperienceBox({ access, childData, reloadFn, showSuccess
                     'Authorization': `Bearer ${getStorage("userToken")}`
                 }
             });
-            // SetTotalExp(parseInt(totalExp) + (parseInt(e.end_year) - parseInt(e.start_year)))
+            e.end_year === e.start_year ? SetTotalExp(parseInt(totalExp) + 1) :
+                SetTotalExp(parseInt(totalExp) + (parseInt(e.end_year) - parseInt(e.start_year)+1))
             response.request.status === 201 && showSuccessMsg()
             console.log(response)
             SetNewExp(false)
@@ -76,6 +77,8 @@ export default function ExperienceBox({ access, childData, reloadFn, showSuccess
     };
     const deleteExp = async (id) => {
         //deletes existing Experience from array by referring to the id passed in
+        const delExp = expdata.filter(e => { return id === e.id })
+        SetTotalExp(parseInt(totalExp) - (parseInt(delExp[0].end_year) - parseInt(delExp[0].start_year)+1))
         try {
             const response = await userAPI.delete(`/seeker/former-job/${id}`, {
                 headers: {
@@ -93,8 +96,15 @@ export default function ExperienceBox({ access, childData, reloadFn, showSuccess
     const updateExp = async (data) => {
         //updates existing Experience data from array. new data is passed in along with existing data id
         const { id, ...passData } = data
+        const delExp = expdata.filter(e => { return id === e.id })
+        console.log("hoda", delExp)
+        const exp_update = (parseInt(delExp[0].end_year) - parseInt(delExp[0].start_year)+1)
+        console.log(exp_update)
+        const exp_add_update = parseInt(totalExp) - exp_update + (passData.end_year === passData.start_year ? 1 : (parseInt(passData.end_year) - parseInt(passData.start_year)+1))
+        console.log(exp_add_update)
+        SetTotalExp(exp_add_update)
         console.log("passData", passData)
-       
+
         try {
             const response = await userAPI.put(`/seeker/former-job/${id}`, passData, {
                 headers: {

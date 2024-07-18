@@ -1,24 +1,23 @@
 .job-desc-container {
     width: 100%;
-    height: inherit;
-    position: relative;
+    /* height: fit-content; */
+    /* position: relative; */
     display: flex;
     flex-direction: column;
     align-items: center;
     overflow-y: auto;
     background-color: white;
     border-radius: 11px 11px 0px 0px;
-    padding-bottom: 8rem;
+    padding: 0 1rem 8rem 0;
 }
 
 .job-desc-header {
+    width: 98%;
+    height: fit-content;
     display: flex;
     flex-direction: row;
     box-sizing: border-box;
     margin: 25px 0px 0px 0px;
-    width: 98%;
-    height: fit-content;
-
 }
 
 .separator {
@@ -28,6 +27,7 @@
 
 .job-desc-h1 {
     font-size: 1.6rem;
+    margin: .1rem;
 }
 
 .job-desc-company-name-p {
@@ -35,33 +35,18 @@
     color: #7B7777;
 }
 
-.job-desc-img-container {
-    position: absolute;
-    top: 1rem;
-    width: 4.5rem;
-    height: 4.5rem;
-    border-radius: 50%;
-    background-color: #D9D9D9;
-    overflow: hidden;
-}
 
-
-.job-desc-img-container img{
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
 .job-desc-salary {
     font-size: 1rem;
     color: #2BA84A;
     font-family: Inter-md;
+    margin-top: .5rem;
 }
 
-.job-desc-time-p {
+.job-time-p {
     font-size: .8rem;
     color: #7B7777;
-    position: absolute;
-    bottom: -0.5rem;
+    margin-top: .5rem;
 }
 
 .job-desc-tags {
@@ -88,16 +73,22 @@
 }
 
 .job-desc-div2 {
+    height: 100%;
     width: 10%;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     align-items: center;
-    /* position: relative; */
+    position: relative;
 }
 
 .job-desc-div1 {
+    height: 100%;
     width: 90%;
     padding-left: 2rem;
+    display: flex;
+    flex-direction: column;
+    position: relative;
 }
 
 .job-desc-body {
@@ -106,11 +97,12 @@
     gap: 20px;
     align-items: flex-start;
     width: 91%;
+    padding-right: 2rem;
 }
 
 .job-desc-body h6 {
     font-family: "Inter-b";
-    font-size: 15px;
+    font-size: .85rem;
 }
 
 .job-details {
@@ -128,6 +120,7 @@
 
 .job-desc-body .desc {
     padding-left: 50px;
+    margin-top: 1rem;
 }
 
 .job-details span {
@@ -136,8 +129,11 @@
 
 .skill-counter {
     font-family: "Inter-md";
-    color: #FBBC05;
+    color: #ad8302;
     font-size: 0.7rem;
+    padding: .2rem .4rem;
+    background-color: #fff2b2b6;
+    border-radius: 15px;
 }
 
 .skill-status {
@@ -154,7 +150,7 @@
     background-color: #07F407;
 }
 
-.job-approval-status-label{
+.job-approval-status-label {
     padding: 0.1rem 0.5rem;
     text-align: center;
     border-radius: 7px;
@@ -164,23 +160,47 @@
     font-family: Inter-b;
     font-size: 1.3rem;
 }
-.job-status-text{
+.job-status-text {
     font-family: Inter-sb;
 }
 
-.job-status-text.color-black{
+.job-status-text.color-black {
     color: rgb(68, 68, 68);
 }
 
-.job-status-text.color-green{
+.job-status-text.color-green {
     color: green;
 }
 
-.job-status-text.color-red{
+.job-status-text.color-red {
     color: red;
 }
 
 .apply-button {
     margin-top: 10%;
 }
+.disable-apply-btn{
+    background-color:#D9D9D9 !important ;
+}
 
+.invite-buttons-container{
+    display: flex;
+    width: 90%;
+    flex-direction: row;
+    justify-content: center;
+    gap: 20rem;
+}
+
+.invite-buttons-container button{
+    margin-top: 10%;
+    margin-bottom: 10%;
+    padding: 0.5rem 2rem;
+}
+
+.accept{
+    background-color: green;   
+}
+
+.reject{
+    background-color: red;
+}

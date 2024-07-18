@@ -111,6 +111,9 @@
 .continue-btn>p {
     font-size: 1rem;
 }
+.continue-btn-extend{
+    padding: .5em 1.8em;
+}
 
 @media only screen and (max-width: 960px) {
     .personal-info-container {

@@ -5,7 +5,8 @@ import { getStorage } from '../../storage/storage';
 import { styled } from '@mui/material/styles';
 import { FastAverageColor } from 'fast-average-color';
 import { Button } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
+import PersonAddAlt1RoundedIcon from '@mui/icons-material/PersonAddAlt1Rounded';
 import Skeleton from '@mui/material/Skeleton';
 import ProfileEdit from '../ProfileEdit/ProfileEdit';
 import AccountSettingsBtn from '../AccountSettingsBtn/AccountSettingsBtn';
@@ -17,14 +18,14 @@ import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import FmdGoodRoundedIcon from '@mui/icons-material/FmdGoodRounded';
 import profilePlaceholder from '../../images/profile_placeholder.svg';
 import './ProfileHead.css'
-import { Margin } from '@mui/icons-material';
 export default function ProfileHead({ access, data, blurFn, logOutFn, subForm, isNotEditing, setIsNotEditing }) {
     const [img, setImg] = useState();
     const [user, SetUser] = useState()
     useEffect(() => {
-        access !== "viewOnly" ? SetUser(getStorage("userType")) :
+      access !== "viewOnly" ? SetUser(getStorage("userType")) :
             SetUser(getStorage("guestUserType"))
-    }, [])
+    }, [getStorage("guestUserType")])
+    console.log("access", access)
     console.log("user", user)
     const [bannerColor, setBannerColor] = useState('');
     useEffect(() => {
@@ -109,6 +110,14 @@ export default function ProfileHead({ access, data, blurFn, logOutFn, subForm, i
                     (user === "seeker" ?
                         <div className="profile-head-info-div profile-head-info-div2">
                             <h1 className="profile-name">{data.first_name && data.last_name ? data.first_name + ' ' + data.last_name : <Skeleton className="profile-name" variant="text" sx={{ width: '20rem' }} />}</h1>
+                            {access === "viewOnly" && user === "seeker" &&
+                                <Link to="/employer/job-invite" state={{ ...data }}>
+                                    <button className='continue-btn send-job-invite-button' >
+                                        Invite
+                                        <PersonAddAlt1RoundedIcon fontSize='small'/>
+                                    </button>
+                                </Link>
+                            }
                             <p className="profile-location"><FmdGoodRoundedIcon fontSize='small' sx={{ marginRight: '.1rem' }} />{data.city && data.country ? data.city + ', ' + data.country : <Skeleton className="profile-location" variant="text" sx={{ width: '15rem' }} />}</p>
                             <p className="profile-bio">{data.bio ? data.bio : "Tell the world about yourself"}</p>
                         </div>
@@ -123,6 +132,7 @@ export default function ProfileHead({ access, data, blurFn, logOutFn, subForm, i
                         <ProfileEdit data={data} register={register} errors={errors} />
                     </div>
                 }
+               
                 <div className="profile-head-info-div profile-head-info-div3"></div>
             </div>
         </form >

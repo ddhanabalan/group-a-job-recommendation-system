@@ -1,52 +1,58 @@
-.chip-with-icon{
+.chip-with-icon {
     background-color: transparent !important;
     font-size: 15px !important;
     font-family: inherit !important;
     color: #7B7777 !important;
 }
-.job-card-info-div-parameter{
+
+.job-card-info-div-parameter {
     color: #7B7777;
 }
 
-.cs{
+.cs {
     color: #fc2828;
 }
-.job-card-info-div{
+
+.job-card-info-div {
     display: flex;
     justify-content: space-between;
     margin-bottom: 5px;
 }
 
-.job-card-info-div p{
+.job-card-info-div p {
     font-size: 15px;
     width: 50%;
 }
+
 .job-card-div2 {
     width: 20%;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
     gap: 1rem;
 
 }
-.application-review-buttons{
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-}
 
-.application-review-buttons button{
-    align-self: start;
+.application-review-buttons {
+    height: 100%;
+    display: flex;
+    /* flex-direction: column; */
+    width: 7rem;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
 }
 
 .job-card-div1 {
     width: 80%;
 }
-.job-card{
+
+.job-card {
     flex-direction: row-reverse;
 }
-.job-card-img-container{
+
+.job-card-img-container {
     align-self: center;
     height: 4.375rem;
     width: 4.375rem;
@@ -54,7 +60,8 @@
     background-color: #D9D9D9;
     overflow: hidden;
 }
-.job-card-img-container img{
+
+.job-card-img-container img {
     height: 100%;
     width: 100%;
     object-fit: cover;

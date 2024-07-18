@@ -10,7 +10,7 @@
     padding: 10px;
     cursor: pointer;
     border: solid 1px rgb(210, 210, 210);
-    backdrop-filter: blur(10px);
+    /*backdrop-filter: blur(10px);*/  /*created problems with blur effect in employer review applications page when filter is enabled*/
     transition: border 200ms ease-in-out;
 }
 .card:hover{

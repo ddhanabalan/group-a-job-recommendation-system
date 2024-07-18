@@ -111,15 +111,22 @@ function SignUpForm() {
               </Box>
             </Stack>
 
-            <Button variant="contained" type="submit" sx={{ backgroundColor: 'black', borderRadius: 2 ,marginTop:'1rem'}} endIcon={<ArrowForwardIcon />}>
+            {/* <Button variant="contained" type="submit" sx={{ backgroundColor: 'black', borderRadius: 2 ,marginTop:'1rem'}} endIcon={<ArrowForwardIcon />}>
               <p>Continue</p>
-            </Button>
+            </Button> */}
+            <button className='continue-btn'>
+              Continue
+              <div class="arrow-wrapper">
+                <div class="arrow"></div>
+
+              </div>
+            </button>
             </form>
           </div>
 
         
           <div className="login-redirect">
-            <Link to={'../login/' + userType} state={{ "userType": userType }}><p>Already a user? Sign in</p></Link>
+          <Link to={'../login'} state={{ "userType": userType }}><p className='link-login-signup'>Already a user? Sign in</p></Link>
           </div>
       </div>
     </>

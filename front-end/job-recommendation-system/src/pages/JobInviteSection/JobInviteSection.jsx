@@ -1,32 +1,35 @@
 //import Filter from "../components/Filter";
 //import StatsAI from "../components/StatsAI";
-import "./SeekerJobStatusSection.css";
+import "./JobInviteSection.css";
 import {getStorage, setStorage} from "../../storage/storage";
 import Filter from "../../components/Filter/Filter";
 import OpeningsListBar from "../../components/OpeningsListBar/OpeningsListBar";
 import JobCardExpanded from "../../components/JobCardExpanded/JobCardExpanded";
 import BackBtn from "../../components/BackBtn/BackBtn";
-import { useLocation } from "react-router-dom";
+import { useLocation, useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import CandidateCard from "../../components/CandidateCard/CandidateCard";
 import { set } from "react-hook-form";
 import { jobAPI, userAPI } from "../../api/axios";
 import { LocalConvenienceStoreOutlined } from "@mui/icons-material";
 import NavigationBar from "../../components/NavigationBar/NavigationBar";
-import careerGoLogo from "../../images/careergo_logo.svg"
 
-export default function SeekerJobStatusSection({userType}) {
-    const COMPANYID = (userType==="employer"?getStorage("userID"):getStorage("guestUserID"));
+
+import JobInvite from "../../components/JobInvite/JobInvite";
+
+export default function JobInviteSection({userType}) {
+    const link_data = useParams();
+    console.log("received from url", link_data)
+    const COMPANYID = (userType==="employer"?getStorage("userID"):(link_data.company_id?link_data.company_id: getStorage("guestUserID")));
     const receivedData = useLocation();
-    const [userData, setUserData] = useState({'type': userType, 'skills': []});
+    const [userData, setUserData] = useState({'type': userType});
     console.log("received data",receivedData)
     //const [selectedEntry, setEntry] = useState(null);
-    const [selectedEntry, setEntry] = useState(receivedData["state"]?receivedData.state.highlightedId || null: null);//userData is for knowing if employer or seeker and further passing it down to components
+    const [selectedEntry, setEntry] = useState(receivedData["state"]?receivedData.state.highlightedId || null: (link_data.job_id?Number(link_data.job_id):null));//userData is for knowing if employer or seeker and further passing it down to components
     //console.log("selected entry", selectedEntry);
     const [searchVal, setSearch] = useState("");
     //demoInfo is example vacancy profiles
     const [jobVacancies, setJobVacancies] = useState([]);
-    const [newVacancy, setNewVacancy] = useState({});
     const [jobApplicants, setApplicants] = useState([]);
     /*const demoInfo = [{ },
                       { id: 1, jobTitle: "Java Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "RS", salary: ["5000","10000"], postDate: "13/9/23" , location: 'Moscow', empType: 'Internship', exp: '1-5 years', jobDesc: "This is for demo purpose" ,jobReq:"This is for demo purpose",skills: ["java", "AI"], applicationsReceived: [1,2,3,4,5,7,8,9]},
@@ -38,74 +41,38 @@ export default function SeekerJobStatusSection({userType}) {
                       { id: 7, jobTitle: "Ruby Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "RS", salary: ["5000","10000"], postDate: "13/9/23" , location: 'London', empType: 'Full-time', exp: '5-10 years', jobDesc: "This is for demo purpose" ,jobReq:"This is for demo purpose",skills: ["python", "AI", "Django"], applicationsReceived: [1,3,8,9]},
                       { id: 8, jobTitle: "Golang Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "RS", salary: ["5000","10000"], postDate: "13/9/23" , location: 'India', empType: 'Internship', exp: '1-5 years', jobDesc: "This is for demo purpose" ,jobReq:"This is for demo purpose",skills: ["python", "AI", "Django"], applicationsReceived: [1,2,9]},
                       { id: 9,jobTitle: "Game Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "RS", salary: ["5000","10000"], postDate: "13/9/23" , location: 'London', empType: 'Full-time', exp: '5-10 years', jobDesc: "This is for demo purpose" ,jobReq:"This is for demo purpose",skills: ["python", "AI", "Django"], applicationsReceived: [1,5,7,8,9]},]*/
-   
+    const profileInfo = [{ applicantID: 1,candidateName: "Amy Williams", location: "Kerala, India", tags: ["on-site", "software / IT", "Monday-Friday"], experience:2},
+                      { applicantID: 2,candidateName: "Galvin Serie", location: "Kerala, India", tags: ["on-site", "software / IT", "Monday-Friday"], experience:2},
+                      { applicantID: 3,candidateName: "Cole Nicol", location: "Kerala, India", tags: ["on-site", "software / IT", "Monday-Friday"], experience:2},
+                      { applicantID: 4,candidateName: "Salvin Drone", location: "Kerala, India", tags: ["on-site", "software / IT", "Monday-Friday"], experience:2},
+                      { applicantID: 5,candidateName: "Sepen Zen", location: "Kerala, India", tags: ["on-site", "software / IT", "Monday-Friday"], experience:2},
+                      { applicantID: 6,candidateName: "Zeke John", location: "Kerala, India", tags: ["on-site", "software / IT", "Monday-Friday"], experience:2},
+                      { applicantID: 7,candidateName: "Keire Helen", location: "Kerala, India", tags: ["on-site", "software / IT", "Monday-Friday"], experience:2},
+                      { applicantID: 8,candidateName: "Karen Laneb", location: "Kerala, India", tags: ["on-site", "software / IT", "Monday-Friday"], experience:2},
+                      { applicantID: 9,candidateName: "Javan Dille", location: "Kerala, India", tags: ["on-site", "software / IT", "Monday-Friday"], experience:2} 
+                    ]
 
 
     
     const [filterstat, setFilter] = useState(false);
     const [filterparam, setParam] = useState({});
-    //const filtered = (jobVacancies.length!=0?jobVacancies.filter(id => id["skills"].map((tag)=>(tag["skill"].toLowerCase().includes(searchVal.toLowerCase()))).filter(Boolean).length?id:false):[]);
+    const filtered = (jobVacancies.length!=0?jobVacancies.filter(id => id["skills"].map((tag)=>(tag["skill"].toLowerCase().includes(searchVal.toLowerCase()))).filter(Boolean).length?id:false):[]);
     
     //const filtered = []
     const [selectedJobEntry,setJobEntry] = useState(null);
     //const [filteredApplicants, setfilteredApplicants]=useState(profileInfo.filter(applicants=>(selectedJobEntry["applicationsReceived"].includes(applicants["applicantID"])?applicants:false)));
     const [sidebarState, setSideBar] = useState(false);
-    const [queryJob, setQueryJob] = useState({});
     const callJobVacancyAPI= async (companyId)=>{
-        if(userType==="seeker")
-        {GetSeekerSkills();
-        GetSeekerDetails();}
+        
         try {
             
-            const response = await jobAPI.get('/job_request/user', {headers:{'Authorization': `Bearer ${getStorage("userToken")}`}});
-            console.log("update",response);
-            const new_response = response.data.map(async(e) => {const jobDetails= await readJobsAPI(e.job_id,e.status, e.id)
-                                                                return jobDetails;
-                                                                })
-            const detailedJobs = await Promise.all(new_response)
-            console.log("after new jobs", detailedJobs)
-            setJobVacancies(detailedJobs);
-            
-            //console.log(" after new job vacancies", mod_response);
-            //console.log("filtered", filtered);
-        } catch (e) {
-            console.log("jobs failed", e)
-            
-            alert(e.message);
-        }
-    }
-
-    const deleteJobRequestAPI = async(job_request_id) => {
-        try {
-            
-            const r = await jobAPI.delete(`/job_request/${job_request_id}`, {headers:{'Authorization': `Bearer ${getStorage("userToken")}`}});
-            callJobVacancyAPI();
-            setEntry(null);
-            
-            //console.log(" after new job vacancies", mod_response);
-            //console.log("filtered", filtered);
-        } catch (e) {
-            console.log("job request deletion  failed", e)
-            
-            alert(e.message);
-        }
-
-    }
-
-    
-    const readJobsAPI = async(job_vacancy_id, status, job_request_id)=>{
-        try {
-            
-            const r = await jobAPI.get(`/job_vacancy/${job_vacancy_id}`, {headers:{'Authorization': `Bearer ${getStorage("userToken")}`}});
-            console.log("job detail",r);
-            const mod_response = {id: r.data.job_id, job_req_id: job_request_id,status: status, jobTitle: r.data.job_name, companyUsername: r.data.company_username, companyName: r.data.company_name, tags: r.data.tags, currency: r.data.salary.split('-')[0], salary: [r.data.salary.split('-')[1],r.data.salary.split('-')[2]], postDate: r.data.created_at.split('T')[0] , last_date: r.data.last_date.split('T')[0], location: r.data.location, empType: r.data.emp_type, exp: r.data.experience, workStyle: r.data.work_style, workingDays: r.data.working_days, jobDesc: r.data.job_desc ,jobReq: r.data.requirement,skills: /*r.data.skills.length?r.data.skills: */[{'skill': ""}]};
-            console.log("modded job", mod_response)
-            console.log("present job vac", jobVacancies)
-            return mod_response
-            
-            
-            //console.log(" after new job vacancies", mod_response);
-            //console.log("filtered", filtered);
+            const response = await (userType==="employer" ? jobAPI.get(`/job_vacancy/company`, {headers:{'Authorization': `Bearer ${getStorage("userToken")}`}}): jobAPI.get(`/job_vacancy/company/${companyId}`));
+            console.log("received job response", response)
+            const mod_response = response.data.map(e=>({id: e.job_id, jobTitle: e.job_name, companyName: e.company_name, tags: e.tags, currency: e.salary.split('-')[0], salary: [e.salary.split('-')[1],e.salary.split('-')[2]], postDate: e.created_at.split('T')[0] , last_date: e.last_date.split('T')[0], location: e.location, poi: e.job_position, empType: e.emp_type, exp: e.experience, workStyle: e.work_style, workingDays: e.working_days, jobDesc: e.job_desc ,jobReq:e.requirement,skills: e.skills.length?e.skills: [{'skill': ""}], applicationsReceived: e.job_seekers}))
+            setJobVacancies(mod_response);
+            console.log(response);
+            console.log(" after new job vacancies", mod_response);
+            console.log("filtered", filtered);
         } catch (e) {
             console.log("jobs failed", e)
             
@@ -114,42 +81,8 @@ export default function SeekerJobStatusSection({userType}) {
     }
 
     
-    
-    const GetSeekerDetails = async ()=>{
-        
-        try{
-            const response = await userAPI.get('/seeker/details', {
-                headers:{
-                    'Authorization': `Bearer ${getStorage("userToken")}`
-                }
-            })
-         console.log("resp dat", response)
-         setUserData({'id': response.data.user_id, 'type': userData.type, 'skills': []})
-         
-        }
-        catch(e){
-            console.log("user req failed", e);
-        }
-    }
-    const GetSeekerSkills = async ()=>{
-        try{
-            const response = await userAPI.get('/seeker/skill', {
-                headers:{
-                    'Authorization': `Bearer ${getStorage("userToken")}`
-                }
-        })
-        //console.log("skills received", response.data)
-        setUserData({'id': response.data?.user_id || Number(getStorage("userID")), 'type': 'seeker', 'skills': response.data})
-        
-    }
-    
-        catch(e){
-            console.log("skill error", e)
-        }
-        console.log("user datum", userData);
-    }
-    
 
+    
     
         
     //console.log("applicants confirmed", jobApplicants)
@@ -185,32 +118,84 @@ export default function SeekerJobStatusSection({userType}) {
     const listToDescParentFunc=()=>{
         setSideBar(true);
     }
+
+    const sentInvite = async (finalData)=>{
+        console.log("final data", finalData)
+        const req_data = {
+                                "job_id": finalData.id,
+                                "user_id": 1
+                            }
+        console.log("job status data", req_data)
+        try {
+            const response = await jobAPI.post(`/job_invite/`, req_data, {
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getStorage("userToken")}`
+                }         
+                });
+            console.log("updated response", response)
+            //const mod_response = response.data.map(e=>({applicantID: e.user_id, username: e.username, candidateName: (e.first_name + " " + e.last_name), first_name: e.first_name, last_name: e.last_name,city: e.city, country: e.country, location: e.location, experience: e.experience, profile_picture: e.profile_picture}))
+            
+            
+        } catch (e) {
+            
+            console.log("failed to sent invite", e)
+            
+            alert(e.message);
+        }
+    }
     //console.log("filtered applicants",filteredApplicants);
     useEffect(() => {callJobVacancyAPI(COMPANYID)}, []);//only runs during initial render
     useEffect(()=>{if(selectedEntry==null)
-        {setEntry(jobVacancies[0]?jobVacancies[0].id:null)
-         setJobEntry(jobVacancies[0]?jobVacancies[0]:null)
-         console.log("job entry refreshed", jobVacancies)
+        {setEntry(null)
+         setJobEntry(null)
+         
         }
         else{
             //setJobEntry(jobVacancies[selectedEntry]);
+            console.log("came here", jobVacancies)
             if(jobVacancies.length!=0)
             {expJob(selectedEntry);
             console.log("job entry refreshed", jobVacancies)}
         }},[jobVacancies])
     useEffect(()=>{if(jobVacancies.length!=0 && selectedEntry!=null)expJob(selectedEntry)},[selectedEntry]);
-    //useEffect(() => {if(Object.keys(newVacancy).length !=0)setJobVacancies([...jobVacancies, newVacancy]);}, [newVacancy])
-    console.log("updated vacancies", jobVacancies)
+    
+    /*const resultGen=()=>{
+        
+            let result = demoInfo.filter(id => id["skills"].map((tag)=>(tag.includes(searchVal))).filter(Boolean).length?id:false)
+            //console.log(result)
+            setFilter(result);
+        
+        
+        //console.log(typeof(searchVal))
+        
 
+    }
+    useEffect(() => resultGen, [searchVal])
+    */
+    //console.log(`search=${searchVal}`);
+    //console.log(filtered)
+    //const result = demoInfo.filter((profiles) => profiles["tags"].map((tag)=>(tag.includes(searchVal))).filter(Boolean).length?profiles:null)
+    //console.log(result)
+    //const tags = [{"skills": ["hello", "hil", "how"]}, {"skills": ["helo", "hi", "how"]}, {"skills": ["kioo", "ka", "how"]},]
+    //const newtags = tags.filter(id => id["skills"].map((tag)=>(tag.includes(searchVal))).filter(Boolean).length?id:false)
+    //console.log(newtags)
+    //console.log(searchVal);
+
+    
+    //console.log(`search=${searchVal}`);
+   
     return (
-        <div id="page">
+        <div id="page" >
             <div className={`review-left-bar${sidebarState?" wide":""}`}>
-            {/*{jobVacancies.length!=0?
-                <OpeningsListBar data={jobVacancies} userType={userType} userID={COMPANYID} pageType="review" chooseEntry={chooseEntry} searchBar={searchBar} listToDescParentFunc={listToDescParentFunc} preselectedEntry={selectedEntry} filterFunc={filterStateSet} />
+                {sidebarState?
+                <>
+                <JobCardExpanded data={selectedJobEntry} userData={userData}/>
+                <div className="back-button-review" onClick={()=>setSideBar(false)}><BackBtn outlineShape={"square"} butColor={"white"}/></div>
+                </>
                 :
-                <></>
-            }*/}
-                <OpeningsListBar data={jobVacancies} userType={userType} userID={COMPANYID} pageType="review" chooseEntry={chooseEntry} searchBar={searchBar} listToDescParentFunc={listToDescParentFunc} preselectedEntry={selectedEntry} filterFunc={filterStateSet} />
+                <OpeningsListBar data={filtered} userType={userType} userID={COMPANYID} pageType={"invite"} chooseEntry={chooseEntry} searchBar={searchBar} listToDescParentFunc={listToDescParentFunc} preselectedEntry={selectedEntry} filterFunc={filterStateSet} />
+                }
             </div>
             {filterstat?
             <div className="filter enabled">
@@ -219,18 +204,14 @@ export default function SeekerJobStatusSection({userType}) {
             :
             <></>
             }
-            <NavigationBar active="job-applications"/>
-            <div className={`applications-box${filterstat?" blur":""}${sidebarState?" wide":""}`}>
+            <NavigationBar />
+            <div className={`candidate-invite-box${filterstat?" blur":""}${sidebarState?" wide":""}`}>
             
                 
-                {selectedEntry!=null /*&& filtered.length!=0*/ && jobVacancies.length!=0?
-                    <JobCardExpanded data={selectedJobEntry}  deleteJobRequest={deleteJobRequestAPI} userData={userData} type="approval"/>
-                    :
-                    <div className="no-job-applications-message">
-                            <img className="careergo-web-logo" src={careerGoLogo}/>
-                            <p>Boost your career options with CareerGo</p>
-                    </div>
-                }
+                
+                    
+                    <JobInvite data={receivedData.state} jobData={selectedJobEntry}  userData={userData} sentInvite={sentInvite}/>                    
+                
             
             </div>
         </div>

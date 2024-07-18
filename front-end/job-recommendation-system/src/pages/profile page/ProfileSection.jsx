@@ -3,7 +3,7 @@ import { useLocation, Navigate } from 'react-router-dom';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { getStorage, setStorage } from '../../storage/storage';
-import { userAPI, utilsAPI } from '../../api/axios';
+import { userAPI} from '../../api/axios';
 import Lottie from 'lottie-react';
 import FeatureBox from '../../components/FeatureBox/FeatureBox';
 import FeatureBoxMiddlePane from '../../components/FeatureBoxMiddlePane/FeatureBoxMiddlePane';
@@ -58,24 +58,14 @@ export default function ProfileSection({ data }) {
             console.error(error);
         }
     }
-    const [skillsList, setSkillsList] = useState([])
-    const skillsAPI = async () => {
-        try {
-            const response = await utilsAPI.get(`/api/v1/skills?q=${skill}`)
-            console.log(response.data)
-            setSkillsList([{ "name": "" }, ...response.data])
-        }
-        catch (e) {
-            console.log(e)
-        }
-    }
     useEffect(() => {
         languageAPI()
     }, [])
     const params = useParams();
     const user = params.username;
-    const callAPI = async () => {
+    const callAPI =  async () => {
         try {
+            console.log("hello i'm being called")
             const response = (user === undefined) ?
                 await userAPI.get(`/seeker/profile`, {
                     headers: {
@@ -90,7 +80,25 @@ export default function ProfileSection({ data }) {
             alert(e.message)
         }
     }
-    useEffect(() => callAPI, []);
+    useEffect(() => {
+        const profileAPI = async () => {
+            try {
+                const response = (user === undefined) ?
+                    await userAPI.get(`/seeker/profile`, {
+                        headers: {
+                            'Authorization': `Bearer ${getStorage("userToken")}`
+                        }
+                    }) :
+                    await userAPI.get(`/profile/${user}`);
+                redirectFn(response.data)
+            } catch (e) {
+                console.log(e)
+
+                alert(e.message)
+            }
+        }
+        profileAPI()
+    }, []);
     const subForm = async (data) => {
         SetnewData({ ...newData, city: data.city, first_name: data.first_name, last_name: data.last_name, country: data.country, bio: data.bio, profile_picture: data.profile_picture, profile_banner_color: data.profile_banner_color })
         console.log("data", data);
@@ -116,57 +124,6 @@ export default function ProfileSection({ data }) {
     const blurBody = (state) => {
         state ? SetIsBodyBlur(true) : SetIsBodyBlur(false)
     }
-    const [skill, SetSkill] = useState('');
-    const [skills, SetSkills] = useState([]);
-    useEffect(() => {
-        if (newData.skill) {
-            SetSkills(newData.skill)
-        }
-    }, [newData.skill])
-    const handleDeleteSkill = async (id) => {
-        //accepts id of Domain tag and delete them from the array 
-        try {
-            const response = await userAPI.delete(`/seeker/skill/${id}`, {
-                headers: {
-                    'Authorization': `Bearer ${getStorage("userToken")}`
-                }
-            })
-            response.request.status === 200 && showSuccessMsg()
-            SetSkills(prevSkills =>
-                prevSkills.filter(e => e.id !== id))
-        } catch (e) {
-            console.log(e)
-            showFailMsg()
-        }
-    };
-
-    const handleChangeSkill = (v) => {
-        //stores the Domain value from the input field as user types
-        SetSkill(v)
-    };
-    useEffect(() => {
-        skillsAPI()
-    }, [skill])
-    const handleSkill = async (n) => {
-        //accepts a new domain value from the input field and updates the domains array to display the newly added domain and resets the input box value when user clicks the add button
-        try {
-            if (n !== "") {
-                // SetSkills([...skills, { tag: n, id: uuid() }]);
-                const response = await userAPI.post('/seeker/skill', { "skill": skill }, {
-                    headers: {
-                        'Authorization': `Bearer ${getStorage("userToken")}`
-                    }
-                })
-                response.request.status === 201 && showSuccessMsg()
-                SetSkill("")
-                callAPI()
-                console.log("skill", response)
-            }
-        } catch (e) {
-            console.log(e)
-            showFailMsg()
-        }
-    };
     const profileBodyClass = `profile-body-section ${isBodyBlur && 'body-blur'}`
     const [successMsg, SetSuccessMsg] = useState(false)
     const [failMsg, SetFailMsg] = useState(false)
@@ -198,16 +155,11 @@ export default function ProfileSection({ data }) {
                                 childData={newData.prev_education} reloadFn={callAPI}
                                 showSuccessMsg={showSuccessMsg} showFailMsg={showFailMsg}
                             />
-                            {/* <FeatureBoxMiddlePane data={{ title: "Licenses and certifications ", edit: true, isLanguage: false, cardData: { qualification_label: "Name", qualification_provider: "Issuing organization" } }}
-                                childData={[
-                                    { qualification: "Master of science - Computer Science", id: uuid(), qualification_provider: "Massachusetts Institute of Technology (MIT)", start_year: 2005, end_year: 2009 },
-                                    { qualification: "Master of science - Computer Science", id: uuid(), qualification_provider: "Massachusetts Institute of Technology (MIT)", start_year: 2005, end_year: 2009 }
-                                ]} /> */}
                             <LicenseBox
                                 showSuccessMsg={showSuccessMsg} showFailMsg={showFailMsg}
                                 childData={newData.certificate} reloadFn={callAPI}
                             />
-                            <AddSkills id="profile-section-skills" availableSkills={skillsList} value={skill} tags={skills} deleteFn={handleDeleteSkill} changeFn={handleChangeSkill} updateFn={handleSkill} data={{ title: "Skills", inputPlaceholder: "HTML" }} />
+                            <AddSkills id="profile-section-skills" reloadFn={callAPI} newData={newData} showSuccessMsg={showSuccessMsg} showFailMsg={showFailMsg} data={{ title: "Skills", inputPlaceholder: "HTML" }} />
 
                             <LanguageBox
                                 showSuccessMsg={showSuccessMsg}
