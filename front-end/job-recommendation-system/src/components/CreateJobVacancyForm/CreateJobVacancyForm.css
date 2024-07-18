@@ -62,7 +62,7 @@ form{
     right: 32px;
 }
 .create-job-vacancy-company-name-p{
-    padding-left: 0.5rem;
+    padding-left: 4px;
     font-size: .938rem;
     color: #7B7777;
 }
@@ -154,38 +154,45 @@ padding-left: 2rem;
 .create-job-vacancy-details{
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 1rem;
 
 }
 
-.create-job-vacancy-details .detail-divs, .skill-divs, .salary-fields{
+.create-job-vacancy-details .detail-divs, .skill-divs, .salary-fields,.salary-div{
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: 25px;
+    margin-bottom: 1.5rem;
 }
-.details-header-error{
-    position:relative;
-    bottom: 0.7rem;
+.salary-div {
+    gap: 59px;
 }
-.create-job-vacancy-details .detail-divs .option-divs{
+.skill-divs{
+    align-items: flex-start;
+}
+.detail-divs-multiple,.salary-fields{
+    margin-bottom: 0 !important;
+}
+ .vacancy-form-error{
+    position: absolute;
+    bottom: -1.5rem;
+ }
+ .vacancy-form-error-multiple-options{
+    bottom: 0;
+ }
+.option-divs{
     display: flex;
     flex-direction: column;
     gap: 2px;
+    position: relative;
 }
-
-.salary-div{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 59px;
-}
-
 .last-date-div{
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: 10px;
+    margin-bottom: 1.5rem;
 }
 
 
@@ -195,7 +202,6 @@ padding-left: 2rem;
 }
 
 .create-job-vacancy-details .skill-divs {
-    margin-top: 8px;
     align-items: start !important;
 }
 .create-job-vacancy-body p{
@@ -213,7 +219,6 @@ padding-left: 2rem;
     padding-left: 40px;
     width: 90%;
     position: relative;
-    bottom: 2rem;
 }
 .create-job-vacancy-details span{
     font-size: 1rem;    
@@ -250,8 +255,9 @@ padding-left: 2rem;
 }
 
 .helper-text{
-    font-family:Arial, Helvetica, sans-serif !important;
+    font-family:Inter-light;
     font-size: 0.75rem !important;
     position: absolute;
+    bottom: -1.5rem;
     text-align: center;
 }

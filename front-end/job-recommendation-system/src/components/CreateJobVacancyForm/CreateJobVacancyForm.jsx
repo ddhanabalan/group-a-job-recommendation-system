@@ -314,7 +314,7 @@ export default function JobVacancyForm({ data = {} }) {
                                     </div>
                                     <CreateFormTextFields inputPlaceholder="Title" hparam="50px" fontsz="1.875rem" defaultValue={dta.jobTitle || ""} {...register("jobTitle", { required: "Job title is required", })} />
                                 </h1>
-                                <p className='error-message'>{errors.jobTitle?.message}</p>
+                                <p className='error-message' style={{paddingLeft:'4px'}}>{errors.jobTitle?.message}</p>
                                 <p className='create-job-vacancy-company-name-p'>{Object.keys(companyData).length ? companyData.company_name : ""}</p>
 
 
@@ -333,7 +333,7 @@ export default function JobVacancyForm({ data = {} }) {
                             <div className="create-job-vacancy-details">
 
                                 <div className='detail-divs'>
-                                <span className={`details-header${errors.poi ? "-error" : ""}`}>Position of Interest:</span>
+                                <span className='details-header'>Position of Interest:</span>
                                     <div className='option-divs'>
                                         <Autocomplete
                                             disablePortal
@@ -363,16 +363,16 @@ export default function JobVacancyForm({ data = {} }) {
                                                     borderRadius: "7px",
                                                     '.MuiInputBase-input': { fontFamily: "Inter-regular", fontSize: "15px" },
                                                 }}
-                                                {...register("poi", { required: "Field is required", })}
+                                                {...register("poi", { required: "field is required", })}
                                             />}
 
                                         />
-                                        <p className="error-message" style={{ position: 'relative', left: "0px" }}>{errors.poi?.message}</p>
+                                        <p className="error-message vacancy-form-error" >{errors.poi?.message}</p>
 
                                     </div>
                                 </div>
-                                <div className="detail-divs">
-                                    <span className={`details-header${errors.location ? "-error" : ""}`}>Location:</span>
+                                <div className="detail-divs detail-divs-multiple">
+                                    <span className='details-header'>Location:</span>
                                     <div className='option-divs'>
                                         <GoogleLocationSearch data={{ heading: "preferred job locations", inputPlaceholder: "Kerala", isLocation: true }}
                                             changeFn={handleChangeLocation}
@@ -386,38 +386,38 @@ export default function JobVacancyForm({ data = {} }) {
                                             bordRad="7px"
                                             fntFam="Inter-regular"
                                             fntSize="15px"
-                                            {...register("location", { required: "Location is required", })}
+                                            {...register("location", { required: "location is required", })}
                                         />
-                                        <p className="error-message" style={{ position: 'relative', left: "15px" }}>{errors.location?.message}</p>
+                                        <p className="error-message  vacancy-form-error">{errors.location?.message}</p>
                                     </div>
                                 </div>
-                                <div className="detail-divs">
-                                    <p><span className={`details-header${prefError.empType ? "-error" : ""}`}>Employment type:</span></p>
+                                <div className="detail-divs detail-divs-multiple">
+                                    <p><span className='details-header'>Employment type:</span></p>
                                     <div className="option-divs">
                                         <MultipleOptions options={["Full-time", "Internship", "Temporary"]} preselected={preferences.empType || null} dataType="empType" checkLimit={1} onChange={handleCheckboxChange} />
-                                        <p className="error-message">{prefError.empType?.message}</p>
+                                        <p className="error-message  vacancy-form-error vacancy-form-error-multiple-options">{prefError.empType?.message}</p>
                                     </div>
                                 </div>
-                                <div className="detail-divs">
-                                    <p><span className={`details-header${prefError.exp ? "-error" : ""}`}>Experience:</span></p>
+                                <div className="detail-divs detail-divs-multiple">
+                                    <p><span className='details-header'>Experience:</span></p>
                                     <div className="option-divs">
                                         <MultipleOptions options={["Fresher", "1-5 years", "5-10 years", "10+ years"]} preselected={preferences.exp || null} dataType="exp" checkLimit={1} onChange={handleCheckboxChange} />
-                                        <p className="error-message">{prefError.exp?.message}</p>
+                                        <p className="error-message  vacancy-form-error vacancy-form-error-multiple-options">{prefError.exp?.message}</p>
                                     </div>
                                 </div>
 
-                                <div className="detail-divs">
-                                    <p><span className={`details-header${prefError.exp ? "-error" : ""}`}>Work Style:</span></p>
+                                <div className="detail-divs detail-divs-multiple">
+                                    <p><span className='details-header'>Work style:</span></p>
                                     <div className="option-divs">
                                         <MultipleOptions options={["Hybrid", "Work from home", "Onsite"]} preselected={preferences.workStyle || null} dataType="workStyle" checkLimit={1} onChange={handleCheckboxChange} />
-                                        <p className="error-message">{prefError.workStyle?.message}</p>
+                                        <p className="error-message   vacancy-form-error vacancy-form-error-multiple-options">{prefError.workStyle?.message}</p>
                                     </div>
                                 </div>
-                                <div className="detail-divs">
-                                    <p><span className={`details-header${prefError.exp ? "-error" : ""}`}>Working days:</span></p>
+                                <div className="detail-divs detail-divs-multiple">
+                                    <p><span className='details-header'>Working days:</span></p>
                                     <div className="option-divs">
                                         <MultipleOptions options={["Monday-Friday", "Monday-Saturday"]} preselected={preferences.workingDays || null} dataType="workingDays" checkLimit={1} onChange={handleCheckboxChange} />
-                                        <p className="error-message">{prefError.workingDays?.message}</p>
+                                        <p className="error-message  vacancy-form-error vacancy-form-error-multiple-options">{prefError.workingDays?.message}</p>
                                     </div>
                                 </div>
                                 <div className="skill-divs">
@@ -428,14 +428,14 @@ export default function JobVacancyForm({ data = {} }) {
                                 </div>
                                 <div className='salary-div'>
                                     <p><span className={`details-header${errors.salary ? "-error" : ""/*console.log("salary erros", errors.salary)*/}`}>Salary:</span></p>
-                                    <div className='option-div'>
+                                    <div className='option-divs'>
                                         <div className="salary-fields">
                                             <CreateFormTextFields inputPlaceholder="Title" wparam="80px" fontsz="14px" select={true} defaultValue="RS" items={['RS', 'DLR', 'YEN']} {...register("currency", { required: "Currency is required" })} />
 
                                             <CreateFormTextFields inputPlaceholder="Lower limit" wparam="120px"
                                                 defaultValue={dta.salary ? dta.salary[0] || null : null}
                                                 {...register("salary.0", {
-                                                    required: "Salary range is required",
+                                                    required: "salary range is required",
                                                     pattern: {
                                                         value: /^[0-9]+$/,
                                                         message: "Only numbers allowed"
@@ -469,13 +469,13 @@ export default function JobVacancyForm({ data = {} }) {
                                                     },
                                                 })} />
                                         </div>
-                                        <p className="error-message">{errors.salary ? errors.salary[0]?.message || errors.salary[1]?.message || errors.currency?.message || "" : errors.currency?.message || ""}</p>
+                                        <p className="error-message vacancy-form-error">{errors.salary ? errors.salary[0]?.message || errors.salary[1]?.message || errors.currency?.message || "" : errors.currency?.message || ""}</p>
                                     </div>
                                 </div>
 
                                 <div className='last-date-div'>
-                                    <p><span className={`details-header${errors.last_date ? "-error" : ""/*console.log("salary erros", errors.salary)*/}`}>Closing Date:</span></p>
-                                    <div className='option-div'>
+                                    <p><span className='details-header'>Closing date:</span></p>
+                                    <div className='option-divs'>
                                         <CreateFormTextFields inputPlaceholder="Title" wparam="200px"
                                             defaultValue={dta.last_date ? dta.last_date || null : null}
                                             type="date"
@@ -490,13 +490,13 @@ export default function JobVacancyForm({ data = {} }) {
                                 </div>
 
                                 <div className="create-job-vacancy-description-div">
-                                    <p><span>Job Description:</span></p>
+                                    <p><span>Job description:</span></p>
                                     <div className="create-job-desc-field"><CreateFormTextFields inputPlaceholder="Enter job details" fontsz="14px" wparam="100%" defaultValue={dta.jobDesc || ""} multipleLine={true} minrows={8} {...register("jobDesc", { required: "Field required", })} /></div>
                                     <p className="create-job-desc-field error-message">{errors.jobDesc?.message}</p>
                                 </div>
 
                                 <div className="create-job-vacancy-description-div">
-                                    <p><span>Job Requirements:</span></p>
+                                    <p><span>Job requirements:</span></p>
                                     <div className="create-job-desc-field"><CreateFormTextFields inputPlaceholder="Enter criteria" fontsz="14px" wparam="100%" defaultValue={dta.jobReq || ""} multipleLine={true} minrows={8} {...register("jobReq", { required: "Field required", })} /></div>
                                     <p className="create-job-desc-field error-message">{errors.jobReq?.message}</p>
                                 </div>
