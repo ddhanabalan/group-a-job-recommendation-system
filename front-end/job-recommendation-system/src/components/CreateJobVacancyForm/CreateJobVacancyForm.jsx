@@ -278,7 +278,8 @@ export default function JobVacancyForm({ data = {} }) {
     useEffect(() => { if (submit === true) { navigate("../employer/review-applications") } }, [submit]);
     useEffect(() => {skillsAPI()}, [skill])
     useEffect(() => {callCompanyAPI()}, [])
-    useEffect(() => {setAddedSkills(prevSkills => prevSkills.filter(skill => preferences.skills.includes(skill)));}, [preferences]);
+    useEffect(() => {console.log("yep i am", preferences.skills)
+        setAddedSkills(prevSkills => prevSkills.filter(skill => preferences.skills.includes(skill)));}, [preferences]);
     
     //useEffect(() => {setPreferences({ ...preferences, "skills_delete": deletedSkills })}, [deletedSkills])
     return (
@@ -422,7 +423,7 @@ export default function JobVacancyForm({ data = {} }) {
                                 <div className="skill-divs">
                                     <p><span>Skills:</span></p>
                                     <div className='create-job-skill-field'>
-                                        <AddSkills id="job-vacancy-skills" data={{ title: "Skills", pageType: "vacancy form", inputPlaceholder: "HTML" }} />
+                                    <AddTags availableDomains={skillsList} value={skill} tags={skills} tagType={"skills"} deleteFn={handleDeleteSkill} changeFn={handleChangeSkill} updateFn={handleSkill} onChange={handleSkillData} data={{inputPlaceholder: "HTML", isLocation: false }} />
                                     </div>
                                 </div>
                                 <div className='salary-div'>
