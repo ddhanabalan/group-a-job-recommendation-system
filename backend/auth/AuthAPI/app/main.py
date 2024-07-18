@@ -246,7 +246,7 @@ async def refresh_token(user=Depends(get_refresh_user), db: Session = Depends(ge
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     refresh_token_expires = timedelta(minutes=REFRESH_TOKEN_EXPIRE_MINUTES)
     access_token = create_token(
-        data={"sub": user.username, "token":create_token({"sub": user.username, "type": "access_token"},secret_key=user.hash_key,secrexpires_delta=access_token_expires)},
+        data={"sub": user.username, "token":create_token({"sub": user.username, "type": "access_token"},secret_key=user.hash_key,expires_delta=access_token_expires)},
         expires_delta=access_token_expires,
     )
     refresh_token = create_token(

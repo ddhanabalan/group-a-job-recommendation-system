@@ -5,7 +5,7 @@ from typing import List, Type, Any
 from .. import jobschema, jobmodel
 
 
-def create(db: Session, job_invite: jobschema.JobInviteCreate) -> bool:
+def create(db: Session, db_job_invite: jobmodel.JobInvite) -> bool:
     """
     Create a new job invite in the database.py.
 
@@ -17,7 +17,6 @@ def create(db: Session, job_invite: jobschema.JobInviteCreate) -> bool:
         jobmodel.JobInvite: Job invite object created in the database.py.
     """
     try:
-        db_job_invite = jobmodel.JobInvite(**job_invite.dict())
         db.add(db_job_invite)
         db.commit()
         return True

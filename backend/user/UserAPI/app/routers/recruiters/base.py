@@ -118,7 +118,7 @@ async def profile_by_username(username: str, db: Session = Depends(get_db)):
     )
 
 
-@router.get("{company_id}/pic")
+@router.get("/{company_id}/pic")
 async def get_recruiter_pic(company_id: int, db: Session = Depends(get_db),authorization: str = Header(...)):
     await check_authorization(authorization=authorization)
     details = crud.recruiter.details.get(db=db, user_id=company_id)

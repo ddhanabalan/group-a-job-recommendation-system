@@ -101,6 +101,12 @@ class JobInviteCreate(BaseModel):
 
     class Config:
         from_attributes = True
+class JobInviteInfo(JobInviteCreate):
+    recruiter_name: Optional[str] = None
+    recruiter_position: Optional[str] = None
+    remarks: Optional[str] = None
+    class Config:
+        from_attributes = True
 
 class JobInviteUpdate(BaseModel):
     status: Optional[str] = None
