@@ -71,6 +71,10 @@ class JobRequestCreate(JobRequestBase):
     user_id: Optional[int] = None
 
 
+class JobRequestUpdate(BaseModel):
+    status: Optional[str] = "Applied"
+
+
 class JobRequest(JobRequestBase):
     id: Optional[int] = None
     created_at: Optional[datetime] = None
@@ -87,3 +91,31 @@ class JobVacancySearch(JobVacancy):
 class JobVacancySeeker(JobVacancyBase):
     skills: Optional[List[JobSkills]] = []
     job_seekers: Optional[List[JobRequest]] = []
+
+
+class JobInviteCreate(BaseModel):
+    job_id: int
+    company_id: Optional[int] = None
+    status: Optional[str] = "Pending"
+    user_id: int
+
+    class Config:
+        from_attributes = True
+class JobInviteInfo(JobInviteCreate):
+    recruiter_name: Optional[str] = None
+    recruiter_position: Optional[str] = None
+    remarks: Optional[str] = None
+    class Config:
+        from_attributes = True
+
+class JobInviteUpdate(BaseModel):
+    status: Optional[str] = None
+
+    class Config:
+        from_attributes = True
+
+
+class JobInvite(JobInviteCreate):
+    id: Optional[int] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None

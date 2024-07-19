@@ -12,6 +12,10 @@ ENV SQL_PORT=3306
 ENV HOST=0.0.0.0
 ENV PORT=8000
 ENV RELOAD=True
+ENV SMTP_SERVER="smtp.gmail.com"
+ENV SMTP_PORT=465
+ENV EMAIL_ADDRESS="careergo.noreply@gmail.com"
+ENV EMAIL_PASSWORD="txdd fmjg vatx dqyd"
 
 WORKDIR $APP_HOME
 

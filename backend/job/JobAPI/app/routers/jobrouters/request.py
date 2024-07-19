@@ -54,11 +54,11 @@ async def read_job_request(job_request_id: int, db: Session = Depends(get_db)):
 @job_request_router.put("/{job_request_id}")
 async def update_job_request(
     job_request_id: int,
-    job_request: jobschema.JobRequestCreate,
+    job_request: jobschema.JobRequestUpdate,
     db: Session = Depends(get_db),
     authorization: str = Header(...),
 ):
-    await check_authorization(authorization=authorization)
+    await check_authorization(authorization=authorization,user_type="recruiter")
     db_job_request = jobcrud.request.update(db, job_request_id, job_request)
     if db_job_request is None:
         raise HTTPException(
