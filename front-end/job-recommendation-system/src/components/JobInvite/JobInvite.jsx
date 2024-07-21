@@ -91,14 +91,12 @@ export default function JobInvite({ data=[], jobData=null, createJobRequest=null
                                 <p><span>Recruiter Name:</span></p>
                                 <div className="job-vacancy-selection-container">
                                     <div className="create-job-desc-field"><CreateFormTextFields inputPlaceholder="Your name" fontsz="13px" wparam="40%" defaultValue={""}  bgColor={"#efeded"} onChange={(text)=>setRecruiterName(text)} /></div>
-                                    {error && recruiterName=='' && <p className='error-text'>Please specify your name</p>}
                                 </div>
                             </div>
                             <div className="job-details">
                                 <p><span>Recruiter Position:</span></p>
                                 <div className="job-vacancy-selection-container">
                                     <div className="create-job-desc-field"><CreateFormTextFields inputPlaceholder="Current Position" fontsz="13px" wparam="40%" defaultValue={""} bgColor={"#efeded"} onChange={(text)=>setRecruiterPos(text)}/></div>
-                                    {error && recruiterPos=='' && <p className='error-text'>Please specify your position in the company</p>}
                                 </div>
                             </div>
                             <div className="job-details">
@@ -125,23 +123,9 @@ export default function JobInvite({ data=[], jobData=null, createJobRequest=null
                             </div>              
                     </div>
                     <div className="confirm-job-invite-button">
-                        {/* <Button variant={sentButtonState==="available"?"outlined":"contained"} disabled={sentButtonState==="disabled"?true: false} onClick={sentButtonState==="available"?handleInviteData:()=>{}} sx={{color: (sentButtonState==="available"?"#7B7777":"white"), border: (sentButtonState==="available"?"solid 1px green":"none"),fontFamily: "Inter-regular", backgroundColor: (sentButtonState==="sent"?"green":(sentButtonState==="failed"?"red":(sentButtonState==="disabled"?"blue":"none")))}}>
+                        <Button variant={sentButtonState==="available"?"outlined":"contained"} disabled={sentButtonState==="disabled"?true: false} onClick={sentButtonState==="available"?handleInviteData:()=>{}} sx={{color: (sentButtonState==="available"?"#7B7777":"white"), border: (sentButtonState==="available"?"solid 1px green":"none"),fontFamily: "Inter-regular", backgroundColor: (sentButtonState==="sent"?"green":(sentButtonState==="failed"?"red":(sentButtonState==="disabled"?"blue":"none")))}}>
                             <p>{(sentButtonState==="sent"?"Invite Sent":(sentButtonState==="failed"?"Invite not send":(sentButtonState==="failed"?"Senting...":"Sent Invite")))}</p>
-                            </Button> */}
-                            {sentButtonState !== "disabled" && jobData ?
-                                <button className='continue-btn' onClick={sentButtonState === "available" ? handleInviteData : () => { }}>
-                                    {(sentButtonState === "sent" ? "Invite Sent" : (sentButtonState === "failed" ? "Invite not send" : (sentButtonState === "disabled" ? "Sending..." : "Send Invite")))}
-                                    <div class="arrow-wrapper">
-                                        <div class="arrow"></div>
-
-                                    </div>
-                                </button>
-                                :
-                                <button className='continue-btn disable-apply-btn' >
-                                    {jobData?"Sending":"Send Invite"}
-                                </button>
-                            }
-                            
+                        </Button>
                     </div>
                     </>
                     :

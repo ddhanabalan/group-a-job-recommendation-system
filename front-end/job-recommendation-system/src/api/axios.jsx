@@ -2,7 +2,7 @@ import axios from 'axios';
 
 //let ip="192.168.1.8";
 //let ip="localhost";
- let ip="career-go.centralindia.cloudapp.azure.com"
+let ip="career-go.centralindia.cloudapp.azure.com"
 
 export const authAPI =axios.create({
      baseURL: `http://${ip}:8000/`

@@ -8,7 +8,6 @@ import Typography from '@mui/material/Typography';
 import parse from 'autosuggest-highlight/parse';
 import { debounce } from '@mui/material/utils';
 import { forwardRef, useState } from 'react';
-import { v4 as uuid } from 'uuid';
 import axios from 'axios';
 
 // This key was created specifically for the demo in mui.com.
@@ -17,7 +16,7 @@ import axios from 'axios';
 
 const autocompleteService = { current: null };
 
-const GoogleLocationSearch = forwardRef(function GoogleLocationSearch({ data, changeFn, locationValue, value, updateValue, textFieldType = "standard", disUnderline = false, textBgColor = "#D9D9D9", textPad = "0px", bordRad = "0px", fntFam = "auto", fntSize = "auto", use="jobs", ...props }, ref) {
+const GoogleLocationSearch = forwardRef(function GoogleLocationSearch({ data, changeFn, locationValue, value, updateValue, textFieldType = "standard", disUnderline = false, textBgColor = "#D9D9D9", textPad = "0px", bordRad = "0px", fntFam = "auto", fntSize = "auto", ...props }, ref) {
     const MAPS_API_KEY = 'pk.0da703607c1469e631ae01d8480aa43e';
     const [query, setQuery] = useState(locationValue || '');
     const [options, setOptions] = useState([]);
@@ -32,19 +31,14 @@ const GoogleLocationSearch = forwardRef(function GoogleLocationSearch({ data, ch
     const fetch = async () => {
         
         const response = await axios.get(
-            `https://api.locationiq.com/v1/autocomplete?key=${MAPS_API_KEY}&q=${query}`,
-            {
-                headers: {
-                    'Accept': 'application/json'
-                }
-            }
+            `https://api.locationiq.com/v1/autocomplete?key=${MAPS_API_KEY}&q=${query}`
         );
         console.log("query", query,"location only", response.data);
         response.status === 200 && setOptions(response.data);
     };
 
     React.useEffect(() => {
-        if(query !== '') {
+        if(query !== '') {setOptions([]);
         fetch();}
     }, [query]);
 
@@ -53,16 +47,7 @@ const GoogleLocationSearch = forwardRef(function GoogleLocationSearch({ data, ch
             id="google-map-demo"
             sx={{ width: 300 }}
             getOptionLabel={(option) =>
-                {console.log("option type", typeof(option))
-                return option.display_name}
-                /*{if(typeof(option) === "object"){
-                    console.log("received", typeof(option), option)
-                    return option.display_name;
-                }
-                else {
-                    console.log("received", typeof(option), option)
-                    return option;
-                }}*/
+                option.address.name
             }
             filterOptions={(x) => x}
             options={options}
@@ -72,30 +57,27 @@ const GoogleLocationSearch = forwardRef(function GoogleLocationSearch({ data, ch
             value={value}
             noOptionsText="No locations"
             onChange={(event, newValue) => {
-                //setOptions(options);
+                setOptions(options);
                 console.log("new", newValue)
-                updateValue(newValue.address? (newValue.address.name?(newValue.address.name + ","):"") + (newValue.address.state?(newValue.address.state + ","):"")  + (newValue.address.country?(newValue.address.state):""): null) || "";
+                updateValue(newValue.address?newValue.address.name + "," + (newValue.address.state?newValue.address.state + ",":"")  + newValue.address.country: null) || "";
             }}
             onInputChange={(event, newInputValue) => {
                 setQuery(newInputValue);
-                newInputValue===""?setOptions([]):setOptions(options);
                 console.log("added", newInputValue)
                 changeFn(newInputValue);
             }}
             renderInput={(params) => (
-                <TextField {...params} placeholder={data.inputPlaceholder} value={locationValue} variant={textFieldType} 
+                <TextField {...params} placeholder={data.inputPlaceholder} value={locationValue} variant={textFieldType} className='tags-add-input'
                     InputProps={{
                         ...params.InputProps,
                         disableUnderline: disUnderline,
                     }}
                     inputRef={ref}
                     sx={{
-                        boxSizing: 'content-box',
                         backgroundColor: textBgColor,
-                        paddingY: '0.05rem',
                         paddingX: textPad,
                         borderRadius: bordRad,
-                        '.MuiInputBase-input': { fontFamily: fntFam, fontSize: fntSize},
+                        '.MuiInputBase-input': { fontFamily: fntFam, fontSize: fntSize },
                     }}
                     {...props} />
 
@@ -115,7 +97,7 @@ const GoogleLocationSearch = forwardRef(function GoogleLocationSearch({ data, ch
                             <Grid item sx={{ width: 'calc(100% - 44px)', wordWrap: 'break-word' }}>
                         
                                     <Box
-                                        key={uuid()}
+                                        key={place_index}
                                         component="span"
                                         sx={{ fontWeight: 'regular' }}
                                     >

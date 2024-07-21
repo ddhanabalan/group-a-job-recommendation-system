@@ -10,11 +10,9 @@ import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 
 
-function HighlightableJobCard({ id, highlighted, type, data, listToDescFunc, deleteJobFunc,editJobVacancyStatusFunc, onclick, invite, inviteJob, seekerJobs, applicationType }) {
+function HighlightableJobCard({ id, highlighted, type, data, listToDescFunc, deleteJobFunc, onclick, invite, inviteJob }) {
     //console.log("highlighted ", id, " : ", highlighted)
-    console.log("id", id, highlighted)
     const [disabled, setDisabled] = useState(false);
-
     const disableCard =(status)=>{
         setDisabled(status);
     }
@@ -22,14 +20,14 @@ function HighlightableJobCard({ id, highlighted, type, data, listToDescFunc, del
     if(inviteJob)inviteData={"type":inviteJob.type,"status": (inviteJob.type=="invite"?inviteJob.invite_status:inviteJob.job_status), "id": (inviteJob.type=="invite"?inviteJob.job_invite_id:inviteJob.job_request_id)}
     console.log("data pass", data, inviteJob)
     return (
-        <div className="card-holder" onClick={!disabled?() => {inviteData?onclick(id,inviteData.type, inviteData.status, inviteData.id):(seekerJobs===true?onclick(id, applicationType):onclick(id))}: ()=>{}}>
-            <JobOpeningCard disabled={disableCard} data={data} type={type} listToDescFunc={listToDescFunc} deleteJobFunc={deleteJobFunc} editJobVacancyStatusFunc={editJobVacancyStatusFunc} highlighted={highlighted} invite={invite} inviteJob={inviteJob} />
+        <div className="card-holder" onClick={!disabled?() => {inviteData?onclick(id,inviteData.type, inviteData.status, inviteData.id):onclick(id)}: ()=>{}}>
+            <JobOpeningCard disabled={disableCard} data={data} type={type} listToDescFunc={listToDescFunc} deleteJobFunc={deleteJobFunc} highlighted={highlighted} invite={invite} inviteJob={inviteJob} />
         </div>
     )
 }
 
-export default function OpeningsListBar({ data, userType, userID, chooseEntry, searchBar, preselectedEntry=null, preselectedEntryType=null, filterFunc = null, pageType, handleApplicationStatus = null, userJobs = null, listToDescParentFunc = null, deleteJobFunc = null,editJobVacancyStatusFunc=null, invite=null, seekerJobs = false }) {
-    console.log("user received jobs", userJobs, seekerJobs)
+export default function OpeningsListBar({ data, userType, userID, chooseEntry, searchBar, preselectedEntry, filterFunc, pageType, handleApplicationStatus = null, userJobs = null, listToDescParentFunc = null, deleteJobFunc = null, invite=null }) {
+    console.log("user received jobs", userJobs)
     
     console.log("received jobs to openings list bar", data);
     const [initInfo,setInitInfo] = useState(data)
@@ -39,7 +37,6 @@ export default function OpeningsListBar({ data, userType, userID, chooseEntry, s
     //console.log("opening bar data",data)
     
     const [highlightedId, setHighlightedId] = useState(preselectedEntry);
-    const [highlightedEntryType, setHighlightedEntryType] = useState(preselectedEntryType)
     const [applicationTypeData, setApplicationTypeData] = useState({});
 
     console.log("highlighted id=",preselectedEntry, highlightedId)
@@ -55,43 +52,12 @@ export default function OpeningsListBar({ data, userType, userID, chooseEntry, s
         setSearch(searchValue);
     }
 
-    function handleSeekerJobSection(card_info){
-        const r = seekerJobs?(card_info.type=="request"?card_info["job_req_id"]:card_info["job_invite_id"]):card_info["id"];
-        console.log("logged", seekerJobs, r, card_info)
-        return r;
-    }
-    function handleApplicationFilter(entry){
-        //function for passing selected job opening card from child component to parent componenet
-        setApplicationFilter(entry);
-    }
-
-    function statusFilter(){
-        const activeFilters = Object.keys(applicationFilter).filter(key => applicationFilter[key]).map(f=>f.toLowerCase());
-        console.log("activ filters", applicationFilter, activeFilters)
-        if(activeFilters.length)
-        {const filterResponse = initInfo.filter(e=>{if(e.type === "invite" && activeFilters.includes("invited")){return e}
-                                else if( e.type ==="request" && activeFilters.includes(e.status.toLowerCase())){return e}
-                                else return null;})
-          console.log("filtered applications list ", data,filterResponse, activeFilters)
-
-          setFinalInfo(filterResponse);
-        }
-        else{
-            setFinalInfo(initInfo);
-        }
-        
-        
-      }
-
     function highlightDiv(id, application_type = null, application_status = null, application_id=null) {
         //function for highlighting selected opening cards
         //console.log("highlighting id", id)
         setHighlightedId(id);
         console.log("application da", application_status, application_type)
-        if(application_type && seekerJobs){
-            setHighlightedEntryType(application_type);
-        }
-        else if(application_type && application_id){
+        if(application_type){
             setApplicationTypeData({"application_type": application_type, "application_status": application_status, "application_id": application_id})
         }
 
@@ -130,20 +96,8 @@ export default function OpeningsListBar({ data, userType, userID, chooseEntry, s
     },
         [preselectedEntry])
     useEffect(() => {
-        setHighlightedEntryType(preselectedEntryType)
-        console.log("preselected entry type set", preselectedEntryType)
-    },
-        [preselectedEntryType])
-    useEffect(() => {
         if(handleApplicationStatus && Object.keys(applicationTypeData).length)handleApplicationStatus(applicationTypeData);
     }, [applicationTypeData])
-    useEffect(() => {
-        if(seekerJobs)statusFilter();
-        else(setFinalInfo(initInfo))
-    }, [applicationFilter, initInfo])
-    useEffect(()=>{
-        setInitInfo(data);
-    }, [data])
 
     return (
         <>
@@ -191,13 +145,9 @@ export default function OpeningsListBar({ data, userType, userID, chooseEntry, s
                 <></>
                 }
                 <div className="openings-container">
-                    {finalInfo.length!=0?
-                        (
-                        //console.log("finalInfo check", finalInfo)
-                        //Object.keys(finalInfo).map((card) => console.log("this is what i received", card, finalInfo[card]))
-                         finalInfo.map((card) => (<HighlightableJobCard key= {finalInfo.indexOf(card)} id={handleSeekerJobSection(card)} onclick={highlightDiv} highlighted={highlightedId == handleSeekerJobSection(card) && (seekerJobs?(card.type===highlightedEntryType): true)} type={userType == "employer" && pageType!=="candidates" ? pageType : null} applicationType={seekerJobs?card.type: null} inviteJob={userJobs && userJobs.length?userJobs.filter(job => {if(job.job_vacancy_id == card["id"] )return job}): null} deleteJobFunc={deleteJobFunc} editJobVacancyStatusFunc={editJobVacancyStatusFunc} listToDescFunc={listToDescFunc} data={{ ...card, 'userType': userType, 'highlightedId': highlightedId }} invite={invite} seekerJobs={seekerJobs?true: false}/>))
-                        )
-                            :
+                    {Object.keys(finalInfo).length!=0?
+                        Object.keys(finalInfo).map((card) => (<HighlightableJobCard key={finalInfo[card]["id"]} id={finalInfo[card]["id"]} onclick={highlightDiv} highlighted={highlightedId == finalInfo[card]["id"]} type={userType == "employer" ? pageType : null} inviteJob={userJobs && userJobs.length?userJobs.filter(job => {if(job.job_vacancy_id == finalInfo[card]["id"])return job})[0]: null} deleteJobFunc={deleteJobFunc} listToDescFunc={listToDescFunc} data={{ ...finalInfo[card], 'userType': userType, 'highlightedId': highlightedId }} invite={invite} />))
+                        :
                         (userType=="employer"?
                         <div className="empty-container-message">
                             <p>You haven't created any vacancies yet.</p>

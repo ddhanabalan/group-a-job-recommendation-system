@@ -54,7 +54,7 @@ export default function DeleteAccount() {
             SetDeletionError(false)
             setTimeout(() => {
                 navigate(`/`)
-            }, 2000)
+            }, 5000)
             
             
         } catch (e) {
@@ -64,7 +64,7 @@ export default function DeleteAccount() {
             setTimeout(() => {
                 SetShowBanner(false);
                 SetDeletionError(false);
-            }, 2000)
+            }, 5000)
             
         }
     }
