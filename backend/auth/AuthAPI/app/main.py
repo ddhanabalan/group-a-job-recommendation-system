@@ -400,7 +400,8 @@ async def register(
             status_code=status.HTTP_302_FOUND,
             detail="User Already Exist!",
         )
-    hashed_pwd = get_password_hashed(user.password)
+    hash_key = hashlib.sha256(b"H").hexdigest()[:32]
+    hashed_pwd = get_password_hashed(user.password,hash_key)
     user_dict = user.dict()
     user_dict.pop("password")
     response = await httpx.AsyncClient().post(
@@ -412,7 +413,6 @@ async def register(
             status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
             detail="User Init was not Successful",
         )
-    hash_key = hashlib.sha256(b"H").hexdigest()[:32]
     user_db = authschema.UserInDB(
         **{
             "username": user_dict.get("username"),
