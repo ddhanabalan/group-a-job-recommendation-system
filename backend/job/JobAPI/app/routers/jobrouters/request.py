@@ -83,3 +83,14 @@ async def delete_job_request(
 
 
 # Get job requests by user ID
+@job_request_router.delete("/{user_id}", status_code=status.HTTP_200_OK)
+async def delete_job_request_by_user_id(
+    user_id: int, db: Session = Depends(get_db), authorization: str = Header(...)
+):
+    deleted = jobcrud.request.delete_by_user_id(db, user_id)
+    if not deleted:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Job Request not found",
+        )
+    return {"detail": "Job Request deleted successfully"}
