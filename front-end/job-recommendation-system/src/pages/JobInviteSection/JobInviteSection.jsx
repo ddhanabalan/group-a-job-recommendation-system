@@ -6,7 +6,7 @@ import Filter from "../../components/Filter/Filter";
 import OpeningsListBar from "../../components/OpeningsListBar/OpeningsListBar";
 import JobCardExpanded from "../../components/JobCardExpanded/JobCardExpanded";
 import BackBtn from "../../components/BackBtn/BackBtn";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import CandidateCard from "../../components/CandidateCard/CandidateCard";
 import { set } from "react-hook-form";
@@ -22,6 +22,7 @@ export default function JobInviteSection({userType}) {
     console.log("received from url", link_data)
     const COMPANYID = (userType==="employer"?getStorage("userID"):(link_data.company_id?link_data.company_id: getStorage("guestUserID")));
     const receivedData = useLocation();
+    const navigate = useNavigate();
     const [userData, setUserData] = useState({'type': userType});
     console.log("received data",receivedData)
     //const [selectedEntry, setEntry] = useState(null);
@@ -60,18 +61,44 @@ export default function JobInviteSection({userType}) {
     
     //const filtered = []
     const [selectedJobEntry,setJobEntry] = useState(null);
+    const [userJobs, setUserJobs] = useState([]);
+    const [companyRequests, setCompanyRequests] = useState([]);
     //const [filteredApplicants, setfilteredApplicants]=useState(profileInfo.filter(applicants=>(selectedJobEntry["applicationsReceived"].includes(applicants["applicantID"])?applicants:false)));
     const [sidebarState, setSideBar] = useState(false);
+    const [deleteRequest, setDeleteRequest] = useState(null);
+    const [inviteResponse, setInviteResponse] = useState(null);
     const callJobVacancyAPI= async (companyId)=>{
         
         try {
             
+
             const response = await (userType==="employer" ? jobAPI.get(`/job_vacancy/company`, {headers:{'Authorization': `Bearer ${getStorage("userToken")}`}}): jobAPI.get(`/job_vacancy/company/${companyId}`));
             console.log("received job response", response)
+            const invite_response = await jobAPI.get('/job_invite/company', { headers: { 'Authorization': `Bearer ${getStorage("userToken")}` } });
+            console.log("update job invites", invite_response);
             const mod_response = response.data.map(e=>({id: e.job_id, jobTitle: e.job_name, companyName: e.company_name, tags: e.tags, currency: e.salary.split('-')[0], salary: [e.salary.split('-')[1],e.salary.split('-')[2]], postDate: e.created_at.split('T')[0] , last_date: e.last_date.split('T')[0], location: e.location, poi: e.job_position, empType: e.emp_type, exp: e.experience, workStyle: e.work_style, workingDays: e.working_days, jobDesc: e.job_desc ,jobReq:e.requirement,skills: e.skills.length?e.skills: [{'skill': ""}], applicationsReceived: e.job_seekers}))
             setJobVacancies(mod_response);
-            console.log(response);
             console.log(" after new job vacancies", mod_response);
+            const prereq_response = await Promise.all(response.data.map(vacancy => vacancy.job_seekers.filter(user => user.user_id === receivedData.state.user_id).map(user => {
+                return {
+                    // List only the keys you want to retain
+                    job_vacancy_id: user.job_id, job_status: user.status, job_request_id: user.id, type: "request"
+                    // Add other keys you want to retain
+                };
+            })).flat()); // Flatten the array to get a single array of users
+      
+          // Wait for all job details promises to resolve
+          const new_invite_response = await Promise.all(
+            invite_response.data.map(async (e) => {if(e.user_id == receivedData.state.user_id)
+              {const jobDetails = { job_vacancy_id: e.job_id, invite_status: e.status, job_invite_id: e.id, type: "invite" };
+              return jobDetails;}
+            })
+          );
+            const update_response = [...prereq_response,...new_invite_response].filter(Boolean);
+            console.log("updated_response", update_response, new_invite_response,receivedData.state.user_id)
+            setUserJobs(update_response);
+            
+            
             console.log("filtered", filtered);
         } catch (e) {
             console.log("jobs failed", e)
@@ -79,12 +106,20 @@ export default function JobInviteSection({userType}) {
             alert(e.message);
         }
     }
+    
+    const handleClick = (delay, callFunction) => {
+        setTimeout(() => {
+            callFunction()
+        }, delay);
+    };
 
-    
-
-    
-    
+      
+    const makeShift=()=>{
+        console.log("refreshed page")
+        window.location.reload();
+    }
         
+    console.log("user in compnay", userJobs);
     //console.log("applicants confirmed", jobApplicants)
     //console.log("sidebar", sidebarState)
     //console.log("filtered", filtered);
@@ -98,6 +133,11 @@ export default function JobInviteSection({userType}) {
     const chooseEntry =(entry)=>{
         //function for passing selected job opening card from child component to parent componenet
         setEntry(entry);
+    }
+
+    const handleApplicationStatus = (appData)=>{
+        console.log("application data received", appData)
+        if(appData.application_type=="request" && appData.application_status=="rejected")setDeleteRequest(appData.application_id);
     }
 
     const searchBar =(searchValue)=>{
@@ -119,34 +159,62 @@ export default function JobInviteSection({userType}) {
         setSideBar(true);
     }
 
+    const deleteJobRequestAPI = async (job_request_id) => {
+        try {
+          const r = await jobAPI.delete(`/job_request/${job_request_id}`, { headers: { 'Authorization': `Bearer ${getStorage("userToken")}` } });
+          await callJobVacancyAPI();
+          setEntry(null);
+          console.log("successfully deleted", job_request_id)
+          return true;
+        } catch (e) {
+          console.log("job request deletion failed", e);
+          alert(e.message);
+          return false;
+        }
+      };
+
     const sentInvite = async (finalData)=>{
+        
         console.log("final data", finalData)
         const req_data = {
                                 "job_id": finalData.id,
-                                "user_id": 1
+                                "user_id": finalData.user_id,
+                                "recruiter_name": finalData.recruiter_name,
+                                "recruiter_position": finalData.recruiter_position,
+                                "remarks": finalData.remarks
                             }
         console.log("job status data", req_data)
         try {
+            if(deleteRequest){
+            const n = await deleteJobRequestAPI(deleteRequest);
+            if(!n)throw new Error("Failed to Delete Rejected Application")};
             const response = await jobAPI.post(`/job_invite/`, req_data, {
                 headers:{
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${getStorage("userToken")}`
                 }         
                 });
+            setDeleteRequest(null);
             console.log("updated response", response)
+            setInviteResponse("sent");
             //const mod_response = response.data.map(e=>({applicantID: e.user_id, username: e.username, candidateName: (e.first_name + " " + e.last_name), first_name: e.first_name, last_name: e.last_name,city: e.city, country: e.country, location: e.location, experience: e.experience, profile_picture: e.profile_picture}))
-            
+            handleClick(3000, callJobVacancyAPI);
             
         } catch (e) {
+            setInviteResponse("failed");
             
             console.log("failed to sent invite", e)
             
             alert(e.message);
+            handleClick(3000, makeShift);
         }
+
     }
     //console.log("filtered applicants",filteredApplicants);
-    useEffect(() => {callJobVacancyAPI(COMPANYID)}, []);//only runs during initial render
-    useEffect(()=>{if(selectedEntry==null)
+    useEffect(() => {callJobVacancyAPI(COMPANYID)
+    }, []);//only runs during initial render
+    useEffect(()=>{setInviteResponse("");
+        if(selectedEntry==null)
         {setEntry(null)
          setJobEntry(null)
          
@@ -158,7 +226,11 @@ export default function JobInviteSection({userType}) {
             {expJob(selectedEntry);
             console.log("job entry refreshed", jobVacancies)}
         }},[jobVacancies])
-    useEffect(()=>{if(jobVacancies.length!=0 && selectedEntry!=null)expJob(selectedEntry)},[selectedEntry]);
+    useEffect(()=>{if(jobVacancies.length!=0 && selectedEntry!=null){
+        
+        expJob(selectedEntry);}},[selectedEntry]);
+    
+    useEffect(()=>{if(companyRequests==true)callCompanyInvitesAPI, [companyRequests]})
     
     /*const resultGen=()=>{
         
@@ -194,7 +266,7 @@ export default function JobInviteSection({userType}) {
                 <div className="back-button-review" onClick={()=>setSideBar(false)}><BackBtn outlineShape={"square"} butColor={"white"}/></div>
                 </>
                 :
-                <OpeningsListBar data={filtered} userType={userType} userID={COMPANYID} pageType={"invite"} chooseEntry={chooseEntry} searchBar={searchBar} listToDescParentFunc={listToDescParentFunc} preselectedEntry={selectedEntry} filterFunc={filterStateSet} />
+                <OpeningsListBar data={filtered} userType={userType} userID={COMPANYID} userJobs={userJobs} pageType={"invite"} chooseEntry={chooseEntry} searchBar={searchBar} listToDescParentFunc={listToDescParentFunc} preselectedEntry={selectedEntry} handleApplicationStatus={handleApplicationStatus} filterFunc={filterStateSet} />
                 }
             </div>
             {filterstat?
@@ -210,7 +282,7 @@ export default function JobInviteSection({userType}) {
                 
                 
                     
-                    <JobInvite data={receivedData.state} jobData={selectedJobEntry}  userData={userData} sentInvite={sentInvite}/>                    
+                    <JobInvite data={receivedData.state} jobData={selectedJobEntry}  userData={userData} sentInvite={sentInvite} inviteResponse={inviteResponse}/>                    
                 
             
             </div>

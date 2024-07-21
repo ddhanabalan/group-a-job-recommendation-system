@@ -10,22 +10,31 @@ import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 
 
-function HighlightableJobCard({ id, highlighted, type, data, listToDescFunc, deleteJobFunc, onclick, invite }) {
+function HighlightableJobCard({ id, highlighted, type, data, listToDescFunc, deleteJobFunc, onclick, invite, inviteJob }) {
     //console.log("highlighted ", id, " : ", highlighted)
+    const [disabled, setDisabled] = useState(false);
+    const disableCard =(status)=>{
+        setDisabled(status);
+    }
+    let inviteData=null;
+    if(inviteJob)inviteData={"type":inviteJob.type,"status": (inviteJob.type=="invite"?inviteJob.invite_status:inviteJob.job_status), "id": (inviteJob.type=="invite"?inviteJob.job_invite_id:inviteJob.job_request_id)}
+    console.log("data pass", data, inviteJob)
     return (
-        <div className="card-holder" onClick={() => onclick(id)}>
-            <JobOpeningCard data={data} type={type} listToDescFunc={listToDescFunc} deleteJobFunc={deleteJobFunc} highlighted={highlighted} invite={invite} />
+        <div className="card-holder" onClick={!disabled?() => {inviteData?onclick(id,inviteData.type, inviteData.status, inviteData.id):onclick(id)}: ()=>{}}>
+            <JobOpeningCard disabled={disableCard} data={data} type={type} listToDescFunc={listToDescFunc} deleteJobFunc={deleteJobFunc} highlighted={highlighted} invite={invite} inviteJob={inviteJob} />
         </div>
     )
 }
 
-export default function OpeningsListBar({ data, userType, userID, chooseEntry, searchBar, preselectedEntry, filterFunc, pageType, listToDescParentFunc = null, deleteJobFunc = null, invite=null }) {
-
+export default function OpeningsListBar({ data, userType, userID, chooseEntry, searchBar, preselectedEntry, filterFunc, pageType, handleApplicationStatus = null, userJobs = null, listToDescParentFunc = null, deleteJobFunc = null, invite=null }) {
+    console.log("user received jobs", userJobs)
+    
     console.log("received jobs to openings list bar", data);
     const finalInfo = { ...data }
     //console.log("opening bar data",data)
     //console.log("data passed to opening cards", finalInfo)
     const [highlightedId, setHighlightedId] = useState(preselectedEntry);
+    const [applicationTypeData, setApplicationTypeData] = useState({});
 
     //console.log("highlighted id=",preselectedEntry)
     const [searchVal, setSearch] = useState(null); //variable for storing earth star value
@@ -40,10 +49,14 @@ export default function OpeningsListBar({ data, userType, userID, chooseEntry, s
         setSearch(searchValue);
     }
 
-    function highlightDiv(id) {
+    function highlightDiv(id, application_type = null, application_status = null, application_id=null) {
         //function for highlighting selected opening cards
         //console.log("highlighting id", id)
         setHighlightedId(id);
+        console.log("application da", application_status, application_type)
+        if(application_type){
+            setApplicationTypeData({"application_type": application_type, "application_status": application_status, "application_id": application_id})
+        }
 
     }
 
@@ -71,6 +84,9 @@ export default function OpeningsListBar({ data, userType, userID, chooseEntry, s
         setHighlightedId(preselectedEntry)
     },
         [preselectedEntry])
+    useEffect(() => {
+        if(handleApplicationStatus && Object.keys(applicationTypeData).length)handleApplicationStatus(applicationTypeData);
+    }, [applicationTypeData])
 
     return (
         <>
@@ -106,7 +122,7 @@ export default function OpeningsListBar({ data, userType, userID, chooseEntry, s
 
                 <div className="openings-container">
                     {Object.keys(finalInfo).length!=0?
-                        Object.keys(finalInfo).map((card) => (<HighlightableJobCard key={finalInfo[card]["id"]} id={finalInfo[card]["id"]} onclick={highlightDiv} highlighted={highlightedId == finalInfo[card]["id"]} type={userType == "employer" ? pageType : null} deleteJobFunc={deleteJobFunc} listToDescFunc={listToDescFunc} data={{ ...finalInfo[card], 'userType': userType, 'highlightedId': highlightedId }} invite={invite} />))
+                        Object.keys(finalInfo).map((card) => (<HighlightableJobCard key={finalInfo[card]["id"]} id={finalInfo[card]["id"]} onclick={highlightDiv} highlighted={highlightedId == finalInfo[card]["id"]} type={userType == "employer" ? pageType : null} inviteJob={userJobs && userJobs.length?userJobs.filter(job => {if(job.job_vacancy_id == finalInfo[card]["id"])return job})[0]: null} deleteJobFunc={deleteJobFunc} listToDescFunc={listToDescFunc} data={{ ...finalInfo[card], 'userType': userType, 'highlightedId': highlightedId }} invite={invite} />))
                         :
                         (userType=="employer"?
                         <div className="empty-container-message">

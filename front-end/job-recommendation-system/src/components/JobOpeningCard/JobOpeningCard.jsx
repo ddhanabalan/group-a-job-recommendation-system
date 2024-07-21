@@ -6,14 +6,64 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Link } from 'react-router-dom';
 import Tooltip from '@mui/material/Tooltip';
 import CorporateFareRoundedIcon from '@mui/icons-material/CorporateFareRounded';
-export default function JobOpeningCard({ data, type = null, highlighted = null, listToDescFunc = null, deleteJobFunc = null, invite = null }, props) {
+import { useState, useEffect } from 'react';
+export default function JobOpeningCard({ data, type = null, highlighted = null, listToDescFunc = null, deleteJobFunc = null, disabled=false, invite = null, inviteJob=null }, props) {
     //opening cards show in opening page    
-    //console.log("data to opening card", data)
+    console.log("data to opening card", data, invite)
+    const [status, setStatus] = useState("");
+    const [statusColor, setStatusColor] = useState("");
+    const [cssTag, setCssTag] = useState("");
+    const [preJob, setPreJob] = useState(inviteJob ? inviteJob : null);
+    
+    console.log("received invite card", inviteJob);
 
+    const checkStatus = () => {
+        if (!preJob) return;
+        const application_type = preJob.type.toLowerCase();
+        const app_status = preJob.job_status?.toLowerCase() || preJob.invite_status.toLowerCase();
+        if (application_type == "request") {
+            console.log("requesting");
+            if (app_status == "applied") {
+                setStatus("already applied");
+                setStatusColor("yellow");
+                setCssTag("reject");
+            } else if (app_status == "approved") {
+                setStatus("Application approved");
+                setStatusColor("green");
+                setCssTag("approve");
+            } /*else if (preJob.job_status == "rejected") {
+                setStatus("rejected");
+                setStatusColor("red");
+                setCssTag("reject");
+            }*/
+        } else {
+            if (app_status == "pending") {
+                setStatus("invite sent");
+                setStatusColor("orange");
+                setCssTag("reject");
+            } else if (app_status == "approved") {
+                setStatus("invite accepted");
+                setStatusColor("green");
+                setCssTag("approve");
+            } /*else if (preJob.invite_status == "rejected") {
+                setStatus("invite declined");
+                setStatusColor("red");
+                setCssTag("reject");
+            }*/
+        }
+    };
+    console.log("updated tags", status, statusColor, cssTag)
+    
+
+    useEffect(() => {
+        if (preJob) checkStatus();
+    }, [preJob]);
+    useEffect(()=>{if(status!="")disabled(true)}, [status]);
+    
 
 
     return (
-        <div className={`opening-card ${highlighted ? 'highlighted' : ''}`}>
+        <div className={status==""?`opening-card ${highlighted ? 'highlighted' : ''}`:`opening-card disabled`}>
             {data.length != 0 ?
                 <>
                     <div className='opening-card-div1'>
@@ -21,19 +71,31 @@ export default function JobOpeningCard({ data, type = null, highlighted = null, 
                         <p className='opening-card-company-name-p'>{data.companyName}</p>
 
                         <p className='opening-card-salary'>{data.currency} {data.salary[0]} {data.salary[1] ? "- " + data.salary[1] : ""} per month</p>
-                        {data.userType == "employer" && type != "invite" ?
-                            <div className="opening-vacancy-buttons">
-                                <Button variant="contained" disableElevation onClick={deleteJobFunc ? () => deleteJobFunc(data.id) : undefined} className="opening-delete-button" sx={{ color: '#f6cacc', backgroundColor: '#ff0000', width: 'fit-content', paddingY: "2px", paddingX: "10px", textTransform: "none", borderRadius: 20 }} endIcon={<DeleteOutlineIcon />}>
-                                    Delete
-                                </Button>
-                                <Link to="../employer/job-vacancy" state={{ ...data, edit: true }}>
-                                    <Button variant="contained" disableElevation className="opening-edit-button" sx={{ color: 'black', backgroundColor: '#eae9e9', border: 'solid 1px black', width: 'fit-content', paddingY: "2px", paddingX: "10px", textTransform: "none", borderRadius: 20 }} endIcon={<EditIcon />}>
-                                        Edit
+                        {data.userType == "employer" ?
+                                ((type !="invite")?
+                                <div className="opening-vacancy-buttons">
+                                    <Button variant="contained" disableElevation onClick={deleteJobFunc ? () => deleteJobFunc(data.id) : undefined} className="opening-delete-button" sx={{ color: '#f6cacc', backgroundColor: '#ff0000', width: 'fit-content', paddingY: "2px", paddingX: "10px", textTransform: "none", borderRadius: 20 }} endIcon={<DeleteOutlineIcon />}>
+                                        Delete
                                     </Button>
-                                </Link>
-                            </div>
+                                    <Link to="../employer/job-vacancy" state={{ ...data, edit: true }}>
+                                        <Button variant="contained" disableElevation className="opening-edit-button" sx={{ color: 'black', backgroundColor: '#eae9e9', border: 'solid 1px black', width: 'fit-content', paddingY: "2px", paddingX: "10px", textTransform: "none", borderRadius: 20 }} endIcon={<EditIcon />}>
+                                            Edit
+                                        </Button>
+                                    </Link>
+                                </div>
+                                :
+                                ((inviteJob && status!="")?
+                                <div className={`job-status-div job-status-${cssTag} job-status-opening-card`}>
+                                    <p>{status}</p>
+                                    <div className={`skill-status ${statusColor}`}></div>
+                                </div>
+                                :
+                                <></>
+                                )
+                                )
+                        
                             :
-                            (data.id == invite ?
+                            (data.userInvited || data.type=="invite" || (preJob && preJob.type == "invite") ?
                                 <div className="job-status-div job-status-reject job-status-opening-card">
                                     <p>Invite</p>
                                     <div className="skill-status blue"></div>
@@ -65,14 +127,17 @@ export default function JobOpeningCard({ data, type = null, highlighted = null, 
                     <div className={`opening-card-div2${type === "review" ? " review" : ""}`}>
                         {type ?
                             <div className='feature-side'>
-                                {data.applicationsReceived.length && (type != "invite") ?
+                                {data.applicationsReceived && (type != "invite") ?
+                                    (data.applicationsReceived.filter(e => e.status.toLowerCase() === "applied").length ?
                                     <div className='application-indicator'>
-                                        <p>{data.applicationsReceived.length}</p>
+                                        <p>{data.applicationsReceived.filter(e => e.status.toLowerCase() === "applied").length}</p>
                                     </div>
                                     :
-                                    <div></div>
+                                    <div></div>)
+                                    :
+                                    <></>
                                 }
-                                {highlighted &&
+                                {highlighted && status=="" &&
                                     <Tooltip title="View job description" enterDelay={500} leaveDelay={200}>
                                         <IconButton onClick={listToDescFunc} className='view-description-btn'
                                             sx={{ color: 'black', backgroundColor: '#eae9e9', border: 'solid 1px black' }}>
