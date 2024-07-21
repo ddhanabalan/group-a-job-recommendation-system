@@ -290,24 +290,11 @@ export default function JobVacancyForm({ data = {} }) {
         const success = await callJobAPI(submissionData, dta.edit);
         console.log("succes status", success)
         console.log("successfully submitted", submissionData);
-        if(success === true)
-        {setSubmit(true);
-            setSubmissionStatus("success");
-        }
-        else{
-            setSubmissionStatus("failed")
-        }
+        setSubmit(true);
 
     }
     useEffect(() => { if (submit === true) { navigate("../employer/review-applications") } }, [submit]);
-     useEffect(() => {
-         console.log("submission status", submissionStatus)
-         if(submissionStatus ==="success" || submissionStatus ==="failed"){
-                     console.log("rerouting submission status", submissionStatus)
-                         setTimeout(() => {
-                             navigate("../employer/review-applications")    
-                         }, 5000);
-     }},[submissionStatus])
+    
     useEffect(() => {skillsAPI()}, [skill])
     useEffect(() => {callCompanyAPI()}, [])
     useEffect(() => {console.log("yep i am", preferences.skills)
@@ -439,8 +426,9 @@ export default function JobVacancyForm({ data = {} }) {
                                             bordRad="7px"
                                             fntFam="Inter-regular"
                                             fntSize="15px"
-                                            {...register("location", { required: "location is required", })}
+                                            {...register("location", { required: "Location is required", })}
                                         />
+                                    
                                         <p className="error-message  vacancy-form-error">{errors.location?.message}</p>
                                     </div>
                                 </div>

@@ -225,10 +225,10 @@
 }
 
 
-
-.invite-accept-btn{
-    --primary-color: #23c483 !important;   
+.accept{
+    background-color: green;   
 }
-.invite-reject-btn{
-    --primary-color: #e01414 !important;
+
+.reject{
+    background-color: red;
 }
