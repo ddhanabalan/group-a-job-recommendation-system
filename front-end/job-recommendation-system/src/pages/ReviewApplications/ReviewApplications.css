@@ -115,7 +115,7 @@
     margin-right: .5rem;
 }
 
-.application-filter-btn-approve:hover {
+.application-filter-btn-approved:hover {
     background-color: #23c483;
     box-shadow: 0px 15px 20px rgba(46, 229, 157, 0.4);
     color: #fff;
@@ -123,7 +123,7 @@
 .application-filter-btn-approved{
     color: #23c483;
 }
-.application-filter-btn-reject:hover {
+.application-filter-btn-rejected:hover {
     background-color: #e01414;
     box-shadow: 0px 15px 20px rgba(229, 46, 46, 0.4);
     color: #fff;
@@ -131,7 +131,7 @@
 .application-filter-btn-rejected {
     color: #e01414;
 }
-.application-filter-btn-invite:hover {
+.application-filter-btn-invited:hover {
     background-color: #1444e0;
     box-shadow: 0px 15px 20px rgba(46, 110, 229, 0.4);
     color: #fff;
@@ -139,7 +139,7 @@
 .application-filter-btn-invited {
     color: #1444e0;
 }
-.application-filter-btn-apply:hover {
+.application-filter-btn-applied:hover {
     background-color: #d6761d;
     box-shadow: 0px 15px 20px rgba(229, 113, 46, 0.4);
     color: #fff;
@@ -149,4 +149,27 @@
 }
 .application-filter-btn:active {
     transform: translateY(-1px);
+}
+.application-filter-btn-active-invited {
+    transform: translateY(-1px);
+    color: white !important;
+    background-color: #1444e0 !important;
+}
+
+.application-filter-btn-active-rejected {
+    transform: translateY(-1px);
+    color: white !important;
+    background-color: #e01414 !important;
+}
+
+.application-filter-btn-active-approved {
+    transform: translateY(-1px);
+    color: white !important;
+    background-color: #23c483 !important;
+}
+
+.application-filter-btn-active-applied {
+    transform: translateY(-1px);
+    color: white !important;
+    background-color: #d6761d !important;
 }

@@ -12,7 +12,7 @@ import IconButton from '@mui/material/IconButton';
 import CorporateFareRoundedIcon from '@mui/icons-material/CorporateFareRounded';
 import { getStorage } from '../../storage/storage';
 
-export default function JobCardExpanded({ data = [], createJobRequest = null, deleteJobRequest = null, userData, handleSub = null, type, invite=null }) {
+export default function JobCardExpanded({ data = [], createJobRequest = null, deleteJobRequest = null, userData, handleSub = null, handleInvite=null, type, invite=null }) {
     console.log("data received by form", userData, "jobdata", data, "invite", invite)
 
     //console.log(userData.appliedJobs.includes("4"))
@@ -20,14 +20,24 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
     //const [tag_state,setTagState] = useState(false);
     const userSkills = (userData.type === "employer" || data.length) ? (null) : (data.skills?.map(skill => userData.skills.map(skilltag => skilltag.skill).includes(skill.skill) ? true : false).filter(Boolean).length)
     const [skillIndicator, setSkillIndicator] = useState(true);
-
+    const [userJobRequest, setUserJobRequest] = useState(null);
 
     console.log("data", data)
 
     //console.log(userSkills)
     //function for senting applicant details from the form to company
 
-    useEffect(() => { if (userData.type == "seeker" && type != "approval" && data.length != 0) setSubmit(((data.applicationsReceived).map(e => e.user_id)).includes(userData.id)) }, [data]) //UNCOMMENT THIS AFTER BACKEND FIX FOR MISSING DATA IN THE RESPONSE(i.e.applicationsReceived, tags, skills) 
+    useEffect(() => { if (userData.type == "seeker" && type != "approval" && data.length != 0) {
+        const appliedSeekers=data.applicationsReceived
+        if(data.userApplication?.length/*((appliedSeekers).map(e => e.user_id)).includes(userData.id)*/)
+        {setSubmit(true)
+        setUserJobRequest(data.userApplication[0]/*((appliedSeekers).filter(e => e.user_id == userData.id))[0]*/)}
+        // else
+        // {
+        //     setSubmit(false);
+        //     setUserJobRequest(null);
+        // }
+    } }, [data]) //UNCOMMENT THIS AFTER BACKEND FIX FOR MISSING DATA IN THE RESPONSE(i.e.applicationsReceived, tags, skills) 
     //console.log(userData.id, "applied=", submit, (data.applicationsReceived)?.map(e=>e.user_id) || "", "status", ((data.applicationsReceived)?.map(e=>e.user_id)).includes(userData.id), "submit status", submit)
 
     function handleApplication() {
@@ -130,7 +140,7 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
                             }
                         </div>
 
-                        {userData.type == "seeker" && type == "approval" ?
+                        {userData.type == "seeker" && type == "approval" && data.status ?
                             <>
                                 <div className='job-approval-status-label'>
                                     Status: <span className={`job-status-text color-${handleStatus(data.status.toLowerCase())}`}>{data.status}</span>
@@ -151,13 +161,17 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
 
                         {userData.type == "employer" || type == "approval" || invite ?
                             (
-                                invite?
+                                invite && (data.invite?.job_status !=="approved" || true) && (data.invite_status.toLowerCase() === "pending")?
                                  <>
+                                 <div className='invite-banner'>
+                                 <p>You have been invited for an interview</p>
+                                 </div>
                                  <div className='invite-buttons-container'>
-                                    <button className='accept' onClick={()=>{}} >
+                                    
+                                    <button className='accept' onClick={()=>{handleInvite("approved", data.job_invite_id || data.invite.job_invite_id)}} >
                                         Accept
                                     </button>
-                                    <button className='reject' onClick={()=>{}} >
+                                    <button className='reject' onClick={()=>{handleInvite("rejected", data.job_invite_id || data.invite.job_invite_id)}} >
                                         Reject
                                     </button>
 
@@ -165,7 +179,20 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
                                  </>
                                  
                                  :
-                                 <></>
+                                 ((data.invite?.job_status.toLowerCase() === "approved") || (data.invite_status?.toLowerCase()==="approved")?
+                                    <button className='continue-btn invite-accepted-btn' >
+                                        Invite Accepted
+                                    </button>
+                                    :
+                                    ((data.invite?.job_status.toLowerCase() === "rejected") || (data.invite_status?.toLowerCase()==="rejected")?
+                                    <button className='continue-btn invite-rejected-btn' >
+                                        Invite Rejected
+                                    </button>
+                                    :
+                                    <></>
+                                    )
+                                 )
+                                 
                             )
                             :
                             <div className="apply-button">
@@ -173,7 +200,7 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
                                     <p>{submit ? "Applied" : "Apply for the job"}</p>
                                 </Button> */}
                                 {
-                                (!submit ?
+                                (!submit?
                                     <button className='continue-btn' onClick={submit ? () => { } : handleApplication} >
                                         Apply
                                         <div class="arrow-wrapper">
@@ -183,7 +210,7 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
                                     </button>
                                     :
                                     <button className='continue-btn disable-apply-btn' onClick={submit ? () => { } : handleApplication} >
-                                        Applied
+                                        {userJobRequest?.status || "Processing..."}
                                     </button>
                                 )
                                 }

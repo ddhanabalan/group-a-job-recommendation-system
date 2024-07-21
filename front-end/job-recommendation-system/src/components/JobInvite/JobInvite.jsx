@@ -15,19 +15,23 @@ import CreateFormTextFields from '../CreateJobVacancyForm/CreateFormTextFields';
 import { Link } from 'react-router-dom';
 import {getStorage} from '../../storage/storage';
 
-export default function JobInvite({ data=[], jobData=null, createJobRequest=null, deleteJobRequest=null, userData, handleSub=null, type, sentInvite=null }) {
+export default function JobInvite({ data=[], jobData=null, createJobRequest=null, deleteJobRequest=null, userData, handleSub=null, type, sentInvite=null, inviteResponse=null }) {
     console.log("data received by form", userData, "jobdata",data)
     const CANDIDATE_PROFILE_PIC = (userData.type==="employer"?data.profile_picture:null);
     console.log("CANDIDATE_PROFILE_PIC", CANDIDATE_PROFILE_PIC)
     //console.log(userData.appliedJobs.includes("4"))
     const [finalData, setfinalData] = useState({});
     const [remarks, setRemarks] = useState('');
+    const [recruiterName, setRecruiterName] = useState('');
+    const [recruiterPos, setRecruiterPos] = useState('');
     const [error, setError] = useState(false);
+    
+    const [sentButtonState, setSentButtonState] = useState(inviteResponse==="" || !inviteResponse?"available":(inviteResponse=="sent"?inviteResponse:"failed"));
     //const [tag_state,setTagState] = useState(false);
     const userSkills = (userData.type==="employer" || data.length)?(null):(data.skills?.map(e => (userData.skills.map(_ => _.skill.toLowerCase())).includes(e.skill.toLowerCase())?true:false).filter(Boolean).length)
-    
-    
 
+    
+    
 
 
     //console.log(userSkills)
@@ -41,19 +45,23 @@ export default function JobInvite({ data=[], jobData=null, createJobRequest=null
         if(!jobData)setError(true);
         else{
             setError(false);
-            setfinalData({...jobData,...data, 'remarks': remarks})
-            
+            setfinalData({...jobData,...data, 'recruiter_name': recruiterName, 'recruiter_position': recruiterPos,'remarks': remarks})
+            setSentButtonState("disabled");
         }   
     }
     
-
+    
     
 
     function handleRemarks(text){
         setRemarks(text);
     }
-
-    useEffect(()=>{if(Object.keys(finalData).length)sentInvite(finalData);}, [finalData])
+    //console.log("recruiter name", recruiterName)
+    useEffect(()=>{if(Object.keys(finalData).length)sentInvite(finalData);
+                   
+    }, [finalData])
+    useEffect(()=> {console.log("sent button",sentButtonState);
+        setSentButtonState(inviteResponse==="" || !inviteResponse?"available":(inviteResponse=="sent"?inviteResponse:"failed"))},[inviteResponse])
 
     
     return (
@@ -79,7 +87,18 @@ export default function JobInvite({ data=[], jobData=null, createJobRequest=null
                     </div>
                     <hr className="separator"/>
                     <div className="job-desc-body">
-
+                            <div className="job-details">
+                                <p><span>Recruiter Name:</span></p>
+                                <div className="job-vacancy-selection-container">
+                                    <div className="create-job-desc-field"><CreateFormTextFields inputPlaceholder="Your name" fontsz="13px" wparam="40%" defaultValue={""}  bgColor={"#efeded"} onChange={(text)=>setRecruiterName(text)} /></div>
+                                </div>
+                            </div>
+                            <div className="job-details">
+                                <p><span>Recruiter Position:</span></p>
+                                <div className="job-vacancy-selection-container">
+                                    <div className="create-job-desc-field"><CreateFormTextFields inputPlaceholder="Current Position" fontsz="13px" wparam="40%" defaultValue={""} bgColor={"#efeded"} onChange={(text)=>setRecruiterPos(text)}/></div>
+                                </div>
+                            </div>
                             <div className="job-details">
                                 <p><span>Job vacancy:</span> {jobData?<></>:<span className={`selection-hint-text${error?"-red":""}`}>select a job vacancy from left</span>}</p>
                                 <div className="job-vacancy-selection-container">
@@ -96,7 +115,7 @@ export default function JobInvite({ data=[], jobData=null, createJobRequest=null
                             <div className="job-details">
                                 <p><span>Remarks:</span></p>
                                 <div className="job-vacancy-selection-container">
-                                    <div className="create-job-desc-field"><CreateFormTextFields inputPlaceholder="Enter remarks(optional)" fontsz="14px" wparam="100%" defaultValue={""} multipleLine={true} minrows={8} onChange={handleRemarks} /></div>
+                                    <div className="create-job-desc-field"><CreateFormTextFields inputPlaceholder="Enter remarks(optional)" fontsz="14px" wparam="100%" defaultValue={""} multipleLine={true} minrows={8} onChange={handleRemarks} bgColor={"#efeded"}/></div>
                                 </div>
                             </div>
                             <div className="mailing-info-text">
@@ -105,8 +124,8 @@ export default function JobInvite({ data=[], jobData=null, createJobRequest=null
                             </div>              
                     </div>
                     <div className="confirm-job-invite-button">
-                        <Button variant="outlined" onClick={handleInviteData} sx={{color: "#7B7777", border: "solid 1px green",fontFamily: "Inter-regular"}}>
-                            <p>Send Job Invite</p>
+                        <Button variant={sentButtonState==="available"?"outlined":"contained"} disabled={sentButtonState==="disabled"?true: false} onClick={sentButtonState==="available"?handleInviteData:()=>{}} sx={{color: (sentButtonState==="available"?"#7B7777":"white"), border: (sentButtonState==="available"?"solid 1px green":"none"),fontFamily: "Inter-regular", backgroundColor: (sentButtonState==="sent"?"green":(sentButtonState==="failed"?"red":(sentButtonState==="disabled"?"blue":"none")))}}>
+                            <p>{(sentButtonState==="sent"?"Invite Sent":(sentButtonState==="failed"?"Invite not send":(sentButtonState==="failed"?"Senting...":"Sent Invite")))}</p>
                         </Button>
                     </div>
                     </>
