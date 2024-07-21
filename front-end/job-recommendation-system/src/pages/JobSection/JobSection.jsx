@@ -1,5 +1,7 @@
 import './JobSection.css'
 import { useState, useEffect } from 'react';
+import getStorage from '../../storage/storage';
+import { jobAPI, userAPI } from '../../api/axios';
 import Filter from "../../components/Filter/Filter";
 import StatsAI from "../../components/StatsAI/StatsAI";
 import SearchBar from "../../components/SearchBar/SearchBar";
@@ -7,59 +9,144 @@ import Jobs from "../../components/Jobs/Jobs";
 import NavigationBar from "../../components/NavigationBar/NavigationBar";
 import BackBtn from '../../components/BackBtn/BackBtn';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
-import { IconButton} from '@mui/material';
+import { IconButton } from '@mui/material';
 
 export default function JobSection() {
-    const demoInfo = [{ id: 0, jobTitle: "Python Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000","10000"], postDate: "13/9/23" , location: 'London', empType: 'Full-time', exp: '5-10 years', jobDesc: "This is for demo purpose" ,jobReq:"This is for demo purpose",skills: ["python", "AI", "Django"]},
-                      { id: 1, jobTitle: "Java Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000","10000"], postDate: "13/9/23" , location: 'Moscow', empType: 'Internship', exp: '1-5 years', jobDesc: "This is for demo purpose" ,jobReq:"This is for demo purpose",skills: ["java", "AI"]},
-                      { id: 2, jobTitle: "Ruby Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000","10000"], postDate: "13/9/23" , location: 'Uganda', empType: 'Temporary', exp: 'Fresher', jobDesc: "This is for demo purpose" ,jobReq:"This is for demo purpose",skills: ["ruby", "AI", "Django"]},
-                      { id: 3, jobTitle: "Golang Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000","10000"], postDate: "13/9/23" , location: 'Alaska', empType: 'Internship', exp: '5-10 years', jobDesc: "This is for demo purpose" ,jobReq:"This is for demo purpose",skills: ["python", "AI", "Django"]},
-                      { id: 4, jobTitle: "Game Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000","10000"], postDate: "13/9/23" , location: 'Germany', empType: 'Full-time', exp: '5-10 years', jobDesc: "This is for demo purpose" ,jobReq:"This is for demo purpose",skills: ["react", "AI", "Django"]},
-                      { id: 5, jobTitle: "Python Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000","10000"], postDate: "13/9/23" , location: 'London', empType: 'Full-time', exp: '5-10 years', jobDesc: "This is for demo purpose" ,jobReq:"This is for demo purpose",skills: ["python", "AI", "Django"]},
-                      { id: 6, jobTitle: "Java Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000","10000"], postDate: "13/9/23" , location: 'Alaska', empType: 'Temporary', exp: 'Fresher', jobDesc: "This is for demo purpose" ,jobReq:"This is for demo purpose",skills: ["reactor", "AI", "Django"]},
-                      { id: 7, jobTitle: "Ruby Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000","10000"], postDate: "13/9/23" , location: 'London', empType: 'Full-time', exp: '5-10 years', jobDesc: "This is for demo purpose" ,jobReq:"This is for demo purpose",skills: ["python", "AI", "Django"]},
-                      { id: 8, jobTitle: "Golang Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000","10000"], postDate: "13/9/23" , location: 'India', empType: 'Internship', exp: '1-5 years', jobDesc: "This is for demo purpose" ,jobReq:"This is for demo purpose",skills: ["python", "AI", "Django"]},
-                      { id: 9,jobTitle: "Game Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000","10000"], postDate: "13/9/23" , location: 'London', empType: 'Full-time', exp: '5-10 years', jobDesc: "This is for demo purpose" ,jobReq:"This is for demo purpose",skills: ["python", "AI", "Django"]},]    
-    const userData = {'type': "seeker", 'skills': ['python', 'java', 'react', 'ai'], "appliedJobs": [1,2,5,6]};
+
+    const [userData, setUserData] = useState({ 'type': 'seeker', 'id': Number(getStorage("userID")), 'skills': [] });
+    const [jobVacancies, setJobVacancies] = useState([]);
     const [searchVal, setSearch] = useState("");
     const [filterparam, setParam] = useState({});
-    const filtered = demoInfo.filter(id => id["skills"].map((tag)=>(tag.toLowerCase().includes(searchVal.toLowerCase()))).filter(Boolean).length?id:false)
-    
-    const [descriptionOn,setDescFromChild] = useState(false);
+    //const filtered = (jobVacancies.length != 0 ? jobVacancies.filter(id => id["skills"].map((tag) => (tag["skill"].toLowerCase().includes(searchVal.toLowerCase()))).filter(Boolean).length ? id : false) : []);
+    //const filtered = (jobVacancies.length != 0 ? jobVacancies.filter(id => (id["jobTitle"].toLowerCase()).includes(searchVal.toLowerCase())?id:false): [])
+    const [descriptionOn, setDesc] = useState(false);
 
-    const filterDataSet=(fdata)=>{
-        setParam({...fdata});
+    const filterDataSet = (fdata) => {
+        setParam({ ...fdata });
     }
     console.log("filter", filterparam);
-    function OpenDesc(desc_state){
-        setDescFromChild(desc_state);
+    function OpenDesc(desc_state) {
+        setDesc(desc_state);
         //console.log("description status job section", desc_state);
     }
-    const searchBar =(searchValue)=>{
+    const searchBar = (searchValue) => {
         setSearch(searchValue);
     }
+    const callJobVacancyAPI = async () => {
+        
+        try {
+            await Promise.all([GetSeekerSkills()]);
+            const response = await jobAPI.get('/job_vacancy/',
+                {
+                    params: searchVal!=""?{"title": searchVal, ...filterparam }:{...filterparam},
+                    paramsSerializer: params => {
+                        // Custom params serializer if needed
+                        return Object.entries(params).map(([key, value]) => {
+                            if (Array.isArray(value)) {
+                                return value.map(val => `${key}=${encodeURIComponent(val)}`).join('&');
+                            }
+                            return `${key}=${encodeURIComponent(value)}`;
+                        }).join('&');
+                    }
+                });
+            const mod_response = response.data.map(e => ({ id: e.job_id, companyID: e.company_id, jobTitle: e.job_name, companyUsername: e.company_username, companyName: e.company_name, tags: /*(e.tags.length ? e.tags : */[{ 'tag': "" }], currency: e.salary.split('-')[0], salary: [e.salary.split('-')[1], e.salary.split('-')[2]], postDate: e.created_at.split('T')[0], last_date: e.last_date.split('T')[0], location: e.location, empType: e.emp_type, exp: e.experience, jobDesc: e.job_desc, jobReq: e.requirement, skills: e.skills.length ? e.skills : [{ 'skill': "" }], workStyle: e.work_style, workingDays: e.working_days, applicationsReceived: e.job_seekers }))
+            setJobVacancies(mod_response);
+            console.log(response);
+            console.log(" after new job vacancies", mod_response);
+            //console.log("filtered", filtered);
+        } catch (e) {
+
+            console.log("jobs failed", e);
+            alert(e.message);
+        }
+    }
+    /*
+    const GetSeekerDetails = async () => {
+
+        try {
+            const response = await userAPI.get('/seeker/details', {
+                headers: {
+                    'Authorization': `Bearer ${getStorage("userToken")}`
+                }
+            })
+            console.log("resp dat", response)
+            setUserData({ ...userData, 'id': response.data.length!=0?response.data[0].user_id :  Number(getStorage("userID")) })
+  
+
+        }
+        catch (e) {
+            console.log("user req failed", e);
+        }
+    }
+    */
+    const GetSeekerSkills = async () => {
+        try {
+            const response = await userAPI.get('/seeker/skill', {
+                headers: {
+                    'Authorization': `Bearer ${getStorage("userToken")}`
+                }
+            })
+            console.log("skills received", response.data)
+            setUserData({ ...userData, 'id': response.data.length!=0?response.data[0].user_id :  Number(getStorage("userID")), 'skills': response.data?response.data: [] })
+
+        }
+
+        catch (e) {
+            
+
+            console.log("skill error", e)
+        }
+        
+    }
+
+    const CreateJobRequest = async (jobId) => {
+        try {
+            const response = await jobAPI.post('/job_request/', {
+                "job_id": Number(jobId),
+                "status": "Applied"
+            },
+                {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${getStorage("userToken")}`
+                    }
+                }
+            );
+            console.log("successfully created job request");
+            console.log(response);
+            callJobVacancyAPI();
+
+
+        } catch (e) {
+            console.log("jobs failed", e)
+
+            alert(e.message);
+        }
+    }
+    console.log("user datum", userData);
+    useEffect(() => { callJobVacancyAPI() }, [filterparam, searchVal]);
 
     return (
         <div id="page">
             <div className="job-filter">
-                <Filter title="Filter jobs" passFilteredDataFn={filterDataSet}/>
+                <Filter title="Filter jobs" userType="seeker" passFilteredDataFn={filterDataSet} />
             </div>
-            <NavigationBar active="job/candidate"/>
-            <StatsAI value="jobs"/>
-            
+            <NavigationBar active="jobs" />
+            <StatsAI value="jobs" />
+
             <div className="job-search">
-                {descriptionOn?
+                {descriptionOn ?
                     <div className="back-icon">
-                        <IconButton aria-label="back" onClick={()=>{OpenDesc(false)}} sx={{display: "flex", alignItems: "center", borderRadius: "50%", backgroundColor:"white", width: 35, height: 35}}>
-                            <ArrowBackIosIcon sx={{color: "black", position: "relative", left: "0.2rem"}}/>
+                        <IconButton aria-label="back" onClick={() => { OpenDesc(false) }} sx={{ display: "flex", alignItems: "center", borderRadius: "50%", backgroundColor: "white", width: 35, height: 35 }}>
+                            <ArrowBackIosIcon sx={{ color: "black", position: "relative", left: "0.2rem" }} />
                         </IconButton>
                     </div>
                     :
                     <></>
                 }
-                <SearchBar toSearch="Search Jobs" onSearch={searchBar}/> 
+                <SearchBar toSearch="Search Jobs" onSearch={searchBar} />
             </div>
-            <Jobs data={filtered} dataToParentFn={OpenDesc} desc_state={descriptionOn} userData={userData}/>
+            <Jobs data={jobVacancies} createJobRequest={CreateJobRequest} dataToParentFn={OpenDesc} desc_state={descriptionOn} userData={userData} />
         </div>
     )
 }

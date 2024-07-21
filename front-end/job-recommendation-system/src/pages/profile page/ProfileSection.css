@@ -41,3 +41,44 @@ filter: blur(3px);
     width: 100%;
     height: 10rem;
 }
+
+.message-from-server {
+    background-color: #e9ecefa1;
+    font-family: Inter-sb;
+    border-radius: 10px;
+    width: 15rem;
+    height: 2.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    bottom: 5rem;
+    left: 1.5rem;
+    backdrop-filter: blur(15px);
+    opacity: 1;
+    animation: cloud-save 500ms 1500ms ease-in-out forwards;
+}
+@keyframes cloud-save {
+    0%{
+        opacity: 1;
+    }
+    50%{
+        opacity: .5;
+    }
+    100%{
+        opacity: 0;
+    }
+}
+.message-from-server>p {
+    font-size: 1rem;
+}
+.cloud-ani{
+    height: 100%;
+    width: auto;
+    display: flex;
+    align-items: center;
+}
+.cloud-ani svg{
+    height: 70% !important;
+    width: auto;
+}

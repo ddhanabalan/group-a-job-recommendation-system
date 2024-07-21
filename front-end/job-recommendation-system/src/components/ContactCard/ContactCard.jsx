@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import getStorage from '../../storage/storage';
 import { useForm } from 'react-hook-form';
 import { TextField } from '@mui/material';
 import { userAPI } from '../../api/axios';
-import getStorage from '../../storage/storage';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import EmailIcon from '@mui/icons-material/Email';
@@ -13,49 +13,56 @@ import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import PublicIcon from '@mui/icons-material/Public';
 import '../FeatureBox/FeatureBox.css';
 import './ContactCard.css';
-export default function ContactCard({ data, contactData, subForm }) {
+export default function ContactCard({ access, data, contactData, reloadFn, showSuccessMsg, showFailMsg }) {
     const [isNotEditing, SetIsNotEditing] = useState(true);
-    const { register, formState: { errors }, getValues, trigger, setError } = useForm({ });
+    const [user, SetUser] = useState()
+    const { register, formState: { errors }, getValues, trigger, setError } = useForm({});
+    useEffect(() => {
+        SetUser(getStorage("userType"))
+    })
     async function updateContact(data) {
         SetIsNotEditing(true)
         console.log(data)
-        // try {
-        //     await userAPI.put('/seeker/details', data);
+        try {
+            const response = await userAPI.put(user === "seeker" ? '/seeker/details' : '/recruiter/details', data,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${getStorage("userToken")}`
+                    }
+                }
+            );
+            response.request.status === 200 && showSuccessMsg()
+            reloadFn()
+        } catch (e) {
+            console.log(e)
+            showFailMsg()
+        }
 
-        // } catch (e) {
-        //     console.log(e)
-        //     alert(e.message)
-        // }
-        subForm({ ...contactData, ...data })
     }
     const [shouldSubmit, setShouldSubmit] = useState(true)
     const onTrigger = async () => {
         const result = await trigger(["website", "contact_email"])
         result ? setShouldSubmit(true) : setShouldSubmit(false)
     }
-    console.log("data", contactData)
     return (
         <form className="feature-box" >
             < h4 className="feature-title" > {data.title}</h4 >
             <Stack direction="row" spacing={0} className='feature-actions'>
-                {isNotEditing ? [data.editIcon] &&
+                {access !== "viewOnly" && (isNotEditing ? [data.editIcon] &&
                     <IconButton aria-label="edit" onClick={() => SetIsNotEditing(false)}>
                         <EditIcon />
                     </IconButton> :
                     <IconButton aria-label="check" onClick={() => {
                         if (shouldSubmit) {
                             SetIsNotEditing(false)
-                            const data = getValues();
+                            const data = user === "seeker" ? getValues() : { contact_email: getValues("contact_email"), website: getValues("website") };
                             updateContact(data)
                         }
 
                     }}>
                         <CheckRoundedIcon />
-                    </IconButton>}
-                {/* {data.addIcon &&
-                    <IconButton aria-label="add">
-                        <AddCircleRoundedIcon />
-                    </IconButton>} */}
+                    </IconButton>)}
+
             </Stack>
             {
                 isNotEditing ?
@@ -66,12 +73,14 @@ export default function ContactCard({ data, contactData, subForm }) {
                             </IconButton>
                             <p className="contact-p">{contactData.contact_email ? contactData.contact_email : <span className='data-not-present-handle'>not linked</span>}</p>
                         </Stack>
-                        <Stack direction="row" spacing={1} className='contact-medium'>
-                            <IconButton aria-label="github" disabled>
-                                <GitHubIcon />
-                            </IconButton>
-                            <p className="contact-p">{contactData.github ? contactData.github : <span className='data-not-present-handle'>not linked</span>}</p>
-                        </Stack>
+                        {user === "seeker" &&
+                            <Stack direction="row" spacing={1} className='contact-medium'>
+                                <IconButton aria-label="github" disabled>
+                                    <GitHubIcon />
+                                </IconButton>
+                                <p className="contact-p">{contactData.github ? contactData.github : <span className='data-not-present-handle'>not linked</span>}</p>
+                            </Stack>
+                        }
                         <Stack direction="row" spacing={1} className='contact-medium'>
                             <IconButton aria-label="website" disabled>
                                 <PublicIcon />
@@ -101,20 +110,22 @@ export default function ContactCard({ data, contactData, subForm }) {
                                     })}>
                             </TextField>
                         </Stack>
-                        <Stack direction="row" spacing={1} className='contact-medium'>
-                            <IconButton aria-label="github" disabled>
-                                <GitHubIcon />
-                            </IconButton>
-                            <TextField className="personal-details-input profile-edit-bio contact-card-textfield" variant="outlined"
-                                defaultValue={contactData.github}
-                                placeholder='username'
-                                error={'github' in errors}
-                                {...register("github",
-                                    {
-                                        required: ""
-                                    })}>
-                            </TextField>
-                        </Stack>
+                        {user === "seeker" &&
+                            <Stack direction="row" spacing={1} className='contact-medium'>
+                                <IconButton aria-label="github" disabled>
+                                    <GitHubIcon />
+                                </IconButton>
+                                <TextField className="personal-details-input profile-edit-bio contact-card-textfield" variant="outlined"
+                                    defaultValue={contactData.github}
+                                    placeholder='username'
+                                    error={'github' in errors}
+                                    {...register("github",
+                                        {
+                                            required: ""
+                                        })}>
+                                </TextField>
+                            </Stack>
+                        }
                         <Stack direction="row" spacing={1} className='contact-medium'>
                             <IconButton aria-label="website" disabled>
                                 <PublicIcon />

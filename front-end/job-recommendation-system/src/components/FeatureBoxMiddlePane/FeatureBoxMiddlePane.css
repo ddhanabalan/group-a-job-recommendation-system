@@ -30,10 +30,24 @@
     height: 1px;
     width: 104%;
 }
-
+.overview-edit-input>div{
+    margin-top: 1rem;
+    border-radius: 10px;
+    min-height: 5rem !important;
+}
+.overview-formatted{
+    white-space: pre-wrap;
+    font-family: Inter-regular;
+}
 .openings-redirect-button {
     color: rgba(0, 0, 0, 0.748);
     cursor: pointer;
+}
+.openings-exception-msg{
+    margin: 1.5rem 0rem;
+    font-size: 1rem;
+    color: grey;
+    font-family: Inter-light-italic;
 }
 
 .data-exception-featurebox {
@@ -50,6 +64,7 @@
     left: 0;
     height: 225%;
 }
+
 
 .data-exception-featurebox p {
     font-size: .8rem;

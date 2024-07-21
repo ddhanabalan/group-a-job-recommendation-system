@@ -2,7 +2,7 @@
 services:
   mysql_server:
     build:
-      context: ./mysqldb
+      context: ./backend/mysqldb
       dockerfile: Dockerfile
     restart: always
     environment:
@@ -18,7 +18,7 @@ services:
 
   authapi:
     build:
-      context: ./auth
+      context: ./backend/auth
       dockerfile: Dockerfile
     ports:
       - "8000:8000"
@@ -26,7 +26,7 @@ services:
       mysql_server:
         condition: service_healthy
     volumes:
-      - ./auth/AuthAPI:/app
+      - ./backend/auth/AuthAPI:/app
     environment:
       SQL_HOST: mysql_server
       USER_API_HOST: userapi
@@ -37,7 +37,7 @@ services:
 
   userapi:
     build:
-      context: ./user
+      context: ./backend/user
       dockerfile: Dockerfile
     ports:
       - "8001:8000"
@@ -45,7 +45,7 @@ services:
       mysql_server:
         condition: service_healthy
     volumes:
-      - ./user/UserAPI:/app
+      - ./backend/user/UserAPI:/app
     environment:
       SQL_HOST: mysql_server
       AUTH_API_HOST: authapi
@@ -56,7 +56,7 @@ services:
 
   jobapi:
     build:
-      context: ./job
+      context: ./backend/job
       dockerfile: Dockerfile
     ports:
       - "8002:8000"
@@ -64,7 +64,7 @@ services:
       mysql_server:
         condition: service_healthy
     volumes:
-      - ./job/JobAPI:/app
+      - ./backend/job/JobAPI:/app
     environment:
       SQL_HOST: mysql_server
       AUTH_API_HOST: authapi
@@ -74,7 +74,7 @@ services:
         ipv4_address: 172.20.0.5
   utilsapi:
     build:
-      context: ./utils
+      context: ./backend/utils
       dockerfile: Dockerfile
     ports:
       - "8003:8000"
@@ -82,7 +82,7 @@ services:
       mysql_server:
         condition: service_healthy
     volumes:
-      - ./utils/UtilsAPI:/app
+      - ./backend/utils/UtilsAPI:/app
     networks:
       app_network:
         ipv4_address: 172.20.0.6
@@ -90,7 +90,7 @@ services:
 
   modelapi:
     build:
-      context: ./model
+      context: ./backend/model
       dockerfile: Dockerfile
     ports:
       - "8004:8000"
@@ -98,7 +98,7 @@ services:
       mysql_server:
         condition: service_healthy
     volumes:
-      - ./model/ModelAPI:/app
+      - ./backend/model/ModelAPI:/app
     environment:
       SQL_HOST: mysql_server
       AUTH_API_HOST: authapi
@@ -106,6 +106,25 @@ services:
     networks:
       app_network:
         ipv4_address: 172.20.0.7
+
+  frontend:
+    build:
+      context: ./front-end/job-recommendation-system
+      dockerfile: Dockerfile
+    ports:
+      - "80:4173"
+    depends_on:
+      mysql_server:
+        condition: service_healthy
+    volumes:
+      - ./front-end/job-recommendation-system/src:/app/src
+    environment:
+      SQL_HOST: mysql_server
+      AUTH_API_HOST: authapi
+      JOB_API_HOST: jobapi
+    networks:
+      app_network:
+        ipv4_address: 172.20.0.8
 
 networks:
   app_network:

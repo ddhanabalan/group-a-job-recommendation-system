@@ -1,30 +1,45 @@
-import { useState,useEffect } from 'react';
-import { v4 as uuid } from 'uuid';
+import { useState, useEffect } from 'react';
+import { useLocation, Navigate } from 'react-router-dom';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
-import {getStorage, setStorage} from '../../storage/storage';
-import { userAPI } from '../../api/axios';
+import { getStorage, setStorage } from '../../storage/storage';
+import { userAPI} from '../../api/axios';
+import Lottie from 'lottie-react';
 import FeatureBox from '../../components/FeatureBox/FeatureBox';
 import FeatureBoxMiddlePane from '../../components/FeatureBoxMiddlePane/FeatureBoxMiddlePane';
+import ExperienceBox from '../../components/ExperienceBox/ExperienceBox';
+import LanguageBox from '../../components/LanguageBox/LanguageBox';
+import LicenseBox from '../../components/LicenseBox/LicenseBox';
 import ProfileHead from '../../components/ProfileHead/ProfileHead';
 import ContactCard from '../../components/ContactCard/ContactCard';
+import AddPOI from '../../components/AddPOI/AddPOI';
 import AddSkills from '../../components/AddSkills/AddSkills';
 import NavigationBar from '../../components/NavigationBar/NavigationBar';
+import failAnimation from '../../images/fail-animation.json'
 import LoaderAnimation from '../../components/LoaderAnimation/LoaderAnimation';
+import cloudAnimation from '../../images/cloud-animation.json';
 import './ProfileSection.css';
 export default function ProfileSection({ data }) {
     const [newData, SetnewData] = useState(data);
     const [isNotEditing, SetIsNotEditing] = useState(true)
+    const { state } = useLocation();
+
+    const [redirectHome, SetRedirectHome] = useState(false);
+    const logOut = () => {
+        console.log('helo')
+        SetRedirectHome(true)
+    }
     const updateEditStatus = (value) => {
         SetIsNotEditing(value)
     }
     const redirectFn = (data) => {
         setStorage("userID", data.user_id)
         setStorage("username", data.username)
+        setStorage("userEmail", data.email)
         console.log("Users:", data)
         SetnewData(data)
     }
-  
+
     const [languages, setLanguages] = useState(null)
     const options = {
         method: 'GET',
@@ -38,25 +53,26 @@ export default function ProfileSection({ data }) {
     const languageAPI = async () => {
         try {
             const response = await axios.request(options);
-            console.log(response.data);
             setLanguages(response.data);
         } catch (error) {
             console.error(error);
         }
     }
-    useEffect(() => languageAPI, [])
-
+    useEffect(() => {
+        languageAPI()
+    }, [])
     const params = useParams();
     const user = params.username;
-    const callAPI = async () => {
+    const callAPI =  async () => {
         try {
+            console.log("hello i'm being called")
             const response = (user === undefined) ?
-                await userAPI.get(`/seeker/profile`,{
+                await userAPI.get(`/seeker/profile`, {
                     headers: {
                         'Authorization': `Bearer ${getStorage("userToken")}`
                     }
-                }):
-                await userAPI.get(`/seeker/profile/${user}`);
+                }) :
+                await userAPI.get(`/profile/${user}`);
             redirectFn(response.data)
         } catch (e) {
             console.log(e)
@@ -64,92 +80,113 @@ export default function ProfileSection({ data }) {
             alert(e.message)
         }
     }
-    useEffect(() => callAPI, []);
+    useEffect(() => {
+        const profileAPI = async () => {
+            try {
+                const response = (user === undefined) ?
+                    await userAPI.get(`/seeker/profile`, {
+                        headers: {
+                            'Authorization': `Bearer ${getStorage("userToken")}`
+                        }
+                    }) :
+                    await userAPI.get(`/profile/${user}`);
+                redirectFn(response.data)
+            } catch (e) {
+                console.log(e)
+
+                alert(e.message)
+            }
+        }
+        profileAPI()
+    }, []);
     const subForm = async (data) => {
-        SetnewData({...newData, city: data.city,first_name:data.first_name,last_name:data.last_name,country:data.country,bio:data.bio})
+        SetnewData({ ...newData, city: data.city, first_name: data.first_name, last_name: data.last_name, country: data.country, bio: data.bio, profile_picture: data.profile_picture, profile_banner_color: data.profile_banner_color })
         console.log("data", data);
         try {
-            await userAPI.put('/seeker/details', data,
+            const response = await userAPI.put('/seeker/details/', data,
                 {
                     headers: {
                         'Authorization': `Bearer ${getStorage("userToken")}`
                     }
                 }
             );
+            response.request.status === 200 && showSuccessMsg()
 
         } catch (e) {
             console.log(e)
+            showFailMsg()
             callAPI()
-            alert(e.message)
+            // alert(e.message)
         }
     }
-  
+
     const [isBodyBlur, SetIsBodyBlur] = useState(false)
-    const contacts = { mail: "amywilliams@gmail.com", github: "amywilliams", website: null }
     const blurBody = (state) => {
         state ? SetIsBodyBlur(true) : SetIsBodyBlur(false)
     }
-    const [skill, SetSkill] = useState('');
-    const [skills, SetSkills] = useState([{ tag: "software", id: uuid() }, { tag: "data science", id: uuid() }]);
-
-    const handleDeleteSkill = (id) => {
-        //accepts id of Domain tag and delete them from the array 
-        SetSkills(prevSkills =>
-            prevSkills.filter(e => e.id !== id))
-    };
-
-    const handleChangeSkill = (v) => {
-        //stores the Domain value from the input field as user types
-        SetSkill(v)
-    };
-
-    const handleSkill = (n) => {
-        //accepts a new domain value from the input field and updates the domains array to display the newly added domain and resets the input box value when user clicks the add button
-        if (n !== "") {
-            SetSkills([...skills, { tag: n, id: uuid() }]);
-            SetSkill('')
-        }
-    };
     const profileBodyClass = `profile-body-section ${isBodyBlur && 'body-blur'}`
-
+    const [successMsg, SetSuccessMsg] = useState(false)
+    const [failMsg, SetFailMsg] = useState(false)
+    const showSuccessMsg = () => {
+        SetSuccessMsg(true)
+        setTimeout(() => { SetSuccessMsg(false) }, 1500)
+    }
+    const showFailMsg = () => {
+        SetFailMsg(true)
+        setTimeout(() => { SetFailMsg(false) }, 1500)
+    }
     return (
         <>
+            {redirectHome && <Navigate to='/' />}
             {data ?
                 <div id="profile-page">
-                    <ProfileHead data={newData} blurFn={blurBody} subForm={subForm} isNotEditing={isNotEditing} setIsNotEditing={updateEditStatus} />
-                    <NavigationBar active="profile" />
+                    <ProfileHead data={newData} logOutFn={logOut} blurFn={blurBody} subForm={subForm} isNotEditing={isNotEditing} setIsNotEditing={updateEditStatus} />
+                    <NavigationBar active="profile" redirect={state} />
                     <div className={profileBodyClass}>
                         <div className="profile-pane profile-left-pane">
                             {/* <FeatureBox data={{ title: "At a Glance" }} /> */}
-                            <ContactCard data={{
-                                title: "Contacts and Profiles", addIcon: false, editIcon: true
-                            }} contactData={newData} subForm={subForm} />
+                            <ContactCard
+                                data={{ title: "Contacts and Profiles", addIcon: false, editIcon: true }}
+                                contactData={newData} reloadFn={callAPI} showSuccessMsg={showSuccessMsg} showFailMsg={showFailMsg} />
                         </div>
                         <div className="profile-pane profile-middle-pane">
-                            <FeatureBoxMiddlePane data={{ title: "Professional Experience", edit: true, isLanguage: false }}
-                                childData={[]} />
-                            <FeatureBoxMiddlePane data={{ title: "Formal Education", edit: true, isLanguage: false,cardData:{qualification_label:"Degree",qualification_provider:"School/College"} }}
-                                childData={[
-                                    { qualification: "Master of science - Computer Science", id: uuid(), qualification_provider: "Massachusetts Institute of Technology (MIT)", start_year: 2005, end_year: 2009 },
-                                    { qualification: "Master of science - Computer Science", id: uuid(), qualification_provider: "Massachusetts Institute of Technology (MIT)", start_year: 2005, end_year: 2009 }
-                                ]} />
-                            <FeatureBoxMiddlePane data={{ title: "Licenses and certifications ", edit: true, isLanguage: false, cardData: { qualification_label: "Name", qualification_provider: "Issuing organization" } }}
-                                childData={[
-                                    { qualification: "Master of science - Computer Science", id: uuid(), qualification_provider: "Massachusetts Institute of Technology (MIT)", start_year: 2005, end_year: 2009 },
-                                    { qualification: "Master of science - Computer Science", id: uuid(), qualification_provider: "Massachusetts Institute of Technology (MIT)", start_year: 2005, end_year: 2009 }
-                                ]} />
-                            {/* <FeatureBoxMiddlePane data={{ title: "Skills",editIcon:false }} /> */}
-                            <AddSkills id="profile-section-skills" value={skill} tags={skills} deleteFn={handleDeleteSkill} changeFn={handleChangeSkill} updateFn={handleSkill} data={{ title: "Skills", inputPlaceholder: "HTML" }} />
-                            <FeatureBoxMiddlePane data={{ title: "Languages", editIcon: true, isLanguage: true }}
+                            <ExperienceBox childData={newData.former_jobs} reloadFn={callAPI} showSuccessMsg={showSuccessMsg} showFailMsg={showFailMsg} />
+                            <FeatureBoxMiddlePane //component defaults to QualificationBox
+                                childData={newData.prev_education} reloadFn={callAPI}
+                                showSuccessMsg={showSuccessMsg} showFailMsg={showFailMsg}
+                            />
+                            <LicenseBox
+                                showSuccessMsg={showSuccessMsg} showFailMsg={showFailMsg}
+                                childData={newData.certificate} reloadFn={callAPI}
+                            />
+                            <AddSkills id="profile-section-skills" reloadFn={callAPI} newData={newData} showSuccessMsg={showSuccessMsg} showFailMsg={showFailMsg} data={{ title: "Skills", inputPlaceholder: "HTML" }} />
+
+                            <LanguageBox
+                                showSuccessMsg={showSuccessMsg}
+                                showFailMsg={showFailMsg}
+                                reloadFn={callAPI}
                                 languages={languages}
-                                childData={[
-                                    { language: "Malayalam", language_proficiency: "Proficient", id: uuid() },
-                                    { language: "English", language_proficiency: "Native or Bilingual Proficiency", id: uuid() }
-                                ]} />
+                                childData={newData.language}
+                            />
                             <div className="spacer-div" ></div>
+                            {successMsg &&
+                                <div className="message-from-server">
+                                    {/* <ConfBox message={"Changes saved"} animation={cloudAnimation} bgcolor="#90e0ef" /> */}
+                                    <p>Changes saved &emsp; </p>
+                                    <Lottie className="cloud-ani" animationData={cloudAnimation} loop={false} />
+                                </div>
+                            }
+                            {failMsg &&
+                                <div className="message-from-server" style={{ backgroundColor: "#f7cad0a1", width: '20rem' }}>
+                                    {/* <ConfBox message={"Changes saved"} animation={cloudAnimation} bgcolor="#90e0ef" /> */}
+                                    <p>Failed to update changes &emsp; </p>
+                                    <Lottie className="success-ani" animationData={failAnimation} loop={true} />
+                                </div>
+                            }
                         </div>
                         <div className="profile-pane profile-right-pane">
-                            <FeatureBox data={{ title: "Achievements", addIcon: true, editIcon: true }} />
+                            {/* <FeatureBox data={{ title: "Achievements", addIcon: true, editIcon: true }} /> */}
+                            <AddPOI callAPI={callAPI} showSuccessMsg={showSuccessMsg} showFailMsg={showFailMsg} />
                         </div>
                     </div>
                 </div>

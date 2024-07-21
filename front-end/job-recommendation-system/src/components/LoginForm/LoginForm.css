@@ -1,9 +1,8 @@
 .login_container {
     position: relative;
     width: fit-content;
-    height: 42rem;
+    height: inherit;
     align-self: flex-start;
-    margin-left:100px;
     padding: 20px 40px 250px 40px;
     border: none;
     border-radius: 20px;
@@ -11,23 +10,25 @@
     flex-direction: column;
     align-items: center;
     font-family: Inter-regular;
-    background: white;
+    background-color: rgba(255, 255, 255, 0.76);
+    backdrop-filter: blur(50px);
+    box-shadow: 0px 0px 20px 1px rgba(0, 0, 0, 0.2);
 }
 
-.login-details{
-    box-shadow: 0px 5px 12px 0px rgba(0, 0, 0, 0.2);  
+.login-details {
+    box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.2);
     height: max-content;
-    border-radius: 10px; 
-    width: fit-content ; 
-    display: flex; 
-    flex-direction: column; 
+    border-radius: 15px;
+    width: fit-content;
+    display: flex;
+    flex-direction: column;
     align-items: center;
     background-color: white;
     padding: 20px 20px 30px 20px;
 }
 
 .login-header {
-    font-size: 30px;
+    font-size: 1.75rem;
     font-family: Inter-black;
     margin-bottom: 1rem;
 }
@@ -39,14 +40,14 @@
     margin-top: 20px;
     font-size: 14px;
     font-family: Inter-b;
-    color: #2299F8 !important; 
+    color: #000000 !important;
 }
 
 .lg {
     align-self: start;
     font-size: 12px;
     font-family: Inter-b;
-    margin:0 0 .4em 0;
+    margin: 0 0 .4em 0;
 }
 
 .sigup-redirect {
@@ -54,6 +55,12 @@
     position: absolute;
     bottom: 1rem;
     font-family: Inter-b;
-    color: #2299F8 !important;
-    font-size: 14px ;
+    color: #000000 !important;
+    font-size: 14px;
+}
+
+@media only screen and (max-width: 800px) {
+    .sigup-redirect {
+        bottom: 20%;
+    }
 }
