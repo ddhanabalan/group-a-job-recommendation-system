@@ -33,7 +33,7 @@ export default function CandidateCard({ type = null, jobEntryId = null, crLink =
     }, [approval])
 
     console.log("experience", data.experience)
-    const candidateCardClass = `card job-card ${data.job_status === "approved" && 'approved-candidate-card'} ${data.job_status === "rejected" && 'rejected-candidate-card'}`
+    const candidateCardClass = `card job-card ${data.job_status === "approved" && 'approved-candidate-card ' || data.job_status === "rejected" && 'rejected-candidate-card' ||data.application_type === "invite" && 'invited-candidate-card '|| data.job_status === "applied" && 'applied-candidate-card '}`
     return (
         <div className={candidateCardClass} style={background} onClick={() => setProfile(true)}>
             <div className='job-card-div1'>
@@ -84,7 +84,7 @@ export default function CandidateCard({ type = null, jobEntryId = null, crLink =
                 <>
                 <div className="invite-status-div invite-status-pending">
                     <p>Invited</p>
-                    <div className="skill-status yellow"></div>
+                    <div className="skill-status blue"></div>
                 </div>
                 </>    
             }
