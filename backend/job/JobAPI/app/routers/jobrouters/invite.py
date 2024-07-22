@@ -82,7 +82,7 @@ async def read_job_invite(job_invite_id: int, authorization:str = Header(),db: S
 
 
 
-@job_invite_router.delete("/{job_invite_id}", status_code=status.HTTP_200_OK)
+@job_invite_router.delete("/delete/{job_invite_id}", status_code=status.HTTP_200_OK)
 async def delete_job_invite(
     job_invite_id: int, db: Session = Depends(get_db), authorization: str = Header(...)
 ):
@@ -96,10 +96,11 @@ async def delete_job_invite(
     return {"detail": "Job Invite deleted successfully"}
 
 
-@job_invite_router.delete("/{user_id}", status_code=status.HTTP_200_OK)
+@job_invite_router.delete("/user/{user_id}", status_code=status.HTTP_200_OK)
 async def delete_job_invite_by_user_id(
     user_id: int, db: Session = Depends(get_db), authorization: str = Header(...)
 ):
+    await check_authorization(authorization=authorization)
     deleted = jobcrud.invite.delete_by_user_id(db, user_id)
     if not deleted:
         raise HTTPException(

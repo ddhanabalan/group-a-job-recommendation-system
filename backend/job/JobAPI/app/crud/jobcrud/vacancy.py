@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from typing import List, Type, Optional
 
+from . import invite, request
 from .. import jobschema, jobmodel
 
 
@@ -109,7 +110,7 @@ def delete(db: Session, job_vacancy_id: int) -> bool:
 
 # Get all Data for model
 def get_all_for_model(
-    db: Session,
+        db: Session,
 ) -> List[Type[jobmodel.JobVacancy]] | []:
     """
     Retrieve all job vacancies from the database.py.
@@ -127,18 +128,18 @@ def get_all_for_model(
 
 
 def get_filtered_jobs(
-    db: Session,
-    emp_type: Optional[List[str]] = None,
-    loc_type: Optional[List[str]] = None,
-    location: Optional[List[str]] = None,
-    working_day: Optional[List[str]] = None,
-    salary: Optional[int] = None,
-    experience: Optional[List[str]] = None,
-    filter_job_id: Optional[List[str]] = None,
-    sort: Optional[str] = None,
-    order: Optional[str] = "asc",
-    limit: Optional[int] = None,
-    title: Optional[str] = None,
+        db: Session,
+        emp_type: Optional[List[str]] = None,
+        loc_type: Optional[List[str]] = None,
+        location: Optional[List[str]] = None,
+        working_day: Optional[List[str]] = None,
+        salary: Optional[int] = None,
+        experience: Optional[List[str]] = None,
+        filter_job_id: Optional[List[str]] = None,
+        sort: Optional[str] = None,
+        order: Optional[str] = "asc",
+        limit: Optional[int] = None,
+        title: Optional[str] = None,
 ) -> List[Type[jobschema.JobVacancySearch]]:
     """
     Retrieve job vacancies from the database, filtered by various criteria, with sorting and limit options.
@@ -211,3 +212,28 @@ def get_filtered_jobs(
     except SQLAlchemyError as e:
         print(e)
         return []
+
+
+def delete_by_user_id(
+        db: Session,
+        user_id: int, ):
+    """
+    Delete all job vacancies associated with a user.
+
+    Args:
+        db (Session): SQLAlchemy database session.
+        user_id (int): ID of the user to delete job vacancies for.
+
+    Returns:
+        bool: True if job vacancies were deleted successfully, False otherwise.
+    """
+    try:
+        allVacany = db.query(jobmodel.JobVacancy).filter(jobmodel.JobVacancy.user_id == user_id).all()
+        for i in allVacany:
+            invite.delete_by_vacancy_id(db, i.job_id)
+            request.delete_by_vacancy_id(db, i.job_id)
+            db.delete(i)
+        db.commit()
+        return True
+    except SQLAlchemyError:
+        return False

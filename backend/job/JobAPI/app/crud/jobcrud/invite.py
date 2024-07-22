@@ -72,6 +72,44 @@ def delete(db: Session, job_invite_id: int) -> bool:
         db.rollback()
         return False
 
+def delete_by_user_id(db: Session, user_id: int) -> bool:
+    """
+    Delete a job invite from the database.py by ID.
+
+    Args:
+        db (Session): SQLAlchemy database.py session.
+        job_invite_id (int): ID of the job invite to delete.
+
+    Returns:
+        bool: True if the job invite was deleted successfully, False otherwise.
+    """
+    try:
+        db.query(jobmodel.JobInvite).filter(jobmodel.JobInvite.user_id == user_id).delete()
+        db.commit()
+        return True
+    except SQLAlchemyError as e:
+        db.rollback()
+        return False
+
+def delete_by_vacancy_id(db: Session, job_id: int) -> bool:
+    """
+    Delete a job invite from the database.py by ID.
+
+    Args:
+        db (Session): SQLAlchemy database.py session.
+        job_invite_id (int): ID of the job invite to delete.
+
+    Returns:
+        bool: True if the job invite was deleted successfully, False otherwise.
+    """
+    try:
+        db.query(jobmodel.JobInvite).filter(jobmodel.JobInvite.job_id == job_id).delete()
+        db.commit()
+        return True
+    except SQLAlchemyError as e:
+        db.rollback()
+        return False
+
 def update(db: Session, job_invite_id: int, update_job_invite: dict) -> bool:
     """
     Update a job invite in the database.py.

@@ -134,3 +134,43 @@ def delete(db: Session, job_request_id: int) -> bool:
     except SQLAlchemyError as e:
         db.rollback()
         return False
+
+
+
+def delete_by_user_id(db: Session, user_id: int) -> bool:
+    """
+    Delete a job request from the database.py by ID.
+
+    Args:
+        db (Session): SQLAlchemy database.py session.
+        job_request_id (int): ID of the job request to delete.
+
+    Returns:
+        bool: True if the job request was deleted successfully, False otherwise.
+    """
+    try:
+        db.query(jobmodel.JobRequest).filter(jobmodel.JobRequest.user_id == user_id).delete()
+        db.commit()
+        return True
+    except SQLAlchemyError as e:
+        db.rollback()
+        return False
+
+def delete_by_vacancy_id(db: Session, job_id: int) -> bool:
+    """
+    Delete a job request from the database.py by ID.
+
+    Args:
+        db (Session): SQLAlchemy database.py session.
+        job_request_id (int): ID of the job request to delete.
+
+    Returns:
+        bool: True if the job request was deleted successfully, False otherwise.
+    """
+    try:
+        db.query(jobmodel.JobRequest).filter(jobmodel.JobRequest.job_id == job_id).delete()
+        db.commit()
+        return True
+    except SQLAlchemyError as e:
+        db.rollback()
+        return False

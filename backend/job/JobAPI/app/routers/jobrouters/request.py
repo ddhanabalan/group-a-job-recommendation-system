@@ -68,7 +68,7 @@ async def update_job_request(
 
 
 # Delete job request by ID
-@job_request_router.delete("/{job_request_id}")
+@job_request_router.delete("/request/{job_request_id}")
 async def delete_job_request(
     job_request_id: int, db: Session = Depends(get_db), authorization: str = Header(...)
 ):
@@ -83,7 +83,7 @@ async def delete_job_request(
 
 
 # Get job requests by user ID
-@job_request_router.delete("/{user_id}", status_code=status.HTTP_200_OK)
+@job_request_router.delete("/user/{user_id}", status_code=status.HTTP_200_OK)
 async def delete_job_request_by_user_id(
     user_id: int, db: Session = Depends(get_db), authorization: str = Header(...)
 ):
