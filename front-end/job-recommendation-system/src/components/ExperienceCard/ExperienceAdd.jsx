@@ -16,14 +16,13 @@ export default function ExperienceAdd({ submitFn, cancelFn }) {
         // console.log("formattedstart", formattedStartYear)
         const formattedEndYear = data.end_year ? format(new Date(data.end_year.year(), data.end_year.month()), 'yyyy') : '';
         // console.log("formattedEND", formattedEndYear)
-        submitFn({ ...data, start_year: formattedStartYear, end_year: formattedEndYear })
+        const watchFields = watch(["start_year", "end_year"]);
+        (watchFields[0]['$y'] <= watchFields[1]['$y']) && submitFn({ ...data, start_year: formattedStartYear, end_year: formattedEndYear })
 
     }
-    // watchField = watch(["start_year", "end_year"])
-
     useEffect(() => {
         const watchFields = watch(["start_year", "end_year"]);
-        watchFields[0] !== null && watchFields[1] !== null && (watchFields[0]['$y'] > watchFields[1]['$y']) && setError("end_year", { message: "end year should be greater than start year" })
+        watchFields[0] !== null && watchFields[0] !== undefined && watchFields[1] !== null && watchFields[1] !== undefined && (watchFields[0]['$y'] > watchFields[1]['$y']) && setError("end_year", { message: "End year must be later than start year." })
     }, [watch(["start_year", "end_year"])])
     return (
 
@@ -50,7 +49,7 @@ export default function ExperienceAdd({ submitFn, cancelFn }) {
                     {...register("company_name", {
                         required: "Company name cannot be empty"
                     })} />
-                <div className='qualification-year'>
+                <div className='qualification-year' style={{ marginBottom: '.5rem' }}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <Controller
                             name="start_year"
@@ -83,7 +82,7 @@ export default function ExperienceAdd({ submitFn, cancelFn }) {
                         />
                     </LocalizationProvider>
                     <p>-</p>
-                    <>
+                    <div style={{ width: '45%' }}>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
                             <Controller
                                 name="end_year"
@@ -96,7 +95,7 @@ export default function ExperienceAdd({ submitFn, cancelFn }) {
                                         onChange={(date) => {
                                             onChange(date);
                                         }}
-                                        sx={{ width: '45%' }}
+                                        sx={{ width: '100%' }}
                                         slotProps={{
                                             textField: {
                                                 size: 'small', InputLabelProps: { shrink: true }, placeholder: "2000", error: 'end_year' in errors,
@@ -114,8 +113,8 @@ export default function ExperienceAdd({ submitFn, cancelFn }) {
                                 )}
                             />
                         </LocalizationProvider>
-                        <p>{errors.end_year?.message}</p>
-                    </>
+                        <p style={{ color: 'red', position: 'absolute' }}>{errors.end_year&&errors.end_year.message !=="cannot be empty"&&errors.end_year.message}</p>
+                    </div>
                 </div>
 
             </div>
