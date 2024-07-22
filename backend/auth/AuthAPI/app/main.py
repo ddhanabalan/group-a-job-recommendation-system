@@ -35,6 +35,7 @@ from .utils import validate_user_update, send_verify, send_pwd_reset
 
 authmodel.Base.metadata.create_all(bind=engine)
 origins = [
+    "*",
     "http://career-go.centralindia.cloudapp.azure.com",
     "http://localhost.tiangolo.com",
     "https://localhost.tiangolo.com",

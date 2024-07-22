@@ -5,6 +5,8 @@ services:
       context: ./backend/mysqldb
       dockerfile: Dockerfile
     restart: always
+    ports:
+      - "3306:3306"
     environment:
       AUTHAPI_HOST: authapi
     networks:
