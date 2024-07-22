@@ -5,7 +5,7 @@ import JobCardExpanded from '../JobCardExpanded/JobCardExpanded';
 import AiJobs from '../../components/AiJobs/AiJobs';
 
 
-export default function Jobs({ data, dataType=null, dataToParentFn = null, createJobRequest = null, desc_state = null, userData }) {
+export default function Jobs({ data, dataType=null, dataToParentFn = null, createJobRequest = null, handleInvite=null, desc_state = null, userData }) {
 
     const finalInfo = [...data];
     console.log("final information to job card", finalInfo)
@@ -53,7 +53,7 @@ export default function Jobs({ data, dataType=null, dataToParentFn = null, creat
         <div className="cards-container">
 
             {descriptionOn ?
-                <JobCardExpanded data={selectedJob} createJobRequest={createJobRequest} userData={userData} />
+                <JobCardExpanded data={selectedJob} createJobRequest={createJobRequest} handleInvite={handleInvite} userData={userData} invite={selectedJob.invite_status?true:null}/>
                 : (
                     <>  
                         

@@ -14,17 +14,18 @@ import noApplicationsFiller from "../../images/no-applications-found.json";
 import careerGoLogo from "../../images/careergo_logo.svg";
 
 export default function ReviewApplications({ userType, invite = null }) {
-
+    console.log("user is ", userType)
     const link_data = useParams();
-    console.log("received from url", link_data)
+    console.log("received from rl", link_data)
     const COMPANYID = (userType === "employer" ? getStorage("userID") : (link_data.company_id ? link_data.company_id : getStorage("guestUserID")));
     const receivedData = useLocation();
-    const [userData, setUserData] = useState({ 'type': userType, 'skills': [] });
+    const [userData, setUserData] = useState({ 'id': getStorage("userID"),'type': userType, 'skills': [] });
     console.log("received data", receivedData)
     //const [selectedEntry, setEntry] = useState(null);
     const [selectedEntry, setEntry] = useState(receivedData["state"] ? receivedData.state.highlightedId || null : (link_data.job_id ? Number(link_data.job_id) : null));//userData is for knowing if employer or seeker and further passing it down to components
     //console.log("selected entry", selectedEntry);
     const [searchVal, setSearch] = useState("");
+    const [applicationFilter, setApplicationFilter] = useState({"applied": false, "invited": false, "rejected": false, "approved": false})
     //demoInfo is example vacancy profiles
     const [jobVacancies, setJobVacancies] = useState([]);
     const [jobApplicants, setApplicants] = useState([]);
@@ -54,25 +55,56 @@ export default function ReviewApplications({ userType, invite = null }) {
     const [filterstat, setFilter] = useState(false);
     const [filterparam, setParam] = useState({});
     const filtered = (jobVacancies.length != 0 ? jobVacancies.filter(id => id["skills"].map((tag) => (tag["skill"].toLowerCase().includes(searchVal.toLowerCase()))).filter(Boolean).length ? id : false) : []);
-
+    const [filteredApplicants, setFilteredApplicants] = useState([])
+    const [invitesSent, setInvitesSent] = useState([]);
+    let invitesReceived = [];
     //const filtered = []
     const [selectedJobEntry, setJobEntry] = useState(null);
     //const [filteredApplicants, setfilteredApplicants]=useState(profileInfo.filter(applicants=>(selectedJobEntry["applicationsReceived"].includes(applicants["applicantID"])?applicants:false)));
     const [sidebarState, setSideBar] = useState(false);
     const callJobVacancyAPI = async (companyId) => {
-
+        
         try {
-            if (userType === "seeker") {
+            
+            if (userType == "seeker") {
                 await Promise.all([GetSeekerSkills()]);
+                const invite_response = await jobAPI.get('/job_invite/user', { headers: { 'Authorization': `Bearer ${getStorage("userToken")}` } });
+                console.log("update job invites", invite_response);
+                const new_invite_response = await Promise.all(
+                    invite_response.data.map(async (e) => {
+                      const jobDetails = { job_vacancy_id: e.job_id, job_status: e.status, application_id: e.id, type: "invite" };
+                      return jobDetails;
+                    })
+                );
+                invitesReceived= new_invite_response;
+                console.log("invites came", invitesReceived)
             }
-
+            
             const response = await (userType === "employer" ? jobAPI.get(`/job_vacancy/company`, { headers: { 'Authorization': `Bearer ${getStorage("userToken")}` } }) : jobAPI.get(`/job_vacancy/company/${companyId}`));
+            //const second_response = await jobAPI.get(`/job_vacancy/company/${companyId}`)
             console.log("received job response", response)
+            
             const mod_response = response.data.map(e => ({ id: e.job_id, jobTitle: e.job_name, companyName: e.company_name, tags: e.tags, currency: e.salary.split('-')[0], salary: [e.salary.split('-')[1], e.salary.split('-')[2]], postDate: e.created_at.split('T')[0], last_date: e.last_date.split('T')[0], location: e.location, poi: e.job_position, empType: e.emp_type, exp: e.experience, workStyle: e.work_style, workingDays: e.working_days, jobDesc: e.job_desc, jobReq: e.requirement, skills: e.skills.length ? e.skills : [{ 'skill': "" }], applicationsReceived: e.job_seekers }))
+            if(userType=="seeker")
+            {   const invites = invitesReceived.map(e=>e.job_vacancy_id);
+                const new_mod_response = mod_response
+                                        .map(e => ({
+                                        ...e,
+                                        userApplication: ((((e.applicationsReceived).map(e => e.user_id)).includes(userData.id))?((e.applicationsReceived).filter(e => e.user_id == userData.id)):null),
+        
+                                        userInvited: invites.includes(e.job_id) && invitesReceived[invites.indexOf(e.job_id).job_status != "rejected"],
+                                        invite: (e.userInvited?invitesReceived[invites.indexOf(e.job_id)]: null)/*(invites.includes(e.job_id)?invitesReceived[invites.indexOf(e.job_id)]: null*/
+                                        }));
+                console.log("new mod rep", new_mod_response, invites)
+            setJobVacancies(new_mod_response);
+            }
+            else{
             setJobVacancies(mod_response);
+            }
             console.log(response);
             console.log(" after new job vacancies", mod_response);
             console.log("filtered", filtered);
+            
         } catch (e) {
             console.log("jobs failed", e)
 
@@ -101,6 +133,23 @@ export default function ReviewApplications({ userType, invite = null }) {
         }
 
     }
+
+    const statusFilter=()=>{
+        console.log("exec status", applicationFilter, "growing job appli", jobApplicants)
+        const filteredApplicants = jobApplicants.filter(applicant => {
+            // Filter keys where the value is true
+            const activeFilters = Object.keys(applicationFilter).filter(key => applicationFilter[key]);
+            // Check if the applicant's job_status is in the active filters
+            console.log("active filters", activeFilters)
+            if(activeFilters.length){
+                if(activeFilters.includes("invited") && applicant.application_type=="invite")return applicant;
+                else return (applicant.application_type=="request" && activeFilters.includes(applicant.job_status.toLowerCase()));  
+            }
+            else return applicant;
+        });
+        console.log("filtered appli", filteredApplicants)
+        setFilteredApplicants(filteredApplicants)
+        }
 
     /*const GetSeekerDetails = async ()=>{
         
@@ -166,23 +215,49 @@ export default function ReviewApplications({ userType, invite = null }) {
 
     const RequestJobApplications = async (applicantList) => {
         const modApplicantList = applicantList.map(e => e.user_id)
+        const inviteApplicants = [...new Set(invitesSent.filter(e => e.job_id == selectedEntry).map(f => ({ user_id: f.user_id, job_id: f.job_id, invite_id: f.id })))];
+        const inviteApplicantList = inviteApplicants.map(e=>e.user_id)
+        console.log("all invites", invitesSent)
+        console.log("applicant listing", applicantList)
+        console.log("invites received", inviteApplicantList)
 
         console.log("appli list", modApplicantList)
         try {
-            const response = await userAPI.post('/seeker/details/list', { "user_ids": modApplicantList }, {
+            const requests = await userAPI.post('/seeker/details/list', { "user_ids": modApplicantList }, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
             });
-            console.log("updated response", response)
-            const mod_response = response.data.map(e => ({ applicantID: e.user_id, username: e.username, candidateName: (e.first_name + " " + e.last_name), first_name: e.first_name, last_name: e.last_name, city: e.city, country: e.country, location: e.location, experience: e.experience, profile_picture: e.profile_picture, job_request_id: applicantList[response.data.indexOf(e)].id, job_status: applicantList[response.data.indexOf(e)].status }))
-
-            setApplicants(mod_response);
-            console.log("applicants receiveed", mod_response);
+            const invites = await userAPI.post('/seeker/details/list', { "user_ids": inviteApplicantList }, {
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+            console.log("updating invites",invites)
+            console.log("updated response", requests)
+            const mod_response = await Promise.all(requests.data.map(e => ({ applicantID: e.user_id, username: e.username, candidateName: (e.first_name + " " + e.last_name), first_name: e.first_name, last_name: e.last_name, city: e.city, country: e.country, location: e.location, experience: e.experience, profile_picture: e.profile_picture, job_request_id: applicantList[requests.data.indexOf(e)].id, job_status: applicantList[requests.data.indexOf(e)].status.toLowerCase(), application_type: "request" })))
+            const invite_response = await Promise.all(invites.data.map(e => ({ applicantID: e.user_id, username: e.username, candidateName: (e.first_name + " " + e.last_name), first_name: e.first_name, last_name: e.last_name, city: e.city, country: e.country, location: e.location, experience: e.experience, profile_picture: e.profile_picture, job_request_id: /*inviteApplicantList[invites.data.indexOf(e)].job_id*/invitesSent[invites.data.indexOf(e)].job_id, job_invite_id: invitesSent[invites.data.indexOf(e)].id,job_status:  /*applicantList[invites.data.indexOf(e)].status*/invitesSent[invites.data.indexOf(e)].status.toLowerCase(), application_type: "invite"  })))
+            const final_response = [...mod_response, ...invite_response]
+            setApplicants(final_response);
+            console.log("applicants receiveed", final_response , mod_response, invite_response);
 
         } catch (e) {
 
             console.log("applicants failed", e)
+
+            alert(e.message);
+        }
+    }
+
+    const callCompanyInvitesAPI = async ()=>{
+        try{
+            const invite_response = await jobAPI.get('/job_invite/company', { headers: { 'Authorization': `Bearer ${getStorage("userToken")}` } });
+            console.log("update job invites", invite_response);
+            setInvitesSent([...invite_response.data]);
+        }
+        catch (e) {
+
+            console.log("invite fetch failed", e)
 
             alert(e.message);
         }
@@ -194,6 +269,12 @@ export default function ReviewApplications({ userType, invite = null }) {
         }
         console.log("job status data", req_data)
         try {
+            const checkInvite = filteredApplicants.filter(e=>(e.applicantID === user_id && e.application_type ==="invite"));
+            console.log("checkInvite", checkInvite, filteredApplicants)
+            if(checkInvite.length) {
+                const r = await removeInvite(checkInvite[0].job_invite_id);
+                if(!r) throw new Error("Failed to delete rejected invite");
+            }
             const response = await jobAPI.put(`/job_request/${job_req_id}`, req_data, {
                 headers: {
                     'Content-Type': 'application/json',
@@ -202,7 +283,7 @@ export default function ReviewApplications({ userType, invite = null }) {
             });
             console.log("updated response", response)
             //const mod_response = response.data.map(e=>({applicantID: e.user_id, username: e.username, candidateName: (e.first_name + " " + e.last_name), first_name: e.first_name, last_name: e.last_name,city: e.city, country: e.country, location: e.location, experience: e.experience, profile_picture: e.profile_picture}))
-
+            callJobVacancyAPI(COMPANYID);
 
         } catch (e) {
 
@@ -210,6 +291,31 @@ export default function ReviewApplications({ userType, invite = null }) {
 
             alert(e.message);
         }
+    }
+
+    const removeInvite=async(job_invite_id)=>{
+      
+        
+        
+        try {
+            const response = await jobAPI.delete(`/job_invite/${job_invite_id}`,  {
+                headers: {
+                    'Authorization': `Bearer ${getStorage("userToken")}`
+                }
+            });
+            console.log("updated response", response)
+            //const mod_response = response.data.map(e=>({applicantID: e.user_id, username: e.username, candidateName: (e.first_name + " " + e.last_name), first_name: e.first_name, last_name: e.last_name,city: e.city, country: e.country, location: e.location, experience: e.experience, profile_picture: e.profile_picture}))
+            await callCompanyInvitesAPI();
+            return true;
+        } catch (e) {
+
+            console.log("failed to delete invite", e)
+
+            alert(e.message);
+            return false;
+        }
+    
+
     }
 
     //console.log("applicants confirmed", jobApplicants)
@@ -227,17 +333,21 @@ export default function ReviewApplications({ userType, invite = null }) {
         setEntry(entry);
     }
 
+    const handleApplicationFilter = (entry) => {
+        //function for passing selected job opening card from child component to parent componenet
+        setApplicationFilter(entry);
+    }
     const searchBar = (searchValue) => {
         setSearch(searchValue);
     }
     const expJob = (selection) => {
         //console.log("select", selection);
-        console.log("selected job vacncyt after mod", jobVacancies, "selection", selection)
+        console.log("selected job vacncyt after mod", jobVacancies, "selection", selection);
         const expEntry = jobVacancies.filter(e => (e["id"] === selection ? e : false));
         console.log("expEntry ", expEntry)
         setJobEntry(expEntry[0]);
         if (userData.type == "employer") console.log("yep done");
-        if (expEntry[0].applicationsReceived) RequestJobApplications(expEntry[0].applicationsReceived);
+        if (expEntry[0].applicationsReceived)RequestJobApplications(expEntry[0].applicationsReceived);
 
     }
     console.log("selected entry: ", selectedEntry, " selected job: ", selectedJobEntry);
@@ -246,8 +356,11 @@ export default function ReviewApplications({ userType, invite = null }) {
         setSideBar(true);
     }
     //console.log("filtered applicants",filteredApplicants);
-    useEffect(() => { callJobVacancyAPI(COMPANYID) }, []);//only runs during initial render
-    useEffect(() => {
+    useEffect(() => { callJobVacancyAPI(COMPANYID);
+                      if(userType == "employer") callCompanyInvitesAPI();
+     }, []);//only runs during initial render
+    useEffect(()=>{if(selectedJobEntry && selectedJobEntry.applicationsReceived)RequestJobApplications(selectedJobEntry.applicationsReceived)}, [invitesSent]);
+    useEffect(() => {console.log("jobVacancies" , jobVacancies)
         if (selectedEntry == null) {
             setEntry(jobVacancies[0] ? jobVacancies[0].id : null)
             setJobEntry(jobVacancies[0] ? jobVacancies[0] : null)
@@ -262,7 +375,12 @@ export default function ReviewApplications({ userType, invite = null }) {
             }
         }
     }, [jobVacancies])
-    useEffect(() => { if (jobVacancies.length != 0 && selectedEntry != null) expJob(selectedEntry) }, [selectedEntry]);
+    console.log("app filter status", applicationFilter)
+    useEffect(() => {if(selectedJobEntry && selectedJobEntry.applicationsReceived)RequestJobApplications(selectedJobEntry.applicationsReceived)}, [selectedJobEntry])
+    useEffect(() => {statusFilter()}, [applicationFilter, jobApplicants])
+    useEffect(() => { if (jobVacancies.length != 0 && selectedEntry != null) 
+        {setFilteredApplicants([]);                
+        expJob(selectedEntry)} }, [selectedEntry]);
 
     return (
         <div id="page" >
@@ -285,21 +403,21 @@ export default function ReviewApplications({ userType, invite = null }) {
             }
             <NavigationBar active={userType == "employer" ? "review-applications" : "none"} />
             <div className={`applications-box${filterstat ? " blur" : ""}${sidebarState ? " wide" : ""}`}>
+                {userType == "employer"?
                 <div className="application-filter">
-                    <button className="application-filter-btn application-filter-btn-apply application-filter-btn-approved"> Applied
-                    </button>
-                    <button className="application-filter-btn application-filter-btn-invite"> Invited
-                    </button>
-                    <button className="application-filter-btn application-filter-btn-approve"> Approved
-                    </button>
-                    <button className="application-filter-btn application-filter-btn-reject"> Rejected
-                    </button>
+                    {Object.keys(applicationFilter).map(e=>
+                    <button className={`application-filter-btn application-filter-btn-apply application-filter-btn${applicationFilter[e]?`-active-${e}`: ""} application-filter-btn${"-" + e.toLowerCase()}`} onClick={()=>{handleApplicationFilter({...applicationFilter, [e]: !applicationFilter[e]})}}> {e}
+                    </button>)
+                    }  
                 </div>
+                :
+                <></>
+                }
                 {userType == "employer" ?
 
-                    (selectedEntry != null && filtered.length != 0 && jobApplicants.length != 0 ?
-
-                        jobApplicants.map(e => <CandidateCard type="review" key={e.applicantID} reloadFn={RequestJobApplications} jobEntryId={selectedEntry} crLink={receivedData["pathname"]} jobApprovalFunction={jobApprovalAPI} data={e} />)
+                    (selectedEntry != null && filtered.length != 0 && filteredApplicants.length != 0 ?
+                        
+                        filteredApplicants.map(e => <CandidateCard type="review" key={e.applicantID} reloadFn={RequestJobApplications} applicantList={selectedJobEntry.applicationsReceived} jobEntryId={selectedEntry} crLink={receivedData["pathname"]} jobApprovalFunction={jobApprovalAPI} removeInvite={removeInvite} data={e} />)
                         :
                         (filtered.length == 0 ?
                             <div className="no-vacancies-message">
@@ -315,7 +433,7 @@ export default function ReviewApplications({ userType, invite = null }) {
                     )
                     :
                     (selectedJobEntry != null && filtered.length != 0 ?
-                        <JobCardExpanded data={selectedJobEntry} createJobRequest={CreateJobRequest} userData={userData} invite={selectedJobEntry.id == link_data.job_id ? invite : null} />
+                        <JobCardExpanded data={selectedJobEntry} createJobRequest={CreateJobRequest} userData={userData} invite={selectedJobEntry.userInvited?true: null} />
                         :
                         <></>
                     )

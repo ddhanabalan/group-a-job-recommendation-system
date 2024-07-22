@@ -5,7 +5,7 @@ import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import TextField from '@mui/material/TextField';
 import Chip from '@mui/material/Chip';
 import Box from '@mui/material/Box';
-import GoogleLocationSearch from '../GoogleLocationSearch/GoogleLocationSearch';
+import GoogleLocationSearch from '../GoogleLocationSearch/GoogleLocationSearchV2';
 import { useEffect } from 'react';
 
 export default function AddTags({ data, availableDomains, updateFn, changeFn, deleteFn, value, tags, locationFieldAutoValue, updatelocationFieldAutoValue, tagType = null, onChange = () => { }, fSize = "auto" }) {

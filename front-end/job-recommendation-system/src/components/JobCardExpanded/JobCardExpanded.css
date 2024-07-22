@@ -183,6 +183,14 @@
     background-color:#D9D9D9 !important ;
 }
 
+.invite-accepted-btn{
+    background-color: #2BA84A !important;
+}
+
+.invite-rejected-btn{
+    background-color: #f30707 !important;
+}
+
 .invite-buttons-container{
     display: flex;
     width: 90%;
@@ -195,6 +203,15 @@
     margin-top: 10%;
     margin-bottom: 10%;
     padding: 0.5rem 2rem;
+}
+
+.invite-banner{
+    background-color: rgb(222, 218, 210);
+    border-radius: 0.4rem;
+    margin-top: 2rem;
+    padding: 0.5rem 1rem;
+    font-family: "Inter-sb";
+    color: gray;
 }
 
 .accept{

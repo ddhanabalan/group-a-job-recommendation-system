@@ -24,7 +24,9 @@ export default function EmployerProfileSection({ data }) {
     const redirectFn = (data) => {
         setStorage("userID", data.user_id)
         setStorage("username", data.username)
+        setStorage("userEmail", data.email)
         setStorage("profile pic", data.profile_picture)
+
         console.log("Users:", data)
         SetnewData(data)
     }

@@ -9,7 +9,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import { Button, IconButton } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { set, useForm } from 'react-hook-form';
-import GoogleLocationSearch from '../GoogleLocationSearch/GoogleLocationSearch';
+import GoogleLocationSearch from '../GoogleLocationSearch/GoogleLocationSearchV2';
 import CreateFormTextFields from './CreateFormTextFields';
 import MultipleOptions from '../MultipleOptions/MultipleOptions';
 import AddTags from '../AddTags/AddTags';
@@ -37,9 +37,9 @@ export default function JobVacancyForm({ data = {} }) {
     const [submit, setSubmit] = useState(false);
     const [prefError, setPrefErrors] = useState({});
     //const [tag_state,setTagState] = useState(false);
-    const [googleLocationAutoField, SetGoogleLocationAutoField] = useState(dta.location || 'kerala');
+    const [googleLocationAutoField, SetGoogleLocationAutoField] = useState(dta.location);
     setValue("location", googleLocationAutoField);
-    const [location, SetLocation] = useState(dta.location || 'kerala');
+    const [location, SetLocation] = useState(dta.location);
     const [skill, SetSkill] = useState('');
 
     const [skills, SetSkills] = useState(dta.skills ? dta.skills.map(label => ({ tag: label.skill, id: label.id })) : []);
@@ -139,6 +139,7 @@ export default function JobVacancyForm({ data = {} }) {
     }
 
     const setGoogleAutoField = (v) => {
+        console.log("registered google auto location", v)
         SetGoogleLocationAutoField(v)
     }
 
@@ -165,7 +166,10 @@ export default function JobVacancyForm({ data = {} }) {
 
     const handleChangeLocation = (v) => {
         //stores the Location value from the input field as user types
+        console.log("registered location", v)
         SetLocation(v)
+        setValue("location", location);
+        console.log("entered into register")
     };
 
     const handleCheckboxChange = (checkedItems, checkLimit, dataType) => {
@@ -276,6 +280,7 @@ export default function JobVacancyForm({ data = {} }) {
 
     }
     useEffect(() => { if (submit === true) { navigate("../employer/review-applications") } }, [submit]);
+    
     useEffect(() => {skillsAPI()}, [skill])
     useEffect(() => {callCompanyAPI()}, [])
     useEffect(() => {console.log("yep i am", preferences.skills)
@@ -374,7 +379,7 @@ export default function JobVacancyForm({ data = {} }) {
                                 <div className="detail-divs detail-divs-multiple">
                                     <span className='details-header'>Location:</span>
                                     <div className='option-divs'>
-                                        <GoogleLocationSearch data={{ heading: "preferred job locations", inputPlaceholder: "Kerala", isLocation: true }}
+                                    <GoogleLocationSearch data={{ heading: "preferred job locations", inputPlaceholder: "Kerala", isLocation: true }}
                                             changeFn={handleChangeLocation}
                                             locationValue={location}
                                             value={googleLocationAutoField}
@@ -386,8 +391,9 @@ export default function JobVacancyForm({ data = {} }) {
                                             bordRad="7px"
                                             fntFam="Inter-regular"
                                             fntSize="15px"
-                                            {...register("location", { required: "location is required", })}
+                                            {...register("location", { required: "Location is required", })}
                                         />
+                                    
                                         <p className="error-message  vacancy-form-error">{errors.location?.message}</p>
                                     </div>
                                 </div>

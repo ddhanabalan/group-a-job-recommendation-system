@@ -2,7 +2,7 @@ import React from 'react'
 import { forwardRef, useState, useEffect } from 'react'
 import { TextField, MenuItem } from '@mui/material'
 
-const CreateFormTextFields = forwardRef(function CreateFormTextFields({ inputPlaceholder, textVal = "", bordRad = "7px", fontsz = "auto", wparam = "inherit", hparam = "auto", minrows = 1, multipleLine = false, type = "text", items = [], select = false, disabled = false, onChange=null, ...props }, ref) {
+const CreateFormTextFields = forwardRef(function CreateFormTextFields({ inputPlaceholder, textVal = "", bordRad = "7px", fontsz = "auto", wparam = "inherit", hparam = "auto", minrows = 1, multipleLine = false, type = "text",bgColor = "#D9D9D9", items = [], select = false, disabled = false, onChange=null, ...props }, ref) {
  const [textInput, setTextInput] = useState('');
  const handleTextInput=(event)=>{
   setTextInput(event.target.value);
@@ -22,7 +22,7 @@ const CreateFormTextFields = forwardRef(function CreateFormTextFields({ inputPla
         disableUnderline: true,
       }}
       sx={{
-        backgroundColor: "#D9D9D9",
+        backgroundColor: bgColor,
         paddingX: "10px ",
         paddingY: "5px 5px",
 

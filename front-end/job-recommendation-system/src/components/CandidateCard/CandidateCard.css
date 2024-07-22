@@ -54,12 +54,56 @@
     border-radius: 20px;
     padding: .1rem .1rem;
 }
+.invite-status-div{
+    height: fit-content;
+    width: 7rem;
+    background-color: white;
+    display: flex;
+    align-self: start;
+    align-items: center;
+    justify-content: space-around;
+    border-radius: 20px;
+    padding: .1rem .1rem;
+}
+
+.invite-status-div p{
+    font-size: .9rem;
+}
 .job-status-div p{
     font-size: .9rem;
+}
+
+.invite-status-pending{
+    display: flex;
+    flex-direction: row !important;
+    /*justify-content: center;*/
+    /*width: fit-content;*/
+    /*gap: 0.4rem !important;*/
+    /*padding: 0rem 0rem;*/
+
+}
+
+.invite-div{
+    align-self: flex-end;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.7rem;
+    padding-right: 1.3rem;
+    padding-left: 1rem;
+    padding-bottom: 1rem;
+}
+
+.card-status-div{
+    display: flex;
+    flex-direction: column;
+    gap: 20%;
+    justify-content: center;
 }
 .job-card-div1 {
     width: 80%;
 }
+
 
 .job-card {
     flex-direction: row-reverse;
