@@ -84,7 +84,7 @@ export default function CandidateCard({ type = null, jobEntryId = null, crLink =
                 <>
                 <div className="invite-status-div invite-status-pending">
                     <p>Invited</p>
-                    <div className="skill-status yellow"></div>
+                    <div className="skill-status blue"></div>
                 </div>
                 </>    
             }
