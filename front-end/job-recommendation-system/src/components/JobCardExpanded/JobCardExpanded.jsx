@@ -9,11 +9,12 @@ import { Button } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import IconButton from '@mui/material/IconButton';
+import FileOpenIcon from '@mui/icons-material/FileOpen';
 import CorporateFareRoundedIcon from '@mui/icons-material/CorporateFareRounded';
 import { getStorage } from '../../storage/storage';
 
 export default function JobCardExpanded({ data = [], createJobRequest = null, deleteJobRequest = null, userData, handleSub = null, handleInvite=null, type, invite=null }) {
-    console.log("data received by form", userData, "jobdata", data, "invite", invite)
+    console.log("data received by form", userData, "jobdata", data, "invite", invite, type, "checkword", data.invite?.job_status !=="approved", data.invite_status?.toLowerCase() === "pending" )
 
     //console.log(userData.appliedJobs.includes("4"))
     const [submit, setSubmit] = useState(false);
@@ -29,14 +30,26 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
 
     useEffect(() => { if (userData.type == "seeker" && type != "approval" && data.length != 0) {
         const appliedSeekers=data.applicationsReceived
-        if(data.userApplication?.length/*((appliedSeekers).map(e => e.user_id)).includes(userData.id)*/)
-        {setSubmit(true)
-        setUserJobRequest(data.userApplication[0]/*((appliedSeekers).filter(e => e.user_id == userData.id))[0]*/)}
-        // else
-        // {
-        //     setSubmit(false);
-        //     setUserJobRequest(null);
-        // }
+        if(data.userApplication?.length /*((appliedSeekers).map(e => e.user_id)).includes(userData.id)*/)
+        {   const r = data.userApplication.filter(e=>e.status!=="rejected");
+            console.log("rejcted ", r, "data", data)
+            if(r.length)
+            {   setSubmit(true)
+                setUserJobRequest(r[0]/*((appliedSeekers).filter(e => e.user_id == userData.id))[0]*/)   
+                
+            }
+            else{
+                setSubmit(false);
+                setUserJobRequest(null);
+                
+            }
+        }
+
+         else
+         {
+             setSubmit(false);
+             setUserJobRequest(null);
+         }
     } }, [data]) //UNCOMMENT THIS AFTER BACKEND FIX FOR MISSING DATA IN THE RESPONSE(i.e.applicationsReceived, tags, skills) 
     //console.log(userData.id, "applied=", submit, (data.applicationsReceived)?.map(e=>e.user_id) || "", "status", ((data.applicationsReceived)?.map(e=>e.user_id)).includes(userData.id), "submit status", submit)
 
@@ -152,6 +165,15 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
                                         </Button>
                                     </div>
                                 }
+                                {data.status == "rejected" &&
+                                    <div className="cancel-application-button">
+                                        <Link to={`/seeker/openings/${data.companyUsername}/${data.id}`}>
+                                        <Button variant="outlined"  sx={{ color: "black", border: "1px solid #254CE1" }} endIcon={<FileOpenIcon />}>
+                                            <p>View Vacancy</p>
+                                        </Button>
+                                        </Link>
+                                    </div>
+                                }
                             </>
 
                             :
@@ -161,7 +183,7 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
 
                         {userData.type == "employer" || type == "approval" || invite ?
                             (
-                                invite && (data.invite?.job_status !=="approved" || true) && (data.invite_status.toLowerCase() === "pending")?
+                                invite && ((data.invite && data.invite.job_status !=="approved") || (data.invite_status && data.invite_status.toLowerCase() === "pending" || false))?
                                  <>
                                  <div className='invite-banner'>
                                  <p>You have been invited for an interview</p>

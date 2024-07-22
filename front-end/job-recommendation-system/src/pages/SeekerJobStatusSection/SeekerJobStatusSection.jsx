@@ -23,6 +23,7 @@ export default function SeekerJobStatusSection({userType}) {
     console.log("received data",receivedData)
     //const [selectedEntry, setEntry] = useState(null);
     const [selectedEntry, setEntry] = useState(receivedData["state"]?receivedData.state.highlightedId || null: null);//userData is for knowing if employer or seeker and further passing it down to components
+    const [selectedEntryType, setEntryType] = useState(receivedData["state"]?receivedData.state.highlightedEntryType || null: null)
     //console.log("selected entry", selectedEntry);
     const [searchVal, setSearch] = useState("");
     //demoInfo is example vacancy profiles
@@ -236,43 +237,50 @@ export default function SeekerJobStatusSection({userType}) {
         setParam({...fdata});
     }
     //console.log("filter parameters", filterparam);
-    const chooseEntry =(entry)=>{
+    const chooseEntry =(entry,entryType)=>{
         //function for passing selected job opening card from child component to parent componenet
-        setEntry(entry);
+        console.log("entry", entry, "entryType", entryType)
+        if(entryType)
+        {setEntry(entry);
+        setEntryType(entryType);}
     }
 
     const searchBar =(searchValue)=>{
         setSearch(searchValue);
     }
-    const expJob=(selection)=>{
-        //console.log("select", selection);
+    const expJob=(selection, selectionType="request")=>{
+        console.log("select", selection, selectionType);
+        
+        const selectionKey = selectionType==="invite"?"job_invite_id":"job_req_id";
         console.log("selected job vacncyt after mod", jobVacancies, "selection", selection)
-        const expEntry = jobVacancies.filter(e=>(e["id"]===selection?e:false));
+        const expEntry = jobVacancies.filter(e=>(e[selectionKey]===selection?e:false));
         console.log("expEntry ", expEntry)
         setJobEntry(expEntry[0]);
         if(userData.type == "employer")console.log("yep done");
         
         
     }
-    console.log("selected entry: ", selectedEntry, " selected job: ", selectedJobEntry);    
+    console.log("selected entry: ", selectedEntry, "selected entry type:", selectedEntryType," selected job: ", selectedJobEntry);    
     
     const listToDescParentFunc=()=>{
         setSideBar(true);
     }
     //console.log("filtered applicants",filteredApplicants);
     useEffect(() => {callJobVacancyAPI(COMPANYID)}, []);//only runs during initial render
-    useEffect(()=>{if(selectedEntry==null)
-        {setEntry(jobVacancies[0]?jobVacancies[0].id:null)
+    useEffect(()=>{if(selectedEntry==null && selectedEntryType==null)
+        {
          setJobEntry(jobVacancies[0]?jobVacancies[0]:null)
+         setEntryType(jobVacancies[0]?jobVacancies[0].type: null)
+         setEntry(jobVacancies[0]?(jobVacancies[0].type === "invite"?jobVacancies[0].job_invite_id:jobVacancies[0].job_req_id):null)
          console.log("job entry refreshed", jobVacancies)
         }
         else{
             //setJobEntry(jobVacancies[selectedEntry]);
             if(jobVacancies.length!=0)
-            {expJob(selectedEntry);
+            {expJob(selectedEntry, selectedEntryType);
             console.log("job entry refreshed", jobVacancies)}
         }},[jobVacancies])
-    useEffect(()=>{if(jobVacancies.length!=0 && selectedEntry!=null)expJob(selectedEntry)},[selectedEntry]);
+    useEffect(()=>{if(jobVacancies.length!=0 && selectedEntry!=null && selectedEntryType!=null)expJob(selectedEntry, selectedEntryType)},[selectedEntry]);
     //useEffect(() => {if(Object.keys(newVacancy).length !=0)setJobVacancies([...jobVacancies, newVacancy]);}, [newVacancy])
     console.log("updated vacancies", jobVacancies)
 
@@ -284,7 +292,7 @@ export default function SeekerJobStatusSection({userType}) {
                 :
                 <></>
             }*/}
-                <OpeningsListBar data={jobVacancies} userType={userType} userID={COMPANYID} pageType="review" chooseEntry={chooseEntry} searchBar={searchBar} listToDescParentFunc={listToDescParentFunc} preselectedEntry={selectedEntry} filterFunc={filterStateSet} />
+                <OpeningsListBar data={jobVacancies} userType={userType} userID={COMPANYID} pageType="review" chooseEntry={chooseEntry} seekerJobs={true} searchBar={searchBar} listToDescParentFunc={listToDescParentFunc} preselectedEntry={selectedEntry} filterFunc={filterStateSet} />
             </div>
             {filterstat?
             <div className="filter enabled">
@@ -298,7 +306,7 @@ export default function SeekerJobStatusSection({userType}) {
             
                 
                 {selectedEntry!=null /*&& filtered.length!=0*/ && jobVacancies.length!=0?
-                    <JobCardExpanded data={selectedJobEntry}  deleteJobRequest={deleteJobRequestAPI} userData={userData} type="approval" invite={selectedJobEntry.type=="invite"?true:false} handleInvite={handleInvite}/>
+                    <JobCardExpanded data={selectedJobEntry}  deleteJobRequest={deleteJobRequestAPI} userData={userData} type="approval" invite={selectedJobEntry?(selectedJobEntry.type=="invite"?true:false):false} handleInvite={handleInvite}/>
                     :
                     <div className="no-job-applications-message">
                             <img className="careergo-web-logo" src={careerGoLogo}/>
