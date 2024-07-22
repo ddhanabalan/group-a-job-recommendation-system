@@ -1,3 +1,4 @@
+import httpx
 from fastapi import APIRouter, Depends, HTTPException, status, Query, Header
 from typing import Type, List, Optional
 from .. import (
@@ -77,6 +78,17 @@ async def create_job_vacancy(
     for _ in skill:
         job_skill_data = jobschema.JobSkillsCreate(job_id=job_id, skill=_)
         jobcrud.skills.create(db, job_skill_data)
+
+    job_model = jobschema.JobDetails(**data)
+    with httpx.AsyncClient() as client:
+        response = await client.post(
+            "http://172.20.0.5:8000/job/input",
+            json=job_model.dict(),
+        )
+        if response.status_code != status.HTTP_200_OK:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Error Occured"
+            )
 
     return {"details": "Job Created"}
 
@@ -161,7 +173,17 @@ async def update_job_vacancy(
             )
     return {"details": "Job Vacancy Updated successfully"}
 
-
+@job_vacancy_router.delete("/user/{user_id}")
+async def delete_job_vacancy_by_user_id(
+    user_id: int, db: Session = Depends(get_db), authorization: str = Header(...)
+):
+    await check_authorization(authorization=authorization, user_type="recruiter")
+    if not jobcrud.vacancy.delete_by_user_id(db, user_id):
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Data not deleted from Database",
+        )
+    return {"details": "Job Vacancy Deleted successfully"}
 # Delete job vacancy by ID
 @job_vacancy_router.delete("/{job_vacancy_id}")
 async def delete_job_vacancy(
@@ -177,6 +199,18 @@ async def delete_job_vacancy(
 
     # Delete associated skills
     if not jobcrud.skills.delete_by_vacancy_id(db, job_vacancy_id):
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Data not deleted from Database",
+        )
+
+    if not jobcrud.invite.delete_by_vacancy_id(db, job_vacancy_id):
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Data not deleted from Database",
+        )
+
+    if not jobcrud.request.delete_by_vacancy_id(db, job_vacancy_id):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Data not deleted from Database",

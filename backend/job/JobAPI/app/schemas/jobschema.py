@@ -119,3 +119,33 @@ class JobInvite(JobInviteCreate):
     id: Optional[int] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
+
+
+class JobDetails(BaseModel):
+    job_id: Optional[int]
+    job_name: Optional[str]
+    job_position: Optional[str]
+    company_name: Optional[str]
+    city: Optional[str]
+    work_style: Optional[str]
+    job_description: Optional[str]
+
+
+class JobDetails(BaseModel):
+    job_id: Optional[int]
+    job_name: Optional[str]
+    job_position: Optional[str]
+    company_name: Optional[str]
+    city: Optional[str]
+    work_style: Optional[str]
+    job_description: Optional[str]
+
+
+class JobDetails(BaseModel):
+    job_id: Optional[int]
+    job_name: Optional[str]
+    job_position: Optional[str]
+    company_name: Optional[str]
+    city: Optional[str]
+    work_style: Optional[str]
+    job_description: Optional[str]

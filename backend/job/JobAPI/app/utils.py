@@ -80,7 +80,7 @@ async def get_seeker_details(user_id:int,authorization: str = Header(...)) -> di
     headers = {"Authorization": authorization}
     async with httpx.AsyncClient() as client:
         response = await client.get(
-            f"http://{USER_API_HOST}:{PORT}/seeker/info/{user_id}/", headers=headers
+            f"http://{USER_API_HOST}:{PORT}/seeker/info/{user_id}", headers=headers
         )
         if response.status_code != status.HTTP_200_OK:
             raise HTTPException(
