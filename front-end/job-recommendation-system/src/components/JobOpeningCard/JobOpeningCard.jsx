@@ -101,7 +101,7 @@ export default function JobOpeningCard({ data, type = null, highlighted = null, 
                                     <div className="skill-status blue"></div>
                                 </div>
                                 : <>
-                                    {data.status === "rejected" &&
+                                    {data.status === "rejected"/*data.userApplication?data.userApplication[0].status === "rejected":null*/ &&
                                         <div className="job-status-div job-status-reject job-status-opening-card">
                                             <p>Rejected</p>
                                             <div className="skill-status red"></div>
