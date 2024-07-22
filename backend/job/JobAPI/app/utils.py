@@ -35,11 +35,11 @@ async def check_authorization(
 async def get_user_type(username: str) -> str:
     async with httpx.AsyncClient() as client:
         response = await client.get(
-            f"http://{AUTH_API_HOST}:{PORT}/user_type/{username}"
+            f"http://{AUTH_API_HOST}:{PORT}/user_type/{username}/"
         )
         if response.status_code != status.HTTP_200_OK:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="Error Occured"
+                status_code=status.HTTP_404_NOT_FOUND, detail="Email Sending Failed"
             )
         print(response.json())
         return response.json()["user_type"]

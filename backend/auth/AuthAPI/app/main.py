@@ -382,7 +382,7 @@ async def register(
             )
 
     await send_verify(
-        token=create_token({"sub": user_db.username, "token":create_token({"sub": user_db.username, "type": "emailVerify"},secret_key=user.hash_key,)}),
+        token=create_token({"sub": user_db.username, "token":create_token({"sub": user_db.username, "type": "emailVerify"},secret_key=user_db.hash_key,)}),
         username=user_db.username,
         to_email=user_db.email,
     )
