@@ -1,4 +1,5 @@
 import { useForm, Controller } from 'react-hook-form';
+import { useEffect } from 'react';
 import TextField from '@mui/material/TextField';
 import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
@@ -9,7 +10,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { format } from 'date-fns';
 export default function ExperienceAdd({ submitFn, cancelFn }) {
-    const { register, formState: { errors }, handleSubmit, control } = useForm({ mode: 'onTouched' });
+    const { register, formState: { errors }, handleSubmit, control, setError, watch } = useForm({ mode: 'onTouched' });
     const formatData = (data) => {
         const formattedStartYear = data.start_year ? format(new Date(data.start_year.year(), data.start_year.month()), 'yyyy') : '';
         // console.log("formattedstart", formattedStartYear)
@@ -18,6 +19,12 @@ export default function ExperienceAdd({ submitFn, cancelFn }) {
         submitFn({ ...data, start_year: formattedStartYear, end_year: formattedEndYear })
 
     }
+    // watchField = watch(["start_year", "end_year"])
+
+    useEffect(() => {
+        const watchFields = watch(["start_year", "end_year"]);
+        watchFields[0] !== null && watchFields[1] !== null && (watchFields[0]['$y'] > watchFields[1]['$y']) && setError("end_year", { message: "end year should be greater than start year" })
+    }, [watch(["start_year", "end_year"])])
     return (
 
         <form className='qualification-add-form qualification-card' noValidate autoComplete='on' onSubmit={handleSubmit(formatData)}>
@@ -58,51 +65,57 @@ export default function ExperienceAdd({ submitFn, cancelFn }) {
                                     }}
                                     sx={{ width: '45%' }}
                                     slotProps={{
-                                        textField: { size: 'small', InputLabelProps: { shrink: true }, placeholder: "2000" }
+                                        textField: {
+                                            size: 'small', InputLabelProps: { shrink: true }, placeholder: "2000", error: 'start_year' in errors,
+                                            ...register("start_year", {
+                                                required: "cannot be empty"
+                                            })
+                                        }
                                     }}
                                     renderInput={(params) =>
                                         <TextField className='qualification-add-p'
                                             {...params}
                                             variant="outlined"
-                                            error={'start_year' in errors}
-                                            {...register("start_year", {
-                                                required: "cannot be empty"
-                                            })} />
+                                        />
                                     }
                                 />
                             )}
                         />
                     </LocalizationProvider>
                     <p>-</p>
-                    <LocalizationProvider dateAdapter={AdapterDayjs}>
-                        <Controller
-                            name="end_year"
-                            control={control}
-                            defaultValue={null}
-                            render={({ field: { onChange, value } }) => (
-                                <DatePicker label="End year" views={['year']}
-                                    disableFuture
-                                    value={value}
-                                    onChange={(date) => {
-                                        onChange(date);
-                                    }}
-                                    sx={{ width: '45%' }}
-                                    slotProps={{
-                                        textField: { size: 'small', InputLabelProps: { shrink: true }, placeholder: "2000" }
-                                    }}
-                                    renderInput={(params) =>
-                                        <TextField className='qualification-add-p'
-                                            {...params}
-                                            variant="outlined"
-                                            error={'end_year' in errors}
-                                            {...register("end_year", {
-                                                required: "cannot be empty"
-                                            })} />
-                                    }
-                                />
-                            )}
-                        />
-                    </LocalizationProvider>
+                    <>
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <Controller
+                                name="end_year"
+                                control={control}
+                                defaultValue={null}
+                                render={({ field: { onChange, value } }) => (
+                                    <DatePicker label="End year" views={['year']}
+                                        disableFuture
+                                        value={value}
+                                        onChange={(date) => {
+                                            onChange(date);
+                                        }}
+                                        sx={{ width: '45%' }}
+                                        slotProps={{
+                                            textField: {
+                                                size: 'small', InputLabelProps: { shrink: true }, placeholder: "2000", error: 'end_year' in errors,
+                                                ...register("end_year", {
+                                                    required: "cannot be empty"
+                                                })
+                                            }
+                                        }}
+                                        renderInput={(params) =>
+                                            <TextField className='qualification-add-p'
+                                                {...params}
+                                                variant="outlined" />
+                                        }
+                                    />
+                                )}
+                            />
+                        </LocalizationProvider>
+                        <p>{errors.end_year?.message}</p>
+                    </>
                 </div>
 
             </div>
