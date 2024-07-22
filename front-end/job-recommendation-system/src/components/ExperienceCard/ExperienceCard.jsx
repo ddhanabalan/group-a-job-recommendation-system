@@ -99,8 +99,6 @@ export default function ExperienceCard({ access, data, deleteFn, submitFn }) {
                                     message: "Company name should be at most 128 characters long."
                                 }
                             })} />
-                            <p style={{ color: 'red' }}>{errors.company_name && errors.company_name.message !== "cannot be empty" && errors.company_name.message}</p>
-                        </div>
                         <div className='qualification-year' style={{ marginBottom: '.5rem' }}>
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <Controller

@@ -65,42 +65,28 @@ export default function QualificationCard({ access, data, deleteFn, submitFn }) 
                 <form className='qualification-add-form qualification-card' noValidate autoComplete='on' onSubmit={handleSubmit(editData)}>
                     <div className="qualification-card-image"></div>
                     <div className="qualification-card-content">
-                        <div style={{ width: '100%', marginBottom: '1rem', position: 'relative' }}>
-                            <TextField className='qualification-add-h2' defaultValue={data.education_title}
-                                sx={{ width: '100%' }}
-                                placeholder="Ex: B.Tech in Electronics"
-                                variant="outlined"
-                                label="Course/Degree"
-                                InputLabelProps={{ shrink: true }}
-                                size='small'
-                                error={'education_title' in errors}
-                                {...register("education_title", {
-                                    required: "qualification cannot be empty",
-                                    pattern: {
-                                        value: /^.{0,128}$/,
-                                        message: "Course/Degree should be at most 128 characters long."
-                                    }
-                                })} />
-                            <p style={{ color: 'red' }}>{errors.education_title && errors.education_title.message !== "cannot be empty" && errors.education_title.message}</p>
-                        </div>
-                        <div style={{ width: '100%', marginBottom: '1rem', position: 'relative' }}>
-                            <TextField className='qualification-add-h3' defaultValue={data.education_provider}
-                                sx={{ width: '100%' }}
-                                placeholder="Ex: Harvard University"
-                                variant="outlined"
-                                label="School/College"
-                                InputLabelProps={{ shrink: true }}
-                                size='small'
-                                error={'education_provider' in errors}
-                                {...register("education_provider", {
-                                    required: "qualification cannot be empty",
-                                    pattern: {
-                                        value: /^.{0,128}$/,
-                                        message: "School/College should be at most 128 characters long."
-                                    }
-                                })} />
-                            <p style={{ color: 'red' }}>{errors.education_provider && errors.education_provider.message !== "cannot be empty" && errors.education_provider.message}</p>
-                        </div>
+                        <TextField className='qualification-add-h2' defaultValue={data.education_title}
+                            sx={{ marginBottom: '.7rem' }}
+                            placeholder="Ex: B.Tech in Electronics"
+                            variant="outlined"
+                            label="Course/Degree"
+                            InputLabelProps={{ shrink: true }}
+                            size='small'
+                            error={'education_title' in errors}
+                            {...register("education_title", {
+                                required: "qualification cannot be empty"
+                            })} />
+                        <TextField className='qualification-add-h3' defaultValue={data.education_provider}
+                            sx={{ marginBottom: '.7rem' }}
+                            placeholder="Ex: Harvard University"
+                            variant="outlined"
+                            label="School/College"
+                            InputLabelProps={{ shrink: true }}
+                            size='small'
+                            error={'education_provider' in errors}
+                            {...register("education_provider", {
+                                required: "qualification cannot be empty"
+                            })} />
                         <div className='qualification-year' style={{ marginBottom: '.5rem' }}>
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <Controller
