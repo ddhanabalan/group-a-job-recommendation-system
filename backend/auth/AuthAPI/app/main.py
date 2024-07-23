@@ -528,23 +528,22 @@ async def delete_user(
     authorization: str = Header(...),
     db: Session = Depends(get_db),
 ):
-    with httpx.AsyncClient() as client:
-        response = await client.delete(
-            url=f"http://{USER_API_HOST}:{PORT}/{user.user_type}/details",
-            headers={"Authorization": {authorization}},
+    response = await httpx.AsyncClient().delete(
+        url=f"http://{USER_API_HOST}:{PORT}/{user.user_type}/details",
+        headers={"Authorization": {authorization}},
+    )
+    res_data = response.json()
+    if res_data is None:
+        raise HTTPException(
+            status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
+            detail="User Init was not Successful",
         )
-        res_data = response.json()
-        if res_data is None:
-            raise HTTPException(
-                status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
-                detail="User Init was not Successful",
-            )
-        res = authcrud.delete(db=db, user_id=user.user_id)
-        if not res:
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail="Data Deletion Failed",
-            )
+    res = authcrud.delete(db=db, user_id=user.user_id)
+    if not res:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail="Data Deletion Failed",
+        )
     return {"detail": "deleted successfully"}
 
 
@@ -558,7 +557,7 @@ async def update_user(
     update_details = user_update.dict(exclude_unset=True)
     password = user_update.pop("password", None)
     if update_details is not None:
-        response = await httpx.AsyncClient().post(
+        response = await httpx.AsyncClient().put(
             url=f"http://{USER_API_HOST}:{PORT}/{user.user_type}/details",
             headers={"Authorization": authorization},
             json=update_details,
