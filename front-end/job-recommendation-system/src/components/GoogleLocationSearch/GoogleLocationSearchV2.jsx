@@ -8,6 +8,7 @@ import Typography from '@mui/material/Typography';
 import parse from 'autosuggest-highlight/parse';
 import { debounce } from '@mui/material/utils';
 import { forwardRef, useState } from 'react';
+import { v4 as uuid } from 'uuid';
 import axios from 'axios';
 
 // This key was created specifically for the demo in mui.com.
@@ -16,7 +17,7 @@ import axios from 'axios';
 
 const autocompleteService = { current: null };
 
-const GoogleLocationSearch = forwardRef(function GoogleLocationSearch({ data, changeFn, locationValue, value, updateValue, textFieldType = "standard", disUnderline = false, textBgColor = "#D9D9D9", textPad = "0px", bordRad = "0px", fntFam = "auto", fntSize = "auto", ...props }, ref) {
+const GoogleLocationSearch = forwardRef(function GoogleLocationSearch({ data, changeFn, locationValue, value, updateValue, textFieldType = "standard", disUnderline = false, textBgColor = "#D9D9D9", textPad = "0px", bordRad = "0px", fntFam = "auto", fntSize = "auto", use="jobs", ...props }, ref) {
     const MAPS_API_KEY = 'pk.0da703607c1469e631ae01d8480aa43e';
     const [query, setQuery] = useState(locationValue || '');
     const [options, setOptions] = useState([]);
@@ -38,7 +39,7 @@ const GoogleLocationSearch = forwardRef(function GoogleLocationSearch({ data, ch
     };
 
     React.useEffect(() => {
-        if(query !== '') {setOptions([]);
+        if(query !== '') {
         fetch();}
     }, [query]);
 
@@ -47,7 +48,16 @@ const GoogleLocationSearch = forwardRef(function GoogleLocationSearch({ data, ch
             id="google-map-demo"
             sx={{ width: 300 }}
             getOptionLabel={(option) =>
-                option.address.name
+                {console.log("option type", typeof(option))
+                return option.display_name}
+                /*{if(typeof(option) === "object"){
+                    console.log("received", typeof(option), option)
+                    return option.display_name;
+                }
+                else {
+                    console.log("received", typeof(option), option)
+                    return option;
+                }}*/
             }
             filterOptions={(x) => x}
             options={options}
@@ -57,12 +67,13 @@ const GoogleLocationSearch = forwardRef(function GoogleLocationSearch({ data, ch
             value={value}
             noOptionsText="No locations"
             onChange={(event, newValue) => {
-                setOptions(options);
+                //setOptions(options);
                 console.log("new", newValue)
-                updateValue(newValue.address?newValue.address.name + "," + (newValue.address.state?newValue.address.state + ",":"")  + newValue.address.country: null) || "";
+                updateValue(newValue.address? (newValue.address.name?(newValue.address.name + ","):"") + (newValue.address.state?(newValue.address.state + ","):"")  + (newValue.address.country?(newValue.address.state):""): null) || "";
             }}
             onInputChange={(event, newInputValue) => {
                 setQuery(newInputValue);
+                setOptions(options);
                 console.log("added", newInputValue)
                 changeFn(newInputValue);
             }}
@@ -97,7 +108,7 @@ const GoogleLocationSearch = forwardRef(function GoogleLocationSearch({ data, ch
                             <Grid item sx={{ width: 'calc(100% - 44px)', wordWrap: 'break-word' }}>
                         
                                     <Box
-                                        key={place_index}
+                                        key={uuid()}
                                         component="span"
                                         sx={{ fontWeight: 'regular' }}
                                     >
