@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import JobCard from '../JobCard/JobCard';
 import JobCardExpanded from '../JobCardExpanded/JobCardExpanded';
 import AiJobs from '../../components/AiJobs/AiJobs';
+import { v4 as uuid } from 'uuid';
 
 
 export default function Jobs({ data, dataType=null, dataToParentFn = null, createJobRequest = null, handleInvite=null, desc_state = null, userData }) {
@@ -59,7 +60,7 @@ export default function Jobs({ data, dataType=null, dataToParentFn = null, creat
                         
                         {dataType != "approval"?<AiJobs childData={finalInfo} expandView={openDesc} />: <></>}
                         {
-                            Object.keys(finalInfo).map((card) => (<JobCard key={finalInfo[card]["id"]} id={finalInfo[card]["id"]} expandView={openDesc} data={{ ...finalInfo[card], 'userType': "seeker" }} />))
+                            Object.keys(finalInfo).map((card) => (<JobCard key={uuid()} id={finalInfo[card]["id"]} expandView={openDesc} data={{ ...finalInfo[card], 'userType': "seeker" }} />))
                         }
                     </>
                 )

@@ -22,12 +22,14 @@ export default function SeekerJobStatusSection({userType}) {
     const [userData, setUserData] = useState({'type': userType, 'skills': []});
     console.log("received data",receivedData)
     //const [selectedEntry, setEntry] = useState(null);
+
     const [selectedEntry, setEntry] = useState(receivedData["state"]?receivedData.state.highlightedId || null: null);//userData is for knowing if employer or seeker and further passing it down to components
     const [selectedEntryType, setEntryType] = useState(receivedData["state"]?receivedData.state.highlightedEntryType || null: null)
     //console.log("selected entry", selectedEntry);
     const [searchVal, setSearch] = useState("");
     //demoInfo is example vacancy profiles
     const [jobVacancies, setJobVacancies] = useState([]);
+    const [filteredJobVacancies, setFilteredJobVacancies] = useState([]);
     const [newVacancy, setNewVacancy] = useState({});
     const [jobApplicants, setApplicants] = useState([]);
     /*const demoInfo = [{ },
@@ -66,28 +68,30 @@ export default function SeekerJobStatusSection({userType}) {
           // Wait for all job details promises to resolve
           const new_req_response = await Promise.all(
             req_response.data.map(async (e) => {
-              const jobDetails = await readJobsAPI({ job_vacancy_id: e.job_id, job_status: e.status, application_id: e.id, type: "request" });
+              const jobDetails = await readJobsAPI({ job_vacancy_id: e.job_id, job_status: e.status, application_id: e.id, type: "request", creation_time: e.created_at });
               return jobDetails;
             })
           );
       
           const new_invite_response = await Promise.all(
             invite_response.data.map(async (e) => {
-              const jobDetails = await readJobsAPI({ job_vacancy_id: e.job_id, job_status: e.status, application_id: e.id, type: "invite" });
+              const jobDetails = await readJobsAPI({ job_vacancy_id: e.job_id, job_status: e.status, application_id: e.id, type: "invite", creation_time: e.created_at });
               return jobDetails;
             })
           );
       
-          const detailedJobs = [...new_req_response, ...new_invite_response];
+          const detailedJobs = dateProcessor([...new_req_response, ...new_invite_response]);
+          //detailedJobs.sort((a, b) => b.created_at.localeCompare(a.created_at));
           console.log("after new jobs", detailedJobs);
-          setJobVacancies(detailedJobs);
-      
+          setJobVacancies(detailedJobs);  
+          setFilteredJobVacancies([])
         } catch (e) {
           console.log("jobs failed", e);
           alert(e.message);
         }
       };
       
+    
       const deleteJobRequestAPI = async (job_request_id) => {
         try {
           const r = await jobAPI.delete(`/job_request/${job_request_id}`, { headers: { 'Authorization': `Bearer ${getStorage("userToken")}` } });
@@ -99,7 +103,7 @@ export default function SeekerJobStatusSection({userType}) {
         }
       };
       
-      const readJobsAPI = async ({ job_vacancy_id, job_status, application_id = null, type = null }) => {
+      const readJobsAPI = async ({ job_vacancy_id, job_status, application_id = null, type = null, creation_time=null }) => {
         try {
           const r = await jobAPI.get(`/job_vacancy/${job_vacancy_id}`, { headers: { 'Authorization': `Bearer ${getStorage("userToken")}` } });
           let mod_response = {};
@@ -110,13 +114,14 @@ export default function SeekerJobStatusSection({userType}) {
               jobTitle: r.data.job_name,
               job_invite_id: application_id,
               invite_status: job_status,
+              application_created_at: creation_time,
               companyUsername: r.data.company_username,
               companyName: r.data.company_name,
               tags: r.data.tags,
               currency: r.data.salary.split('-')[0],
               salary: [r.data.salary.split('-')[1], r.data.salary.split('-')[2]],
-              postDate: r.data.created_at.split('T')[0],
-              last_date: r.data.last_date.split('T')[0],
+              postDate: r.data.created_at,
+              last_date: r.data.last_date,
               location: r.data.location,
               empType: r.data.emp_type,
               exp: r.data.experience,
@@ -137,10 +142,11 @@ export default function SeekerJobStatusSection({userType}) {
               companyUsername: r.data.company_username,
               companyName: r.data.company_name,
               tags: r.data.tags,
+              application_created_at: creation_time,
               currency: r.data.salary.split('-')[0],
               salary: [r.data.salary.split('-')[1], r.data.salary.split('-')[2]],
-              postDate: r.data.created_at.split('T')[0],
-              last_date: r.data.last_date.split('T')[0],
+              postDate: r.data.created_at,
+              last_date: r.data.last_date,
               location: r.data.location,
               empType: r.data.emp_type,
               exp: r.data.experience,
@@ -223,8 +229,10 @@ export default function SeekerJobStatusSection({userType}) {
         }
         console.log("user datum", userData);
     }
-    
 
+    
+    
+    
     
         
     //console.log("applicants confirmed", jobApplicants)
@@ -235,6 +243,12 @@ export default function SeekerJobStatusSection({userType}) {
     }
     const filterDataSet=(fdata)=>{
         setParam({...fdata});
+    }
+
+    const dateProcessor=(objectList)=>{
+      objectList.sort((a, b) => b.application_created_at.localeCompare(a.application_created_at)); 
+      const arranged = objectList.map((e)=>({...e, application_created_at: e.application_created_at.split('T')[0].split('-').reverse().join('-'), postDate: e.postDate.split('T')[0].split('-').reverse().join('-'), last_date: e.last_date.split('T')[0].split('-').reverse().join('-') }))
+      return arranged;
     }
     //console.log("filter parameters", filterparam);
     const chooseEntry =(entry,entryType)=>{
@@ -267,7 +281,7 @@ export default function SeekerJobStatusSection({userType}) {
     }
     //console.log("filtered applicants",filteredApplicants);
     useEffect(() => {callJobVacancyAPI(COMPANYID)}, []);//only runs during initial render
-    useEffect(()=>{if(selectedEntry==null && selectedEntryType==null)
+    useEffect(()=>{if(selectedEntry===null && selectedEntryType===null)
         {
          setJobEntry(jobVacancies[0]?jobVacancies[0]:null)
          setEntryType(jobVacancies[0]?jobVacancies[0].type: null)
@@ -280,6 +294,7 @@ export default function SeekerJobStatusSection({userType}) {
             {expJob(selectedEntry, selectedEntryType);
             console.log("job entry refreshed", jobVacancies)}
         }},[jobVacancies])
+    //useEffect(() => {statusFilter()}, [applicationFilter, jobVacancies])
     useEffect(()=>{if(jobVacancies.length!=0 && selectedEntry!=null && selectedEntryType!=null)expJob(selectedEntry, selectedEntryType)},[selectedEntry]);
     //useEffect(() => {if(Object.keys(newVacancy).length !=0)setJobVacancies([...jobVacancies, newVacancy]);}, [newVacancy])
     console.log("updated vacancies", jobVacancies)
@@ -292,7 +307,7 @@ export default function SeekerJobStatusSection({userType}) {
                 :
                 <></>
             }*/}
-                <OpeningsListBar data={jobVacancies} userType={userType} userID={COMPANYID} pageType="review" chooseEntry={chooseEntry} seekerJobs={true} searchBar={searchBar} listToDescParentFunc={listToDescParentFunc} preselectedEntry={selectedEntry} filterFunc={filterStateSet} />
+                <OpeningsListBar data={jobVacancies} userType={userType} userID={COMPANYID} pageType="review" chooseEntry={chooseEntry} seekerJobs={true} searchBar={searchBar} listToDescParentFunc={listToDescParentFunc} preselectedEntry={selectedEntry} preselectedEntryType={selectedEntryType} filterFunc={filterStateSet} />
             </div>
             {filterstat?
             <div className="filter enabled">

@@ -390,6 +390,7 @@ export default function JobVacancyForm({ data = {} }) {
                                             locationValue={location}
                                             value={googleLocationAutoField}
                                             updateValue={setGoogleAutoField}
+                                            use={"vacancy"}
                                             textFieldType="standard"
                                             disUnderline={true}
                                             textBgColor="#D9D9D9"

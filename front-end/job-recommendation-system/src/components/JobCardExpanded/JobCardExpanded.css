@@ -176,6 +176,10 @@
     color: red;
 }
 
+.cancel-application-button{
+    margin-top: 1rem;
+}
+
 .apply-button {
     margin-top: 10%;
 }
