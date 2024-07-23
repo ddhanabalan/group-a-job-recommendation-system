@@ -94,7 +94,7 @@ export default function SeekerJobStatusSection({userType}) {
     
       const deleteJobRequestAPI = async (job_request_id) => {
         try {
-          const r = await jobAPI.delete(`/job_request/${job_request_id}`, { headers: { 'Authorization': `Bearer ${getStorage("userToken")}` } });
+          const r = await jobAPI.delete(`/job_request/request/${job_request_id}`, { headers: { 'Authorization': `Bearer ${getStorage("userToken")}` } });
           await callJobVacancyAPI();
           setEntry(null);
         } catch (e) {

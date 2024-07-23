@@ -119,14 +119,27 @@ export default function JobInvite({ data=[], jobData=null, createJobRequest=null
                                 </div>
                             </div>
                             <div className="mailing-info-text">
-                                <p><span></span>Note: CareerGo will be senting an email to the candidate specifying the link to the invited job vacancy and remarks.The candidate will have to apply from the link.
-                                         You can then approve the application from the review section. </p>
+                                <p><span></span>Note: CareerGo will be senting an email to the candidate specifying the link to the invited job vacancy and remarks.The candidate will have to apply from the link. </p>
                             </div>              
                     </div>
                     <div className="confirm-job-invite-button">
-                        <Button variant={sentButtonState==="available"?"outlined":"contained"} disabled={sentButtonState==="disabled"?true: false} onClick={sentButtonState==="available"?handleInviteData:()=>{}} sx={{color: (sentButtonState==="available"?"#7B7777":"white"), border: (sentButtonState==="available"?"solid 1px green":"none"),fontFamily: "Inter-regular", backgroundColor: (sentButtonState==="sent"?"green":(sentButtonState==="failed"?"red":(sentButtonState==="disabled"?"blue":"none")))}}>
+                        {/* <Button variant={sentButtonState==="available"?"outlined":"contained"} disabled={sentButtonState==="disabled"?true: false} onClick={sentButtonState==="available"?handleInviteData:()=>{}} sx={{color: (sentButtonState==="available"?"#7B7777":"white"), border: (sentButtonState==="available"?"solid 1px green":"none"),fontFamily: "Inter-regular", backgroundColor: (sentButtonState==="sent"?"green":(sentButtonState==="failed"?"red":(sentButtonState==="disabled"?"blue":"none")))}}>
                             <p>{(sentButtonState==="sent"?"Invite Sent":(sentButtonState==="failed"?"Invite not send":(sentButtonState==="failed"?"Senting...":"Sent Invite")))}</p>
-                        </Button>
+                            </Button> */}
+                            {sentButtonState !== "disabled" && jobData ?
+                                <button className='continue-btn' onClick={sentButtonState === "available" ? handleInviteData : () => { }}>
+                                    {(sentButtonState === "sent" ? "Invite Sent" : (sentButtonState === "failed" ? "Invite not send" : (sentButtonState === "disabled" ? "Senting..." : "Sent Invite")))}
+                                    <div class="arrow-wrapper">
+                                        <div class="arrow"></div>
+
+                                    </div>
+                                </button>
+                                :
+                                <button className='continue-btn disable-apply-btn' >
+                                    {jobData?"Sending":"Invited"}
+                                </button>
+                            }
+                            
                     </div>
                     </>
                     :
