@@ -71,6 +71,7 @@ export default function Filter({ title, userType=null, passFilteredDataFn = null
     const handleChangeLocation = (v) => {
         //stores the Location value from the input field as user types
         SetLocation(v)
+        console.log("set Location", v)
     };
     const handleDomain = (n) => {
         //accepts a new domain value from the input field and updates the domains array to display the newly added domain and resets the input box value when user clicks the add button

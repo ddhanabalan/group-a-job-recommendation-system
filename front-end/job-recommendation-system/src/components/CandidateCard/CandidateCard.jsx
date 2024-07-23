@@ -109,23 +109,7 @@ export default function CandidateCard({ type = null, jobEntryId = null, crLink =
                     <p>Declined</p>
                     <div className="skill-status red"></div>
                 </div>
-                {removeInvite?
-                    <Tooltip title="Remove" enterDelay={500} leaveDelay={200}>
-                        
-                        <IconButton className='application-reject-btn' onClick={(event) => {
-                            event.stopPropagation();
-                            removeInvite(data.job_invite_id)
-                            setApproval('')
-                            reloadFn()
-                            }}
-                            sx={{ color: 'black', backgroundColor: "white" }}>
-                            <DeleteOutlineIcon />
-                        </IconButton>
-                        
-                    </Tooltip>
-                    :
-                    <></>
-                        }
+                
                 </>
             }
             {

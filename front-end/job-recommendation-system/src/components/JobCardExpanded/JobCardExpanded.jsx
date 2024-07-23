@@ -13,7 +13,7 @@ import FileOpenIcon from '@mui/icons-material/FileOpen';
 import CorporateFareRoundedIcon from '@mui/icons-material/CorporateFareRounded';
 import { getStorage } from '../../storage/storage';
 
-export default function JobCardExpanded({ data = [], createJobRequest = null, deleteJobRequest = null, userData, handleSub = null, handleInvite=null, type, invite=null }) {
+export default function JobCardExpanded({ data = [], createJobRequest = null, deleteJobRequest = null, userData, handleSub = null, handleInvite=null, type, invite=null, applicationErrors = null }) {
     console.log("data received by form", userData, "jobdata", data, "invite", invite, type, "checkword", data.invite?.job_status !=="approved", data.invite_status?.toLowerCase() === "pending" )
 
     //console.log(userData.appliedJobs.includes("4"))
@@ -110,7 +110,7 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
                                 <p><span >Experience:</span> {data.exp}</p>
                                 <p><span >Work style:</span> {data.workStyle}</p>
                                 <p><span >Working days:</span> {data.workingDays}</p>
-                                <p><span >Last date:</span> {(data.last_date?.split('-').reverse()).join('-') || ""}</p>
+                                <p><span >Last date:</span> {data.last_date || ""}</p>
                             </div>
 
                             <div className="job-description">
@@ -207,13 +207,26 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
                                     </button>
                                     :
                                     ((data.invite?.job_status.toLowerCase() === "rejected") || (data.invite_status?.toLowerCase()==="rejected")?
+                                    <>
                                     <button className='continue-btn invite-rejected-btn' >
                                         Invite Rejected
                                     </button>
+                                    
+                                    <div className="cancel-application-button">
+                                        <Link to={`/seeker/openings/${data.companyUsername}/${data.id}`}>
+                                        <Button variant="outlined"  sx={{ color: "black", border: "1px solid #254CE1" }} endIcon={<FileOpenIcon />}>
+                                            <p>View Vacancy</p>
+                                        </Button>
+                                        </Link>
+                                    </div>
+                                    </>
                                     :
                                     <></>
                                     )
+                                    
                                  )
+                                 
+                                
                                  
                             )
                             :
@@ -223,6 +236,12 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
                                 </Button> */}
                                 {
                                 (!submit?
+                                    (applicationErrors===true?
+                                    <div className='invite-banner'>
+                                        <p>Application window temporarily unavailable</p>
+                                    </div>
+                                    
+                                    :
                                     <button className='continue-btn' onClick={submit ? () => { } : handleApplication} >
                                         Apply
                                         <div class="arrow-wrapper">
@@ -230,6 +249,7 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
 
                                         </div>
                                     </button>
+                                    )
                                     :
                                     <button className='continue-btn disable-apply-btn' onClick={submit ? () => { } : handleApplication} >
                                         {userJobRequest?.status || "Processing..."}

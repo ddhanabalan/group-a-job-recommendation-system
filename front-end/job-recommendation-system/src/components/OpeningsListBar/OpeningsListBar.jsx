@@ -14,6 +14,7 @@ function HighlightableJobCard({ id, highlighted, type, data, listToDescFunc, del
     //console.log("highlighted ", id, " : ", highlighted)
     console.log("id", id, highlighted)
     const [disabled, setDisabled] = useState(false);
+
     const disableCard =(status)=>{
         setDisabled(status);
     }
@@ -31,11 +32,12 @@ export default function OpeningsListBar({ data, userType, userID, chooseEntry, s
     console.log("user received jobs", userJobs, seekerJobs)
     
     console.log("received jobs to openings list bar", data);
-
-    const finalInfo = { ...data }
+    const [initInfo,setInitInfo] = useState(data)
+    const [finalInfo,setFinalInfo] = useState(data) 
+    const [applicationFilter, setApplicationFilter] = useState({"Applied": false, "Invited": false, "Rejected": false, "Approved": false})
 
     //console.log("opening bar data",data)
-    //console.log("data passed to opening cards", finalInfo)
+    
     const [highlightedId, setHighlightedId] = useState(preselectedEntry);
     const [highlightedEntryType, setHighlightedEntryType] = useState(preselectedEntryType)
     const [applicationTypeData, setApplicationTypeData] = useState({});
@@ -55,8 +57,31 @@ export default function OpeningsListBar({ data, userType, userID, chooseEntry, s
 
     function handleSeekerJobSection(card_info){
         const r = seekerJobs?(card_info.type=="request"?card_info["job_req_id"]:card_info["job_invite_id"]):card_info["id"];
+        console.log("logged", seekerJobs, r, card_info)
         return r;
     }
+    function handleApplicationFilter(entry){
+        //function for passing selected job opening card from child component to parent componenet
+        setApplicationFilter(entry);
+    }
+
+    function statusFilter(){
+        const activeFilters = Object.keys(applicationFilter).filter(key => applicationFilter[key]).map(f=>f.toLowerCase());
+        console.log("activ filters", applicationFilter, activeFilters)
+        if(activeFilters.length)
+        {const filterResponse = initInfo.filter(e=>{if(e.type === "invite" && activeFilters.includes("invited")){return e}
+                                else if( e.type ==="request" && activeFilters.includes(e.status.toLowerCase())){return e}
+                                else return null;})
+          console.log("filtered applications list ", data,filterResponse, activeFilters)
+
+          setFinalInfo(filterResponse);
+        }
+        else{
+            setFinalInfo(initInfo);
+        }
+        
+        
+      }
 
     function highlightDiv(id, application_type = null, application_status = null, application_id=null) {
         //function for highlighting selected opening cards
@@ -81,7 +106,7 @@ export default function OpeningsListBar({ data, userType, userID, chooseEntry, s
             console.log("highlighted id", highlightedId, highlightedEntryType)
             if (highlightedId != null && highlightedEntryType != null) {
                 chooseEntry(highlightedId, highlightedEntryType)
-                
+                console.log("highlighted")
             } 
         }
         if (searchVal != null) {
@@ -106,11 +131,19 @@ export default function OpeningsListBar({ data, userType, userID, chooseEntry, s
         [preselectedEntry])
     useEffect(() => {
         setHighlightedEntryType(preselectedEntryType)
+        console.log("preselected entry type set", preselectedEntryType)
     },
         [preselectedEntryType])
     useEffect(() => {
         if(handleApplicationStatus && Object.keys(applicationTypeData).length)handleApplicationStatus(applicationTypeData);
     }, [applicationTypeData])
+    useEffect(() => {
+        if(seekerJobs)statusFilter();
+        else(setFinalInfo(initInfo))
+    }, [applicationFilter, initInfo])
+    useEffect(()=>{
+        setInitInfo(data);
+    }, [data])
 
     return (
         <>
@@ -143,11 +176,23 @@ export default function OpeningsListBar({ data, userType, userID, chooseEntry, s
                         </div>
                     }
                 </div>
-
+                {seekerJobs?
+                <div className="user-application-filter">
+                    {Object.keys(applicationFilter).map(e=>
+                    <button className={`user-application-filter-btn application-filter-btn application-filter-btn-apply application-filter-btn${applicationFilter[e]?`-active-${e.toLowerCase()}`: ""} application-filter-btn${"-" + e.toLowerCase()}`} onClick={()=>{handleApplicationFilter({...applicationFilter, [e]: !applicationFilter[e]})}}> 
+                    {e}
+                    </button>)
+                    }  
+                </div>
+                :
+                <></>
+                }
                 <div className="openings-container">
-                    {Object.keys(finalInfo).length!=0?
+                    {finalInfo.length!=0?
                         (
-                        Object.keys(finalInfo).map((card) => (<HighlightableJobCard key= {handleSeekerJobSection(finalInfo[card])} id={handleSeekerJobSection(finalInfo[card])} onclick={highlightDiv} highlighted={highlightedId == handleSeekerJobSection(finalInfo[card])} type={userType == "employer" ? pageType : null} applicationType={seekerJobs?finalInfo[card].type: null} inviteJob={userJobs && userJobs.length?userJobs.filter(job => {if(job.job_vacancy_id == finalInfo[card]["id"])return job})[0]: null} deleteJobFunc={deleteJobFunc} listToDescFunc={listToDescFunc} data={{ ...finalInfo[card], 'userType': userType, 'highlightedId': highlightedId }} invite={invite} seekerJobs={seekerJobs?true: false}/>))
+                        //console.log("finalInfo check", finalInfo)
+                        //Object.keys(finalInfo).map((card) => console.log("this is what i received", card, finalInfo[card]))
+                         finalInfo.map((card) => (<HighlightableJobCard key= {finalInfo.indexOf(card)} id={handleSeekerJobSection(card)} onclick={highlightDiv} highlighted={highlightedId == handleSeekerJobSection(card) && (seekerJobs?(card.type===highlightedEntryType): true)} type={userType == "employer" ? pageType : null} applicationType={seekerJobs?card.type: null} inviteJob={userJobs && userJobs.length?userJobs.filter(job => {if(job.job_vacancy_id == card["id"] )return job}): null} deleteJobFunc={deleteJobFunc} listToDescFunc={listToDescFunc} data={{ ...card, 'userType': userType, 'highlightedId': highlightedId }} invite={invite} seekerJobs={seekerJobs?true: false}/>))
                         )
                             :
                         (userType=="employer"?

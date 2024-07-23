@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form';
-import { setStorage } from '../../storage/storage';
+import { setStorage, getStorage } from '../../storage/storage';
 import { useState, useEffect } from 'react';
-import { getStorage } from '../../storage/storage';
+
 import { styled } from '@mui/material/styles';
 import { FastAverageColor } from 'fast-average-color';
 import { Button } from '@mui/material';
@@ -110,7 +110,7 @@ export default function ProfileHead({ access, data, blurFn, logOutFn, subForm, i
                     (user === "seeker" ?
                         <div className="profile-head-info-div profile-head-info-div2">
                             <h1 className="profile-name">{data.first_name && data.last_name ? data.first_name + ' ' + data.last_name : <Skeleton className="profile-name" variant="text" sx={{ width: '20rem' }} />}</h1>
-                            {access === "viewOnly" && user === "seeker" &&
+                            {getStorage("userType")==="recruiter" && access === "viewOnly" && user === "seeker" &&
                                 <Link to="/employer/job-invite" state={{ ...data }}>
                                     <button className='continue-btn send-job-invite-button' >
                                         Invite

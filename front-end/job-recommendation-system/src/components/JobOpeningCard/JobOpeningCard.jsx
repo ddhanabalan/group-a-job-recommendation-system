@@ -13,7 +13,7 @@ export default function JobOpeningCard({ data, type = null, highlighted = null, 
     const [status, setStatus] = useState("");
     const [statusColor, setStatusColor] = useState("");
     const [cssTag, setCssTag] = useState("");
-    const [preJob, setPreJob] = useState(inviteJob ? inviteJob : null);
+    const [preJob, setPreJob] = useState();
     
     console.log("received invite card", inviteJob);
 
@@ -52,13 +52,29 @@ export default function JobOpeningCard({ data, type = null, highlighted = null, 
             }*/
         }
     };
-    console.log("updated tags", status, statusColor, cssTag)
+    
     
 
     useEffect(() => {
+    if(inviteJob && inviteJob.length)
+    {console.log("logged invite job", inviteJob[0].invite_status);
+        const r = inviteJob.map(e=>e.invite_status?e.invite_status.toLowerCase():null);
+        console.log("registered invites", inviteJob, r, data.id)
+    let index = 0;
+    if(r.includes("rejected") && r.includes("pending"))
+    {
+        index = r.lastIndexOf("pending");
+    }
+    console.log("invite job", index)
+
+    setPreJob(inviteJob[index])
+    }}, [inviteJob])
+    useEffect(() => {
+        console.log("prejob set", preJob)
         if (preJob) checkStatus();
     }, [preJob]);
-    useEffect(()=>{if(status!="")disabled(true)}, [status]);
+    useEffect(()=>{console.log("updated tags", data.id, status, statusColor, cssTag);
+                    if(status!="")disabled(true)}, [status]);
     
 
 
@@ -152,6 +168,13 @@ export default function JobOpeningCard({ data, type = null, highlighted = null, 
                                     <CorporateFareRoundedIcon fontSize='large' />
                                 </IconButton>
                             </div>
+                        }
+                        {data.application_created_at?
+                        <div className="application-creation-date">
+                            <p>{data.application_created_at}</p>
+                        </div>
+                        :
+                        <></>
                         }
                     </div>
 

@@ -35,6 +35,7 @@ export default function JobVacancyForm({ data = {} }) {
     const { register, formState: { errors }, handleSubmit, setValue, watch } = useForm({ mode: 'onTouched' });
 
     const [submit, setSubmit] = useState(false);
+    const [submissionStatus, setSubmissionStatus] = useState("")
     const [prefError, setPrefErrors] = useState({});
     //const [tag_state,setTagState] = useState(false);
     const [googleLocationAutoField, SetGoogleLocationAutoField] = useState(dta.location);
@@ -97,6 +98,7 @@ export default function JobVacancyForm({ data = {} }) {
     }
     const callJobAPI = async (rec_data, edit = false) => {
         console.log("data to submit to server ", rec_data)
+        setSubmissionStatus("processing");
         try {
             if(!edit)
             {const response = await jobAPI.post('/job_vacancy/', rec_data, {
@@ -105,8 +107,9 @@ export default function JobVacancyForm({ data = {} }) {
                 'Authorization': `Bearer ${getStorage("userToken")}` 
             }         
             }
+            
             );
-            redirectFn(response)
+            
             }
             else
             {   const update_data = {...rec_data, 'skills_delete': deletedSkills}
@@ -117,14 +120,17 @@ export default function JobVacancyForm({ data = {} }) {
                     'Authorization': `Bearer ${getStorage("userToken")}`
                 }         
                 }
+                
                 );
-                redirectFn(response)
+                
             }
+            return true;
 
         } catch (e) {
             console.log(e)
 
             alert(e.message)
+            return false;
         }
     }
     const [skillsList, setSkillsList] = useState([])
@@ -220,6 +226,7 @@ export default function JobVacancyForm({ data = {} }) {
 
     }
 
+
     const checkPref = (tagType) => {
         if (preferences[tagType].length != 0) {
             if (typeof (preferences[tagType][0]) !== "string") {
@@ -250,7 +257,7 @@ export default function JobVacancyForm({ data = {} }) {
     }
 
 
-    function handlePostVacancy() {
+    const handlePostVacancy =async() =>{
         //Application submission data
         const submissionData={
                                 "company_id": USERID,
@@ -274,13 +281,27 @@ export default function JobVacancyForm({ data = {} }) {
         //submissionData["salary"]=(submissionData["salary"][1]==="")?submissionData["salary"][0]:submissionData["salary"].join("-");
 
 
-        callJobAPI(submissionData, dta.edit);
+        const success = await callJobAPI(submissionData, dta.edit);
+        console.log("succes status", success)
         console.log("successfully submitted", submissionData);
-        setSubmit(true);
+        if(success === true)
+        {setSubmit(true);
+            setSubmissionStatus("success");
+        }
+        else{
+            setSubmissionStatus("failed")
+        }
 
     }
     useEffect(() => { if (submit === true) { navigate("../employer/review-applications") } }, [submit]);
-    
+     useEffect(() => {
+         console.log("submission status", submissionStatus)
+         if(submissionStatus ==="success" || submissionStatus ==="failed"){
+                     console.log("rerouting submission status", submissionStatus)
+                         setTimeout(() => {
+                             navigate("../employer/review-applications")    
+                         }, 5000);
+     }},[submissionStatus])
     useEffect(() => {skillsAPI()}, [skill])
     useEffect(() => {callCompanyAPI()}, [])
     useEffect(() => {console.log("yep i am", preferences.skills)
@@ -292,6 +313,12 @@ export default function JobVacancyForm({ data = {} }) {
             {preview ?
                 <div className="job-preview-container">
                     <JobCardExpanded data={finalApplicationData} userData={{ "type": "employer" }} />
+                    
+                    {submissionStatus === "success" || submissionStatus==="failed"?                                  //submission status banner 
+                    <div className={`submission-status-banner status-${submissionStatus}`}>
+                        <p>{submissionStatus==="success"?"Job vacancy posted successfully":"Failed to create vacancy.Try again later"}</p>
+                    </div>
+                    :
                     <div className="post-vacancy-buttons">
                         {/* <Button variant="contained" color="success" onClick={() => setPreview(false)} sx={{ color: "white" }} startIcon={<EditIcon />}>
                             <p>Edit</p>
@@ -303,9 +330,10 @@ export default function JobVacancyForm({ data = {} }) {
                             <p>{submit ? "Posted" : "Post Vacancy"}</p>
                         </Button> */}
                         <button className='continue-btn post-vacancy-confirm-btn' onClick={handlePostVacancy}>
-                            {submit ? <DoneIcon /> : <MailIcon />} {submit ? "Posted" : "Post Vacancy"}
+                                {submit ? <DoneIcon /> : <MailIcon />} {submissionStatus === "processing" ? "Posting.." : (submit ? "Posted" : "Post Vacancy")}
                         </button>
                     </div>
+                    }
                 </div>
                 :
                 <div className="create-job-vacancy-container">
@@ -390,6 +418,7 @@ export default function JobVacancyForm({ data = {} }) {
                                             locationValue={location}
                                             value={googleLocationAutoField}
                                             updateValue={setGoogleAutoField}
+                                            use={"vacancy"}
                                             textFieldType="standard"
                                             disUnderline={true}
                                             textBgColor="#D9D9D9"
