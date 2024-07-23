@@ -290,11 +290,24 @@ export default function JobVacancyForm({ data = {} }) {
         const success = await callJobAPI(submissionData, dta.edit);
         console.log("succes status", success)
         console.log("successfully submitted", submissionData);
-        setSubmit(true);
+        if(success === true)
+        {setSubmit(true);
+            setSubmissionStatus("success");
+        }
+        else{
+            setSubmissionStatus("failed")
+        }
 
     }
     useEffect(() => { if (submit === true) { navigate("../employer/review-applications") } }, [submit]);
-    
+     useEffect(() => {
+         console.log("submission status", submissionStatus)
+         if(submissionStatus ==="success" || submissionStatus ==="failed"){
+                     console.log("rerouting submission status", submissionStatus)
+                         setTimeout(() => {
+                             navigate("../employer/review-applications")    
+                         }, 5000);
+     }},[submissionStatus])
     useEffect(() => {skillsAPI()}, [skill])
     useEffect(() => {callCompanyAPI()}, [])
     useEffect(() => {console.log("yep i am", preferences.skills)
@@ -309,22 +322,16 @@ export default function JobVacancyForm({ data = {} }) {
                     
                     {submissionStatus === "success" || submissionStatus==="failed"?                                  //submission status banner 
                     <div className={`submission-status-banner status-${submissionStatus}`}>
-                        <p>{submissionStatus==="success"?(`Job vacancy ${(dta?.reopen)?"reopened":"posted"} successfully`):`Failed to ${(dta?.reopen)?"reopen":"post"} vacancy.Try again later`}</p>
+                        <p>{submissionStatus==="success"?"Job vacancy posted successfully":"Failed to create vacancy.Try again later"}</p>
                     </div>
                     :
                     <div className="post-vacancy-buttons">
                         {/* <Button variant="contained" color="success" onClick={() => setPreview(false)} sx={{ color: "white" }} startIcon={<EditIcon />}>
                             <p>Edit</p>
-                        </Button> */}
-                        <button className='continue-btn post-vacancy-edit-btn' onClick={handleEdit} >
-                            <EditIcon /> Edit 
-                        </button>
-                        {/* <Button variant="contained" onClick={handlePostVacancy} sx={{ color: submit ? "gray" : "white" }} startIcon={submit ? <DoneIcon /> : <MailIcon />}>
-                            <p>{submit ? "Posted" : "Post Vacancy"}</p>
-                        </Button> */}
-                        <button className='continue-btn post-vacancy-confirm-btn' onClick={handlePostVacancy}>
-                                {submit ? <DoneIcon /> : <MailIcon />} {submissionStatus === "processing" ? "Posting.." : (submit ? "Posted" : (dta?.reopen)?"Reopen":"Post Vacancy")}
-                        </button>
+                        </Button>
+                        <Button variant="contained" onClick={handlePostVacancy} sx={{ color: submit ? "gray" : "white" }} startIcon={submit ? <DoneIcon /> : <MailIcon />}>
+                            <p>{submissionStatus==="processing"?"Posting..":(submit ? "Posted" : "Post Vacancy")}</p>
+                        </Button>
                     </div>
                     }
                 </div>
