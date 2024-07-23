@@ -178,6 +178,24 @@ async def delete_job_vacancy_by_user_id(
     user_id: int, db: Session = Depends(get_db), authorization: str = Header(...)
 ):
     await check_authorization(authorization=authorization, user_type="recruiter")
+    job_ids = jobcrud.vacancy.get_all(db, user_id)
+    for i in job_ids:
+        if not jobcrud.request.delete_by_vacancy_id(db, i.job_id):
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Data not deleted from Database",
+            )
+        if not jobcrud.invite.delete_by_vacancy_id(db, i.job_id):
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Data not deleted from Database",
+            )
+
+        if not jobcrud.skills.delete_by_vacancy_id(db, i.job_id):
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Data not deleted from Database",
+            )
     if not jobcrud.vacancy.delete_by_user_id(db, user_id):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

@@ -530,7 +530,7 @@ async def delete_user(
 ):
     response = await httpx.AsyncClient().delete(
         url=f"http://{USER_API_HOST}:{PORT}/{user.user_type}/details",
-        headers={"Authorization": {authorization}},
+        headers={"Authorization": authorization},
     )
     res_data = response.json()
     if res_data is None:
