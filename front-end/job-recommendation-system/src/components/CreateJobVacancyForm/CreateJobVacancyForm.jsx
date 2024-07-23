@@ -293,12 +293,18 @@ export default function JobVacancyForm({ data = {} }) {
                 <div className="job-preview-container">
                     <JobCardExpanded data={finalApplicationData} userData={{ "type": "employer" }} />
                     <div className="post-vacancy-buttons">
-                        <Button variant="contained" color="success" onClick={() => setPreview(false)} sx={{ color: "white" }} startIcon={<EditIcon />}>
+                        {/* <Button variant="contained" color="success" onClick={() => setPreview(false)} sx={{ color: "white" }} startIcon={<EditIcon />}>
                             <p>Edit</p>
-                        </Button>
-                        <Button variant="contained" onClick={handlePostVacancy} sx={{ color: submit ? "gray" : "white" }} startIcon={submit ? <DoneIcon /> : <MailIcon />}>
+                        </Button> */}
+                        <button className='continue-btn post-vacancy-edit-btn' onClick={() => setPreview(false)} >
+                            <EditIcon /> Edit 
+                        </button>
+                        {/* <Button variant="contained" onClick={handlePostVacancy} sx={{ color: submit ? "gray" : "white" }} startIcon={submit ? <DoneIcon /> : <MailIcon />}>
                             <p>{submit ? "Posted" : "Post Vacancy"}</p>
-                        </Button>
+                        </Button> */}
+                        <button className='continue-btn post-vacancy-confirm-btn' onClick={handlePostVacancy}>
+                            {submit ? <DoneIcon /> : <MailIcon />} {submit ? "Posted" : "Post Vacancy"}
+                        </button>
                     </div>
                 </div>
                 :
@@ -512,9 +518,12 @@ export default function JobVacancyForm({ data = {} }) {
 
 
                         <div className="post-button">
-                            <Button variant="contained" color="success" type="submit" sx={{ color: "white", borderRadius: "7px" }} startIcon={<RemoveRedEyeOutlinedIcon />}>
+                            {/* <Button variant="contained" color="success" type="submit" sx={{ color: "white", borderRadius: "7px" }} startIcon={<RemoveRedEyeOutlinedIcon />}>
                                 <p>Preview and Post vacancy</p>
-                            </Button>
+                            </Button> */}
+                            <button className='continue-btn post-vacancy-btn' >
+                                <RemoveRedEyeOutlinedIcon/>  Preview and Post vacancy
+                            </button>
                         </div>
 
                     </form>
