@@ -90,8 +90,9 @@ function App() {
           {/* routes exclusive to seekers */}
           <Route element={<SeekerRoutes />}>
             <Route path="/jobs" element={<JobSection />} />
-            <Route path="/seeker/openings/:company_id/:job_id" element={<ReviewApplications userType="seeker"/>} />
+            
             <Route path="/seeker/openings/:company_id/:job_id/invite" element={<ReviewApplications userType="seeker" invite={true}/>} />
+            <Route path="/seeker/openings/:company_username/:job_id" element={<ReviewApplications userType="seeker"/>} />
             <Route path="/seeker/applications" element={<SeekerJobStatusSection userType="seeker"/>} />
           </Route>
           {/* routes exclusive to recruiters */}
