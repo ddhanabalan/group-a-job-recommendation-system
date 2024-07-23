@@ -1,0 +1,28 @@
+.delete-container{
+    position: relative;
+    width: 30rem;
+    height: 30rem;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    background-color: white;
+    border-radius: 10px;
+}
+.delete-container p{
+    margin-bottom: 2rem;
+}
+.delete-textbox:hover{
+border-color: black;
+}
+.delete-btn{
+    width: 90%;
+    bottom: 1.5rem;
+    position: absolute !important;
+}
+.delete-btn,.delete-btn:hover{
+    background-color: #dd0426 !important;
+}
+.confirm-delete-message{
+    position: absolute;
+    top: 5rem;
+}

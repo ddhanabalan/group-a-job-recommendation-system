@@ -11,7 +11,6 @@ export default function VerifyAccount() {
     const [response, setResponse] = useState(false)
     const params = useParams();
     const toLink = params.accessToken;
-    console.log(toLink)
     const redirectFn = (status) => {
         setMessage(status)
         setResponse(true)

@@ -1,27 +1,54 @@
 import './Filter.css';
 import { useState, useEffect } from 'react';
+import { utilsAPI } from '../../api/axios';
 import AddTags from '../AddTags/AddTags';
 import MultipleOptions from '../MultipleOptions/MultipleOptions';
 import filtersvg from '../../images/filter.svg';
-import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
-import { Button } from '@mui/material';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import FormControl from '@mui/material/FormControl';
 import { v4 as uuid } from 'uuid';
-export default function Filter({ title, passFilteredDataFn = null }) {
+import Slider from '@mui/material/Slider';
+export default function Filter({ title, userType=null, passFilteredDataFn = null }) {
+    const SALARYMULTIPLIER= 1000;
+    const DEFAULTSLIDERVALUE = 10;
+    const USERCURRENCY ='₹';
     const [googleLocationAutoField, SetGoogleLocationAutoField] = useState(null);
     const [domain, SetDomain] = useState('');
     const [preferences, SetPreferences] = useState({});
-    const [domains, SetDomains] = useState([{ tag: "software", id: uuid() }, { tag: "data science", id: uuid() }]);
+    const [domains, SetDomains] = useState([]);
     const [location, SetLocation] = useState('');
-    const [locations, SetLocations] = useState([{ tag: "Bangalore", id: uuid() }, { tag: "Chennai", id: uuid() }]);
+    const [locations, SetLocations] = useState([]); 
+    const [salaryCutOff, SetSalaryCutOff] = useState(DEFAULTSLIDERVALUE * SALARYMULTIPLIER);
+    const [sortOrder, SetSortOrder] = useState('asc');
+    const [skillsList, setSkillsList] = useState([])
+    const skillsAPI = async () => {
+        try {
+            const response = await utilsAPI.get(`/api/v1/skills?q=${domain}`)
+
+            setSkillsList([{ "Skill Name": "" }, ...response.data])
+        }
+        catch (e) {
+            console.log(e)
+        }
+    }
+    useEffect(() => {
+        skillsAPI()
+    }, [domain])
 
     useEffect(() => {
-        const userDomains = domains.map(e => e.tag);
-        const userLocations = locations.map(e => e.tag);
-        const finalFilterData = { userDomains, ...preferences, userLocations };
-
+        const tags = domains.map(e => e.tag);
+        const location = locations.map(e => e.tag);
+        const extras = {'sort': "created_at", "order": sortOrder, 'salary' : salaryCutOff};
+        const filterData = (userType=="employer")?{ tags, ...preferences, location}: {tags, ...preferences, location, ...extras};
+    
+        const finalFilterData = Object.keys(filterData)
+        .filter(key => filterData[key].length !== 0).reduce((acc, key) => {acc[key] = filterData[key];return acc;}, {});     
+        console.log("final filter dat", finalFilterData)   
         if (passFilteredDataFn) passFilteredDataFn(finalFilterData);
 
-    }, [domains, preferences, locations])
+    }, [domains, preferences, locations, sortOrder, salaryCutOff])
     
     const setGoogleAutoField = (v) => {
         SetGoogleLocationAutoField(v)
@@ -76,19 +103,66 @@ export default function Filter({ title, passFilteredDataFn = null }) {
         SetPreferences({ ...preferences, [dataType]: Object.entries(checkedItems).filter(([key, value]) => value === true).map(([key]) => key) });
     }
 
+    const handleSort = (value)=>{
+        if(value=="new")SetSortOrder("asc");
+        else SetSortOrder("desc");
+    }
+
 
     return (
         <div className="FilterContainer">
             <div className="heading">
-                <img src={filtersvg} alt="filter" />
-                <span>{title}</span>
+                    <img src={filtersvg} alt="filter" />
+                    <span>{title}</span>
             </div>
-            <AddTags value={domain} tags={domains} deleteFn={handleDeleteDomain} changeFn={handleChangeDomain} updateFn={handleDomain} data={{ heading: "interested domains", inputPlaceholder: "Marketing", isLocation: false }} />
-            <MultipleOptions heading={"job location"} options={["On-site", "Hybrid", "Work from home"]} dataType="workEnvironment" onChange={handleCheckboxChange} />
-            <MultipleOptions heading={"working days"} options={["Monday - Friday", "Monday - Saturday"]} dataType="workTime" onChange={handleCheckboxChange} />
-            <AddTags locationFieldAutoValue={googleLocationAutoField} updatelocationFieldAutoValue={setGoogleAutoField} value={location} tags={locations} deleteFn={handleDeleteLocation} changeFn={handleChangeLocation} updateFn={handleLocation} data={{ heading: "preferred job locations", inputPlaceholder: "Kerala", isLocation: true }} />
+            {userType=="seeker"?
+                <>
+                <div>
+                    <span>Date of Posting</span>
+                    <br/>
+                    <div className='sorting-options'>
+                    <FormControl>
+                        <RadioGroup onChange={(e,val)=>handleSort(val)}>
+                            <FormControlLabel value="new" control={<Radio />} label="Newest jobs first"  />
+                            <FormControlLabel value="old" control={<Radio />} label="Oldest jobs first" />      
+                        </RadioGroup>
+                    </FormControl>
+                    </div>
+                    <br/>
+                </div>
+                </>
+                :
+                <></>
+            }
+            <AddTags availableDomains={skillsList} value={domain} tags={domains} deleteFn={handleDeleteDomain} changeFn={handleChangeDomain} updateFn={handleDomain} data={{ heading: "Interested domains", inputPlaceholder: "Marketing", isLocation: false }} />
+            <div className='domain-gap'></div>
+            {userType=="employer"?
+                    <>
+                    <AddTags locationFieldAutoValue={googleLocationAutoField} updatelocationFieldAutoValue={setGoogleAutoField} value={location} tags={locations} deleteFn={handleDeleteLocation} changeFn={handleChangeLocation} updateFn={handleLocation} data={{ heading: "Preferred candidate locations", inputPlaceholder: "Kerala", isLocation: true }} />
+                    </>
+                    :
+                    <>
+                    <MultipleOptions heading={"Preferred Work Environment"} options={["On-site", "Hybrid", "Work from home"]} dataType="work_style" onChange={handleCheckboxChange} />
+                    <MultipleOptions heading={"Working Days"} options={["Monday-Friday", "Monday-Saturday"]} dataType="working_days" onChange={handleCheckboxChange} />
+                    <AddTags locationFieldAutoValue={googleLocationAutoField} updatelocationFieldAutoValue={setGoogleAutoField} value={location} tags={locations} deleteFn={handleDeleteLocation} changeFn={handleChangeLocation} updateFn={handleLocation} data={{ heading: "Preferred job locations", inputPlaceholder: "Kerala", isLocation: true }} />
+                    <MultipleOptions heading={"Employment Type"} options={["Full-time", "Internship", "Temporary"]} dataType="emp_type" onChange={handleCheckboxChange} />
+
+                    </>
+            }
             <MultipleOptions heading={"Experience"} options={["Fresher", "1-5 years", "5-10 years", "10+ years"]} dataType="exp" onChange={handleCheckboxChange} />
-            <MultipleOptions heading={"Employment Type"} options={["Full-time", "Internship", "Temporary"]} dataType="empType" onChange={handleCheckboxChange} />
+            {userType=="seeker"?
+                <>
+                <span>Salary</span>
+                <div className='salary-cutoff'>
+                    
+                    <Slider defaultValue={DEFAULTSLIDERVALUE} step={10} marks min={10} max={100} onChange={(_, value) => SetSalaryCutOff(value * SALARYMULTIPLIER)} /> 
+                    <p>Above &nbsp;<span className='salary-threshold'> {USERCURRENCY} {salaryCutOff}</span></p>
+                    <br/>
+                </div>
+                </>
+                :
+                <></>
+            }
             {/* <Button variant="outlined" type="submit" onClick={startFilter} sx={{border: 2, borderColor: "gray",color: "black", borderRadius: 2 ,marginTop:'1rem'}} endIcon={<ArrowForwardIcon />}>
               <p>Filter</p>
             </Button> */}

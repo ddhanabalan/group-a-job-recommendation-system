@@ -1,0 +1,7 @@
+.vacancy-form-container{
+    width: 65%;
+}
+.create-vacancy-page{
+    flex-direction: row !important;
+    align-items: flex-start!important;
+}

@@ -2,7 +2,7 @@
     /*background-color: #99FF99;*/
     font-family: Inter-sb;
     border-radius: 7px;
-    width: 500px;
+    width: 32rem;
     height: 2.5rem;
     display: flex;
     align-items: center;
@@ -21,3 +21,15 @@
     height: 60% !important;
     width: auto;
 }
+
+@media only screen and (max-width: 800px) {
+    .confirm-box{
+        width: 100%;
+        padding: 0px 20px;
+        height: 7vh;
+    }
+
+    .confirm-box >p{
+        font-size: 0.7rem;
+    }
+  }

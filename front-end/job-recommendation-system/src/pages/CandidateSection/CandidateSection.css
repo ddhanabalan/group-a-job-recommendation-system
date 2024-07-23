@@ -1,3 +1,6 @@
-.candidate-search{
+.candidate-search {
+    position: absolute;
+    top: 0;
     width: 40%;
+    margin-top: 15px;
 }

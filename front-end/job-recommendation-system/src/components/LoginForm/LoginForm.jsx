@@ -14,14 +14,12 @@ function LoginForm({ callAPI }) {
   const { register, formState: { errors }, handleSubmit } = useForm();
   const [visible, setVisible] = useState(false);
   const location = useLocation();
-  const userType = location["pathname"].includes("employer") ? "employer" : "seeker";
+  const userType = location["pathname"].includes("organization") ? "employer" : "seeker";
   function handleVisibility() {
     setVisible(!visible);
   }
 
-  // const { info, setInfo } = useState(); 
 
-  // console.log("errors", { errors })
   return (
     <>
       {/*Login Form*/}
@@ -65,10 +63,6 @@ function LoginForm({ callAPI }) {
                   {...register("password",
                     {
                       required: "password is required",
-                      pattern: {
-                        value: /^.{8,}$/,
-                        message: "password must be atleast 8 characters long"
-                      }
                     })}
                 />
                 <Box onClick={handleVisibility}>{visible ? <VisibilityIcon sx={{ fontSize: 'medium', position: 'relative', top: -2 }} /> : <VisibilityOffIcon sx={{ fontSize: 'medium', position: 'relative', top: -2 }} />}</Box>
@@ -84,8 +78,8 @@ function LoginForm({ callAPI }) {
         
 
 
-        <a href="" className="lk">forgot your password?</a>
-        <a className="sigup-redirect" href={`/signup/${userType}`}>New User? SignUp</a>
+        <a href="/forgot_password" className="lk">forgot your password?</a>
+        <a className="sigup-redirect" href={userType==="employer"?"/signup/organization":"/signup"}>New User? SignUp</a>
         {/* <Link to={'../signup/' + userType} state={{ "userType": userType }}></Link> */}
 
 

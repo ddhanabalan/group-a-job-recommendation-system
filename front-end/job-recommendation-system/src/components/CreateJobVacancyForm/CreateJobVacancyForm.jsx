@@ -1,5 +1,5 @@
-import './CreateJobVacancyForm.css';
 import { v4 as uuid } from 'uuid';
+import moment from 'moment';
 import RemoveRedEyeOutlinedIcon from '@mui/icons-material/RemoveRedEyeOutlined';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import BackBtn from '../BackBtn/BackBtn';
@@ -8,56 +8,135 @@ import DoneIcon from '@mui/icons-material/Done';
 import EditIcon from '@mui/icons-material/Edit';
 import { Button, IconButton } from '@mui/material';
 import { useState, useEffect } from 'react';
-import { useForm } from 'react-hook-form';
+import { set, useForm } from 'react-hook-form';
 import GoogleLocationSearch from '../GoogleLocationSearch/GoogleLocationSearch';
 import CreateFormTextFields from './CreateFormTextFields';
 import MultipleOptions from '../MultipleOptions/MultipleOptions';
 import AddTags from '../AddTags/AddTags';
+import AddSkills from '../AddSkills/AddSkills';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
-import JobDesciptionForm from '../JobDescription/JobDesciption';
-import { jobAPI } from '../../api/axios';
-
+import JobCardExpanded from '../JobCardExpanded/JobCardExpanded';
+import { getStorage, setStorage } from '../../storage/storage';
+import { userAPI, jobAPI, utilsAPI } from '../../api/axios';
+import { cloneDeep } from 'lodash';
+import { Autocomplete } from '@mui/material';
+import { TextField } from '@mui/material';
+import './CreateJobVacancyForm.css';
 export default function JobVacancyForm({ data = {} }) {
+    const USERID = getStorage("userID");
     const prefilleddata = data;
     const locating = useLocation();
     const navigate = useNavigate();
     const dta = (locating.state ? locating.state : {})
-    const { register, formState: { errors }, handleSubmit, setValue} = useForm({ mode: 'onTouched' });
-    
+    console.log("received state data for edit", dta, "pre", prefilleddata)
+    const salary_threshold = 5000;
+    const profile_picture = getStorage("profile pic")
+    const [companyData, setCompanyData] = useState({});
+    const { register, formState: { errors }, handleSubmit, setValue, watch } = useForm({ mode: 'onTouched' });
+
     const [submit, setSubmit] = useState(false);
     const [prefError, setPrefErrors] = useState({});
     //const [tag_state,setTagState] = useState(false);
     const [googleLocationAutoField, SetGoogleLocationAutoField] = useState(dta.location || 'kerala');
-    setValue("location",googleLocationAutoField);
+    setValue("location", googleLocationAutoField);
     const [location, SetLocation] = useState(dta.location || 'kerala');
     const [skill, SetSkill] = useState('');
-    const [tag, setTag] = useState('');
-    const [skills, SetSkills] = useState(dta.skills ? dta.skills.map(label => ({ tag: label, id: uuid() })) : []);
-    const [tags, setTags] = useState(dta.tags ? dta.tags.map(label => ({ tag: label, id: uuid() })) : []);
-    const [preferences, setPreferences] = useState({"skills": dta.skills,"tags": dta.tags, "empType": dta.empType, "exp": dta.exp});
+
+    const [skills, SetSkills] = useState(dta.skills ? dta.skills.map(label => ({ tag: label.skill, id: label.id })) : []);
+    const [checkSkillsList, SetList] = useState(skills);
+    const [deletedSkills, setDeletedSkills] = useState([]);
+    const [addedSkills, setAddedSkills] = useState([]);
+    const [tags, setTags] = useState(dta.tags ? dta.tags.map(label => ({ tag: label.tags, id: label.id })) : []);
+    const [preferences, setPreferences] = useState({ "skills": skills, "tags": tags, "empType": dta.empType, "exp": dta.exp, "workStyle": dta.workStyle, "workingDays": dta.workingDays });
     const [preview, setPreview] = useState(false);
     const [finalApplicationData, setData] = useState({});
+    const [poi, SetPOI] = useState(dta.poi?dta.poi:'');
+    const [poisList, SetPoisList] = useState([]);
+    const lowerLimit = watch("salary.0");
+    const [isUpperLimitEnabled, setIsUpperLimitEnabled] = useState(false);
+
+    useEffect(() => {
+        if (lowerLimit) {
+            setIsUpperLimitEnabled(true);
+        } else {
+            setIsUpperLimitEnabled(false);
+        }
+    }, [lowerLimit]);
+
+    const poiListAPI = async () => {
+        try {
+            const response = await utilsAPI.get(`/api/v1/positions?q=${poi}`)
+            SetPoisList([{ "position": "" }, ...response.data])
+        }
+        catch (e) {
+            console.log(e)
+        }
+    }
+    useEffect(() => {
+        poiListAPI()
+    }, [])
 
     const redirectFn = (response) => {
         console.log(response.data)
     }
-    const callJobAPI = async (rec_data) => {
-        
+    const callCompanyAPI = async () => {
         try {
-            const response = await jobAPI.post('/job_vacancy/', rec_data, {
+            const response = await userAPI.get(`/recruiter/details/`, {
+                headers: {
+                    'Authorization': `Bearer ${getStorage("userToken")}`
+                }
+            })
+            console.log("logged comp data", response.data)
+            console.log("profile pic", profile_picture)
+            setCompanyData(response.data)
+        } catch (e) {
+            console.log("company failed", e)
+
+            alert(e.message)
+        }
+    }
+    const callJobAPI = async (rec_data, edit = false) => {
+        console.log("data to submit to server ", rec_data)
+        try {
+            if(!edit)
+            {const response = await jobAPI.post('/job_vacancy/', rec_data, {
             headers:{
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${getStorage("userToken")}` 
             }         
             }
             );
             redirectFn(response)
+            }
+            else
+            {   const update_data = {...rec_data, 'skills_delete': deletedSkills}
+                console.log("updating data", update_data)
+                const response = await jobAPI.put(`/job_vacancy/${dta.id}`, update_data, {
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getStorage("userToken")}`
+                }         
+                }
+                );
+                redirectFn(response)
+            }
+
         } catch (e) {
             console.log(e)
-            
+
             alert(e.message)
         }
     }
-
+    const [skillsList, setSkillsList] = useState([])
+    const skillsAPI = async () => {
+        try {
+            const response = await utilsAPI.get(`/api/v1/skills?q=${skill}`)
+            setSkillsList([{ "name": "" }, ...response.data])
+        }
+        catch (e) {
+            console.log(e)
+        }
+    }
 
     const setGoogleAutoField = (v) => {
         SetGoogleLocationAutoField(v)
@@ -82,25 +161,6 @@ export default function JobVacancyForm({ data = {} }) {
         }
     };
 
-    const handleDeleteTag = (id) => {
-        //accepts id of additional tag and delete them from the array 
-        setTags(prevTags =>
-            prevTags.filter(e => e.id !== id))
-    };
-
-    const handleChangeTag = (v) => {
-        //stores the Additional Tag values from the input field as user types
-        setTag(v)
-    };
-
-    const handleTag = (n) => {
-        //accepts a new Additional Tag value from the input field and updates the tags array to display the newly added tag and resets the input box value when user clicks the add button
-        if (n !== "") {
-            setTags([...tags, { tag: n, id: uuid() }]);
-            setTag('')
-        }
-    };
-
 
 
     const handleChangeLocation = (v) => {
@@ -115,6 +175,7 @@ export default function JobVacancyForm({ data = {} }) {
         if (numChecked <= checkLimit && numChecked > 0) {
             setPreferences({ ...preferences, [dataType]: Object.entries(checkedItems).filter(([key, value]) => value === true).map(([key]) => key) });
             (errorObj[dataType] ? delete errorObj[dataType] : {})
+
         }
         else {
             errorObj[dataType] = { 'message': "please check one item" };
@@ -125,59 +186,108 @@ export default function JobVacancyForm({ data = {} }) {
 
     const handleSkillData = (tags, tagType) => {
         //function for adding selected skill tags into submitting form data
-        setPreferences({ ...preferences, [tagType]: tags.map(tagObj => { return (tagObj['tag']) }) });
-        
-    }
+        console.log("skills and tags", tags, "check", checkSkillsList)
+        checkSkillsList.forEach(skill => {if(Object.keys(tags).length == 0 || !(tags.map(tag => tag.id).includes(skill.id))){if(!deletedSkills.includes(skill.id) && skill.id){setDeletedSkills([...deletedSkills,skill.id])}}})
+        tags.forEach(skill => {if(typeof(skill.id)!="number" && skill.id && !addedSkills.includes(skill.tag) )setAddedSkills([...addedSkills, skill.tag])})
     
+        //console.log("preferences befre changing", preferences)
+        setPreferences({ ...preferences, [tagType]: tags.map(tagObj => { return (tagObj['tag']) }) });
+    }
+    console.log("only added tags", addedSkills )
+    console.log("deleted skills", deletedSkills,)
+    const dateValidation = (closing_date) => {
+        const today = new Date();
+        const cl_date = closing_date.split('-');
+        const comp_date = new Date(cl_date[1] + "/" + cl_date[2] + "/" + cl_date[0])
+        const ms_per_day = 1000 * 60 * 60 * 24;
+        const utc1 = Date.UTC(comp_date.getFullYear(), comp_date.getMonth(), comp_date.getDate()) //given date
+        const utc2 = Date.UTC(today.getFullYear(), today.getMonth(), today.getDate())  //present date
+        const diff = Math.floor((utc1 - utc2) / ms_per_day)
+        return diff > 0;
+        //console.log(age, ">=", signupAge, ":", age>=signupAge)   
+    }
+
+    const dateGeneration = (days) => {
+        const ms_per_day = 1000 * 60 * 60 * 24;
+        const nextDate = new Date(Date.now() + days * ms_per_day);
+        const formattedDate = moment(nextDate).format('YYYY-MM-DD');
+        console.log("formatted date", formattedDate)
+        return formattedDate;
+
+    }
+
+    const checkPref = (tagType) => {
+        if (preferences[tagType].length != 0) {
+            if (typeof (preferences[tagType][0]) !== "string") {
+                let mod_pref = preferences;
+                //console.log("before mod", mod_pref)
+                mod_pref[tagType] = preferences.skills.map(label => { return (label['tag'] != "") ? label['tag'] : false }).filter(Boolean);
+                //console.log("modded pref", mod_pref)
+                setPreferences(mod_pref);
+            }
+        }
+    }
+
     //console.log("prefernces = ", preferences)
     //useEffect(() => {console.log("pref=",preferences)}, [preferences])
 
     function handlePreview(data) {
         //Preview box 
-        
+        checkPref("skills");
+
+        data.last_date = data.last_date ? data.last_date : dateGeneration(30);
+        //console.log("prefilled data to load into frontend", prefilleddata);
+        //console.log("preferences", preferences)
+        //console.log("form data", data)
         if (Object.keys(prefError).length === 0) {
-            setData({ ...data, ...preferences, ...prefilleddata });
+            setData({ ...data, ...preferences, ...prefilleddata,'profile_picture': profile_picture });
             { preview ? console.log(finalApplicationData) : setPreview(true) }
         }
     }
-    
+
 
     function handlePostVacancy() {
         //Application submission data
         const submissionData={
-                                "company_id": 23,
-                                "job_name": finalApplicationData['jobTitle'],
-                                "job_desc": finalApplicationData['jobDesc'],
-                                "company_name": finalApplicationData['companyName'],
-                                "requirement": finalApplicationData['jobReq'],
+                                "company_id": USERID,
+                                "company_name": (Object.keys(companyData).length) ? companyData.company_name : finalApplicationData['companyName'],
+                                "emp_type": (typeof(finalApplicationData["empType"])=="object")?finalApplicationData["empType"][0]:finalApplicationData["empType"],
                                 "salary": finalApplicationData["currency"] + "-" + ((finalApplicationData["salary"][1]==="")?finalApplicationData["salary"][0]:finalApplicationData["salary"].join("-")),
-                                "experience": finalApplicationData["exp"][0],
-                                "job_position": finalApplicationData['jobTitle'],
+	                            "working_days": (typeof(finalApplicationData["workingDays"])=="object")?finalApplicationData["workingDays"][0]:finalApplicationData["workingDays"],
+                                "work_style": (typeof(finalApplicationData["workStyle"])=="object")?finalApplicationData["workStyle"][0]:finalApplicationData["workStyle"],
+                                "experience": (typeof(finalApplicationData["exp"])=="object")?finalApplicationData["exp"][0]:finalApplicationData["exp"],
+                                "job_name": finalApplicationData['jobTitle'],
+                                "job_position": finalApplicationData['poi'],
                                 "location": finalApplicationData['location'],
-                                "emp_type": finalApplicationData['empType'][0],
-                                "last_date": "2222-12-12",
-                                "tags": finalApplicationData["tags"]?finalApplicationData["tags"]:[],
-                                "skill": finalApplicationData["skills"]?finalApplicationData["skills"]:[],
+
+                                "job_desc": finalApplicationData['jobDesc'],
+                                
+                                "requirement": finalApplicationData['jobReq'],
+                                "last_date": finalApplicationData['last_date'],
+                                
+                                "skills": addedSkills,
                             };
         //submissionData["salary"]=(submissionData["salary"][1]==="")?submissionData["salary"][0]:submissionData["salary"].join("-");
-        
-        
-        callJobAPI(submissionData);
+
+
+        callJobAPI(submissionData, dta.edit);
         console.log("successfully submitted", submissionData);
         setSubmit(true);
 
     }
     useEffect(() => { if (submit === true) { navigate("../employer/review-applications") } }, [submit]);
-
-
-
+    useEffect(() => {skillsAPI()}, [skill])
+    useEffect(() => {callCompanyAPI()}, [])
+    useEffect(() => {setAddedSkills(prevSkills => prevSkills.filter(skill => preferences.skills.includes(skill)));}, [preferences]);
+    
+    //useEffect(() => {setPreferences({ ...preferences, "skills_delete": deletedSkills })}, [deletedSkills])
     return (
         <>
             {preview ?
                 <div className="job-preview-container">
-                    <JobDesciptionForm data={finalApplicationData} userData={{"type":"employer"}} />
+                    <JobCardExpanded data={finalApplicationData} userData={{ "type": "employer" }} />
                     <div className="post-vacancy-buttons">
-                        <Button variant="contained" color="success" onClick={()=>setPreview(false)} sx={{color: "white" }} startIcon={<EditIcon />}>
+                        <Button variant="contained" color="success" onClick={() => setPreview(false)} sx={{ color: "white" }} startIcon={<EditIcon />}>
                             <p>Edit</p>
                         </Button>
                         <Button variant="contained" onClick={handlePostVacancy} sx={{ color: submit ? "gray" : "white" }} startIcon={submit ? <DoneIcon /> : <MailIcon />}>
@@ -198,19 +308,19 @@ export default function JobVacancyForm({ data = {} }) {
                                 <h1 className='create-job-vacancy-h1'>
                                     <div className="back-buton">
                                         <Link to="../employer/review-applications" state={locating.state}>
-                                            <BackBtn/>
+                                            <BackBtn />
                                         </Link>
                                     </div>
                                     <CreateFormTextFields inputPlaceholder="Title" hparam="50px" fontsz="1.875rem" defaultValue={dta.jobTitle || ""} {...register("jobTitle", { required: "Job title is required", })} />
                                 </h1>
                                 <p className='error-message'>{errors.jobTitle?.message}</p>
-                                <p className='create-job-vacancy-company-name-p'>{data.companyName}</p>
+                                <p className='create-job-vacancy-company-name-p'>{Object.keys(companyData).length ? companyData.company_name : ""}</p>
 
 
                             </div>
                             <div className='create-job-vacancy-div2'>
                                 <div className='create-job-vacancy-img-container'>
-                                    {/* <img src="" alt="" /> */}
+                                    {profile_picture ? <img src={profile_picture} alt="" /> : <></>}
                                 </div>
 
                             </div>
@@ -218,9 +328,50 @@ export default function JobVacancyForm({ data = {} }) {
                         <hr className="separator" />
 
                         <div className="create-job-vacancy-body">
+
                             <div className="create-job-vacancy-details">
+
+                                <div className='detail-divs'>
+                                <span className={`details-header${errors.poi ? "-error" : ""}`}>Position of Interest:</span>
+                                    <div className='option-divs'>
+                                        <Autocomplete
+                                            disablePortal
+                                            options={poisList}
+                                            value={{ "position": poi }}
+                                            inputValue={poi}
+                                            getOptionLabel={(option) => option["position"]}
+                                            isOptionEqualToValue={() => poisList.some(e => e["position"] === poi)}
+                                            onInputChange={(event, newInputValue) => {
+                                                SetPOI(newInputValue);
+                                            }}
+                                            renderInput={(params) => <TextField
+                                                className="autocomplete-poi-textbox"
+                                                {...params}
+                                                InputProps={{
+                                                    ...params.InputProps,
+                                                    disableUnderline: true,
+                                                }}
+                                                onChange={e => changeFn(e.target.value)}
+                                                variant="standard"
+                                                sx={{
+                                                    backgroundColor: "#D9D9D9",
+                                                    width: "fit-content",
+                                                    minWidth: "230px",
+                                                    height: "30px",
+                                                    paddingX: "5px",
+                                                    borderRadius: "7px",
+                                                    '.MuiInputBase-input': { fontFamily: "Inter-regular", fontSize: "15px" },
+                                                }}
+                                                {...register("poi", { required: "Field is required", })}
+                                            />}
+
+                                        />
+                                        <p className="error-message" style={{ position: 'relative', left: "0px" }}>{errors.poi?.message}</p>
+
+                                    </div>
+                                </div>
                                 <div className="detail-divs">
-                                    <span className='details-header'>Location:</span>
+                                    <span className={`details-header${errors.location ? "-error" : ""}`}>Location:</span>
                                     <div className='option-divs'>
                                         <GoogleLocationSearch data={{ heading: "preferred job locations", inputPlaceholder: "Kerala", isLocation: true }}
                                             changeFn={handleChangeLocation}
@@ -240,70 +391,113 @@ export default function JobVacancyForm({ data = {} }) {
                                     </div>
                                 </div>
                                 <div className="detail-divs">
-                                    <p><span className='details-header'>Employment type:</span></p>
+                                    <p><span className={`details-header${prefError.empType ? "-error" : ""}`}>Employment type:</span></p>
                                     <div className="option-divs">
-                                        <MultipleOptions fSize="14px" margY="0px" options={["Full-time", "Internship", "Temporary"]} preselected={dta.empType || null} dataType="empType" checkLimit={1} onChange={handleCheckboxChange} />
+                                        <MultipleOptions options={["Full-time", "Internship", "Temporary"]} preselected={preferences.empType || null} dataType="empType" checkLimit={1} onChange={handleCheckboxChange} />
                                         <p className="error-message">{prefError.empType?.message}</p>
                                     </div>
                                 </div>
                                 <div className="detail-divs">
-                                    <p><span className='details-header'>Experience:</span></p>
+                                    <p><span className={`details-header${prefError.exp ? "-error" : ""}`}>Experience:</span></p>
                                     <div className="option-divs">
-                                        <MultipleOptions fSize="14px" margY="0px" options={["Fresher", "1-5 years", "5-10 years", "10+ years"]} preselected={dta.exp || null} dataType="exp" checkLimit={1} onChange={handleCheckboxChange} />
+                                        <MultipleOptions options={["Fresher", "1-5 years", "5-10 years", "10+ years"]} preselected={preferences.exp || null} dataType="exp" checkLimit={1} onChange={handleCheckboxChange} />
                                         <p className="error-message">{prefError.exp?.message}</p>
                                     </div>
                                 </div>
+
+                                <div className="detail-divs">
+                                    <p><span className={`details-header${prefError.exp ? "-error" : ""}`}>Work Style:</span></p>
+                                    <div className="option-divs">
+                                        <MultipleOptions options={["Hybrid", "Work from home", "Onsite"]} preselected={preferences.workStyle || null} dataType="workStyle" checkLimit={1} onChange={handleCheckboxChange} />
+                                        <p className="error-message">{prefError.workStyle?.message}</p>
+                                    </div>
+                                </div>
+                                <div className="detail-divs">
+                                    <p><span className={`details-header${prefError.exp ? "-error" : ""}`}>Working days:</span></p>
+                                    <div className="option-divs">
+                                        <MultipleOptions options={["Monday-Friday", "Monday-Saturday"]} preselected={preferences.workingDays || null} dataType="workingDays" checkLimit={1} onChange={handleCheckboxChange} />
+                                        <p className="error-message">{prefError.workingDays?.message}</p>
+                                    </div>
+                                </div>
                                 <div className="skill-divs">
-                                    <p><span>Skills</span></p>
+                                    <p><span>Skills:</span></p>
                                     <div className='create-job-skill-field'>
-                                        <AddTags value={skill} tags={skills} deleteFn={handleDeleteSkill} changeFn={handleChangeSkill} updateFn={handleSkill} onChange={handleSkillData} tagType="skills" data={{ heading: "", inputPlaceholder: "Marketing", isLocation: false }} fSize="14px" />
+                                        <AddSkills id="job-vacancy-skills" availableSkills={skillsList} value={skill} tags={skills} deleteFn={handleDeleteSkill} changeFn={handleChangeSkill} updateFn={handleSkill} onChange={handleSkillData} data={{ title: "Skills", pageType: "vacancy form", inputPlaceholder: "HTML" }} />
                                     </div>
                                 </div>
                                 <div className='salary-div'>
-                                    <p><span className='details-header'>Salary:</span></p>
+                                    <p><span className={`details-header${errors.salary ? "-error" : ""/*console.log("salary erros", errors.salary)*/}`}>Salary:</span></p>
                                     <div className='option-div'>
                                         <div className="salary-fields">
                                             <CreateFormTextFields inputPlaceholder="Title" wparam="80px" fontsz="14px" select={true} defaultValue="RS" items={['RS', 'DLR', 'YEN']} {...register("currency", { required: "Currency is required" })} />
 
-                                            <CreateFormTextFields inputPlaceholder="Title" wparam="100px"
+                                            <CreateFormTextFields inputPlaceholder="Lower limit" wparam="120px"
                                                 defaultValue={dta.salary ? dta.salary[0] || null : null}
                                                 {...register("salary.0", {
                                                     required: "Salary range is required",
                                                     pattern: {
                                                         value: /^[0-9]+$/,
                                                         message: "Only numbers allowed"
-                                                    }
+                                                    },
+                                                    validate: (val) => val > salary_threshold || `Enter salary greater than ${salary_threshold}`,
                                                 })} />
                                             <span>to</span>
-                                            <CreateFormTextFields inputPlaceholder="Title" wparam="100px"
+                                            <CreateFormTextFields disabled={!isUpperLimitEnabled/*watch("salary.0") != null ? (watch("salary.0").length ? false : true) : true */} inputPlaceholder="Upper limit" wparam="120px"
                                                 defaultValue={dta.salary ? dta.salary[1] || null : null}
                                                 {...register("salary.1", {
-                
+
                                                     pattern: {
                                                         value: /^[0-9]+$/,
                                                         message: "Only numbers allowed"
-                                                    }
+                                                    },
+                                                    validate: (val) => {
+                                                        const lowerLimit = watch("salary.0");
+
+                                                        // Check if the value is provided
+                                                        if (val) {
+                                                            // Check if the value is greater than the lower limit or if it's empty
+                                                            if (Number(val) > Number(lowerLimit) || val.length === 0) {
+                                                                return true;
+                                                            } else {
+                                                                return "Enter salary greater than lower limit";
+                                                            }
+                                                        } else {
+                                                            // Allow empty values if needed
+                                                            return true;
+                                                        }
+                                                    },
                                                 })} />
                                         </div>
                                         <p className="error-message">{errors.salary ? errors.salary[0]?.message || errors.salary[1]?.message || errors.currency?.message || "" : errors.currency?.message || ""}</p>
                                     </div>
                                 </div>
+
+                                <div className='last-date-div'>
+                                    <p><span className={`details-header${errors.last_date ? "-error" : ""/*console.log("salary erros", errors.salary)*/}`}>Closing Date:</span></p>
+                                    <div className='option-div'>
+                                        <CreateFormTextFields inputPlaceholder="Title" wparam="200px"
+                                            defaultValue={dta.last_date ? dta.last_date || null : null}
+                                            type="date"
+                                            error={'last_date' in errors}
+                                            {...register("last_date",
+                                                {
+                                                    validate: (val) => { if (val != null && val.length != 0) return (dateValidation(val) || "Please enter a future date") },
+                                                })} />
+                                        {watch('last_date') == null || watch('last_date').length == 0 ? (<p className='helper-text'>&nbsp;&nbsp;default value is 30 days after post date</p>) : <></>}
+                                        <p className="error-message">{errors.last_date?.message}</p>
+                                    </div>
+                                </div>
+
                                 <div className="create-job-vacancy-description-div">
-                                    <p><span>Job Description</span></p>
-                                    <div className="create-job-desc-field"><CreateFormTextFields inputPlaceholder="Title" fontsz="14px" wparam="100%" defaultValue={dta.jobDesc || ""} multipleLine={true} minrows={8} {...register("jobDesc", { required: "Field required", })} /></div>
+                                    <p><span>Job Description:</span></p>
+                                    <div className="create-job-desc-field"><CreateFormTextFields inputPlaceholder="Enter job details" fontsz="14px" wparam="100%" defaultValue={dta.jobDesc || ""} multipleLine={true} minrows={8} {...register("jobDesc", { required: "Field required", })} /></div>
                                     <p className="create-job-desc-field error-message">{errors.jobDesc?.message}</p>
                                 </div>
 
                                 <div className="create-job-vacancy-description-div">
-                                    <p><span>Job Requirements</span></p>
-                                    <div className="create-job-desc-field"><CreateFormTextFields inputPlaceholder="Title" fontsz="14px" wparam="100%" defaultValue={dta.jobReq || ""} multipleLine={true} minrows={8} {...register("jobReq", { required: "Field required", })} /></div>
+                                    <p><span>Job Requirements:</span></p>
+                                    <div className="create-job-desc-field"><CreateFormTextFields inputPlaceholder="Enter criteria" fontsz="14px" wparam="100%" defaultValue={dta.jobReq || ""} multipleLine={true} minrows={8} {...register("jobReq", { required: "Field required", })} /></div>
                                     <p className="create-job-desc-field error-message">{errors.jobReq?.message}</p>
-                                </div>
-                                <div className="skill-divs">
-                                    <p><span>Tags:</span></p>
-                                    <div className='create-job-skill-field'>
-                                        <AddTags value={tag} tags={tags} deleteFn={handleDeleteTag} changeFn={handleChangeTag} updateFn={handleTag} onChange={handleSkillData} tagType="tags" data={{ heading: "", inputPlaceholder: "Marketing", isLocation: false }} fSize="14px" />
-                                    </div>
                                 </div>
 
                             </div>

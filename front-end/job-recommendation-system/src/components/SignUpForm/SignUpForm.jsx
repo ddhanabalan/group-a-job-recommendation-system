@@ -18,7 +18,7 @@ function SignUpForm() {
   const [visible, setVisible] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const userType = location["pathname"].includes("employer") ? "employer" : "seeker";
+  const userType = location["pathname"].includes("organization") ? "employer" : "seeker";
 
   //const userType = location.state["userType"];
   // const { info, setInfo } = useState(); 
@@ -34,10 +34,9 @@ function SignUpForm() {
   function subForm(data) {
     //Form data submission and passing it to sign up page part 2
     console.log(data)
-    navigate("../signup2/" + userType, { state: { "email": data.email, "password": data.password, "userType": userType } })
+    navigate(userType==="employer"?"/signup/organization/personal-details":"/signup/personal-details", { state: { "email": data.email, "password": data.password, "userType": userType } })
   }
   const color = watch("password") === watch("cpassword") ? "#07F407" : "#ff2d00"
-
   return (
     <>
       {/*SignUp Form*/}
@@ -112,15 +111,22 @@ function SignUpForm() {
               </Box>
             </Stack>
 
-            <Button variant="contained" type="submit" sx={{ backgroundColor: 'black', borderRadius: 2 ,marginTop:'1rem'}} endIcon={<ArrowForwardIcon />}>
+            {/* <Button variant="contained" type="submit" sx={{ backgroundColor: 'black', borderRadius: 2 ,marginTop:'1rem'}} endIcon={<ArrowForwardIcon />}>
               <p>Continue</p>
-            </Button>
+            </Button> */}
+            <button className='continue-btn'>
+              Continue
+              <div class="arrow-wrapper">
+                <div class="arrow"></div>
+
+              </div>
+            </button>
             </form>
           </div>
 
         
           <div className="login-redirect">
-            <Link to={'../login/' + userType} state={{ "userType": userType }}><p>Already a user? Sign in</p></Link>
+          <Link to={'../login'} state={{ "userType": userType }}><p className='link-login-signup'>Already a user? Sign in</p></Link>
           </div>
       </div>
     </>

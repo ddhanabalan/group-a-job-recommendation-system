@@ -1,0 +1,19 @@
+.license-card-date-and-url {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.license-card-date-and-url svg{
+    color: #DC03FF;
+    margin-right: .1rem;
+}
+ .license-card-btn{
+    background-color: #D9D9D9;
+    font-size: .875rem;
+    padding: 0.2rem 1.2rem !important;
+    color: black;
+}
+.date-picker{
+
+}

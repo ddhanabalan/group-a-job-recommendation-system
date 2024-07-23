@@ -1,49 +1,68 @@
 import './Jobs.css';
 import { useState, useEffect } from 'react';
 import JobCard from '../JobCard/JobCard';
-import JobDesciptionForm from '../JobDescription/JobDesciption';
+import JobCardExpanded from '../JobCardExpanded/JobCardExpanded';
+import AiJobs from '../../components/AiJobs/AiJobs';
 
 
-function ClickableJobCard({id, data, onclick})
-{
-    return(
-        <div className='clickable-job-card' onClick={()=>onclick(id)}>
-            <JobCard data={data}/>
-        </div>
-    )
-}
-export default function Jobs({data, dataToParentFn=null, desc_state=null, userData}) {
-    
-    const finalInfo={...data};
+export default function Jobs({ data, dataType=null, dataToParentFn = null, createJobRequest = null, desc_state = null, userData }) {
+
+    const finalInfo = [...data];
+    console.log("final information to job card", finalInfo)
     //const userType="none";
-    
+    //console.log("data to card", finalInfo)
     //const parentDescState=desc_state?desc_state:false;
-    const [descriptionOn, setDesc] = useState(desc_state?desc_state:false);
+    const [descriptionOn, setDesc] = useState(desc_state ? desc_state : false);
     const [selectedId, setId] = useState(null);
+    const [selectedJob, setSelectedJob] = useState(null);
     //console.log("final data info" ,finalInfo);
-    function openDesc(id){
+    function openDesc(id) {
+        console.log("selected id", id);
         setDesc(true);
         setId(id);
-        console.log("selected id", id);
+        const selection = finalInfo.filter(e => (e.id == id ? e : false))[0]
+        //console.log("selection", selection)
+        setSelectedJob(selection)
+
+
     }
     //console.log("description status job component",descriptionOn);
 
-    useEffect(()=>{
-        if(dataToParentFn)dataToParentFn(descriptionOn)
-        },[descriptionOn])
+    useEffect(() => {
+        if (dataToParentFn) dataToParentFn(descriptionOn)
+    }, [descriptionOn])
     useEffect(() => {
         if (desc_state !== null) setDesc(desc_state);
         //console.log("changed");
-        }, [desc_state]);
-
+    }, [desc_state]);
+    useEffect(() => {
+        if (selectedId != null) setSelectedJob(finalInfo.filter(e => (e.id == selectedId ? e : false))[0]);
+    }, [finalInfo])
+    const demoInfo = [{ id: 0, jobTitle: "Python Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000", "10000"], postDate: "13/9/23", location: 'London', empType: 'Full-time', exp: '5-10 years', jobDesc: "This is for demo purpose", jobReq: "This is for demo purpose", skills: ["python", "AI", "Django"] },
+    { id: 1, jobTitle: "Java Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000", "10000"], postDate: "13/9/23", location: 'Moscow', empType: 'Internship', exp: '1-5 years', jobDesc: "This is for demo purpose", jobReq: "This is for demo purpose", skills: ["java", "AI"] },
+    { id: 2, jobTitle: "Ruby Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000", "10000"], postDate: "13/9/23", location: 'Uganda', empType: 'Temporary', exp: 'Fresher', jobDesc: "This is for demo purpose", jobReq: "This is for demo purpose", skills: ["ruby", "AI", "Django"] },
+    { id: 3, jobTitle: "Golang Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000", "10000"], postDate: "13/9/23", location: 'Alaska', empType: 'Internship', exp: '5-10 years', jobDesc: "This is for demo purpose", jobReq: "This is for demo purpose", skills: ["python", "AI", "Django"] },
+    { id: 4, jobTitle: "Game Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000", "10000"], postDate: "13/9/23", location: 'Germany', empType: 'Full-time', exp: '5-10 years', jobDesc: "This is for demo purpose", jobReq: "This is for demo purpose", skills: ["react", "AI", "Django"] },
+    { id: 5, jobTitle: "Python Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000", "10000"], postDate: "13/9/23", location: 'London', empType: 'Full-time', exp: '5-10 years', jobDesc: "This is for demo purpose", jobReq: "This is for demo purpose", skills: ["python", "AI", "Django"] },
+    { id: 6, jobTitle: "Java Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000", "10000"], postDate: "13/9/23", location: 'Alaska', empType: 'Temporary', exp: 'Fresher', jobDesc: "This is for demo purpose", jobReq: "This is for demo purpose", skills: ["reactor", "AI", "Django"] },
+    { id: 7, jobTitle: "Ruby Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000", "10000"], postDate: "13/9/23", location: 'London', empType: 'Full-time', exp: '5-10 years', jobDesc: "This is for demo purpose", jobReq: "This is for demo purpose", skills: ["python", "AI", "Django"] },
+    { id: 8, jobTitle: "Golang Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000", "10000"], postDate: "13/9/23", location: 'India', empType: 'Internship', exp: '1-5 years', jobDesc: "This is for demo purpose", jobReq: "This is for demo purpose", skills: ["python", "AI", "Django"] },
+    { id: 9, jobTitle: "Game Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000", "10000"], postDate: "13/9/23", location: 'London', empType: 'Full-time', exp: '5-10 years', jobDesc: "This is for demo purpose", jobReq: "This is for demo purpose", skills: ["python", "AI", "Django"] },]
 
     return (
-
         <div className="cards-container">
-            {descriptionOn?
-            <JobDesciptionForm data={finalInfo[selectedId]} userData={userData}/>
-            :
-            Object.keys(finalInfo).map((card) => (<ClickableJobCard key={finalInfo[card]["id"]} id={finalInfo[card]["id"]} onclick={openDesc} data={{...finalInfo[card],'userType':"seekerq"}} />))
+
+            {descriptionOn ?
+                <JobCardExpanded data={selectedJob} createJobRequest={createJobRequest} userData={userData} />
+                : (
+                    <>  
+                        
+                        {dataType != "approval"?<AiJobs childData={finalInfo} expandView={openDesc} />: <></>}
+                        {
+                            Object.keys(finalInfo).map((card) => (<JobCard key={finalInfo[card]["id"]} id={finalInfo[card]["id"]} expandView={openDesc} data={{ ...finalInfo[card], 'userType': "seeker" }} />))
+                        }
+                    </>
+                )
             }
         </div>
     )

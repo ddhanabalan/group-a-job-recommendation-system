@@ -1,0 +1,23 @@
+
+.no-job-applications-message p{
+    color: rgb(76, 76, 76);
+    font-size: 0.9rem;
+    margin-top: 2rem;
+}
+
+.no-job-applications-message{
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+
+
+.no-job-applications-message img {
+    width: 35%;
+    height: auto;
+    filter: grayscale(100%);
+    opacity: 50%;
+}

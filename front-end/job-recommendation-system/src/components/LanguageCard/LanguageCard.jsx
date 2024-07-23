@@ -13,7 +13,7 @@ import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 import './LanguageCard.css';
-export default function LanguageCard({  languages,data, deleteFn ,submitFn}) {
+export default function LanguageCard({access,  languages,data, deleteFn ,submitFn}) {
     const { register, formState: { errors }, handleSubmit, getValues,setValue} = useForm({ mode: 'onTouched' });
     const [isNotEditing, SetIsNotEditing] = useState(true)
     useEffect(()=>setValue('language',data.language),[])
@@ -35,14 +35,16 @@ export default function LanguageCard({  languages,data, deleteFn ,submitFn}) {
                         <p>{data.language} - {data.language_proficiency}</p>
                     </div>
                     <div className="qualification-card-action-btns">
-                        <Stack direction="row" spacing={2}>
-                            <IconButton aria-label="edit" onClick={() => SetIsNotEditing(false)}>
-                                <EditIcon fontSize='small' />
-                            </IconButton>
-                            <IconButton aria-label="delete" onClick={() => deleteFn(data.id)}>
-                                <DeleteRoundedIcon sx={{ color: 'red' }} fontSize='small' />
-                            </IconButton>
-                        </Stack>
+                        {access !== "viewOnly" &&
+                            <Stack direction="row" spacing={2}>
+                                <IconButton aria-label="edit" onClick={() => SetIsNotEditing(false)}>
+                                    <EditIcon fontSize='small' />
+                                </IconButton>
+                                <IconButton aria-label="delete" onClick={() => deleteFn(data.id)}>
+                                    <DeleteRoundedIcon sx={{ color: 'red' }} fontSize='small' />
+                                </IconButton>
+                            </Stack>
+                        }
                     </div>
                 </div >
                 :

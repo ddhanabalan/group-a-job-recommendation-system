@@ -22,3 +22,7 @@
     font-family: 'Inter-black';
     src: url(./fonts/Inter-Black.otf);
 }
+@font-face {
+    font-family: 'Inter-light';
+    src: url(./fonts/Inter-Light.otf);
+}

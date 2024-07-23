@@ -1,5 +1,30 @@
 .message-box-login{
     align-self: center;
     position: absolute;
-    top: 2%;
+    top: 1%;
+    z-index: 1000;
 }
+
+.login-form-wrapper{
+    position: absolute;
+    left: 5%;
+    height: 38rem;
+}
+
+@media only screen and (max-width: 800px) {
+    .login-form-wrapper{
+        align-self: center;
+        left: 0%; 
+        width: 100vw;
+        height: 100vh;
+        background-color: white;
+    }
+    .message-box-login{
+        align-self: center;
+        top: 60%;
+        z-index: 1000;
+    }
+  }
+
+
+

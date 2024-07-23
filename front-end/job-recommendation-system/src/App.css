@@ -6,3 +6,6 @@ input:-webkit-autofill:active {
     transition-delay: background-color 5000s, color 5000s;
     
 }
+.css-1d1r5q-MuiFormHelperText-root,.MuiButtonBase-root{
+    letter-spacing: 0 !important;
+}

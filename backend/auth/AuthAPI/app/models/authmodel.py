@@ -32,8 +32,10 @@ class UserAuth(Base):
     refresh_token = Column(String(512), unique=True)
     disabled = Column(Boolean, default=False)
     user_id = Column(Integer)
+    hash_key = Column(String(32))
     user_type = Column(Enum(UserTypeEnum))
     verified = Column(Boolean, default=False)
     last_login = Column(DateTime)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
+

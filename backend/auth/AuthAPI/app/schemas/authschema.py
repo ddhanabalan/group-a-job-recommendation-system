@@ -64,6 +64,7 @@ class UserBase(BaseModel):
     disabled: bool = False
     user_id: Optional[int] = None
     user_type: UserTypeEnum
+    hash_key:Optional[str] = None
     verified: bool = False
     last_login: Optional[datetime] = None
     created_at: Optional[datetime] = None

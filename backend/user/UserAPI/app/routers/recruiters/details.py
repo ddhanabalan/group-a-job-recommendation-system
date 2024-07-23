@@ -1,5 +1,6 @@
 from typing import List
 
+import httpx
 from fastapi import APIRouter, Depends, HTTPException, status, Header, Body
 
 from .. import (
@@ -12,8 +13,8 @@ from .. import (
     check_authorization,
     encode64_image,
     decode64_image,
+    JOB_API_HOST
 )
-
 
 router = APIRouter(prefix="/details")
 
@@ -73,5 +74,10 @@ async def delete_recruiter_details(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to delete user details",
+        )
+    with httpx.AsyncClient() as client:
+        headers = {"Authorization": authorization}
+        await client.delete(
+            f"http://{JOB_API_HOST}:8000/job_invite/user/{user_id}", headers=headers
         )
     return {"detail": "User details deleted successfully"}
