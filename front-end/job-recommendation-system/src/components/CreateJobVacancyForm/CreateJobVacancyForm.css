@@ -264,3 +264,19 @@ padding-left: 2rem;
     bottom: -1.5rem;
     text-align: center;
 }
+
+.submission-status-banner{
+    width: fit-content;
+    padding: 0.5rem 2rem;
+    border-radius: 0.7rem;
+    font-family: "Inter-b";
+    margin-bottom: 2rem;
+}
+
+.status-success{
+    background-color: rgb(101, 254, 101);
+}
+
+.status-failed{
+    background-color: rgb(247, 186, 105);
+}
