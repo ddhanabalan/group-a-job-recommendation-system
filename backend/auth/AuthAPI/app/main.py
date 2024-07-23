@@ -527,23 +527,24 @@ async def delete_user(
     user=Depends(get_current_active_user),
     authorization: str = Header(...),
     db: Session = Depends(get_db),
-): 
-    response = await httpx.AsyncClient().delete(
-        url=f"http://{USER_API_HOST}:{PORT}/{user.user_type}/details",
-        headers={"Authorization": {authorization}},
-    )
-    res_data = response.json()
-    if res_data is None:
-        raise HTTPException(
-            status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
-            detail="User Init was not Successful",
+):
+    with httpx.AsyncClient() as client:
+        response = await client.delete(
+            url=f"http://{USER_API_HOST}:{PORT}/{user.user_type}/details",
+            headers={"Authorization": {authorization}},
         )
-    res = authcrud.delete(db=db, user_id=user.user_id)
-    if not res:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="Data Deletion Failed",
-        )
+        res_data = response.json()
+        if res_data is None:
+            raise HTTPException(
+                status_code=status.HTTP_405_METHOD_NOT_ALLOWED,
+                detail="User Init was not Successful",
+            )
+        res = authcrud.delete(db=db, user_id=user.user_id)
+        if not res:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Data Deletion Failed",
+            )
     return {"detail": "deleted successfully"}
 
 
