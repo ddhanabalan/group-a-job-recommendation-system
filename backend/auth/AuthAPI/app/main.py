@@ -489,8 +489,8 @@ async def forgot_password_verify(
         username, data_type = validate_access_token(token,db=db)
         if username is None or data_type != "forgotPassword":
             raise credential_exception
-        hashed_pwd = get_password_hashed(password.new_password)
         user = authcrud.get_by_username(db=db, username=username)
+        hashed_pwd = get_password_hashed(password.new_password,user.hash_key)
         if not user:
             raise credential_exception
         res = authcrud.update(
@@ -528,8 +528,10 @@ async def delete_user(
     authorization: str = Header(...),
     db: Session = Depends(get_db),
 ):
+    user_type = user.user_type.value
+    print(user_type)
     response = await httpx.AsyncClient().delete(
-        url=f"http://{USER_API_HOST}:{PORT}/{user.user_type}/details",
+        url=f"http://{USER_API_HOST}:{PORT}/{user_type}/details/",
         headers={"Authorization": authorization},
     )
     res_data = response.json()
@@ -557,8 +559,10 @@ async def update_user(
     update_details = user_update.dict(exclude_unset=True)
     password = user_update.pop("password", None)
     if update_details is not None:
+        user_type = user.user_type.value
+        print(user_type)
         response = await httpx.AsyncClient().put(
-            url=f"http://{USER_API_HOST}:{PORT}/{user.user_type}/details",
+            url=f"http://{USER_API_HOST}:{PORT}/{user_type}/details",
             headers={"Authorization": authorization},
             json=update_details,
         )

@@ -177,7 +177,7 @@ async def delete_seeker_details(
     crud.seeker.skill.delete_by_user_id(db, user_id)
     crud.seeker.education.delete_by_user_id(db, user_id)
     crud.seeker.details.delete(db, user_id)
-    with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient() as client:
         headers = {"Authorization": authorization}
         await client.delete(
             f"http://{JOB_API_HOST}:8000/job_invite/user/{user_id}", headers=headers

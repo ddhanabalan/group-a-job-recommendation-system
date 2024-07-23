@@ -42,16 +42,16 @@ async def create_seeker_poi(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to create point of interest",
         )
-    poi_model = seekerschema.SeekerModelIn(**{"user_id":user_id,"position":poi.position})
-    with httpx.AsyncClient() as client:
-        response = await client.post(
-            "http://172.20.0.5:8000/job/input",
-            json=poi_model.dict(),
-        )
-        if response.status_code != status.HTTP_200_OK:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="Error Occured"
-            )
+    # poi_model = seekerschema.SeekerModelIn(**{"user_id":user_id,"position":poi.position})
+    # async with httpx.AsyncClient() as client:
+    #     response = await client.post(
+    #         "http://172.20.0.5:8000/job/input",
+    #         json=poi_model.dict(),
+    #     )
+    #     if response.status_code != status.HTTP_200_OK:
+    #         raise HTTPException(
+    #             status_code=status.HTTP_404_NOT_FOUND, detail="Error Occured"
+    #         )
     return {"detail": "Point of interest created successfully"}
 
 

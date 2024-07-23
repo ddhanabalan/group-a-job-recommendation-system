@@ -79,16 +79,16 @@ async def create_job_vacancy(
         job_skill_data = jobschema.JobSkillsCreate(job_id=job_id, skill=_)
         jobcrud.skills.create(db, job_skill_data)
 
-    job_model = jobschema.JobDetails(**data)
-    with httpx.AsyncClient() as client:
-        response = await client.post(
-            "http://172.20.0.5:8000/job/input",
-            json=job_model.dict(),
-        )
-        if response.status_code != status.HTTP_200_OK:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="Error Occured"
-            )
+    # job_model = jobschema.JobDetails(**data)
+    # with httpx.AsyncClient() as client:
+    #     response = await client.post(
+    #         "http://172.20.0.5:8000/job/input",
+    #         json=job_model.dict(),
+    #     )
+    #     if response.status_code != status.HTTP_200_OK:
+    #         raise HTTPException(
+    #             status_code=status.HTTP_404_NOT_FOUND, detail="Error Occured"
+    #         )
 
     return {"details": "Job Created"}
 
@@ -178,6 +178,7 @@ async def delete_job_vacancy_by_user_id(
     user_id: int, db: Session = Depends(get_db), authorization: str = Header(...)
 ):
     await check_authorization(authorization=authorization, user_type="recruiter")
+    job_ids = 
     if not jobcrud.vacancy.delete_by_user_id(db, user_id):
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
