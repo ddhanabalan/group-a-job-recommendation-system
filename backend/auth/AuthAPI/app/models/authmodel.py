@@ -1,4 +1,4 @@
-from sqlalchemy import Column, String, Integer, Date, DateTime, Boolean, Enum
+from sqlalchemy import Column, String, Integer, Date, DateTime, Boolean, Enum, Text
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from ..schemas.authschema import UserTypeEnum
@@ -29,7 +29,7 @@ class UserAuth(Base):
     username = Column(String(32), unique=True)
     hashed_password = Column(String(64))
     email = Column(String(32), unique=True)
-    refresh_token = Column(String(512), unique=True)
+    refresh_token = Column(Text)
     disabled = Column(Boolean, default=False)
     user_id = Column(Integer)
     hash_key = Column(String(32))

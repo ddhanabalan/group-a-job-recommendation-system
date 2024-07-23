@@ -35,6 +35,7 @@ from .utils import validate_user_update, send_verify, send_pwd_reset
 
 authmodel.Base.metadata.create_all(bind=engine)
 origins = [
+    "*",
     "http://career-go.centralindia.cloudapp.azure.com",
     "http://localhost.tiangolo.com",
     "https://localhost.tiangolo.com",
@@ -196,7 +197,6 @@ async def get_refresh_user(
         token_data = authschema.TokenData(username=username)
     except JWTError:
         raise credential_exception
-
     user = authcrud.get_by_username(db, token_data.username)
     if user is None:
         raise credential_exception
@@ -373,6 +373,18 @@ async def register(
         }
     )
     if response.status_code == status.HTTP_201_CREATED:
+        user = authcrud.get_by_email(db,user_db.email)
+        if user is not None:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="User Already Exists!",
+            )
+        user = authcrud.get_by_username(db,user_db.username)
+        if user is not None:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail="Username Already Taken!",
+            )
         res = authcrud.create(db=db, user=user_db)
         if not res:
             raise HTTPException(
@@ -381,7 +393,7 @@ async def register(
             )
 
     await send_verify(
-        token=create_token({"sub": user_db.username, "token":create_token({"sub": user_db.username, "type": "emailVerify"},secret_key=user.hash_key,)}),
+        token=create_token({"sub": user_db.username, "token":create_token({"sub": user_db.username, "type": "emailVerify"},secret_key=user_db.hash_key,)}),
         username=user_db.username,
         to_email=user_db.email,
     )
@@ -515,8 +527,8 @@ async def delete_user(
     user=Depends(get_current_active_user),
     authorization: str = Header(...),
     db: Session = Depends(get_db),
-):
-    response = await httpx.AsyncClient().post(
+): 
+    response = await httpx.AsyncClient().delete(
         url=f"http://{USER_API_HOST}:{PORT}/{user.user_type}/details",
         headers={"Authorization": {authorization}},
     )

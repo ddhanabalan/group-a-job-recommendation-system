@@ -24,6 +24,7 @@ def create(db: Session, user: authschema.UserInDB) -> bool:
         db.commit()
         return True
     except SQLAlchemyError as e:
+        print(e)
         db.rollback()
         return False
 
@@ -108,18 +109,18 @@ def update(db: Session, user_id: int, user_update: dict) -> bool:
         bool: True if update is successful, False otherwise.
     """
     try:
-        user = (
-            db.query(authmodel.UserAuth)
-            .filter(authmodel.UserAuth.id == user_id)
-            .first()
-        )
-        if user:
-            for k, v in user_update.items():
-                if k != "user_id" or v is not None:
-                    setattr(user, k, v)
+        filtered_update = {k: v for k, v in user_update.items() if v is not None}
+
+        # If no valid updates, return True as no action is needed
+        if not filtered_update:
+            print("No valid fields to update.")
+            return True
+        db.query(authmodel.UserAuth).filter(authmodel.UserAuth.id == user_id).update(filtered_update)
         db.commit()
+
         return True
     except SQLAlchemyError as e:
+        print(e)
         db.rollback()
         return False
 
