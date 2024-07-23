@@ -113,7 +113,11 @@ export default function JobInviteSection({userType}) {
         }, delay);
     };
 
-      
+    const refreshInvite = () => {
+        setEntry(null);
+        setJobEntry(null);
+        callJobVacancyAPI();
+    }
     const makeShift=()=>{
         console.log("refreshed page")
         window.location.reload();
@@ -198,7 +202,7 @@ export default function JobInviteSection({userType}) {
             console.log("updated response", response)
             setInviteResponse("sent");
             //const mod_response = response.data.map(e=>({applicantID: e.user_id, username: e.username, candidateName: (e.first_name + " " + e.last_name), first_name: e.first_name, last_name: e.last_name,city: e.city, country: e.country, location: e.location, experience: e.experience, profile_picture: e.profile_picture}))
-            handleClick(3000, callJobVacancyAPI);
+            handleClick(1000, refreshInvite);
             
         } catch (e) {
             setInviteResponse("failed");
@@ -206,7 +210,7 @@ export default function JobInviteSection({userType}) {
             console.log("failed to sent invite", e)
             
             alert(e.message);
-            handleClick(3000, makeShift);
+            handleClick(1000, makeShift);
         }
 
     }
