@@ -75,9 +75,9 @@ async def delete_recruiter_details(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to delete user details",
         )
-    with httpx.AsyncClient() as client:
+    async with httpx.AsyncClient() as client:
         headers = {"Authorization": authorization}
         await client.delete(
-            f"http://{JOB_API_HOST}:8000/job_invite/user/{user_id}", headers=headers
+            f"http://{JOB_API_HOST}:8000/job_vacancy/user/{user_id}", headers=headers
         )
     return {"detail": "User details deleted successfully"}
