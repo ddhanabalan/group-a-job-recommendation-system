@@ -31,7 +31,12 @@ const GoogleLocationSearch = forwardRef(function GoogleLocationSearch({ data, ch
     const fetch = async () => {
         
         const response = await axios.get(
-            `https://api.locationiq.com/v1/autocomplete?key=${MAPS_API_KEY}&q=${query}`
+            `https://api.locationiq.com/v1/autocomplete?key=${MAPS_API_KEY}&q=${query}`,
+            {
+                headers: {
+                    'Accept': 'application/json'
+                }
+            }
         );
         console.log("query", query,"location only", response.data);
         response.status === 200 && setOptions(response.data);
@@ -47,7 +52,10 @@ const GoogleLocationSearch = forwardRef(function GoogleLocationSearch({ data, ch
             id="google-map-demo"
             sx={{ width: 300 }}
             getOptionLabel={(option) =>
-                option.address.name
+            {
+                return option.address!== undefined ? option.address.name:option
+            }
+              
             }
             filterOptions={(x) => x}
             options={options}
@@ -59,7 +67,7 @@ const GoogleLocationSearch = forwardRef(function GoogleLocationSearch({ data, ch
             onChange={(event, newValue) => {
                 setOptions(options);
                 console.log("new", newValue)
-                updateValue(newValue.address?newValue.address.name + "," + (newValue.address.state?newValue.address.state + ",":"")  + newValue.address.country: null) || "";
+                updateValue(newValue.address?newValue.address.name:"");
             }}
             onInputChange={(event, newInputValue) => {
                 setQuery(newInputValue);
