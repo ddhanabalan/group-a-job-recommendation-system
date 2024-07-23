@@ -80,7 +80,7 @@ async def get_seeker_details(user_id:int,authorization: str = Header(...)) -> di
     headers = {"Authorization": authorization}
     async with httpx.AsyncClient() as client:
         response = await client.get(
-            f"http://{USER_API_HOST}:{PORT}/seeker/info/{user_id}/", headers=headers
+            f"http://{USER_API_HOST}:{PORT}/seeker/info/{user_id}", headers=headers
         )
         if response.status_code != status.HTTP_200_OK:
             raise HTTPException(
@@ -88,7 +88,7 @@ async def get_seeker_details(user_id:int,authorization: str = Header(...)) -> di
             )
         return response.json()
 
-def send_invite_notif(seeker_name: str, recruiter_name: str,company_name: str,recruiter_position: str,job_description: str,job_location: str,remarks: str, job_link: str,job_title: str, to_email: EmailStr):
+async def send_invite_notif(seeker_name: str, recruiter_name: str,company_name: str,recruiter_position: str,job_description: str,job_location: str,remarks: str, job_link: str,job_title: str, to_email: EmailStr):
         msg = EmailMessage()
         msg["Subject"] = f"Exciting Job Opportunity at {company_name}!"
         msg["From"] = EMAIL_ADDRESS
