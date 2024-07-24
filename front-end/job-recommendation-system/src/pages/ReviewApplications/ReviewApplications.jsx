@@ -14,18 +14,20 @@ import noApplicationsFiller from "../../images/no-applications-found.json";
 import careerGoLogo from "../../images/careergo_logo.svg";
 
 export default function ReviewApplications({ userType, invite = null }) {
+
     console.log("user is ", userType)
     const link_data = useParams();
     console.log("received from rl", link_data)
     const INVITE_ID = link_data?.invite_id || null;
     const COMPANY_USERNAME = link_data?.company_username || null;
     const [companyID, setCompanyID] = useState((userType === "employer" ? getStorage("userID") : (link_data.company_id ? link_data.company_id : null)));
-    
+
     const receivedData = useLocation();
     const navigate = useNavigate();
     const [userData, setUserData] = useState({ 'id': Number(getStorage("userID")),'type': userType, 'skills': [] });
     console.log("received data", receivedData)
     //const [selectedEntry, setEntry] = useState(null);
+    const [loadingApplicants, setLoadingApplicants] = useState(false)
     const [selectedEntry, setEntry] = useState(receivedData["state"] ? receivedData.state.highlightedId || null : (link_data.job_id ? Number(link_data.job_id) : null));//userData is for knowing if employer or seeker and further passing it down to components
     //console.log("selected entry", selectedEntry);
     const [searchVal, setSearch] = useState("");
@@ -217,6 +219,7 @@ export default function ReviewApplications({ userType, invite = null }) {
     }
 
     const RequestJobApplications = async (applicantList, selectedJobEntry=null) => {
+        setLoadingApplicants(true);
         if(applicantList)
         {//const modApplicantList = applicantList.map(e => e.user_id)
         const inviteApplicants = [...new Set(invitesSent.filter(e => e.job_id == selectedEntry).map(f => ({ user_id: f.user_id, job_id: f.job_id, invite_id: f.id, status: f.status, created_at: f.created_at })))];
@@ -251,9 +254,9 @@ export default function ReviewApplications({ userType, invite = null }) {
             console.log("applicants failed", e)
             setApplicationErrors(true);
         }}
-        else{
-            return;
-        }
+         
+       // handleClick(3000, setLoadingApplicants, false)    //Only for testing purposes.Comment after loading verification.Uncomment bottom line
+        setLoadingApplicants(false)
     }
 
     const getCompanyDetails = async (username) =>{
@@ -421,6 +424,10 @@ export default function ReviewApplications({ userType, invite = null }) {
     const searchBar = (searchValue) => {
         setSearch(searchValue);
     }
+    const handleClick=(timeout, callFn, value=null)=>{
+        setTimeout(() => {value?callFn(value):callFn()}, timeout);
+    };
+
     const expJob = (selection) => {
         //console.log("select", selection);
         console.log("selected job vacncyt after mod", jobVacancies, "selection", selection);
@@ -513,7 +520,7 @@ export default function ReviewApplications({ userType, invite = null }) {
                 }
                 {userType == "employer" ?
 
-                    (selectedEntry != null && filtered.length != 0 && filteredApplicants.length != 0 ?
+                    (selectedEntry != null && filtered.length != 0 && filteredApplicants.length != 0 && !loadingApplicants?
                         
                         filteredApplicants.map(e => {
                                                 const isDateDifferent = (dateVariable!==e.application_created_at)
@@ -544,7 +551,7 @@ export default function ReviewApplications({ userType, invite = null }) {
                             :
                             <div className="no-applications-message">
                                 <Lottie className="no-applications-ani" animationData={noApplicationsFiller} loop={true} />
-                                <p>You haven't received any job applications.</p>
+                                {loadingApplicants?<p>Loading Applications</p>:<p>You haven't received any job applications.</p>}
                             </div>
                         )
                     )

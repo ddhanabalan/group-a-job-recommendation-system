@@ -28,7 +28,7 @@ function HighlightableJobCard({ id, highlighted, type, data, listToDescFunc, del
     )
 }
 
-export default function OpeningsListBar({ data, userType, userID, chooseEntry, searchBar, preselectedEntry, preselectedEntryType=null, filterFunc, pageType, handleApplicationStatus = null, userJobs = null, listToDescParentFunc = null, deleteJobFunc = null, invite=null, seekerJobs = false }) {
+export default function OpeningsListBar({ data, userType, userID, chooseEntry, searchBar, preselectedEntry=null, preselectedEntryType=null, filterFunc = null, pageType, handleApplicationStatus = null, userJobs = null, listToDescParentFunc = null, deleteJobFunc = null, invite=null, seekerJobs = false }) {
     console.log("user received jobs", userJobs, seekerJobs)
     
     console.log("received jobs to openings list bar", data);
@@ -116,7 +116,7 @@ export default function OpeningsListBar({ data, userType, userID, chooseEntry, s
         [highlightedId, searchVal])
 
     useEffect(() => {
-        filterFunc(filterStat)
+        if(filterFunc)filterFunc(filterStat);
     },
         [filterStat])
 
@@ -150,21 +150,24 @@ export default function OpeningsListBar({ data, userType, userID, chooseEntry, s
             <div className="left-bar">
                 <div className="openings-search-tile">
                     <div className="search-bar">
+                        {pageType !== "candidates" &&
                         <div className="back-icon-opening">
                             <Link to="/profile">
                                 <BackBtn />
                             </Link>
                         </div>
+                        }
                         <div className="opening-search">
                             <SearchBar toSearch={"Search jobs"} searchHeight={33} onSearch={onSearch} searchColor="#D9D9D9" />
                         </div>
+                        {filterFunc &&
                         <div className="sort-icon">
                             <IconButton onClick={() => setFilter(!filterStat)} sx={{ borderRadius: 50, backgroundColor: (filterStat ? 'black' : '#E7E4E4'), width: 35, height: 35, "&.MuiButtonBase-root:hover": { bgcolor: (filterStat ? 'black' : '#E7E4E4') }, }}>
                                 <SortIcon sx={{ color: (filterStat ? 'white' : 'black') }} />
                             </IconButton>
-                        </div>
+                        </div>}
                     </div>
-                    {userType == "employer" &&
+                    {userType == "employer" && pageType!=="candidates" &&
                         <div className="create-vacancy-button" >
                             <Link to="../employer/job-vacancy" state={{ user_id: userID }}>
                                 <Button
@@ -192,7 +195,7 @@ export default function OpeningsListBar({ data, userType, userID, chooseEntry, s
                         (
                         //console.log("finalInfo check", finalInfo)
                         //Object.keys(finalInfo).map((card) => console.log("this is what i received", card, finalInfo[card]))
-                         finalInfo.map((card) => (<HighlightableJobCard key= {finalInfo.indexOf(card)} id={handleSeekerJobSection(card)} onclick={highlightDiv} highlighted={highlightedId == handleSeekerJobSection(card) && (seekerJobs?(card.type===highlightedEntryType): true)} type={userType == "employer" ? pageType : null} applicationType={seekerJobs?card.type: null} inviteJob={userJobs && userJobs.length?userJobs.filter(job => {if(job.job_vacancy_id == card["id"] )return job}): null} deleteJobFunc={deleteJobFunc} listToDescFunc={listToDescFunc} data={{ ...card, 'userType': userType, 'highlightedId': highlightedId }} invite={invite} seekerJobs={seekerJobs?true: false}/>))
+                         finalInfo.map((card) => (<HighlightableJobCard key= {finalInfo.indexOf(card)} id={handleSeekerJobSection(card)} onclick={highlightDiv} highlighted={highlightedId == handleSeekerJobSection(card) && (seekerJobs?(card.type===highlightedEntryType): true)} type={userType == "employer" && pageType!=="candidates" ? pageType : null} applicationType={seekerJobs?card.type: null} inviteJob={userJobs && userJobs.length?userJobs.filter(job => {if(job.job_vacancy_id == card["id"] )return job}): null} deleteJobFunc={deleteJobFunc} listToDescFunc={listToDescFunc} data={{ ...card, 'userType': userType, 'highlightedId': highlightedId }} invite={invite} seekerJobs={seekerJobs?true: false}/>))
                         )
                             :
                         (userType=="employer"?

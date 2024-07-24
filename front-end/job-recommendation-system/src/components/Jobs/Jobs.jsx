@@ -6,7 +6,7 @@ import AiJobs from '../../components/AiJobs/AiJobs';
 import { v4 as uuid } from 'uuid';
 
 
-export default function Jobs({ data, dataType=null, dataToParentFn = null, createJobRequest = null, handleInvite=null, desc_state = null, userData,modelJobs}) {
+export default function Jobs({ userData, data, modelData,dataType=null, dataToParentFn = null, createJobRequest = null, handleInvite=null, desc_state = null, }) {
 
     const finalInfo = [...data];
     console.log("final information to job card", finalInfo)
@@ -57,8 +57,8 @@ export default function Jobs({ data, dataType=null, dataToParentFn = null, creat
                 <JobCardExpanded data={selectedJob} createJobRequest={createJobRequest} handleInvite={handleInvite} userData={userData} invite={selectedJob.invite_status?true:null}/>
                 : (
                     <>  
-                        {console.log("lenghds ", modelJobs.length)}
-                        {dataType !== "approval"&& <AiJobs childData={modelJobs} expandView={openDesc} />}
+                        {console.log("lenghds ", modelData.length)}
+                        {dataType !== "approval"&& <AiJobs childData={modelData} expandView={openDesc} />}
                         {
                             Object.keys(finalInfo).map((card) => (<JobCard key={uuid()} id={finalInfo[card]["id"]} expandView={openDesc} data={{ ...finalInfo[card], 'userType': "seeker" }} />))
                         }
