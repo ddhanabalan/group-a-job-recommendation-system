@@ -58,7 +58,7 @@ export default function ReviewApplications({ userType, invite = null }) {
 
     const [filterstat, setFilter] = useState(false);
     const [filterparam, setParam] = useState({});
-    let filtered = (jobVacancies.length != 0 ? jobVacancies.filter(id => id["skills"].map((tag) => (tag["skill"].toLowerCase().includes(searchVal.toLowerCase()))).filter(Boolean).length ? id : false) : []); //Could cause rerenders sometimes.Set to const if issues encountered
+    let filtered = (jobVacancies.length!=0?(searchVal.startsWith("#")?/*search with # to search with tags*/jobVacancies.filter(id => id["skills"].map((tag)=>(tag["skill"].toLowerCase().includes(searchVal.slice(1).toLowerCase()))).filter(Boolean).length?id:false)/*search with # to search with tags*/:/*search without # to search with name*/jobVacancies.filter(id => (id["jobTitle"].toLowerCase()).startsWith(searchVal.toLowerCase()))/*search without # to search with name*/):[]);
     const [filteredApplicants, setFilteredApplicants] = useState([])
     const [invitesSent, setInvitesSent] = useState([]);
     let invitesReceived = [];
