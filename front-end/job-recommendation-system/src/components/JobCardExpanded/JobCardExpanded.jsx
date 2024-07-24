@@ -65,7 +65,7 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
         else if (status == "approved") return "green";
         else if (status == "rejected") return "red";
     }
-
+    console.log("user job request received", userJobRequest , data.invite_status, submit);
     useEffect(() => setSkillIndicator(true), [data])
     return (
         <>
@@ -221,7 +221,9 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
                                     </button>
                                     :
                                     ((data.invite?.job_status.toLowerCase() === "rejected") || (data.invite_status?.toLowerCase()==="rejected")?
+                                    (userJobRequest?.status.toLowerCase()!=="applied"?
                                     <>
+                                    
                                     <button className='continue-btn invite-rejected-btn' >
                                         Invite Rejected
                                     </button>
@@ -234,6 +236,11 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
                                         </Link>
                                     </div>
                                     </>
+                                    :
+                                    <button className='continue-btn disable-apply-btn' >
+                                        {userJobRequest?.status}
+                                    </button>
+                                    )
                                     :
                                     <></>
                                     )

@@ -65,7 +65,7 @@ export default function JobSection() {
                       companyName: e.company_name,
                       tags: /* (e.tags.length ? e.tags : */ [{ tag: "" }], // Keeping the comment
                       currency: salaryParts.length > 0 ? salaryParts[0] : "",
-                      salary: salaryParts.length > 2 ? [salaryParts[1], salaryParts[2]] : ["", ""],
+                      salary: salaryParts.length > 2 ? [salaryParts[1], salaryParts[2]] : (salaryParts.length === 2 ? [salaryParts[1], ""]:["", ""]),
                       postDate: createdDateParts.length > 0 ? createdDateParts[0] : e.created_at,
                       last_date: lastDateParts.length > 0 ? lastDateParts[0] : e.last_date,
                       location: e.location,
