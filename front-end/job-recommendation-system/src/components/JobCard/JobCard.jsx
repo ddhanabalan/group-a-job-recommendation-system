@@ -8,9 +8,10 @@ import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 
 export default function JobCard({ data, id, expandView, background, profilePictureStyle, link=null }) {
+    console.log("job data received for job card", data)
     const navigate = useNavigate();
     const [redirect, setRedirect] = useState(false)
-    const chips = [data.workStyle, data.workingDays, ...(data.skills.map(e => e.skill).slice(0, 2))]
+    const chips = [data.workStyle, data.workingDays, ...(data.skills?.map(e => e.skill).slice(0, 2) || [])]
     useEffect(()=> {if(redirect===true)
                         {setRedirect(false);
                         navigate(link, { replace: true });}}, [redirect])
