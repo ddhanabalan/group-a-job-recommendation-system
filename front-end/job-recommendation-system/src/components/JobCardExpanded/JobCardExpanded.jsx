@@ -22,7 +22,7 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
     const userSkills = (userData.type === "employer" || data.length) ? (null) : (data.skills?.map(skill => userData.skills.map(skilltag => skilltag.skill).includes(skill.skill) ? true : false).filter(Boolean).length)
     const [skillIndicator, setSkillIndicator] = useState(true);
     const [userJobRequest, setUserJobRequest] = useState(null);
-
+    const [textJustify, setTextJustify] = useState(true);
     console.log("data", data)
 
     //console.log(userSkills)
@@ -115,13 +115,13 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
 
                             <div className="job-description">
                                 <h6>Job description</h6>
-                                <pre className='overview-formatted desc'>{data.jobDesc}</pre>
+                                <pre className={`overview-formatted desc ${textJustify?"justified-pre":""}`}>{data.jobDesc}</pre>
                                 {/* <p className="desc">{data.jobDesc}</p> */}
                             </div>
 
                             <div className="job-requirements">
                                 <h6>Job requirements</h6>
-                                <pre className='overview-formatted desc'>{data.jobReq}</pre>
+                                <pre className={`overview-formatted desc ${textJustify?"justified-pre":""}`}>{data.jobReq}</pre>
                                 {/* <p className='desc'>{data.jobReq}</p> */}
                             </div>
 

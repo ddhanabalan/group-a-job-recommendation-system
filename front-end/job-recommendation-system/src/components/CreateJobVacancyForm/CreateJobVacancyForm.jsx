@@ -293,7 +293,7 @@ export default function JobVacancyForm({ data = {} }) {
         }
 
     }
-    useEffect(() => { if (submit === true) { navigate("../employer/review-applications") } }, [submit]);
+    //useEffect(() => { if (submit === true) { navigate("../employer/review-applications") } }, [submit]); //This line is not required
      useEffect(() => {
          console.log("submission status", submissionStatus)
          if(submissionStatus ==="success" || submissionStatus ==="failed"){
@@ -471,7 +471,7 @@ export default function JobVacancyForm({ data = {} }) {
                                     <p><span className={`details-header${errors.salary ? "-error" : ""/*console.log("salary erros", errors.salary)*/}`}>Salary:</span></p>
                                     <div className='option-divs'>
                                         <div className="salary-fields">
-                                            <CreateFormTextFields inputPlaceholder="Title" wparam="80px" fontsz="14px" select={true} defaultValue="RS" items={['RS', 'DLR', 'YEN']} {...register("currency", { required: "Currency is required" })} />
+                                            <CreateFormTextFields inputPlaceholder="Title" wparam="80px" fontsz="14px" select={true} defaultValue={dta.currency || "RS"} items={['RS', 'DLR', 'YEN']} {...register("currency", { required: "Currency is required" })} />
 
                                             <CreateFormTextFields inputPlaceholder="Lower limit" wparam="120px"
                                                 defaultValue={dta.salary ? dta.salary[0] || null : null}
@@ -532,13 +532,13 @@ export default function JobVacancyForm({ data = {} }) {
 
                                 <div className="create-job-vacancy-description-div">
                                     <p><span>Job description:</span></p>
-                                    <div className="create-job-desc-field"><CreateFormTextFields inputPlaceholder="Enter job details" fontsz="14px" wparam="100%" defaultValue={dta.jobDesc || ""} multipleLine={true} minrows={8} {...register("jobDesc", { required: "Field required", })} /></div>
+                                    <div className="create-job-desc-field"><CreateFormTextFields inputPlaceholder="Enter job details" fontsz="14px" wparam="100%" defaultValue={dta.jobDesc || ""} multipleLine={true} minrows={8}  /*justify={true}*/ {...register("jobDesc", { required: "Field required", })} /></div>
                                     <p className="create-job-desc-field error-message">{errors.jobDesc?.message}</p>
                                 </div>
 
                                 <div className="create-job-vacancy-description-div">
                                     <p><span>Job requirements:</span></p>
-                                    <div className="create-job-desc-field"><CreateFormTextFields inputPlaceholder="Enter criteria" fontsz="14px" wparam="100%" defaultValue={dta.jobReq || ""} multipleLine={true} minrows={8} {...register("jobReq", { required: "Field required", })} /></div>
+                                    <div className="create-job-desc-field"><CreateFormTextFields inputPlaceholder="Enter criteria" fontsz="14px" wparam="100%" defaultValue={dta.jobReq || ""} multipleLine={true} minrows={8} /*justify={true}*/ {...register("jobReq", { required: "Field required", })} /></div>
                                     <p className="create-job-desc-field error-message">{errors.jobReq?.message}</p>
                                 </div>
 
