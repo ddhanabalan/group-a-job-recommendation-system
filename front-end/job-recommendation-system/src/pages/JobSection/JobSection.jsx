@@ -119,7 +119,7 @@ export default function JobSection() {
                 const r = invite.map(e=>e.status?e.status.toLowerCase():null);
                 //console.log("registered invites", inviteJob, r, data.id)
                 
-                if(r.includes("rejected") && r.includes("pending"))
+                if(/*r.includes("rejected") && */r.includes("pending"))
                 {
                     index = r.lastIndexOf("pending");
                 }

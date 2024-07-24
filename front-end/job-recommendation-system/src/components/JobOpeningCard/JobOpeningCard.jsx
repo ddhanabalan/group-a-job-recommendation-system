@@ -61,7 +61,7 @@ export default function JobOpeningCard({ data, type = null, highlighted = null, 
         const r = inviteJob.map(e=>e.invite_status?e.invite_status.toLowerCase():null);
         console.log("registered invites", inviteJob, r, data.id)
     let index = 0;
-    if(r.includes("rejected") && r.includes("pending"))
+    if(/*r.includes("rejected") && */ r.includes("pending"))
     {
         index = r.lastIndexOf("pending");
     }
