@@ -26,6 +26,14 @@ def get_all(db: Session, company_id: int = None) -> List[Type[jobschema.JobVacan
     except SQLAlchemyError as e:
         return []
 
+def get_all_by_job_ids(db: Session,job_ids:List[int]):
+    try:
+        print(job_ids)
+        query = db.query(jobmodel.JobVacancy).filter(jobmodel.JobVacancy.job_id.in_(job_ids)).all()
+        print(query)
+        return query
+    except SQLAlchemyError as e:
+        return []
 
 def get(db: Session, job_vacancy_id: int) -> Type[jobmodel.JobVacancy] | None:
     """

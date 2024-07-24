@@ -148,4 +148,10 @@ class JobDetails(BaseModel):
     company_name: Optional[str]
     city: Optional[str]
     work_style: Optional[str]
-    job_description: Optional[str]
+    job_description: Optional[str] ="Nil"
+
+    class Config:
+        from_attributes = True
+
+class JobIDSIn(BaseModel):
+    job_ids:Optional[List[int]]

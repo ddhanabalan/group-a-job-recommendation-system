@@ -45,7 +45,7 @@ def get(db: Session, poi_id: int) -> Type[seekermodel.SeekersPOI] | None:
         return None
 
 
-def create(db: Session, poi: seekerschema.SeekersPOI) -> bool:
+def create(db: Session, poi: seekermodel.SeekersPOI) -> bool:
     """
     Create a new Point of Interest (POI) for a seeker in the database.py.
 
@@ -57,8 +57,7 @@ def create(db: Session, poi: seekerschema.SeekersPOI) -> bool:
         bool: True if creation is successful, False otherwise.
     """
     try:
-        poi_model = seekermodel.SeekersPOI(**poi.dict())
-        db.add(poi_model)
+        db.add(poi)
         db.commit()
         return True
     except SQLAlchemyError:

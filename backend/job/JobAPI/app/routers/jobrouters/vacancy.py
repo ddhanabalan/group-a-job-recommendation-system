@@ -1,5 +1,5 @@
 import httpx
-from fastapi import APIRouter, Depends, HTTPException, status, Query, Header
+from fastapi import APIRouter, Depends, HTTPException, status, Query, Header,Body
 from typing import Type, List, Optional
 from .. import (
     get_db,
@@ -53,6 +53,12 @@ async def read_filtered_job_vacancies(
         job.job_seekers = jobcrud.request.get_all_by_job_id(db, job.job_id)
     return filtered_jobs
 
+@job_vacancy_router.get("/model")
+async def get_job_vacancies(
+    job_ids:List[int],
+    db: Session = Depends(get_db),
+):
+    return jobcrud.vacancy.get_all_by_job_ids()
 
 @job_vacancy_router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_job_vacancy(
@@ -79,23 +85,28 @@ async def create_job_vacancy(
         job_skill_data = jobschema.JobSkillsCreate(job_id=job_id, skill=_)
         jobcrud.skills.create(db, job_skill_data)
 
-    # job_model = jobschema.JobDetails(**data)
-    # with httpx.AsyncClient() as client:
-    #     response = await client.post(
-    #         "http://172.20.0.5:8000/job/input",
-    #         json=job_model.dict(),
-    #     )
-    #     if response.status_code != status.HTTP_200_OK:
-    #         raise HTTPException(
-    #             status_code=status.HTTP_404_NOT_FOUND, detail="Error Occured"
-    #         )
+    job_model = jobschema.JobDetails(**job_vacancy_instance)
+    with httpx.AsyncClient() as client:
+        response = await client.post(
+            "http://172.20.0.5:8000/job/input",
+            json=job_model.dict(),
+        )
+        if response.status_code != status.HTTP_200_OK:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Error Occured"
+            )
 
     return {"details": "Job Created"}
 
 
-@job_vacancy_router.get("/model/data")
-async def read_job_vacancies_by_company_id(db: Session = Depends(get_db)):
-    return jobcrud.vacancy.get_all_for_model(db)
+@job_vacancy_router.post("/model/data")
+async def read_job_vacancies_by_job_ids(job_in: jobschema.JobIDSIn, db: Session = Depends(get_db)):
+    jobs =  jobcrud.vacancy.get_all_by_job_ids(db, job_in.job_ids)
+    for job in jobs:
+        job.skills = jobcrud.skills.get_all(db, job.job_id)
+        job.job_seekers = jobcrud.request.get_all_by_job_id(db, job.job_id)
+    
+    return jobs
 
 
 @job_vacancy_router.get("/company")

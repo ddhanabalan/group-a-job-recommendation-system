@@ -17,6 +17,7 @@ class SeekersBase(BaseModel):
     city: Optional[str] = None
 
 class SeekerModelIn(BaseModel):
+    poi_id:Optional[int]
     user_id: Optional[int]
     position: Optional[str]
 

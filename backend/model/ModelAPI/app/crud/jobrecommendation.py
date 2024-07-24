@@ -28,11 +28,25 @@ def create_seeker_input(
     except SQLAlchemyError as e:
         db.rollback()
         return False
-
-
-def get_applicant(db: Session, applicant_id: int) -> List[model.JobRecommendationJobOutput] | []:
+def delete_seeker_input(
+    db:Session,poi_id:int
+):
     try:
-        return db.query(model.JobRecommendationJobOutput).filter(model.JobRecommendationJobOutput.user_id == applicant_id).all()
+        data = db.query(model.SeekerInputPOI).filter(model.SeekerInputPOI.poi_id==poi_id).first()
+        db.delete(data)
+        db.commit()
+        return True
+    except SQLAlchemyError:
+        db.rollback()
+        return False
+def get_applicant(db: Session, applicant_id: int) -> List[int] | []:
+    try:
+        result = db.query(model.JobRecommendationJobOutput.job_id).filter(model.JobRecommendationJobOutput.user_id == applicant_id).all()
+        
+        # Extract job_id from the list of tuples
+        job_ids = [job_id[0] for job_id in result]
+        
+        return job_ids
     except SQLAlchemyError as e:
         return []
 

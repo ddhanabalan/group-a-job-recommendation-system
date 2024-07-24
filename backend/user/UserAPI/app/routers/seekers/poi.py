@@ -36,13 +36,14 @@ async def create_seeker_poi(
     user = await get_current_user(authorization=authorization)
     user_id = user.get("user_id")
     poi.user_id = user_id
-    created_poi = crud.seeker.poi.create(db, poi)
+    poi_model = seekermodel.SeekersPOI(**poi.dict())
+    created_poi = crud.seeker.poi.create(db, poi_model)
     if not created_poi:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to create point of interest",
         )
-    poi_model = seekerschema.SeekerModelIn(**{"user_id":user_id,"position":poi.position})
+    poi_model = seekerschema.SeekerModelIn(**{"user_id":user_id,"position":poi_model.position,'poi_id':poi_model.id})
     async with httpx.AsyncClient() as client:
         response = await client.post(
             "http://172.20.0.7:8000/model/seeker/input",
@@ -60,12 +61,22 @@ async def delete_seeker_poi(
     poi_id: int, db: Session = Depends(get_db), authorization: str = Header(...)
 ):
     await check_authorization(authorization=authorization)
+
+    async with httpx.AsyncClient() as client:
+        response = await client.delete(
+            f"http://172.20.0.7:8000/model/seeker/input/{poi_id}",
+        )
+        if response.status_code != status.HTTP_200_OK:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Error Occured"
+            )
     deleted = crud.seeker.poi.delete(db, poi_id)
     if not deleted:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail="Point of interest not found",
         )
+
     return {"detail": "Point of interest deleted successfully"}
 
 
