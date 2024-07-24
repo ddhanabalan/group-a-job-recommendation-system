@@ -150,7 +150,7 @@ export default function ProfileSection({ data }) {
                                 contactData={newData} reloadFn={callAPI} showSuccessMsg={showSuccessMsg} showFailMsg={showFailMsg} />
                         </div>
                         <div className="profile-pane profile-middle-pane">
-                            <ExperienceBox childData={newData.former_jobs} reloadFn={callAPI} showSuccessMsg={showSuccessMsg} showFailMsg={showFailMsg} />
+                            <ExperienceBox childData={newData.former_jobs} experienceinYears={newData.experience} reloadFn={callAPI} showSuccessMsg={showSuccessMsg} showFailMsg={showFailMsg} />
                             <FeatureBoxMiddlePane //component defaults to QualificationBox
                                 childData={newData.prev_education} reloadFn={callAPI}
                                 showSuccessMsg={showSuccessMsg} showFailMsg={showFailMsg}
