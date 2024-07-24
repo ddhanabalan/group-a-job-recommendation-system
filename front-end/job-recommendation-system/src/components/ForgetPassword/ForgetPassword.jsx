@@ -24,7 +24,7 @@ export default function ForgetPassword() {
             response.status===200&&setSuccess(true)&&
             setTimeout(() => {
                 navigate(`/`)
-            }, 5000)
+            }, 2000)
             SetValidationError(false)
         } catch (e) {
             console.log(e);

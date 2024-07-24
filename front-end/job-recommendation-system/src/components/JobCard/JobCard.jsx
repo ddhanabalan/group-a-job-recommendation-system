@@ -32,9 +32,11 @@ export default function JobCard({ data, id, expandView, background, profilePictu
             </div>
             <div className='card-div2'>
                 <div className='card-img-container qualification-card-image' style={profilePictureStyle}>
-                    <IconButton disabled>
-                        <CorporateFareRoundedIcon fontSize='large' />
-                    </IconButton>
+                    {data.companyPic ? <img className='job-card-companyimg' src={data.companyPic} alt="profile" /> :
+                        <IconButton disabled>
+                            <CorporateFareRoundedIcon fontSize='large' />
+                        </IconButton>
+                    }
                 </div>
                 <p className='card-time-p'>{data.postDate}</p>
             </div>

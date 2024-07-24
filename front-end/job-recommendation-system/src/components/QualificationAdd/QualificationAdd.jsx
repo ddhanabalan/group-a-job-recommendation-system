@@ -5,6 +5,7 @@ import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import CorporateFareRoundedIcon from '@mui/icons-material/CorporateFareRounded';
 import './QualificationAdd.css';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -29,9 +30,14 @@ export default function QualificationAdd({ submitFn, cancelFn }) {
     return (
 
         <form className='qualification-add-form qualification-card' noValidate autoComplete='on' onSubmit={handleSubmit(formatData)}>
-            <div className="qualification-card-image"></div>
+            <div className="qualification-card-image">
+                <IconButton disabled>
+                    <CorporateFareRoundedIcon fontSize='large' />
+                </IconButton>
+            </div>
             <div className="qualification-card-content">
-                <TextField sx={{ marginBottom: '.7rem' }} className='qualification-add-h2'
+                <div style={{ width: '100%', marginBottom: '1rem', position: 'relative' }}>
+                    <TextField sx={{ width: '100%' }} className='qualification-add-h2'
                     label="Course/Degree"
                     variant="outlined"
                     placeholder="Ex: B.Tech in Electronics"
@@ -39,9 +45,16 @@ export default function QualificationAdd({ submitFn, cancelFn }) {
                     size='small'
                     error={'education_title' in errors}
                     {...register("education_title", {
-                        required: "qualification cannot be empty"
+                        required: "qualification cannot be empty",
+                        pattern: {
+                            value: /^.{0,128}$/,
+                            message: "Course/Degree should be at most 128 characters long."
+                        }
                     })} />
-                <TextField sx={{ marginBottom: '.7rem' }} className='qualification-add-h3'
+                    <p style={{ color: 'red' }}>{errors.education_title && errors.education_title.message !== "cannot be empty" && errors.education_title.message}</p>
+                </div>
+                <div style={{ width: '100%', marginBottom: '1rem', position: 'relative' }}>
+                    <TextField sx={{ width: '100%' }} className='qualification-add-h3'
                     placeholder="Ex: Harvard University"
                     variant="outlined"
                     label="School/College"
@@ -49,8 +62,14 @@ export default function QualificationAdd({ submitFn, cancelFn }) {
                     size='small'
                     error={'education_provider' in errors}
                     {...register("education_provider", {
-                        required: "qualification provider cannot be empty"
+                        required: "qualification provider cannot be empty",
+                        pattern: {
+                            value: /^.{0,128}$/,
+                            message: "School/College should be at most 128 characters long."
+                        }
                     })} />
+                    <p style={{ color: 'red' }}>{errors.education_provider && errors.education_provider.message !== "cannot be empty" && errors.education_provider.message}</p>
+                </div>
                 <div className='qualification-year' style={{ marginBottom: '.5rem' }}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <Controller

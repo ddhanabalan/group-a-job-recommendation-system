@@ -5,6 +5,7 @@ import IconButton from '@mui/material/IconButton';
 import Stack from '@mui/material/Stack';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import CorporateFareRoundedIcon from '@mui/icons-material/CorporateFareRounded';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
@@ -27,9 +28,14 @@ export default function ExperienceAdd({ submitFn, cancelFn }) {
     return (
 
         <form className='qualification-add-form qualification-card' noValidate autoComplete='on' onSubmit={handleSubmit(formatData)}>
-            <div className="qualification-card-image"></div>
+            <div className="qualification-card-image">
+                <IconButton disabled>
+                    <CorporateFareRoundedIcon fontSize='large' />
+                </IconButton>
+            </div>
             <div className="qualification-card-content">
-                <TextField sx={{ marginBottom: '.7rem' }} className='qualification-add-h2'
+                <div style={{ width: '100%', marginBottom: '1rem', position: 'relative' }}>
+                    <TextField sx={{  width: '100%'}} className='qualification-add-h2'
                     label="Title"
                     variant="outlined"
                     placeholder="Ex: Sales Manager"
@@ -37,9 +43,16 @@ export default function ExperienceAdd({ submitFn, cancelFn }) {
                     size='small'
                     error={'job_name' in errors}
                     {...register("job_name", {
-                        required: "Job title cannot be empty"
+                        required: "Job title cannot be empty",
+                        pattern: {
+                            value: /^.{0,128}$/,
+                            message: "Title should be at most 128 characters long."
+                        }
                     })} />
-                <TextField sx={{ marginBottom: '.7rem' }} className='qualification-add-h3'
+                    <p style={{ color: 'red' }}>{errors.job_name && errors.job_name.message !== "cannot be empty" && errors.job_name.message}</p>
+                </div>
+                <div style={{ width: '100%', marginBottom: '1rem', position: 'relative' }}>
+                    <TextField sx={{ width: '100%' }} className='qualification-add-h3'
                     placeholder="Ex: Google"
                     variant="outlined"
                     label="Company name"
@@ -47,8 +60,14 @@ export default function ExperienceAdd({ submitFn, cancelFn }) {
                     size='small'
                     error={'company_name' in errors}
                     {...register("company_name", {
-                        required: "Company name cannot be empty"
+                        required: "Company name cannot be empty",
+                        pattern: {
+                            value: /^.{0,128}$/,
+                            message: "Company name should be at most 128 characters long."
+                        }
                     })} />
+                    <p style={{ color: 'red'}}>{errors.company_name && errors.company_name.message !== "cannot be empty" && errors.company_name.message}</p>
+                </div>
                 <div className='qualification-year' style={{ marginBottom: '.5rem' }}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <Controller

@@ -544,7 +544,7 @@ export default function ReviewApplications({ userType, invite = null }) {
                             :
                             <div className="no-applications-message">
                                 <Lottie className="no-applications-ani" animationData={noApplicationsFiller} loop={true} />
-                                <p>You haven't received any job applications.</p>
+                                {filteredApplicants.length == 0 ? <p>You haven't received any job applications.</p>:<p>loading applicants...</p>}
                             </div>
                         )
                     )
