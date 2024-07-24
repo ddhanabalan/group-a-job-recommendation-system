@@ -83,7 +83,7 @@ export default function ReviewApplications({ userType, invite = null }) {
             //const second_response = await jobAPI.get(`/job_vacancy/company/${companyId}`)
             console.log("received job response", response)
             
-            const mod_response = response.data.map(e => ({ id: e.job_id, jobTitle: e.job_name, companyName: e.company_name, tags: e.tags, currency: e.salary.split('-')[0], salary: [e.salary.split('-')[1], e.salary.split('-')[2]], postDate: e.created_at.split('T')[0], last_date: e.last_date.split('T')[0], location: e.location, poi: e.job_position, empType: e.emp_type, exp: e.experience, workStyle: e.work_style, workingDays: e.working_days, jobDesc: e.job_desc, jobReq: e.requirement, skills: e.skills.length ? e.skills : [{ 'skill': "" }], applicationsReceived: e.job_seekers }))
+            const mod_response = response.data.map(e => ({ id: e.job_id, jobTitle: e.job_name, companyName: e.company_name, tags: e.tags, currency: e.salary.split('-')[0], salary: [e.salary.split('-')[1], e.salary.split('-')[2]], postDate: e.created_at.split('T')[0], last_date: e.last_date.split('T')[0], location: e.location, poi: e.job_position, empType: e.emp_type, exp: e.experience, workStyle: e.work_style, workingDays: e.working_days, jobDesc: e.job_desc, jobReq: e.requirement, skills: e.skills.length ? e.skills : [{ 'skill': "" }], applicationsReceived: e.job_seekers, closed: e.closed }))
             if(userType=="seeker")
             {   const invites = invitesReceived.map(e=>e.job_vacancy_id);
                 const new_mod_response = mod_response
@@ -254,6 +254,54 @@ export default function ReviewApplications({ userType, invite = null }) {
         setLoadingApplicants(false)
     }
 
+    const editJobVacancyStatusAPI = async (rec_data, closed) => {
+        console.log("data for closure ", rec_data)
+        const update_data = {"company_id": companyID,
+                                "company_name": rec_data.companyName,
+                                "emp_type": rec_data.empType,
+                                "salary": rec_data.currency + "-" + ((rec_data.salary[1]==="")?rec_data.salary[0]:rec_data.salary.join("-")),
+	                            "working_days": rec_data.workingDays,
+                                "work_style": rec_data.workStyle,
+                                "experience": rec_data.exp,
+                                "job_name": rec_data.jobTitle,
+                                "job_position": rec_data.poi,
+                                "location": rec_data.location,
+
+                                "job_desc": rec_data.jobDesc,
+                                
+                                "requirement": rec_data.jobReq,
+                                "last_date": rec_data.last_date,
+                                
+                                "skills": [],
+                                'skills_delete':[],
+                                "closed": closed,
+                            }
+        
+        try {
+            
+          
+                console.log("updating data", update_data)
+                const response = await jobAPI.put(`/job_vacancy/${rec_data.id}`, update_data, {
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getStorage("userToken")}`
+                }         
+                }
+                
+                );
+                await callJobVacancyAPI();
+                
+            
+            
+
+        } catch (e) {
+            console.log(e)
+
+            alert(e.message)
+            
+        }
+    }
+
     const getCompanyDetails = async (username) =>{
         try{
             const response = await userAPI.get(`/profile/${username}`)
@@ -359,6 +407,34 @@ export default function ReviewApplications({ userType, invite = null }) {
 
             alert(e.message);
             return false;
+        }
+    
+
+    }
+
+    const handleInvite=async(status, job_invite_id)=>{
+      
+        const req_data = {
+            "status": status,
+        }
+        console.log("job status data", req_data)
+        try {
+            const response = await jobAPI.put(`/job_invite/${job_invite_id}`, req_data, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getStorage("userToken")}`
+                }
+            });
+            console.log("updated response", response)
+            //const mod_response = response.data.map(e=>({applicantID: e.user_id, username: e.username, candidateName: (e.first_name + " " + e.last_name), first_name: e.first_name, last_name: e.last_name,city: e.city, country: e.country, location: e.location, experience: e.experience, profile_picture: e.profile_picture}))
+            setJobVacancies([]);
+            callJobVacancyAPI(companyID);
+
+        } catch (e) {
+
+            console.log("failed to invite", e)
+
+            alert(e.message);
         }
     
 
@@ -528,7 +604,7 @@ export default function ReviewApplications({ userType, invite = null }) {
                             :
                             <div className="no-applications-message">
                                 <Lottie className="no-applications-ani" animationData={noApplicationsFiller} loop={true} />
-                                {loadingApplicants?<p>Loading Applications</p>:<p>You haven't received any job applications.</p>}
+                                {loadingApplicants?<p>Loading Applications</p>:<p>No job applications found.</p>}
                             </div>
                         )
                     )

@@ -138,6 +138,7 @@ export default function SeekerJobStatusSection({userType}) {
               workingDays: r.data.working_days,
               jobDesc: r.data.job_desc,
               jobReq: r.data.requirement,
+              closed: r.data.closed,
               skills: /*r.data.skills.length ? r.data.skills :*/ [{ 'skill': "" }],
               type: "invite"
             };
@@ -163,6 +164,7 @@ export default function SeekerJobStatusSection({userType}) {
               workingDays: r.data.working_days,
               jobDesc: r.data.job_desc,
               jobReq: r.data.requirement,
+              closed: r.data.closed,
               skills: /*r.data.skills.length ? r.data.skills :*/ [{ 'skill': "" }],
               type: "request"
             };

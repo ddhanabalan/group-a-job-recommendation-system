@@ -9,7 +9,7 @@ import CorporateFareRoundedIcon from '@mui/icons-material/CorporateFareRounded';
 import { useState, useEffect } from 'react';
 
 
-export default function JobOpeningCard({ data, type = null, highlighted = null, listToDescFunc = null, deleteJobFunc = null, disabled=false, invite = null, inviteJob=null }, props) {
+export default function JobOpeningCard({ data, type = null, highlighted = null, listToDescFunc = null, deleteJobFunc = null, editJobVacancyStatusFunc=null,disabled=false, invite = null, inviteJob=null }, props) {
     //opening cards show in opening page    
     console.log("data to opening card", data, invite)
     const [status, setStatus] = useState("");
@@ -75,13 +75,20 @@ export default function JobOpeningCard({ data, type = null, highlighted = null, 
         console.log("prejob set", preJob)
         if (preJob) checkStatus();
     }, [preJob]);
+    useEffect(() => {
+        if(data.closed && type==="invite"){
+            setStatus("Closed");
+            setStatusColor("red");
+            setCssTag("reject");  
+        }
+    }, [data])
     useEffect(()=>{console.log("updated tags", data.id, status, statusColor, cssTag);
                     if(status!="")disabled(true)}, [status]);
     
 
 
     return (
-        <div className={status==""?`opening-card ${highlighted ? 'highlighted' : ''}`:`opening-card disabled`}>
+        <div className={status===""?`opening-card ${highlighted ? 'highlighted' : ''}`:`opening-card disabled`}>
             {data.length != 0 ?
                 <>
                     <div className='opening-card-div1'>
@@ -89,26 +96,46 @@ export default function JobOpeningCard({ data, type = null, highlighted = null, 
                         <p className='opening-card-company-name-p'>{data.companyName}</p>
 
                         <p className='opening-card-salary'>{data.currency} {data.salary[0]} {data.salary[1] ? "- " + data.salary[1] : ""} per month</p>
-                        {data.userType == "employer" ?
+                        {data.userType == "employer"?
                                 ((type && type !="invite")?
                                 <div className="opening-vacancy-buttons">
                                     <Button variant="contained" disableElevation onClick={deleteJobFunc ? () => deleteJobFunc(data.id) : undefined} className="opening-delete-button" sx={{ color: '#f6cacc', backgroundColor: '#ff0000', width: 'fit-content', paddingY: "2px", paddingX: "10px", textTransform: "none", borderRadius: 20 }} endIcon={<DeleteOutlineIcon />}>
                                         Delete
                                     </Button>
+                                    
+                                    {data.closed===false?
+                                    <>
                                     <Link to="../employer/job-vacancy" state={{ ...data, edit: true }}>
                                         <Button variant="contained" disableElevation className="opening-edit-button" sx={{ color: 'black', backgroundColor: '#eae9e9', border: 'solid 1px black', width: 'fit-content', paddingY: "2px", paddingX: "10px", textTransform: "none", borderRadius: 20 }} endIcon={<EditIcon />}>
                                             Edit
                                         </Button>
                                     </Link>
+                                    <Button variant="contained" disableElevation onClick={editJobVacancyStatusFunc ? () => editJobVacancyStatusFunc(data, true) : undefined} className="opening-edit-button" sx={{ color: 'black', backgroundColor: '#eae9e9', border: 'solid 1px black', width: 'fit-content', paddingY: "2px", paddingX: "10px", textTransform: "none", borderRadius: 20 }} endIcon={<EditIcon />}>
+                                            Withdraw
+                                    </Button>
+                                    </>
+                                    :
+                                    <Link to="../employer/job-vacancy" state={{ ...data, last_date: null, edit: true, reopen: true }}>
+                                        <Button variant="contained" disableElevation  className="opening-edit-button" sx={{ color: 'black', backgroundColor: '#eae9e9', border: 'solid 1px black', width: 'fit-content', paddingY: "2px", paddingX: "10px", textTransform: "none", borderRadius: 20 }} endIcon={<EditIcon />}>
+                                                Reopen
+                                        </Button>
+                                    </Link>
+
+                                    }
                                 </div>
                                 :
-                                ((inviteJob && status!="")?
+                                ((inviteJob && status!="" && !data.closed)?
                                 <div className={`job-status-div job-status-${cssTag} job-status-opening-card`}>
                                     <p>{status}</p>
                                     <div className={`skill-status ${statusColor}`}></div>
                                 </div>
                                 :
-                                <></>
+                                (data.closed && 
+                                    <div className={`job-status-div job-status job-status-opening-card`}>
+                                        <p>Closed</p>
+                                    <div className={`skill-status red`}></div>
+                                    </div>
+                                 )
                                 )
                                 )
                         
