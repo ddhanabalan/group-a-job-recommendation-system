@@ -248,9 +248,21 @@ export default function JobSection() {
     }
     */
     const getInviteStatus = (jobId) => {
-        const invite = userInvites.find(f => f.job_id == jobId);
+        const invite = userInvites.filter(f => f.job_id == jobId);
+        let index = 0;
+        if(invite.length)
+            {//console.log("logged invite job", invite[0].invite_status);
+                const r = invite.map(e=>e.status?e.status.toLowerCase():null);
+                //console.log("registered invites", inviteJob, r, data.id)
+                
+                if(/*r.includes("rejected") && */r.includes("pending"))
+                {
+                    index = r.lastIndexOf("pending");
+                }
+            //console.log("invite job", index)
+            }
         console.log("userInvites", userInvites, "and", jobId)
-        return invite || null;
+        return invite.length?invite[index]: null;
       };
     const GetUserInvites = async () => {
         try{
@@ -350,7 +362,7 @@ export default function JobSection() {
                 <Filter title="Filter jobs" userType="seeker" passFilteredDataFn={filterDataSet} />
             </div>
             {!descriptionOn && <NavigationBar active="jobs" />}
-            <StatsAI value="jobs" callFn={callModelAPI} aiBtnloading={aiBtnloading} blankModelData={blankModelData}/>
+            <StatsAI value="jobs" />
 
             <div className="job-search">
                 {descriptionOn ?
