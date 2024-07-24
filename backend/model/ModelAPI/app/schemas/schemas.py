@@ -71,3 +71,7 @@ class TestInput(BaseModel):
 class JobDetailsResponse(BaseModel):
     jobs: List[TestInput]
     applicants: List[ApplicantDetails]
+
+
+class JobPositionIn(BaseModel):
+    job_position:str

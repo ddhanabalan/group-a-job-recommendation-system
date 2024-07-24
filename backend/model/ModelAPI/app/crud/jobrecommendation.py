@@ -52,7 +52,10 @@ def get_applicant(db: Session, applicant_id: int) -> List[int] | []:
 
 def get_job(db: Session, job_pos: str) -> List[model.JobRecommendationSeekerOutput] | []:
     try:
-        return db.query(model.JobRecommendationSeekerOutput).filter(model.JobRecommendationSeekerOutput.job_position == job_pos).all()
+        result = db.query(model.JobRecommendationSeekerOutput.user_id).filter(model.JobRecommendationSeekerOutput.job_position == job_pos).all()
+        user_ids = [user_id[0] for user_id in result]
+        
+        return user_ids
     except SQLAlchemyError as e:
         return []
 
