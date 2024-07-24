@@ -23,7 +23,6 @@ export default function CandidateSection() {
     const [selectedJobEntryDetails, setJobEntryDetails] = useState(null);
     const [jobVacancies, setJobVacancies] = useState([]);
     const [aiCandidates, setAiCandidates] = useState([]);
-    const [blankModelData, setBlankModelData] = useState(false);
     let filteredJobs = (jobVacancies.length!=0?(jobSearchVal.startsWith("#")?/*search with # to search with tags*/jobVacancies.filter(id => id["skills"].map((tag)=>(tag["skill"].toLowerCase().includes(jobSearchVal.slice(1).toLowerCase()))).filter(Boolean).length?id:false)/*search with # to search with tags*/:/*search without # to search with name*/jobVacancies.filter(id => (id["jobTitle"].toLowerCase()).startsWith(jobSearchVal.toLowerCase()))/*search without # to search with name*/):[]);
 
     //const filtered = (jobVacancies.length != 0 ? jobVacancies.filter(id => id["skills"].map((tag) => (tag["skill"].toLowerCase().includes(candidateSearchVal.toLowerCase()))).filter(Boolean).length ? id : false) : []);
@@ -96,8 +95,7 @@ export default function CandidateSection() {
       const callAiCandidateFetch = async() =>{
           if(selectedJobEntryDetails){
             if(selectedJobEntryDetails.poi){
-                const r = callModelAPI(selectedJobEntryDetails.poi)
-                if(!r) return false;
+                callModelAPI(selectedJobEntryDetails.poi)
             }
           }
       }
@@ -112,21 +110,12 @@ export default function CandidateSection() {
             })
             console.log("model response", response)
             const mod_response = dataNormalizer(response.data)
-            if(mod_response && mod_response.length) 
-            {
-                setBlankModelData(false)
-            }
-            else{
-                setBlankModelData(true)
-            }
             setAiCandidates(mod_response)
             setAiBtnLoading(false)
-            return true;
         } catch (e) {
             console.log("model response", e)
-            alert(e);
-            
-            return false;
+
+            alert(e.message);
         }
     }
 
@@ -211,7 +200,7 @@ useEffect(() => {duplicatesFilter()}, [aiCandidates])
             <Filter title="Filter applicants" userType="employer" passFilteredDataFn={filterDataSet} />            
             </div>
             <NavigationBar active="candidates" />
-            <StatsAI value="candidates" loading={aiBtnloading} callFn={callAiCandidateFetch}  jobs={filteredJobs} chooseEntryFunc={chooseJobEntry} jobSearchFunc={jobSearchBar} selectedEntry={selectedJobEntry} blankModelData={blankModelData}/>
+            <StatsAI value="candidates" loading={aiBtnloading} callFn={callAiCandidateFetch}  jobs={filteredJobs} chooseEntryFunc={chooseJobEntry} jobSearchFunc={jobSearchBar} selectedEntry={selectedJobEntry}/>
             <div className="candidate-search">
                 <SearchBar toSearch="Search Candidates" onSearch={candidateSearchBar} />
             </div>

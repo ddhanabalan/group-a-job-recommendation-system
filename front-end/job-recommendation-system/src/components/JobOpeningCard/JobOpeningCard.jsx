@@ -7,6 +7,8 @@ import { Link } from 'react-router-dom';
 import Tooltip from '@mui/material/Tooltip';
 import CorporateFareRoundedIcon from '@mui/icons-material/CorporateFareRounded';
 import { useState, useEffect } from 'react';
+
+
 export default function JobOpeningCard({ data, type = null, highlighted = null, listToDescFunc = null, deleteJobFunc = null, disabled=false, invite = null, inviteJob=null }, props) {
     //opening cards show in opening page    
     console.log("data to opening card", data, invite)
@@ -24,7 +26,7 @@ export default function JobOpeningCard({ data, type = null, highlighted = null, 
         if (application_type == "request") {
             console.log("requesting");
             if (app_status == "applied") {
-                setStatus("already applied");
+                setStatus("Already applied");
                 setStatusColor("yellow");
                 setCssTag("reject");
             } else if (app_status == "approved") {
@@ -38,11 +40,11 @@ export default function JobOpeningCard({ data, type = null, highlighted = null, 
             }*/
         } else {
             if (app_status == "pending") {
-                setStatus("invite sent");
+                setStatus("Invite sent");
                 setStatusColor("orange");
                 setCssTag("reject");
             } else if (app_status == "approved") {
-                setStatus("invite accepted");
+                setStatus("Invite accepted");
                 setStatusColor("green");
                 setCssTag("approve");
             } /*else if (preJob.invite_status == "rejected") {
@@ -88,7 +90,7 @@ export default function JobOpeningCard({ data, type = null, highlighted = null, 
 
                         <p className='opening-card-salary'>{data.currency} {data.salary[0]} {data.salary[1] ? "- " + data.salary[1] : ""} per month</p>
                         {data.userType == "employer" ?
-                                ((type !="invite")?
+                                ((type && type !="invite")?
                                 <div className="opening-vacancy-buttons">
                                     <Button variant="contained" disableElevation onClick={deleteJobFunc ? () => deleteJobFunc(data.id) : undefined} className="opening-delete-button" sx={{ color: '#f6cacc', backgroundColor: '#ff0000', width: 'fit-content', paddingY: "2px", paddingX: "10px", textTransform: "none", borderRadius: 20 }} endIcon={<DeleteOutlineIcon />}>
                                         Delete

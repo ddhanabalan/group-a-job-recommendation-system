@@ -22,6 +22,9 @@ export default function JobSection() {
     //const filtered = (jobVacancies.length != 0 ? jobVacancies.filter(id => (id["jobTitle"].toLowerCase()).includes(searchVal.toLowerCase())?id:false): [])
     const [descriptionOn, setDesc] = useState(false);
     const [userInvites, setUserInvites] = useState([]);
+    const [AiJobs, setAiJobs] = useState([]) //state to store recommended jobs
+    const [aiBtnloading, setAiBtnLoading] = useState(false);//state to control animation of ai button
+    
 
     const filterDataSet = (fdata) => {
         setParam({ ...fdata });
@@ -51,37 +54,7 @@ export default function JobSection() {
                         }).join('&');
                     }
                 }).then(SetLoading(false))
-                const mod_response = response.data.map(e => {
-                    const salaryParts = e.salary.split('-');
-                    const createdDateParts = e.created_at.split('T');
-                    const lastDateParts = e.last_date.split('T');
-                    const inviteStat = userInvites.length?getInviteStatus(e.job_id):null;
-                    console.log("invite stat", inviteStat, userInvites)
-                    return {
-                      id: e.job_id,
-                      companyID: e.company_id,
-                      jobTitle: e.job_name,
-                      companyUsername: e.company_username,
-                      companyName: e.company_name,
-                      tags: /* (e.tags.length ? e.tags : */ [{ tag: "" }], // Keeping the comment
-                      currency: salaryParts.length > 0 ? salaryParts[0] : "",
-                      salary: salaryParts.length > 2 ? [salaryParts[1], salaryParts[2]] : ["", ""],
-                      postDate: createdDateParts.length > 0 ? createdDateParts[0] : e.created_at,
-                      last_date: lastDateParts.length > 0 ? lastDateParts[0] : e.last_date,
-                      location: e.location,
-                      empType: e.emp_type,
-                      exp: e.experience,
-                      jobDesc: e.job_desc,
-                      jobReq: e.requirement,
-                      skills: e.skills.length ? e.skills : [{ skill: "" }],
-                      workStyle: e.work_style,
-                      workingDays: e.working_days,
-                      applicationsReceived: e.job_seekers,
-                      userApplication: ((((e.job_seekers).map(e => e.user_id)).includes(userData.id))?((e.job_seekers).filter(e => e.user_id == userData.id)):null),
-                      invite_status: inviteStat?inviteStat.status:null/*userInvites.length?userInvites.filter(f=>f.job_id == e.job_id)[0]?.status || null: null*/, 
-                      job_invite_id: inviteStat?inviteStat.id:null/*userInvites.length?userInvites.filter(f=>f.job_id == e.job_id)[0]?.id || null: null*/
-                    };
-                  });
+            const mod_response = dataNormalizer(response.data);
             setJobVacancies(mod_response);
             console.log(response);
             console.log(" after new job vacancies", mod_response);
@@ -91,6 +64,65 @@ export default function JobSection() {
             console.log("jobs failed", e);
             alert(e.message);
         }
+    }
+    const callModelAPI = async () => {  //function to get recommended jobs
+        setAiBtnLoading(true)
+        try {
+            const response = await modelAPI.get('/model/seeker', {
+                headers: {
+                    'Authorization': `Bearer ${getStorage("userToken")}`
+                }
+            })
+            console.log("model response", response)
+            const mod_response = dataNormalizer(response.data)
+            setAiJobs(mod_response)
+            setAiBtnLoading(false)
+        } catch (e) {
+            console.log("model response", e)
+
+            alert(e.message);
+        }
+    }
+
+
+    const dataNormalizer=(objectList)=>{
+        const normalized_response = objectList.map(e => {
+            const salaryParts = e.salary.split('-');
+            const createdDateParts = e.created_at.split('T');
+            const lastDateParts = e.last_date.split('T');
+            const inviteStat = userInvites.length?getInviteStatus(e.job_id):null;
+            console.log("invite stat", inviteStat, userInvites)
+            return {
+              id: e.job_id,
+              companyID: e.company_id,
+              jobTitle: e.job_name,
+              companyUsername: e.company_username,
+              companyName: e.company_name,
+              tags: /* (e.tags.length ? e.tags : */ [{ tag: "" }], // Keeping the comment
+              currency: salaryParts.length > 0 ? salaryParts[0] : "",
+              salary: salaryParts.length > 2 ? [salaryParts[1], salaryParts[2]] : (salaryParts.length === 2 ? [salaryParts[1], ""]:["", ""]),
+              postDate: createdDateParts.length > 0 ? createdDateParts[0] : e.created_at,
+              last_date: lastDateParts.length > 0 ? lastDateParts[0] : e.last_date,
+              location: e.location,
+              empType: e.emp_type,
+              exp: e.experience,
+              jobDesc: e.job_desc,
+              jobReq: e.requirement,
+              skills: e.skills.length ? e.skills : [{ skill: "" }],
+              workStyle: e.work_style,
+              workingDays: e.working_days,
+              applicationsReceived: e.job_seekers,
+              userApplication: ((((e.job_seekers).map(e => e.user_id)).includes(userData.id))?((e.job_seekers).filter(e => e.user_id == userData.id)):null),
+              invite_status: inviteStat?inviteStat.status:null/*userInvites.length?userInvites.filter(f=>f.job_id == e.job_id)[0]?.status || null: null*/, 
+              job_invite_id: inviteStat?inviteStat.id:null/*userInvites.length?userInvites.filter(f=>f.job_id == e.job_id)[0]?.id || null: null*/
+            };
+          });
+          return normalized_response;
+
+    }
+    const duplicatesFilter=()=>{
+        const originals = jobVacancies.filter(e=>{!(AiJobs.map(job=>job.id).includes(e.id))})
+        setJobVacancies(originals);
     }
     const callModelAPI = async () => {  //function to get recommended jobs
         setAiBtnLoading(true)
@@ -354,6 +386,8 @@ export default function JobSection() {
     console.log("user datum", userData);
     useEffect(() => {if(descriptionOn)GetUserInvites()}, [descriptionOn])
     useEffect(() => { callJobVacancyAPI() }, [filterparam, searchVal, userInvites]);
+    useEffect(() => {if(jobVacancies)duplicatesFilter()},[AiJobs])
+    
 
     return (
         <div id="page">
@@ -376,7 +410,7 @@ export default function JobSection() {
                 }
                 <SearchBar toSearch="Search Jobs" onSearch={searchBar} />
             </div>
-            <Jobs data={jobVacancies} createJobRequest={CreateJobRequest} dataToParentFn={OpenDesc} handleInvite={handleInvite} desc_state={descriptionOn} userData={userData} />
+            <Jobs data={jobVacancies} modelData={AiJobs} createJobRequest={CreateJobRequest} dataToParentFn={OpenDesc} handleInvite={handleInvite} desc_state={descriptionOn} userData={userData} />
         </div>
     )
 }

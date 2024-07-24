@@ -6,7 +6,7 @@ import AiJobs from '../../components/AiJobs/AiJobs';
 import { v4 as uuid } from 'uuid';
 
 
-export default function Jobs({ data, dataType=null, dataToParentFn = null, createJobRequest = null, handleInvite=null, desc_state = null, userData }) {
+export default function Jobs({ userData, data, modelData,dataType=null, dataToParentFn = null, createJobRequest = null, handleInvite=null, desc_state = null, }) {
 
     const finalInfo = [...data];
     console.log("final information to job card", finalInfo)
