@@ -14,13 +14,14 @@ import noApplicationsFiller from "../../images/no-applications-found.json";
 import careerGoLogo from "../../images/careergo_logo.svg";
 
 export default function ReviewApplications({ userType, invite = null }) {
+
     console.log("user is ", userType)
     const link_data = useParams();
     console.log("received from rl", link_data)
     const INVITE_ID = link_data?.invite_id || null;
     const COMPANY_USERNAME = link_data?.company_username || null;
     const [companyID, setCompanyID] = useState((userType === "employer" ? getStorage("userID") : (link_data.company_id ? link_data.company_id : null)));
-    
+
     const receivedData = useLocation();
     const navigate = useNavigate();
     const [userData, setUserData] = useState({ 'id': Number(getStorage("userID")),'type': userType, 'skills': [] });
@@ -213,6 +214,7 @@ export default function ReviewApplications({ userType, invite = null }) {
     }
 
     const RequestJobApplications = async (applicantList, selectedJobEntry=null) => {
+        setLoadingApplicants(true);
         if(applicantList)
         {//const modApplicantList = applicantList.map(e => e.user_id)
         const inviteApplicants = [...new Set(invitesSent.filter(e => e.job_id == selectedEntry).map(f => ({ user_id: f.user_id, job_id: f.job_id, invite_id: f.id, status: f.status })))];
@@ -247,9 +249,9 @@ export default function ReviewApplications({ userType, invite = null }) {
             console.log("applicants failed", e)
             setApplicationErrors(true);
         }}
-        else{
-            return;
-        }
+         
+       // handleClick(3000, setLoadingApplicants, false)    //Only for testing purposes.Comment after loading verification.Uncomment bottom line
+        setLoadingApplicants(false)
     }
 
     const getCompanyDetails = async (username) =>{
@@ -486,9 +488,28 @@ export default function ReviewApplications({ userType, invite = null }) {
                 }
                 {userType == "employer" ?
 
-                    (selectedEntry != null && filtered.length != 0 && filteredApplicants.length != 0 ?
+                    (selectedEntry != null && filtered.length != 0 && filteredApplicants.length != 0 && !loadingApplicants?
                         
-                        filteredApplicants.map(e => <CandidateCard type="review" key={filteredApplicants.indexOf(e)} reloadFn={RequestJobApplications} applicantList={selectedJobEntry.applicationsReceived} jobEntryId={selectedEntry} crLink={receivedData["pathname"]} jobApprovalFunction={jobApprovalAPI} removeInvite={removeInvite} data={e} />)
+                        filteredApplicants.map(e => {
+                                                const isDateDifferent = (dateVariable!==e.application_created_at)
+                                                if(isDateDifferent)dateVariable=e.application_created_at
+                                                 return (
+                                                    <>
+                                                    {
+                                                        isDateDifferent &&
+                                                        <div className="application-date-indicator"><p>{e.application_created_at}</p></div>
+                                                    }
+                                                    <CandidateCard type="review" 
+                                                                   key={filteredApplicants.indexOf(e)} 
+                                                                   reloadFn={RequestJobApplications} 
+                                                                   applicantList={selectedJobEntry.applicationsReceived} 
+                                                                   jobEntryId={selectedEntry} crLink={receivedData["pathname"]} 
+                                                                   jobApprovalFunction={jobApprovalAPI} 
+                                                                   removeInvite={removeInvite} 
+                                                                   data={e} />
+                                                    </>
+                                                    )}
+                                               )
                         :
                         (filtered.length == 0 ?
                             <div className="no-vacancies-message">
@@ -498,7 +519,7 @@ export default function ReviewApplications({ userType, invite = null }) {
                             :
                             <div className="no-applications-message">
                                 <Lottie className="no-applications-ani" animationData={noApplicationsFiller} loop={true} />
-                                {loadingApplicants?<p>Loading Applications</p>:<p>No job applications found.</p>}
+                                {loadingApplicants?<p>Loading Applications</p>:<p>You haven't received any job applications.</p>}
                             </div>
                         )
                     )
