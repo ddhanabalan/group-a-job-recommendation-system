@@ -87,7 +87,7 @@ async def create_job_vacancy(
         job_skill_data = jobschema.JobSkillsCreate(job_id=job_id, skill=_)
         jobcrud.skills.create(db, job_skill_data)
 
-    job_model = jobschema.JobDetails(**job_vacancy_instance)
+    job_model = jobschema.JobDetails.from_orm(job_vacancy_instance)
     with httpx.AsyncClient() as client:
         response = await client.post(
             "http://172.20.0.5:8000/job/input",
