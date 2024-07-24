@@ -61,7 +61,8 @@ def create(db: Session, education: seekerschema.SeekersEducation) -> bool:
         db.add(education_model)
         db.commit()
         return True
-    except SQLAlchemyError:
+    except SQLAlchemyError as e:
+        print(e)
         db.rollback()
         return False
 

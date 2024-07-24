@@ -65,7 +65,7 @@ class SeekersEducation(Base):
 
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("seekers_details.user_id"), index=True)
-    education_title = Column(String(32))
+    education_title = Column(String(128))
     education_provider = Column(String(128))
     start_year = Column(String(4))
     end_year = Column(String(4))
@@ -111,9 +111,9 @@ class SeekersCertificate(Base):
 
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("seekers_details.user_id"), index=True)
-    certificate_name = Column(String(32))
-    certificate_issuer = Column(String(32))
-    credential_url = Column(String(64))
+    certificate_name = Column(String(128))
+    certificate_issuer = Column(String(128))
+    credential_url = Column(String(256))
     issue_date = Column(String(32))
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
