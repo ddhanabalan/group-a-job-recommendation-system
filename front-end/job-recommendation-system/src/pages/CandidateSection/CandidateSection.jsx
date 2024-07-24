@@ -6,16 +6,27 @@ import Candidates from "../../components/Candidates/Candidates";
 import LoaderAnimation from '../../components/LoaderAnimation/LoaderAnimation';
 import { useState, useEffect } from "react";
 import {getStorage} from "../../storage/storage";
-import { userAPI } from "../../api/axios";
+import { jobAPI, userAPI, modelAPI } from "../../api/axios";
 import './CandidateSection.css';
+import AiCandidates from "../../components/AiCandidates/AiCandidates";
 export default function CandidateSection() {
     const [loading, SetLoading] = useState(true)
     const [userData, setUserData] = useState({ 'type': 'employer' });
+    const [companyID, setCompanyID] = useState(getStorage("userID"));
+
     const [candidates, setCandidates] = useState([]);
-    const [searchVal, setSearch] = useState("");
+    const [candidateSearchVal, setCandidateSearch] = useState("");
+    const [jobSearchVal, setJobSearch] = useState("");
     const [filterparam, setParam] = useState({});
-    //const filtered = (jobVacancies.length != 0 ? jobVacancies.filter(id => id["skills"].map((tag) => (tag["skill"].toLowerCase().includes(searchVal.toLowerCase()))).filter(Boolean).length ? id : false) : []);
-    //const filtered = (jobVacancies.length != 0 ? jobVacancies.filter(id => (id["jobTitle"].toLowerCase()).includes(searchVal.toLowerCase())?id:false): [])
+    const [selectedJobEntry, setJobEntry] = useState(null);//userData is for knowing if employer or seeker and further passing it down to components
+    const [aiBtnloading, setAiBtnLoading] = useState(false);
+    const [selectedJobEntryDetails, setJobEntryDetails] = useState(null);
+    const [jobVacancies, setJobVacancies] = useState([]);
+    const [aiCandidates, setAiCandidates] = useState([]);
+    let filteredJobs = (jobVacancies.length!=0?(jobSearchVal.startsWith("#")?/*search with # to search with tags*/jobVacancies.filter(id => id["skills"].map((tag)=>(tag["skill"].toLowerCase().includes(jobSearchVal.slice(1).toLowerCase()))).filter(Boolean).length?id:false)/*search with # to search with tags*/:/*search without # to search with name*/jobVacancies.filter(id => (id["jobTitle"].toLowerCase()).startsWith(jobSearchVal.toLowerCase()))/*search without # to search with name*/):[]);
+
+    //const filtered = (jobVacancies.length != 0 ? jobVacancies.filter(id => id["skills"].map((tag) => (tag["skill"].toLowerCase().includes(candidateSearchVal.toLowerCase()))).filter(Boolean).length ? id : false) : []);
+    //const filtered = (jobVacancies.length != 0 ? jobVacancies.filter(id => (id["jobTitle"].toLowerCase()).includes(candidateSearchVal.toLowerCase())?id:false): [])
     //const [descriptionOn, setDesc] = useState(false);
 
     const filterDataSet = (fdata) => {
@@ -23,15 +34,34 @@ export default function CandidateSection() {
     }
     console.log("filter", filterparam);
     
-    const searchBar = (searchValue) => {
-        setSearch(searchValue);
+    const candidateSearchBar = (candidateSearchValue) => {
+        setCandidateSearch(candidateSearchValue);
     }
+    const jobSearchBar = (jobSearchValue) => {
+        setJobSearch(jobSearchValue);
+    }
+    const chooseJobEntry = (entry)=>{
+        setJobEntry(entry);
+    }
+    const dataNormalizer = (objectList)=>{
+        const normalized_data = objectList.map(e=>({applicantID: e.user_id, username: e.username, first_name: e.first_name, last_name: e.last_name,city: e.city, country: e.country, location: e.location, experience: e.experience, profile_picture: e.profile_picture}))
+        return normalized_data
+    }
+
+    const duplicatesFilter=()=>{
+        
+        //const test = aiCandidates.map(candidate=>candidate.applicantID)
+        const originals = candidates.filter(e=>!(aiCandidates.map(candidate=>candidate.applicantID).includes(e.applicantID)))
+        console.log("original candidates only", originals, candidates, aiCandidates)
+        setCandidates(originals);
+    }
+    
     const callCandidatesAPI = async () => {
         
         try {
             const response = await userAPI.get('/seeker/details/list',
                 {
-                    params: searchVal != "" ? { "name": searchVal, ...filterparam } : { ...filterparam },
+                    params: candidateSearchVal != "" ? { "name": candidateSearchVal, ...filterparam } : { ...filterparam },
                     paramsSerializer: params => {
                         // Custom params serializer if needed
                         return Object.entries(params).map(([key, value]) => {
@@ -46,7 +76,7 @@ export default function CandidateSection() {
                     }
                 });
             //const mod_response = response.data.map(e => ({ id: e.job_id, jobTitle: e.job_name, companyName: e.company_name, tags: /*(e.tags.length ? e.tags : */[{ 'tag': "" }], currency: e.salary.split('-')[0], salary: [e.salary.split('-')[1], e.salary.split('-')[2]], postDate: e.created_at.split('T')[0], last_date: e.last_date.split('T')[0], location: e.location, empType: e.emp_type, exp: e.experience, jobDesc: e.job_desc, jobReq: e.requirement, skills: e.skills.length ? e.skills : [{ 'skill': "" }], workStyle: e.work_style, workingDays: e.working_days, applicationsReceived: e.job_seekers }))
-            const mod_response = response.data.map(e=>({applicantID: e.user_id, username: e.username, first_name: e.first_name, last_name: e.last_name,city: e.city, country: e.country, location: e.location, experience: e.experience, profile_picture: e.profile_picture}))
+            const mod_response = dataNormalizer(response.data)
 
             setCandidates(mod_response);
             SetLoading(false)
@@ -61,7 +91,70 @@ export default function CandidateSection() {
     }
     
       console.log("candidates", candidates)  
+      
+      const callAiCandidateFetch = async() =>{
+          if(selectedJobEntryDetails){
+            if(selectedJobEntryDetails.poi){
+                callModelAPI(selectedJobEntryDetails.poi)
+            }
+          }
+      }
+      const callModelAPI = async (position) => {  //function to get recommended jobs
+        setAiBtnLoading(true)
+        try {
+            const response = await modelAPI.post('/model/job', {"job_position":position},{
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${getStorage("userToken")}`
+                }
+            })
+            console.log("model response", response)
+            const mod_response = dataNormalizer(response.data)
+            setAiCandidates(mod_response)
+            setAiBtnLoading(false)
+        } catch (e) {
+            console.log("model response", e)
 
+            alert(e.message);
+        }
+    }
+
+      const callJobVacancyAPI = async () => {
+        
+        try {
+             
+            
+            const response = await jobAPI.get(`/job_vacancy/company`, { headers: { 'Authorization': `Bearer ${getStorage("userToken")}` } });
+            //const second_response = await jobAPI.get(`/job_vacancy/company/${companyId}`)
+            console.log("received job response", response)
+            
+            const mod_response = response.data.map(e => ({ id: e.job_id, jobTitle: e.job_name, companyName: e.company_name, tags: e.tags, currency: e.salary.split('-')[0], salary: [e.salary.split('-')[1], e.salary.split('-')[2]], postDate: e.created_at.split('T')[0], last_date: e.last_date.split('T')[0], location: e.location, poi: e.job_position, empType: e.emp_type, exp: e.experience, workStyle: e.work_style, workingDays: e.working_days, jobDesc: e.job_desc, jobReq: e.requirement, skills: e.skills.length ? e.skills : [{ 'skill': "" }], applicationsReceived: e.job_seekers }))
+            
+            
+            setJobVacancies(mod_response);
+            
+            console.log(response);
+            console.log(" after new job vacancies", mod_response);
+            console.log("filtered jobs", filteredJobs);
+            
+        } catch (e) {
+            console.log("jobs failed", e )
+
+            alert(e.message);
+        }
+    }
+
+    const expJob = (selection) => {
+        //console.log("select", selection);
+        console.log("selected job vacncyt after mod", jobVacancies, "selection", selection);
+        const expEntry = jobVacancies.filter(e => (e["id"] === selection ? e : false));
+        console.log("expEntry ", expEntry)
+        if(expEntry.length)
+        {setJobEntryDetails(expEntry[0]);
+        if (userData.type == "employer") console.log("yep done");
+       }
+
+    }
     /*const CreateJobRequest = async (jobId) => {
         try {
             const response = await jobAPI.post('/job_request/', {
@@ -87,7 +180,19 @@ export default function CandidateSection() {
         }
     }*/
 
-    useEffect(() => { callCandidatesAPI() }, [filterparam, searchVal]);
+useEffect(()=>{if(companyID){callJobVacancyAPI(companyID);}}, [companyID])
+
+useEffect(() => {console.log("jobVacancies" , jobVacancies)
+        
+        if (jobVacancies.length != 0 && selectedJobEntry!=null) {
+            expJob(selectedJobEntry);
+            console.log("job entry refreshed", jobVacancies)
+        }
+}, [jobVacancies])
+
+useEffect(() => { if (jobVacancies.length != 0 && selectedJobEntry != null) expJob(selectedJobEntry) }, [selectedJobEntry]);
+useEffect(() => { callCandidatesAPI() }, [filterparam, candidateSearchVal]);
+useEffect(() => {duplicatesFilter()}, [aiCandidates])
     return (
         <div id="page">
             {loading && <LoaderAnimation />}
@@ -95,11 +200,11 @@ export default function CandidateSection() {
             <Filter title="Filter applicants" userType="employer" passFilteredDataFn={filterDataSet} />            
             </div>
             <NavigationBar active="candidates" />
-            <StatsAI value="candidates"/>
+            <StatsAI value="candidates" loading={aiBtnloading} callFn={callAiCandidateFetch}  jobs={filteredJobs} chooseEntryFunc={chooseJobEntry} jobSearchFunc={jobSearchBar} selectedEntry={selectedJobEntry}/>
             <div className="candidate-search">
-                <SearchBar toSearch="Search Candidates" onSearch={searchBar} />
+                <SearchBar toSearch="Search Candidates" onSearch={candidateSearchBar} />
             </div>
-            <Candidates candidateData={candidates}/>
+            <Candidates candidateData={candidates} modelData={aiCandidates}/>
         </div>
         
     )
