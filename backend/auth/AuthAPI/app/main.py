@@ -1,3 +1,4 @@
+import uuid
 from datetime import datetime, timedelta
 import httpx
 from typing import Union, Type
@@ -148,7 +149,28 @@ def validate_access_token(token,secret_key=SECRET_KEY,db:Session =Depends(get_db
         )
     return username, data_type
 
-
+def validate_refresh_token(token,secret_key=SECRET_KEY,db:Session =Depends(get_db)):
+    payload = jwt.decode(token, secret_key, algorithms=[ALGORITHM])
+    username = payload.get("sub", None)
+    token = payload.get("token", None)
+    print(username)
+    if username is None or token is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    user = authcrud.get_by_username(db, username)
+    payload = jwt.decode(token, user.hash_key, algorithms=[ALGORITHM])
+    data_type = payload.get("type", None)
+    username = payload.get("sub", None)
+    if data_type is None or username is None or token is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    return username, data_type,token
 async def get_current_user(
     token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
 ) -> Type[authmodel.UserAuth]:
@@ -191,7 +213,7 @@ async def get_refresh_user(
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        username, data_type = validate_access_token(token,db=db)
+        username, data_type,refresh_token = validate_refresh_token(token,db=db)
         if username is None or data_type != "refresh_token":
             raise credential_exception
         token_data = authschema.TokenData(username=username)
@@ -200,7 +222,7 @@ async def get_refresh_user(
     user = authcrud.get_by_username(db, token_data.username)
     if user is None:
         raise credential_exception
-    if user.refresh_token != token or user.disabled:
+    if user.refresh_token != refresh_token or user.disabled:
         raise credential_exception
     return user
 
@@ -235,7 +257,7 @@ async def login_for_access_token(
 
 
 @app.get("/refresh_token")
-async def refresh_token(user=Depends(get_refresh_user), db: Session = Depends(get_db)):
+async def refresh_token_validate(user=Depends(get_refresh_user), db: Session = Depends(get_db)):
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -249,11 +271,12 @@ async def refresh_token(user=Depends(get_refresh_user), db: Session = Depends(ge
         data={"sub": user.username, "token":create_token({"sub": user.username, "type": "access_token"},secret_key=user.hash_key,expires_delta=access_token_expires)},
         expires_delta=access_token_expires,
     )
+    refresh_token_inside = create_token({"sub": user.username, "type": "refresh_token"},secret_key=user.hash_key,expires_delta=refresh_token_expires)
     refresh_token = create_token(
-        data={"sub": user.username, "token":create_token({"sub": user.username, "type": "refresh_token"},secret_key=user.hash_key,expires_delta=refresh_token_expires)},
+        data={"sub": user.username, "token":refresh_token_inside},
         expires_delta=refresh_token_expires,
     )
-    authcrud.update(db, user.user_id, {"refresh_token": refresh_token})
+    authcrud.update(db, user.user_id, {"refresh_token": refresh_token_inside})
 
     return {
         "access_token": access_token,
@@ -349,7 +372,9 @@ async def register(
             status_code=status.HTTP_302_FOUND,
             detail="User Already Exist!",
         )
-    hash_key = hashlib.sha256(b"H").hexdigest()[:32]
+    unique_id = uuid.uuid4()
+    input_data = f"H{unique_id}".encode()
+    hash_key = hashlib.sha256(input_data).hexdigest()[:32]
     hashed_pwd = get_password_hashed(user.password,hash_key)
     user_dict = user.dict()
     user_dict.pop("password")
@@ -412,7 +437,9 @@ async def register(
             status_code=status.HTTP_302_FOUND,
             detail="User Already Exist!",
         )
-    hash_key = hashlib.sha256(b"H").hexdigest()[:32]
+    unique_id = uuid.uuid4()
+    input_data = f"H{unique_id}".encode()
+    hash_key = hashlib.sha256(input_data).hexdigest()[:32]
     hashed_pwd = get_password_hashed(user.password,hash_key)
     user_dict = user.dict()
     user_dict.pop("password")

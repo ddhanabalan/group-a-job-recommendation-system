@@ -29,7 +29,7 @@ class UserAuth(Base):
     username = Column(String(32), unique=True)
     hashed_password = Column(String(64))
     email = Column(String(32), unique=True)
-    refresh_token = Column(Text)
+    refresh_token = Column(String(256))
     disabled = Column(Boolean, default=False)
     user_id = Column(Integer)
     hash_key = Column(String(32))
