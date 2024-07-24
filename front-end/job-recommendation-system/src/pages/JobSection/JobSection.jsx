@@ -111,6 +111,7 @@ export default function JobSection() {
               skills: e.skills.length ? e.skills : [{ skill: "" }],
               workStyle: e.work_style,
               workingDays: e.working_days,
+              closed: e.closed,
               applicationsReceived: e.job_seekers,
               userApplication: ((((e.job_seekers).map(e => e.user_id)).includes(userData.id))?((e.job_seekers).filter(e => e.user_id == userData.id)):null),
               invite_status: inviteStat?inviteStat.status:null/*userInvites.length?userInvites.filter(f=>f.job_id == e.job_id)[0]?.status || null: null*/, 

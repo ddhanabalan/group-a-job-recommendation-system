@@ -10,7 +10,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 
 
-function HighlightableJobCard({ id, highlighted, type, data, listToDescFunc, deleteJobFunc, onclick, invite, inviteJob, seekerJobs, applicationType }) {
+function HighlightableJobCard({ id, highlighted, type, data, listToDescFunc, deleteJobFunc,editJobVacancyStatusFunc, onclick, invite, inviteJob, seekerJobs, applicationType }) {
     //console.log("highlighted ", id, " : ", highlighted)
     console.log("id", id, highlighted)
     const [disabled, setDisabled] = useState(false);
@@ -23,12 +23,12 @@ function HighlightableJobCard({ id, highlighted, type, data, listToDescFunc, del
     console.log("data pass", data, inviteJob)
     return (
         <div className="card-holder" onClick={!disabled?() => {inviteData?onclick(id,inviteData.type, inviteData.status, inviteData.id):(seekerJobs===true?onclick(id, applicationType):onclick(id))}: ()=>{}}>
-            <JobOpeningCard disabled={disableCard} data={data} type={type} listToDescFunc={listToDescFunc} deleteJobFunc={deleteJobFunc} highlighted={highlighted} invite={invite} inviteJob={inviteJob} />
+            <JobOpeningCard disabled={disableCard} data={data} type={type} listToDescFunc={listToDescFunc} deleteJobFunc={deleteJobFunc} editJobVacancyStatusFunc={editJobVacancyStatusFunc} highlighted={highlighted} invite={invite} inviteJob={inviteJob} />
         </div>
     )
 }
 
-export default function OpeningsListBar({ data, userType, userID, chooseEntry, searchBar, preselectedEntry=null, preselectedEntryType=null, filterFunc = null, pageType, handleApplicationStatus = null, userJobs = null, listToDescParentFunc = null, deleteJobFunc = null, invite=null, seekerJobs = false }) {
+export default function OpeningsListBar({ data, userType, userID, chooseEntry, searchBar, preselectedEntry=null, preselectedEntryType=null, filterFunc = null, pageType, handleApplicationStatus = null, userJobs = null, listToDescParentFunc = null, deleteJobFunc = null,editJobVacancyStatusFunc=null, invite=null, seekerJobs = false }) {
     console.log("user received jobs", userJobs, seekerJobs)
     
     console.log("received jobs to openings list bar", data);
@@ -195,7 +195,7 @@ export default function OpeningsListBar({ data, userType, userID, chooseEntry, s
                         (
                         //console.log("finalInfo check", finalInfo)
                         //Object.keys(finalInfo).map((card) => console.log("this is what i received", card, finalInfo[card]))
-                         finalInfo.map((card) => (<HighlightableJobCard key= {finalInfo.indexOf(card)} id={handleSeekerJobSection(card)} onclick={highlightDiv} highlighted={highlightedId == handleSeekerJobSection(card) && (seekerJobs?(card.type===highlightedEntryType): true)} type={userType == "employer" && pageType!=="candidates" ? pageType : null} applicationType={seekerJobs?card.type: null} inviteJob={userJobs && userJobs.length?userJobs.filter(job => {if(job.job_vacancy_id == card["id"] )return job}): null} deleteJobFunc={deleteJobFunc} listToDescFunc={listToDescFunc} data={{ ...card, 'userType': userType, 'highlightedId': highlightedId }} invite={invite} seekerJobs={seekerJobs?true: false}/>))
+                         finalInfo.map((card) => (<HighlightableJobCard key= {finalInfo.indexOf(card)} id={handleSeekerJobSection(card)} onclick={highlightDiv} highlighted={highlightedId == handleSeekerJobSection(card) && (seekerJobs?(card.type===highlightedEntryType): true)} type={userType == "employer" && pageType!=="candidates" ? pageType : null} applicationType={seekerJobs?card.type: null} inviteJob={userJobs && userJobs.length?userJobs.filter(job => {if(job.job_vacancy_id == card["id"] )return job}): null} deleteJobFunc={deleteJobFunc} editJobVacancyStatusFunc={editJobVacancyStatusFunc} listToDescFunc={listToDescFunc} data={{ ...card, 'userType': userType, 'highlightedId': highlightedId }} invite={invite} seekerJobs={seekerJobs?true: false}/>))
                         )
                             :
                         (userType=="employer"?

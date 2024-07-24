@@ -277,6 +277,7 @@ export default function JobVacancyForm({ data = {} }) {
                                 "last_date": finalApplicationData['last_date'],
                                 
                                 "skills": addedSkills,
+                                "closed": false,
                             };
         //submissionData["salary"]=(submissionData["salary"][1]==="")?submissionData["salary"][0]:submissionData["salary"].join("-");
 
@@ -316,16 +317,22 @@ export default function JobVacancyForm({ data = {} }) {
                     
                     {submissionStatus === "success" || submissionStatus==="failed"?                                  //submission status banner 
                     <div className={`submission-status-banner status-${submissionStatus}`}>
-                        <p>{submissionStatus==="success"?"Job vacancy posted successfully":"Failed to create vacancy.Try again later"}</p>
+                        <p>{submissionStatus==="success"?(`Job vacancy ${(dta?.reopen)?"reopened":"posted"} successfully`):`Failed to ${(dta?.reopen)?"reopen":"post"} vacancy.Try again later`}</p>
                     </div>
                     :
                     <div className="post-vacancy-buttons">
                         {/* <Button variant="contained" color="success" onClick={() => setPreview(false)} sx={{ color: "white" }} startIcon={<EditIcon />}>
                             <p>Edit</p>
-                        </Button>
-                        <Button variant="contained" onClick={handlePostVacancy} sx={{ color: submit ? "gray" : "white" }} startIcon={submit ? <DoneIcon /> : <MailIcon />}>
-                            <p>{submissionStatus==="processing"?"Posting..":(submit ? "Posted" : "Post Vacancy")}</p>
-                        </Button>
+                        </Button> */}
+                        <button className='continue-btn post-vacancy-edit-btn' onClick={() => setPreview(false)} >
+                            <EditIcon /> Edit 
+                        </button>
+                        {/* <Button variant="contained" onClick={handlePostVacancy} sx={{ color: submit ? "gray" : "white" }} startIcon={submit ? <DoneIcon /> : <MailIcon />}>
+                            <p>{submit ? "Posted" : "Post Vacancy"}</p>
+                        </Button> */}
+                        <button className='continue-btn post-vacancy-confirm-btn' onClick={handlePostVacancy}>
+                                {submit ? <DoneIcon /> : <MailIcon />} {submissionStatus === "processing" ? "Posting.." : (submit ? "Posted" : (dta?.reopen)?"Reopen":"Post Vacancy")}
+                        </button>
                     </div>
                     }
                 </div>
@@ -547,7 +554,7 @@ export default function JobVacancyForm({ data = {} }) {
                                 <p>Preview and Post vacancy</p>
                             </Button> */}
                             <button className='continue-btn post-vacancy-btn' >
-                                <RemoveRedEyeOutlinedIcon/>  Preview and Post vacancy
+                                <RemoveRedEyeOutlinedIcon/>  {(dta?.reopen)?"Preview and Reopen Post":"Preview and Post Vacancy"}
                             </button>
                         </div>
 
