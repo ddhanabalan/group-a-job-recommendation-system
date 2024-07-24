@@ -65,8 +65,9 @@ export default function ExperienceCard({ access, data, deleteFn, submitFn }) {
                 <form className='qualification-add-form qualification-card' noValidate autoComplete='on' onSubmit={handleSubmit(editData)}>
                     <div className="qualification-card-image"></div>
                     <div className="qualification-card-content">
+                        <div style={{ width: '100%', marginBottom: '1rem', position: 'relative' }}>
                         <TextField className='qualification-add-h2' defaultValue={data.job_name}
-                            sx={{ marginBottom: '.7rem' }}
+                            sx={{ width: '100%' }}
                             placeholder="Ex: Sales Manager"
                             variant="outlined"
                             label="Title"
@@ -74,10 +75,17 @@ export default function ExperienceCard({ access, data, deleteFn, submitFn }) {
                             size='small'
                             error={'job_name' in errors}
                             {...register("job_name", {
-                                required: "Job title cannot be empty"
+                                required: "Job title cannot be empty",
+                                pattern: {
+                                    value: /^.{0,128}$/,
+                                    message: "Title should be at most 128 characters long."
+                                }
                             })} />
+                            <p style={{ color: 'red' }}>{errors.job_name && errors.job_name.message !== "cannot be empty" && errors.job_name.message}</p>
+                        </div>
+                        <div style={{ width: '100%', marginBottom: '1rem', position: 'relative' }}>
                         <TextField className='qualification-add-h3' defaultValue={data.company_name}
-                            sx={{ marginBottom: '.7rem' }}
+                            sx={{ width: '100%' }}
                             placeholder="Ex: Google"
                             variant="outlined"
                             label="Company name"
@@ -85,8 +93,14 @@ export default function ExperienceCard({ access, data, deleteFn, submitFn }) {
                             size='small'
                             error={'company_name' in errors}
                             {...register("company_name", {
-                                required: "Company name cannot be empty"
+                                required: "Company name cannot be empty",
+                                pattern: {
+                                    value: /^.{0,128}$/,
+                                    message: "Company name should be at most 128 characters long."
+                                }
                             })} />
+                            <p style={{ color: 'red' }}>{errors.company_name && errors.company_name.message !== "cannot be empty" && errors.company_name.message}</p>
+                        </div>
                         <div className='qualification-year' style={{ marginBottom: '.5rem' }}>
                             <LocalizationProvider dateAdapter={AdapterDayjs}>
                                 <Controller

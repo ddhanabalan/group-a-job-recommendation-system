@@ -96,7 +96,8 @@ export default function ContactCard({ access, data, contactData, reloadFn, showS
                             <IconButton aria-label="email" disabled>
                                 <EmailIcon />
                             </IconButton>
-                            <TextField className="personal-details-input profile-edit-bio contact-card-textfield" variant="outlined"
+                            <div style={{ width: '80%' }}>
+                            <TextField sx={{width: '100%'}} className="personal-details-input profile-edit-bio contact-card-textfield" variant="outlined"
                                 defaultValue={contactData.contact_email}
                                 placeholder='example@mail.com'
                                 error={'contact_email' in errors}
@@ -108,7 +109,9 @@ export default function ContactCard({ access, data, contactData, reloadFn, showS
                                         },
                                         onChange: onTrigger
                                     })}>
-                            </TextField>
+                                </TextField>
+                                <p className="error-message" style={{ fontSize: '.8rem' }}>{errors.contact_email?.message || ""}</p>
+                            </div>
                         </Stack>
                         {user === "seeker" &&
                             <Stack direction="row" spacing={1} className='contact-medium'>
@@ -116,6 +119,7 @@ export default function ContactCard({ access, data, contactData, reloadFn, showS
                                     <GitHubIcon />
                                 </IconButton>
                                 <TextField className="personal-details-input profile-edit-bio contact-card-textfield" variant="outlined"
+                                    sx={{ width: '80%' }}
                                     defaultValue={contactData.github}
                                     placeholder='username'
                                     error={'github' in errors}
@@ -130,7 +134,8 @@ export default function ContactCard({ access, data, contactData, reloadFn, showS
                             <IconButton aria-label="website" disabled>
                                 <PublicIcon />
                             </IconButton>
-                            <TextField className="personal-details-input profile-edit-bio contact-card-textfield" variant="outlined"
+                            <div style={{ width: '80%' }}>
+                            <TextField sx={{ width: '100%' }} className="personal-details-input profile-edit-bio contact-card-textfield" variant="outlined"
                                 onInput={onTrigger}
                                 defaultValue={contactData.website}
                                 placeholder='website url'
@@ -143,9 +148,11 @@ export default function ContactCard({ access, data, contactData, reloadFn, showS
                                         },
                                         onChange: onTrigger
                                     })}>
-                            </TextField>
+                                </TextField>
+                                <p className="error-message" style={{fontSize:'.8rem'}}>{errors.website?.message || ""}</p>
+                            </div>
                         </Stack>
-                        <p className="error-message">{errors.website?.message || ""}</p>
+                       
                     </Stack>
 
             }

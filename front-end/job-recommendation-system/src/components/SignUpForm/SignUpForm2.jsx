@@ -90,7 +90,7 @@ function SignUpForm2() {
       setServerMsg({ ...res });
       res.request.status === 201 && setTimeout(() => {
         navigate(`/login`)
-      }, 5000)
+      }, 2000)
 
     } catch (e) {
       setServerMsg({ ...e.response });
@@ -153,7 +153,7 @@ function SignUpForm2() {
               </div>
               <div id="item-2" className="personal-detail-picture">
                 <p className="text-head">Profile picture (optional)</p>
-                <div className='card-img-container personal-picture'>
+                <div className='card-img-container personal-picture' style={{overflow:'visible'}}>
                   <Button
                     component="label"
                     role={undefined}

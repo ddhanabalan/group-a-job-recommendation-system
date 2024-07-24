@@ -72,22 +72,24 @@ const GoogleLocationSearch = forwardRef(function GoogleLocationSearch({ data, ch
             }}
             onInputChange={(event, newInputValue) => {
                 setQuery(newInputValue);
-                setOptions(options);
+                newInputValue===""?setOptions([]):setOptions(options);
                 console.log("added", newInputValue)
                 changeFn(newInputValue);
             }}
             renderInput={(params) => (
-                <TextField {...params} placeholder={data.inputPlaceholder} value={locationValue} variant={textFieldType} className='tags-add-input'
+                <TextField {...params} placeholder={data.inputPlaceholder} value={locationValue} variant={textFieldType} 
                     InputProps={{
                         ...params.InputProps,
                         disableUnderline: disUnderline,
                     }}
                     inputRef={ref}
                     sx={{
+                        boxSizing: 'content-box',
                         backgroundColor: textBgColor,
+                        paddingY: '0.05rem',
                         paddingX: textPad,
                         borderRadius: bordRad,
-                        '.MuiInputBase-input': { fontFamily: fntFam, fontSize: fntSize },
+                        '.MuiInputBase-input': { fontFamily: fntFam, fontSize: fntSize},
                     }}
                     {...props} />
 

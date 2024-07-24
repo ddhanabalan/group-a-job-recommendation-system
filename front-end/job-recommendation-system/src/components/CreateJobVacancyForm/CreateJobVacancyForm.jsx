@@ -57,12 +57,12 @@ export default function JobVacancyForm({ data = {} }) {
     const [isUpperLimitEnabled, setIsUpperLimitEnabled] = useState(false);
 
     useEffect(() => {
-        if (lowerLimit) {
+        if (lowerLimit!==undefined) {
             setIsUpperLimitEnabled(true);
         } else {
             setIsUpperLimitEnabled(false);
         }
-    }, [lowerLimit]);
+    }, [watch("salary.0")]); //watches lower limit of salary to enable or disable upper limit
 
     const poiListAPI = async () => {
         try {
@@ -188,7 +188,7 @@ export default function JobVacancyForm({ data = {} }) {
 
         }
         else {
-            errorObj[dataType] = { 'message': "please check one item" };
+            errorObj[dataType] = { 'message': "Please check one item" };
         }
         setPrefErrors(errorObj);
 
@@ -300,7 +300,7 @@ export default function JobVacancyForm({ data = {} }) {
                      console.log("rerouting submission status", submissionStatus)
                          setTimeout(() => {
                              navigate("../employer/review-applications")    
-                         }, 5000);
+                         }, 2000);
      }},[submissionStatus])
     useEffect(() => {skillsAPI()}, [skill])
     useEffect(() => {callCompanyAPI()}, [])
@@ -394,15 +394,17 @@ export default function JobVacancyForm({ data = {} }) {
                                                 onChange={e => changeFn(e.target.value)}
                                                 variant="standard"
                                                 sx={{
+                                                    boxSizing: 'content-box',
                                                     backgroundColor: "#D9D9D9",
                                                     width: "fit-content",
                                                     minWidth: "230px",
                                                     height: "30px",
+                                                    paddingY:'.05rem',
                                                     paddingX: "5px",
                                                     borderRadius: "7px",
-                                                    '.MuiInputBase-input': { fontFamily: "Inter-regular", fontSize: "15px" },
+                                                    '.MuiInputBase-input': { fontFamily: "Inter-regular", fontSize: "15px"},
                                                 }}
-                                                {...register("poi", { required: "field is required", })}
+                                                {...register("poi", { required: "Field is required", })}
                                             />}
 
                                         />
@@ -476,7 +478,7 @@ export default function JobVacancyForm({ data = {} }) {
                                             <CreateFormTextFields inputPlaceholder="Lower limit" wparam="120px"
                                                 defaultValue={dta.salary ? dta.salary[0] || null : null}
                                                 {...register("salary.0", {
-                                                    required: "salary range is required",
+                                                    required: "Salary range is required",
                                                     pattern: {
                                                         value: /^[0-9]+$/,
                                                         message: "Only numbers allowed"

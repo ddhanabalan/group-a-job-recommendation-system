@@ -51,37 +51,38 @@ export default function JobSection() {
                         }).join('&');
                     }
                 }).then(SetLoading(false))
-                const mod_response = response.data.map(e => {
-                    const salaryParts = e.salary.split('-');
-                    const createdDateParts = e.created_at.split('T');
-                    const lastDateParts = e.last_date.split('T');
-                    const inviteStat = userInvites.length?getInviteStatus(e.job_id):null;
-                    console.log("invite stat", inviteStat, userInvites)
-                    return {
-                      id: e.job_id,
-                      companyID: e.company_id,
-                      jobTitle: e.job_name,
-                      companyUsername: e.company_username,
-                      companyName: e.company_name,
-                      tags: /* (e.tags.length ? e.tags : */ [{ tag: "" }], // Keeping the comment
-                      currency: salaryParts.length > 0 ? salaryParts[0] : "",
-                      salary: salaryParts.length > 2 ? [salaryParts[1], salaryParts[2]] : (salaryParts.length === 2 ? [salaryParts[1], ""]:["", ""]),
-                      postDate: createdDateParts.length > 0 ? createdDateParts[0] : e.created_at,
-                      last_date: lastDateParts.length > 0 ? lastDateParts[0] : e.last_date,
-                      location: e.location,
-                      empType: e.emp_type,
-                      exp: e.experience,
-                      jobDesc: e.job_desc,
-                      jobReq: e.requirement,
-                      skills: e.skills.length ? e.skills : [{ skill: "" }],
-                      workStyle: e.work_style,
-                      workingDays: e.working_days,
-                      applicationsReceived: e.job_seekers,
-                      userApplication: ((((e.job_seekers).map(e => e.user_id)).includes(userData.id))?((e.job_seekers).filter(e => e.user_id == userData.id)):null),
-                      invite_status: inviteStat?inviteStat.status:null/*userInvites.length?userInvites.filter(f=>f.job_id == e.job_id)[0]?.status || null: null*/, 
-                      job_invite_id: inviteStat?inviteStat.id:null/*userInvites.length?userInvites.filter(f=>f.job_id == e.job_id)[0]?.id || null: null*/
-                    };
-                  });
+            const mod_response = response.data.map(e => {
+                const salaryParts = e.salary.split('-');
+                const createdDateParts = e.created_at.split('T');
+                const lastDateParts = e.last_date.split('T');
+                const inviteStat = userInvites.length ? getInviteStatus(e.job_id) : null;
+                console.log("invite stat", inviteStat, userInvites)
+                return {
+                    id: e.job_id,
+                    companyID: e.company_id,
+                    jobTitle: e.job_name,
+                    companyUsername: e.company_username,
+                    companyName: e.company_name,
+                    tags: /* (e.tags.length ? e.tags : */[{ tag: "" }], // Keeping the comment
+                    currency: salaryParts.length > 0 ? salaryParts[0] : "",
+                    salary: salaryParts.length > 2 ? [salaryParts[1], salaryParts[2]] : (salaryParts.length === 2 ? [salaryParts[1], ""] : ["", ""]),
+                    postDate: createdDateParts.length > 0 ? createdDateParts[0] : e.created_at,
+                    last_date: lastDateParts.length > 0 ? lastDateParts[0] : e.last_date,
+                    location: e.location,
+                    empType: e.emp_type,
+                    exp: e.experience,
+                    jobDesc: e.job_desc,
+                    jobReq: e.requirement,
+                    skills: e.skills.length ? e.skills : [{ skill: "" }],
+                    workStyle: e.work_style,
+                    workingDays: e.working_days,
+                    companyPic: e.company_pic,
+                    applicationsReceived: e.job_seekers,
+                    userApplication: ((((e.job_seekers).map(e => e.user_id)).includes(userData.id)) ? ((e.job_seekers).filter(e => e.user_id == userData.id)) : null),
+                    invite_status: inviteStat ? inviteStat.status : null/*userInvites.length?userInvites.filter(f=>f.job_id == e.job_id)[0]?.status || null: null*/,
+                    job_invite_id: inviteStat ? inviteStat.id : null/*userInvites.length?userInvites.filter(f=>f.job_id == e.job_id)[0]?.id || null: null*/
+                };
+            });
             setJobVacancies(mod_response);
             console.log(response);
             console.log(" after new job vacancies", mod_response);
@@ -114,15 +115,13 @@ export default function JobSection() {
     const getInviteStatus = (jobId) => {
         const invite = userInvites.filter(f => f.job_id == jobId);
         let index = 0;
-        if(invite.length)
-            {//console.log("logged invite job", invite[0].invite_status);
-                const r = invite.map(e=>e.status?e.status.toLowerCase():null);
-                //console.log("registered invites", inviteJob, r, data.id)
-                
-                if(/*r.includes("rejected") && */r.includes("pending"))
-                {
-                    index = r.lastIndexOf("pending");
-                }
+        if (invite.length) {//console.log("logged invite job", invite[0].invite_status);
+            const r = invite.map(e => e.status ? e.status.toLowerCase() : null);
+            //console.log("registered invites", inviteJob, r, data.id)
+
+            if (/*r.includes("rejected") && */r.includes("pending")) {
+                index = r.lastIndexOf("pending");
+            }
             //console.log("invite job", index)
         }
         console.log("userInvites", userInvites, "and", jobId)
