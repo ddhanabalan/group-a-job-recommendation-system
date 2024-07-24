@@ -173,6 +173,14 @@
 .application-creation-date p{
     font-size: 0.7rem;
 }
+
+.closed-indicator {
+   background-color: rgb(255, 68, 16);
+   font-size: 0.7rem;
+   padding: 0.05rem 1rem;
+   border-radius: 0.5rem; 
+   margin-left: 6rem;
+}
 .yellow{
     background-color: orange;
 }

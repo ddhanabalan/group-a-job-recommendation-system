@@ -277,6 +277,7 @@ export default function JobVacancyForm({ data = {} }) {
                                 "last_date": finalApplicationData['last_date'],
                                 
                                 "skills": addedSkills,
+                                "closed": false,
                             };
         //submissionData["salary"]=(submissionData["salary"][1]==="")?submissionData["salary"][0]:submissionData["salary"].join("-");
 
@@ -316,7 +317,7 @@ export default function JobVacancyForm({ data = {} }) {
                     
                     {submissionStatus === "success" || submissionStatus==="failed"?                                  //submission status banner 
                     <div className={`submission-status-banner status-${submissionStatus}`}>
-                        <p>{submissionStatus==="success"?"Job vacancy posted successfully":"Failed to create vacancy.Try again later"}</p>
+                        <p>{submissionStatus==="success"?(`Job vacancy ${(dta?.reopen)?"reopened":"posted"} successfully`):`Failed to ${(dta?.reopen)?"reopen":"post"} vacancy.Try again later`}</p>
                     </div>
                     :
                     <div className="post-vacancy-buttons">
@@ -330,7 +331,7 @@ export default function JobVacancyForm({ data = {} }) {
                             <p>{submit ? "Posted" : "Post Vacancy"}</p>
                         </Button> */}
                         <button className='continue-btn post-vacancy-confirm-btn' onClick={handlePostVacancy}>
-                                {submit ? <DoneIcon /> : <MailIcon />} {submissionStatus === "processing" ? "Posting.." : (submit ? "Posted" : "Post Vacancy")}
+                                {submit ? <DoneIcon /> : <MailIcon />} {submissionStatus === "processing" ? "Posting.." : (submit ? "Posted" : (dta?.reopen)?"Reopen":"Post Vacancy")}
                         </button>
                     </div>
                     }
@@ -553,7 +554,7 @@ export default function JobVacancyForm({ data = {} }) {
                                 <p>Preview and Post vacancy</p>
                             </Button> */}
                             <button className='continue-btn post-vacancy-btn' >
-                                <RemoveRedEyeOutlinedIcon/>  Preview and Post vacancy
+                                <RemoveRedEyeOutlinedIcon/>  {(dta?.reopen)?"Preview and Reopen Post":"Preview and Post Vacancy"}
                             </button>
                         </div>
 
