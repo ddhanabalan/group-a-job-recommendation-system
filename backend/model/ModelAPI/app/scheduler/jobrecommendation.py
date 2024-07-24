@@ -11,10 +11,10 @@ from ..schemas import schemas as jobrecommendationSchemas
 
 logger = logging.getLogger(__name__)
 
-with open("app/mlmodel/tfidf_vectorizer.pkl", "rb") as f:
+with open("/mlmodel/tfidf_vectorizer.pkl", "rb") as f:
     tfidf_vectorizer = pickle.load(f)
 
-with open("app/mlmodel/nn_model_jobs.pkl", "rb") as f:
+with open("/mlmodel/nn_model_jobs.pkl", "rb") as f:
     nn_model = pickle.load(f)
 
 
@@ -36,7 +36,7 @@ async def send_data_to_api_applicant(data):
         )
 
 
-with open("app/mlmodel/nn_model_applicants.pkl", "rb") as f:
+with open("/mlmodel/nn_model_applicants.pkl", "rb") as f:
     nn_model_applicants = pickle.load(f)
 
 

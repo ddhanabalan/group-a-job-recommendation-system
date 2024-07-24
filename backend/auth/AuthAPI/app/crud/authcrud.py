@@ -1,6 +1,7 @@
 from typing import Type
 
 from sqlalchemy.orm import Session
+from datetime import datetime
 from sqlalchemy.exc import SQLAlchemyError
 from pydantic import EmailStr
 from ..models import authmodel
@@ -145,3 +146,35 @@ def delete(db: Session, user_id: int) -> bool:
     except SQLAlchemyError:
         db.rollback()
         return False
+
+def update_refresh_token(db: Session, user_id: int, token:str,init:int=0, retries: int = 3) -> bool:
+    
+    print("Resh_token")
+    for attempt in range(retries):
+        try:
+
+
+            result = db.query(authmodel.UserAuth).filter(
+                authmodel.UserAuth.id == user_id
+            ).first()
+            result.refresh_token = token
+            if init:
+                result.last_login=datetime.utcnow()
+            # Check if any rows were affected
+            if result == 0:
+                print(f"User with id {user_id} not found.")
+                return False
+            print(result.refresh_token)
+            print(result.last_login)
+            db.commit()
+            return True
+        except StaleDataError as e:
+            print(f"StaleDataError: {e}")
+            db.rollback()
+            time.sleep(1)  # Wait for a moment before retrying
+        except SQLAlchemyError as e:
+            print(f"SQLAlchemyError: {e}")
+            db.rollback()
+            return False
+
+    return False

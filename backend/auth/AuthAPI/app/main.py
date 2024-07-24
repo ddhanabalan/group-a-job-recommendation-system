@@ -232,6 +232,7 @@ async def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
 ):
     user = await authenticate_user(form_data.username, form_data.password, db=db)
+    print(user)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -244,11 +245,12 @@ async def login_for_access_token(
         data={"sub": user.username, "token":create_token({"sub": user.username, "type": "access_token"},secret_key=user.hash_key,expires_delta=access_token_expires)},
         expires_delta=access_token_expires,
     )
+    refresh_token_inside = create_token({"sub": user.username, "type": "refresh_token"},secret_key=user.hash_key,expires_delta=refresh_token_expires)
     refresh_token = create_token(
-        data={"sub": user.username, "token":create_token({"sub": user.username, "type": "refresh_token"},secret_key=user.hash_key,expires_delta=refresh_token_expires)},
+        data={"sub": user.username, "token":refresh_token_inside},
         expires_delta=refresh_token_expires,
     )
-    authcrud.update(db, user.user_id, {"refresh_token": refresh_token})
+    authcrud.update_refresh_token(db, user.id, refresh_token_inside,init=1)
     return {
         "access_token": access_token,
         "refresh_token": refresh_token,
@@ -276,7 +278,7 @@ async def refresh_token_validate(user=Depends(get_refresh_user), db: Session = D
         data={"sub": user.username, "token":refresh_token_inside},
         expires_delta=refresh_token_expires,
     )
-    authcrud.update(db, user.user_id, {"refresh_token": refresh_token_inside})
+    authcrud.update_refresh_token(db, user.id, refresh_token_inside)
 
     return {
         "access_token": access_token,

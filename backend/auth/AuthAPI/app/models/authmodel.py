@@ -27,7 +27,7 @@ class UserAuth(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     username = Column(String(32), unique=True)
-    hashed_password = Column(String(64))
+    hashed_password = Column(String(128))
     email = Column(String(32), unique=True)
     refresh_token = Column(String(256))
     disabled = Column(Boolean, default=False)
