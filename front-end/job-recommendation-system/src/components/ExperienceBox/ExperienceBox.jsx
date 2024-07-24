@@ -8,7 +8,7 @@ import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import ExperienceCard from '../ExperienceCard/ExperienceCard';
 import ExperienceAdd from '../ExperienceCard/ExperienceAdd';
 import NothingToShow from '../NothingToShow/NothingToShow';
-export default function ExperienceBox({ access, childData, reloadFn, showSuccessMsg, showFailMsg }) {
+export default function ExperienceBox({ access, childData, reloadFn, experienceinYears, showSuccessMsg, showFailMsg }) {
     useEffect(() => {
         if (childData) {
             SetExpdata(childData)
@@ -16,18 +16,7 @@ export default function ExperienceBox({ access, childData, reloadFn, showSuccess
     }, [childData])
     const [expdata, SetExpdata] = useState([]);
     const [newExp, SetNewExp] = useState(false)
-    const [totalExp, SetTotalExp] = useState(0)
-    useEffect(() => {
-        updateProfile()
-    }, [totalExp])
-    const updateProfile = async () => {
-        try {
-
-        }
-        catch (e) {
-            console.log(e)
-        }
-    }
+    const [totalExp, SetTotalExp] = useState()
     const updateTotalExperience = async (data) => {
         try {
             const response = await userAPI.put('/seeker/details', { "experience": data },
@@ -37,7 +26,7 @@ export default function ExperienceBox({ access, childData, reloadFn, showSuccess
                     }
                 }
             );
-
+            console.log("data exp", data)
 
         } catch (e) {
             console.log(e)
@@ -59,7 +48,7 @@ export default function ExperienceBox({ access, childData, reloadFn, showSuccess
                 }
             });
             e.end_year === e.start_year ? SetTotalExp(parseInt(totalExp) + 1) :
-                SetTotalExp(parseInt(totalExp) + (parseInt(e.end_year) - parseInt(e.start_year)+1))
+                SetTotalExp(parseInt(experienceinYears) + (parseInt(e.end_year) - parseInt(e.start_year) + 1))
             response.request.status === 201 && showSuccessMsg()
             console.log(response)
             SetNewExp(false)
@@ -78,7 +67,7 @@ export default function ExperienceBox({ access, childData, reloadFn, showSuccess
     const deleteExp = async (id) => {
         //deletes existing Experience from array by referring to the id passed in
         const delExp = expdata.filter(e => { return id === e.id })
-        SetTotalExp(parseInt(totalExp) - (parseInt(delExp[0].end_year) - parseInt(delExp[0].start_year)+1))
+        SetTotalExp(parseInt(experienceinYears) - (parseInt(delExp[0].end_year) - parseInt(delExp[0].start_year) + 1))
         try {
             const response = await userAPI.delete(`/seeker/former-job/${id}`, {
                 headers: {
@@ -86,6 +75,7 @@ export default function ExperienceBox({ access, childData, reloadFn, showSuccess
                 }
             })
             response.request.status === 200 && showSuccessMsg()
+            reloadFn()
             SetExpdata(expdata.filter(e => { return id !== e.id }))
         } catch (e) {
             console.log(e)
@@ -98,11 +88,12 @@ export default function ExperienceBox({ access, childData, reloadFn, showSuccess
         const { id, ...passData } = data
         const delExp = expdata.filter(e => { return id === e.id })
         console.log("hoda", delExp)
-        const exp_update = (parseInt(delExp[0].end_year) - parseInt(delExp[0].start_year)+1)
+        const exp_update = (parseInt(delExp[0].end_year) - parseInt(delExp[0].start_year) + 1)
         console.log(exp_update)
-        const exp_add_update = parseInt(totalExp) - exp_update + (passData.end_year === passData.start_year ? 1 : (parseInt(passData.end_year) - parseInt(passData.start_year)+1))
+        const exp_add_update = parseInt(experienceinYears) - exp_update + (passData.end_year === passData.start_year ? 1 : (parseInt(passData.end_year) - parseInt(passData.start_year) + 1))
         console.log(exp_add_update)
         SetTotalExp(exp_add_update)
+        reloadFn()
         console.log("passData", passData)
 
         try {

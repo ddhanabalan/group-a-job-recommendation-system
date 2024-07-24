@@ -190,12 +190,26 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
                                  </div>
                                  <div className='invite-buttons-container'>
                                     
-                                    <button className='accept' onClick={()=>{handleInvite("approved", data.job_invite_id || data.invite.job_invite_id)}} >
+                                    {/* <button className='accept' onClick={()=>{handleInvite("approved", data.job_invite_id || data.invite.job_invite_id)}} >
                                         Accept
-                                    </button>
-                                    <button className='reject' onClick={()=>{handleInvite("rejected", data.job_invite_id || data.invite.job_invite_id)}} >
+                                    </button> */}
+                                            <button className='continue-btn invite-accept-btn'>
+                                                Accept
+                                                <div class="arrow-wrapper">
+                                                    <div class="arrow"></div>
+
+                                                </div>
+                                            </button>
+                                    {/* <button className='reject' onClick={()=>{handleInvite("rejected", data.job_invite_id || data.invite.job_invite_id)}} >
                                         Reject
-                                    </button>
+                                    </button> */}
+                                            <button className='continue-btn invite-reject-btn'>
+                                                Reject
+                                                <div class="arrow-wrapper">
+                                                    <div class="arrow"></div>
+
+                                                </div>
+                                            </button>
 
                                  </div>
                                  </>

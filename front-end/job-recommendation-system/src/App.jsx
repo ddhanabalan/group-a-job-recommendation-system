@@ -31,7 +31,7 @@ function App() {
       if (getStorage("refToken")) {
         refreshTokens()
       }
-    }, 30000)//refresh token every 15 minutes
+    }, 900000)//refresh tokens every 15 minutes
 
     return () => clearInterval(refreshInterval)
   }, [])

@@ -82,8 +82,8 @@ function SignUpForm() {
                     {
                       required: "password is required",
                       pattern: {
-                        value: /^(?=.*[0-9])(?=.*[!@#$%^&*.,])[a-zA-Z0-9!@#$%^&*.,]{8,16}$/,
-                        message: "Your password should have one lowercase, one uppercase, one number, one special symbol from [!@#$%^&*_=+-], and be 8 to 16 characters long"
+                        value: /^(?=.*[0-9])(?=.*[!@#$%^&*.,])[a-zA-Z0-9!@#$%^&*.,]{8,32}$/,
+                        message: "Your password should have one lowercase, one uppercase, one number, one special symbol from [!@#$%^&*_=+-], and be 8 to 32 characters long"
                       }
                     })}
                   sx={{ width: 230 }} />

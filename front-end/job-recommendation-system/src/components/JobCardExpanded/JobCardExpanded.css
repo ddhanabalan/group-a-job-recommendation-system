@@ -197,16 +197,16 @@
 
 .invite-buttons-container{
     display: flex;
-    width: 90%;
+    width:20rem;
     flex-direction: row;
-    justify-content: center;
-    gap: 20rem;
+    justify-content: space-around;
+
 }
 
 .invite-buttons-container button{
     margin-top: 10%;
     margin-bottom: 10%;
-    padding: 0.5rem 2rem;
+    padding: 0.4rem 1.5rem;
 }
 
 .invite-banner{
@@ -218,10 +218,9 @@
     color: gray;
 }
 
-.accept{
-    background-color: green;   
+.invite-accept-btn{
+    --primary-color: #23c483 !important;   
 }
-
-.reject{
-    background-color: red;
+.invite-reject-btn{
+    --primary-color: #e01414 !important;
 }
