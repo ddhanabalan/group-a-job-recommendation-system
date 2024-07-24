@@ -14,6 +14,10 @@ router = APIRouter()
 async def job_recommendation(job: schemas.JobDetails, db=Depends(get_db)):
     return crud.create_job_input(db, model.JobRecommendationJobInput(**job.dict()))
 
+@router.delete("/job/input/{job_id}")
+async def job_recommendation(job_id: int, db=Depends(get_db)):
+    return crud.delete_job_input(db, job_id)
+
 
 @router.post("/seeker/input")
 async def job_recommendation(seeker: schemas.SeekerDetails, db=Depends(get_db)):

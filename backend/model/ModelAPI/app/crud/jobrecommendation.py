@@ -55,3 +55,13 @@ def get_job(db: Session, job_pos: str) -> List[model.JobRecommendationSeekerOutp
         return db.query(model.JobRecommendationSeekerOutput).filter(model.JobRecommendationSeekerOutput.job_position == job_pos).all()
     except SQLAlchemyError as e:
         return []
+
+def delete_job_input(db:Session,job_id:int):
+    try:
+        data = db.query(model.JobRecommendationJobInput).filter(model.JobRecommendationJobInput.job_id==job_id).first()
+        db.delete(data)
+        db.commit()
+        return True
+    except SQLAlchemyError:
+        db.rollback()
+        return False

@@ -86,10 +86,17 @@ async def create_job_vacancy(
         job_skill_data = jobschema.JobSkillsCreate(job_id=job_id, skill=_)
         jobcrud.skills.create(db, job_skill_data)
 
-    job_model = jobschema.JobDetails.from_orm(job_vacancy_instance)
-    with httpx.AsyncClient() as client:
+    job_model = jobschema.JobDetails(**{
+        "job_id": job_vacancy_instance.job_id,
+        "job_name": job_vacancy_instance.job_name,
+        "job_position": job_vacancy_instance.job_position,
+        "company_name": job_vacancy_instance.company_name,
+        "city": job_vacancy_instance.location,
+        "work_style": job_vacancy_instance.work_style,
+        "job_description":job_vacancy_instance.job_desc})
+    async with httpx.AsyncClient() as client:
         response = await client.post(
-            "http://172.20.0.5:8000/job/input",
+            "http://172.20.0.7:8000/model/job/input",
             json=job_model.dict(),
         )
         if response.status_code != status.HTTP_200_OK:
@@ -192,6 +199,15 @@ async def delete_job_vacancy_by_user_id(
     await check_authorization(authorization=authorization, user_type="recruiter")
     jobs = jobcrud.vacancy.get_all(db, user_id)
     for job in jobs:
+        async with httpx.AsyncClient() as client:
+            response = await client.delete(
+                f"http://172.20.0.7:8000/model/job/input/{job.job_id}",
+            )
+            if response.status_code != status.HTTP_200_OK:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND, detail="Error Occured"
+                )
+
         if not jobcrud.request.delete_by_vacancy_id(db, job.job_id):
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -227,6 +243,14 @@ async def delete_job_vacancy(
             status_code=status.HTTP_404_NOT_FOUND, detail="Job Vacancy not found"
         )
 
+    async with httpx.AsyncClient() as client:
+        response = await client.delete(
+            f"http://172.20.0.7:8000/model/job/input/{job_vacancy_id}",
+        )
+        if response.status_code != status.HTTP_200_OK:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Error Occured"
+            )
     # Delete associated skills
     if not jobcrud.skills.delete_by_vacancy_id(db, job_vacancy_id):
         raise HTTPException(
