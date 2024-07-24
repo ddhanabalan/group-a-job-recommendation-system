@@ -1,7 +1,7 @@
 import './JobSection.css'
 import { useState, useEffect } from 'react';
 import getStorage from '../../storage/storage';
-import { jobAPI, userAPI, modelAPI } from '../../api/axios';
+import { jobAPI, userAPI } from '../../api/axios';
 import Filter from "../../components/Filter/Filter";
 import StatsAI from "../../components/StatsAI/StatsAI";
 import SearchBar from "../../components/SearchBar/SearchBar";
@@ -35,12 +35,12 @@ export default function JobSection() {
         setSearch(searchValue);
     }
     const callJobVacancyAPI = async () => {
-
+        
         try {
             await Promise.all([GetSeekerSkills()]);
             const response = await jobAPI.get('/job_vacancy/',
                 {
-                    params: searchVal != "" ? { "title": searchVal, ...filterparam } : { ...filterparam },
+                    params: searchVal!=""?{"title": searchVal, ...filterparam }:{...filterparam},
                     paramsSerializer: params => {
                         // Custom params serializer if needed
                         return Object.entries(params).map(([key, value]) => {
@@ -51,37 +51,37 @@ export default function JobSection() {
                         }).join('&');
                     }
                 }).then(SetLoading(false))
-            const mod_response = response.data.map(e => {
-                const salaryParts = e.salary.split('-');
-                const createdDateParts = e.created_at.split('T');
-                const lastDateParts = e.last_date.split('T');
-                const inviteStat = userInvites.length ? getInviteStatus(e.job_id) : null;
-                console.log("invite stat", inviteStat, userInvites)
-                return {
-                    id: e.job_id,
-                    companyID: e.company_id,
-                    jobTitle: e.job_name,
-                    companyUsername: e.company_username,
-                    companyName: e.company_name,
-                    tags: /* (e.tags.length ? e.tags : */[{ tag: "" }], // Keeping the comment
-                    currency: salaryParts.length > 0 ? salaryParts[0] : "",
-                    salary: salaryParts.length > 2 ? [salaryParts[1], salaryParts[2]] : ["", ""],
-                    postDate: createdDateParts.length > 0 ? createdDateParts[0] : e.created_at,
-                    last_date: lastDateParts.length > 0 ? lastDateParts[0] : e.last_date,
-                    location: e.location,
-                    empType: e.emp_type,
-                    exp: e.experience,
-                    jobDesc: e.job_desc,
-                    jobReq: e.requirement,
-                    skills: e.skills.length ? e.skills : [{ skill: "" }],
-                    workStyle: e.work_style,
-                    workingDays: e.working_days,
-                    applicationsReceived: e.job_seekers,
-                    userApplication: ((((e.job_seekers).map(e => e.user_id)).includes(userData.id)) ? ((e.job_seekers).filter(e => e.user_id == userData.id)) : null),
-                    invite_status: inviteStat ? inviteStat.status : null/*userInvites.length?userInvites.filter(f=>f.job_id == e.job_id)[0]?.status || null: null*/,
-                    job_invite_id: inviteStat ? inviteStat.id : null/*userInvites.length?userInvites.filter(f=>f.job_id == e.job_id)[0]?.id || null: null*/
-                };
-            });
+                const mod_response = response.data.map(e => {
+                    const salaryParts = e.salary.split('-');
+                    const createdDateParts = e.created_at.split('T');
+                    const lastDateParts = e.last_date.split('T');
+                    const inviteStat = userInvites.length?getInviteStatus(e.job_id):null;
+                    console.log("invite stat", inviteStat, userInvites)
+                    return {
+                      id: e.job_id,
+                      companyID: e.company_id,
+                      jobTitle: e.job_name,
+                      companyUsername: e.company_username,
+                      companyName: e.company_name,
+                      tags: /* (e.tags.length ? e.tags : */ [{ tag: "" }], // Keeping the comment
+                      currency: salaryParts.length > 0 ? salaryParts[0] : "",
+                      salary: salaryParts.length > 2 ? [salaryParts[1], salaryParts[2]] : ["", ""],
+                      postDate: createdDateParts.length > 0 ? createdDateParts[0] : e.created_at,
+                      last_date: lastDateParts.length > 0 ? lastDateParts[0] : e.last_date,
+                      location: e.location,
+                      empType: e.emp_type,
+                      exp: e.experience,
+                      jobDesc: e.job_desc,
+                      jobReq: e.requirement,
+                      skills: e.skills.length ? e.skills : [{ skill: "" }],
+                      workStyle: e.work_style,
+                      workingDays: e.working_days,
+                      applicationsReceived: e.job_seekers,
+                      userApplication: ((((e.job_seekers).map(e => e.user_id)).includes(userData.id))?((e.job_seekers).filter(e => e.user_id == userData.id)):null),
+                      invite_status: inviteStat?inviteStat.status:null/*userInvites.length?userInvites.filter(f=>f.job_id == e.job_id)[0]?.status || null: null*/, 
+                      job_invite_id: inviteStat?inviteStat.id:null/*userInvites.length?userInvites.filter(f=>f.job_id == e.job_id)[0]?.id || null: null*/
+                    };
+                  });
             setJobVacancies(mod_response);
             console.log(response);
             console.log(" after new job vacancies", mod_response);
@@ -114,21 +114,23 @@ export default function JobSection() {
     const getInviteStatus = (jobId) => {
         const invite = userInvites.filter(f => f.job_id == jobId);
         let index = 0;
-        if (invite.length) {//console.log("logged invite job", invite[0].invite_status);
-            const r = invite.map(e => e.status ? e.status.toLowerCase() : null);
-            //console.log("registered invites", inviteJob, r, data.id)
-
-            if (r.includes("rejected") && r.includes("pending")) {
-                index = r.lastIndexOf("pending");
-            }
+        if(invite.length)
+            {//console.log("logged invite job", invite[0].invite_status);
+                const r = invite.map(e=>e.status?e.status.toLowerCase():null);
+                //console.log("registered invites", inviteJob, r, data.id)
+                
+                if(/*r.includes("rejected") && */r.includes("pending"))
+                {
+                    index = r.lastIndexOf("pending");
+                }
             //console.log("invite job", index)
-        }
+            }
         console.log("userInvites", userInvites, "and", jobId)
-        return invite.length ? invite[index] : null;
-    };
+        return invite.length?invite[index]: null;
+      };
     const GetUserInvites = async () => {
-        try {
-            const response = await jobAPI.get('/job_invite/user', {
+        try{
+            const response = await jobAPI.get('/job_invite/user',{
                 headers: {
                     'Authorization': `Bearer ${getStorage("userToken")}`
                 }
@@ -136,7 +138,7 @@ export default function JobSection() {
             console.log("response of user invites", response)
             setUserInvites(response.data);
         }
-        catch (e) {
+        catch(e){
             console.log("failed to fetch user invites", e)
         }
     }
@@ -148,16 +150,16 @@ export default function JobSection() {
                 }
             })
             console.log("skills received", response.data)
-            setUserData({ ...userData, 'id': response.data.length != 0 ? response.data[0].user_id : Number(getStorage("userID")), 'skills': response.data ? response.data : [] })
+            setUserData({ ...userData, 'id': response.data.length!=0?response.data[0].user_id :  Number(getStorage("userID")), 'skills': response.data?response.data: [] })
 
         }
 
         catch (e) {
-
+            
 
             console.log("skill error", e)
         }
-
+        
     }
 
     const CreateJobRequest = async (jobId) => {
@@ -185,8 +187,8 @@ export default function JobSection() {
         }
     }
 
-    const handleInvite = async (status, job_invite_id) => {
-
+    const handleInvite=async(status, job_invite_id)=>{
+      
         const req_data = {
             "status": status,
         }
@@ -200,7 +202,7 @@ export default function JobSection() {
             });
             console.log("updated response", response)
             //const mod_response = response.data.map(e=>({applicantID: e.user_id, username: e.username, candidateName: (e.first_name + " " + e.last_name), first_name: e.first_name, last_name: e.last_name,city: e.city, country: e.country, location: e.location, experience: e.experience, profile_picture: e.profile_picture}))
-
+            
             GetUserInvites();
 
         } catch (e) {
@@ -209,32 +211,13 @@ export default function JobSection() {
 
             alert(e.message);
         }
-
+    
 
     }
 
     console.log("user datum", userData);
-    useEffect(() => { if (descriptionOn) GetUserInvites() }, [descriptionOn])
+    useEffect(() => {if(descriptionOn)GetUserInvites()}, [descriptionOn])
     useEffect(() => { callJobVacancyAPI() }, [filterparam, searchVal, userInvites]);
-    const [AiJobs, setAiJobs] = useState([]) //state to store recommended jobs
-    const [aiBtnloading, setAiBtnLoading] = useState(false);//state to control animation of ai button
-    const callModelAPI = async () => {  //function to get recommended jobs
-        setAiBtnLoading(true)
-        try {
-            const response = await modelAPI.get('/model/seeker', {
-                headers: {
-                    'Authorization': `Bearer ${getStorage("userToken")}`
-                }
-            })
-            console.log("model response", response)
-            setAiJobs(response.data)
-            setAiBtnLoading(false)
-        } catch (e) {
-            console.log("model response", e)
-
-            alert(e.message);
-        }
-    }
 
     return (
         <div id="page">
@@ -243,7 +226,7 @@ export default function JobSection() {
                 <Filter title="Filter jobs" userType="seeker" passFilteredDataFn={filterDataSet} />
             </div>
             {!descriptionOn && <NavigationBar active="jobs" />}
-            <StatsAI value="jobs" callFn={callModelAPI} aiBtnloading={aiBtnloading} />
+            <StatsAI value="jobs" />
 
             <div className="job-search">
                 {descriptionOn ?
@@ -257,7 +240,7 @@ export default function JobSection() {
                 }
                 <SearchBar toSearch="Search Jobs" onSearch={searchBar} />
             </div>
-            <Jobs data={jobVacancies} modelJobs={AiJobs} createJobRequest={CreateJobRequest} dataToParentFn={OpenDesc} handleInvite={handleInvite} desc_state={descriptionOn} userData={userData} />
+            <Jobs data={jobVacancies} createJobRequest={CreateJobRequest} dataToParentFn={OpenDesc} handleInvite={handleInvite} desc_state={descriptionOn} userData={userData} />
         </div>
     )
 }
