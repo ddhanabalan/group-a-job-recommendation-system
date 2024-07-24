@@ -118,9 +118,9 @@ async def profile_by_username(username: str, db: Session = Depends(get_db)):
     )
 
 
-@router.get("/pic")
-async def get_recruiter_pic(companys: recruiterschema.CompanyIDSIn, db: Session = Depends(get_db),authorization: str = Header(...)):
-    await check_authorization(authorization=authorization)
+@router.post("/pic")
+async def get_recruiter_pic(companys: recruiterschema.CompanyIDSIn, db: Session = Depends(get_db)):
+    # await check_authorization(authorization=authorization)
     datas=crud.recruiter.details.get_all_pic(db=db, user_ids=companys.company_ids)
     response = {data.user_id: await encode64_image(data.profile_picture) if data.profile_picture is not None else None for data in datas}
     return response

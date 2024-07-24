@@ -50,15 +50,14 @@ async def read_filtered_job_vacancies(
     filter_company_ids = list(set([job.company_id for job in filtered_jobs]))
     async with httpx.AsyncClient() as client:
         pics = await client.post(
-            f"http://172.20.0.3:8000/recruiter/pic",
+            f"http://172.20.0.4:8000/recruiter/pic",
             json={"company_ids": filter_company_ids},
         )
         pics = pics.json()
-        print(pics)
 
     for job in filtered_jobs:
         job.skills = jobcrud.skills.get_all(db, job.job_id)
-        job.company_pic = pics[job.company_id]
+        job.company_pic = pics[f'{job.company_id}']
         job.job_seekers = jobcrud.request.get_all_by_job_id(db, job.job_id)
     return filtered_jobs
 
