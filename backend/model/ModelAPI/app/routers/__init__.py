@@ -1,8 +1,8 @@
 from fastapi import APIRouter
-from ..crud import jobrecommendation as crud
+from ..crud import crud as crud
 from ..utils import get_db,get_current_user,check_authorization
 
-from .jobrecommendation import router as jobrecommendation
+from .routers import router as jobrecommendation
 
 
 router = APIRouter(prefix="/model")

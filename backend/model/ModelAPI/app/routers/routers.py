@@ -31,7 +31,7 @@ async def job_recommendation(poi_id:int, db=Depends(get_db)):
 async def job_recommendation(db=Depends(get_db),authorization: str = Header(...)):
     user = await get_current_user(authorization=authorization)
     applicant_id = user.get("user_id")
-    job_ids = crud.get_applicant(db, applicant_id)
+    job_ids = crud.get_applicant_output(db, applicant_id)
     
     if not job_ids:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No jobs found")
@@ -53,7 +53,7 @@ async def job_recommendation(db=Depends(get_db),authorization: str = Header(...)
 @router.get("/job")
 async def job_recommendation(job_position: schemas.JobPositionIn, db=Depends(get_db),authorization: str = Header(...)):
     await check_authorization(authorization=authorization,user_type="recruiter")
-    user_ids = crud.get_job(db, job_position.job_position)
+    user_ids = crud.get_job_output(db, job_position.job_position)
 
     if not user_ids:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="No jobs found")
