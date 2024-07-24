@@ -193,5 +193,5 @@ async def model_instance_runner():
 
 job_recommendation_scheduler = AsyncIOScheduler()
 job_recommendation_scheduler.add_job(
-    model_instance_runner, "interval", seconds=60, id="job_recommendation_scheduler"
+    model_instance_runner, "interval", minutes=60, id="job_recommendation_scheduler"
 )

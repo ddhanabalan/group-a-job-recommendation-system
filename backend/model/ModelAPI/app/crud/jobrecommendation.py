@@ -30,13 +30,13 @@ def create_seeker_input(
         return False
 
 
-def get_applicant(db: Session, applicant_id: int) -> list[model.JobRecommendationJobOutput] | []:
+def get_applicant(db: Session, applicant_id: int) -> List[model.JobRecommendationJobOutput] | []:
     try:
         return db.query(model.JobRecommendationJobOutput).filter(model.JobRecommendationJobOutput.user_id == applicant_id).all()
     except SQLAlchemyError as e:
         return []
 
-def get_job(db: Session, job_pos: str) -> list[model.JobRecommendationSeekerOutput] | []:
+def get_job(db: Session, job_pos: str) -> List[model.JobRecommendationSeekerOutput] | []:
     try:
         return db.query(model.JobRecommendationSeekerOutput).filter(model.JobRecommendationSeekerOutput.job_position == job_pos).all()
     except SQLAlchemyError as e:
