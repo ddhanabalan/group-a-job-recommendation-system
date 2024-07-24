@@ -7,7 +7,7 @@ export default function AiJobs({ childData, expandView }) {
     useEffect(() => {
         setRecJobs(childData)
     },[childData])
-const [recJobs,setRecJobs]=useState([])
+    const [recJobs, setRecJobs] = useState([])
     return (
         recJobs.length > 0 &&
         <div className='ai-jobs-container'>

@@ -123,6 +123,12 @@
     margin-top: 1rem;
 }
 
+.justified-pre {
+    text-align: justify !important;
+    white-space: pre-wrap !important; /* Allows wrapping of the text */
+    word-wrap: break-word !important; /* Breaks words to fit the container */
+  }
+
 .job-details span {
     font-family: "Inter-b";
 }

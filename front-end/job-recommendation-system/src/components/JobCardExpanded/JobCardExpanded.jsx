@@ -22,7 +22,7 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
     const userSkills = (userData.type === "employer" || data.length) ? (null) : (data.skills?.map(skill => userData.skills.map(skilltag => skilltag.skill).includes(skill.skill) ? true : false).filter(Boolean).length)
     const [skillIndicator, setSkillIndicator] = useState(true);
     const [userJobRequest, setUserJobRequest] = useState(null);
-
+    const [textJustify, setTextJustify] = useState(true);
     console.log("data", data)
 
     //console.log(userSkills)
@@ -65,7 +65,7 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
         else if (status == "approved") return "green";
         else if (status == "rejected") return "red";
     }
-
+    console.log("user job request received", userJobRequest , data.invite_status, submit);
     useEffect(() => setSkillIndicator(true), [data])
     return (
         <>
@@ -115,13 +115,13 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
 
                             <div className="job-description">
                                 <h6>Job description</h6>
-                                <pre className='overview-formatted desc'>{data.jobDesc}</pre>
+                                <pre className={`overview-formatted desc ${textJustify?"justified-pre":""}`}>{data.jobDesc}</pre>
                                 {/* <p className="desc">{data.jobDesc}</p> */}
                             </div>
 
                             <div className="job-requirements">
                                 <h6>Job requirements</h6>
-                                <pre className='overview-formatted desc'>{data.jobReq}</pre>
+                                <pre className={`overview-formatted desc ${textJustify?"justified-pre":""}`}>{data.jobReq}</pre>
                                 {/* <p className='desc'>{data.jobReq}</p> */}
                             </div>
 
@@ -221,7 +221,9 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
                                     </button>
                                     :
                                     ((data.invite?.job_status.toLowerCase() === "rejected") || (data.invite_status?.toLowerCase()==="rejected")?
+                                    (userJobRequest?.status.toLowerCase()!=="applied"?
                                     <>
+                                    
                                     <button className='continue-btn invite-rejected-btn' >
                                         Invite Rejected
                                     </button>
@@ -234,6 +236,11 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
                                         </Link>
                                     </div>
                                     </>
+                                    :
+                                    <button className='continue-btn disable-apply-btn' >
+                                        {userJobRequest?.status}
+                                    </button>
+                                    )
                                     :
                                     <></>
                                     )

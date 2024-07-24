@@ -58,10 +58,11 @@ export default function ReviewApplications({ userType, invite = null }) {
 
     const [filterstat, setFilter] = useState(false);
     const [filterparam, setParam] = useState({});
-    let filtered = (jobVacancies.length != 0 ? jobVacancies.filter(id => id["skills"].map((tag) => (tag["skill"].toLowerCase().includes(searchVal.toLowerCase()))).filter(Boolean).length ? id : false) : []); //Could cause rerenders sometimes.Set to const if issues encountered
+    let filtered = (jobVacancies.length!=0?(searchVal.startsWith("#")?/*search with # to search with tags*/jobVacancies.filter(id => id["skills"].map((tag)=>(tag["skill"].toLowerCase().includes(searchVal.slice(1).toLowerCase()))).filter(Boolean).length?id:false)/*search with # to search with tags*/:/*search without # to search with name*/jobVacancies.filter(id => (id["jobTitle"].toLowerCase()).startsWith(searchVal.toLowerCase()))/*search without # to search with name*/):[]);
     const [filteredApplicants, setFilteredApplicants] = useState([])
     const [invitesSent, setInvitesSent] = useState([]);
     let invitesReceived = [];
+    let dateVariable = "";
     //const filtered = []
     const [selectedJobEntry, setJobEntry] = useState(null);
     //const [filteredApplicants, setfilteredApplicants]=useState(profileInfo.filter(applicants=>(selectedJobEntry["applicationsReceived"].includes(applicants["applicantID"])?applicants:false)));
@@ -218,7 +219,7 @@ export default function ReviewApplications({ userType, invite = null }) {
     const RequestJobApplications = async (applicantList, selectedJobEntry=null) => {
         if(applicantList)
         {//const modApplicantList = applicantList.map(e => e.user_id)
-        const inviteApplicants = [...new Set(invitesSent.filter(e => e.job_id == selectedEntry).map(f => ({ user_id: f.user_id, job_id: f.job_id, invite_id: f.id, status: f.status })))];
+        const inviteApplicants = [...new Set(invitesSent.filter(e => e.job_id == selectedEntry).map(f => ({ user_id: f.user_id, job_id: f.job_id, invite_id: f.id, status: f.status, created_at: f.created_at })))];
         //const inviteApplicantList = inviteApplicants.map(e=>e.user_id)
         console.log("all invites", invitesSent)
         console.log("applicant listing", applicantList)
@@ -238,9 +239,9 @@ export default function ReviewApplications({ userType, invite = null }) {
             });
             console.log("updating invites",invites.data, invitesSent)
             console.log("updating requests", requests.data, applicantList, selectedJobEntry)
-            const mod_response = await Promise.all(requests.data.map(e => ({ applicantID: e.user_id, username: e.username, candidateName: (e.first_name + " " + e.last_name), first_name: e.first_name, last_name: e.last_name, city: e.city, country: e.country, location: e.location, experience: e.experience, profile_picture: e.profile_picture, job_request_id: applicantList[requests.data.indexOf(e)].id, job_status: applicantList[requests.data.indexOf(e)].status.toLowerCase(), application_type: "request" })))
-            const invite_response = await Promise.all(invites.data.map(e => ({ applicantID: e.user_id, username: e.username, candidateName: (e.first_name + " " + e.last_name), first_name: e.first_name, last_name: e.last_name, city: e.city, country: e.country, location: e.location, experience: e.experience, profile_picture: e.profile_picture, job_vacancy_id: /*inviteApplicantList[invites.data.indexOf(e)].job_id*/inviteApplicants[invites.data.indexOf(e)].job_id, job_invite_id: inviteApplicants[invites.data.indexOf(e)].invite_id,job_status:  /*applicantList[invites.data.indexOf(e)].status*/inviteApplicants[invites.data.indexOf(e)].status.toLowerCase(), application_type: "invite"  })))
-            const final_response = [...mod_response, ...invite_response]
+            const mod_response = await Promise.all(requests.data.map(e => ({ applicantID: e.user_id, username: e.username, candidateName: (e.first_name + " " + e.last_name), first_name: e.first_name, last_name: e.last_name, city: e.city, country: e.country, location: e.location, experience: e.experience, profile_picture: e.profile_picture, job_request_id: applicantList[requests.data.indexOf(e)].id, job_status: applicantList[requests.data.indexOf(e)].status.toLowerCase(), application_created_at: applicantList[requests.data.indexOf(e)].created_at,application_type: "request" })))
+            const invite_response = await Promise.all(invites.data.map(e => ({ applicantID: e.user_id, username: e.username, candidateName: (e.first_name + " " + e.last_name), first_name: e.first_name, last_name: e.last_name, city: e.city, country: e.country, location: e.location, experience: e.experience, profile_picture: e.profile_picture, job_vacancy_id: /*inviteApplicantList[invites.data.indexOf(e)].job_id*/inviteApplicants[invites.data.indexOf(e)].job_id, job_invite_id: inviteApplicants[invites.data.indexOf(e)].invite_id,job_status: inviteApplicants[invites.data.indexOf(e)].status.toLowerCase(), application_created_at: inviteApplicants[invites.data.indexOf(e)].created_at, application_type: "invite"  })))
+            const final_response = dateProcessor([...mod_response, ...invite_response]);
             setApplicants(final_response);
             setApplicationErrors(false);
             console.log("applicants receiveed", final_response , mod_response, invite_response);
@@ -395,6 +396,12 @@ export default function ReviewApplications({ userType, invite = null }) {
     //console.log("applicants confirmed", jobApplicants)
     //console.log("sidebar", sidebarState)
     //console.log("filtered", filtered);
+    const dateProcessor=(objectList)=>{
+        objectList.sort((a, b) => b.application_created_at.localeCompare(a.application_created_at)); 
+        const arranged = objectList.map((e)=>({...e, application_created_at: e.application_created_at.split('T')[0].split('-').reverse().join('-')}))
+        return arranged;
+    }
+
     const filterStateSet = (fstate) => {
         setFilter(fstate);
     }
@@ -494,7 +501,7 @@ export default function ReviewApplications({ userType, invite = null }) {
             }
             <NavigationBar active={userType == "employer" ? "review-applications" : "none"} />
             <div className={`applications-box${filterstat ? " blur" : ""}${sidebarState ? " wide" : ""}`}>
-                {userType == "employer"?
+                {userType == "employer" && jobApplicants.length != 0?
                 <div className="application-filter">
                     {Object.keys(applicationFilter).map(e=>
                     <button className={`application-filter-btn application-filter-btn-apply application-filter-btn${applicationFilter[e]?`-active-${e.toLowerCase()}`: ""} application-filter-btn${"-" + e.toLowerCase()}`} onClick={()=>{handleApplicationFilter({...applicationFilter, [e]: !applicationFilter[e]})}}> {e}
@@ -508,7 +515,26 @@ export default function ReviewApplications({ userType, invite = null }) {
 
                     (selectedEntry != null && filtered.length != 0 && filteredApplicants.length != 0 ?
                         
-                        filteredApplicants.map(e => <CandidateCard type="review" key={filteredApplicants.indexOf(e)} reloadFn={RequestJobApplications} applicantList={selectedJobEntry.applicationsReceived} jobEntryId={selectedEntry} crLink={receivedData["pathname"]} jobApprovalFunction={jobApprovalAPI} removeInvite={removeInvite} data={e} />)
+                        filteredApplicants.map(e => {
+                                                const isDateDifferent = (dateVariable!==e.application_created_at)
+                                                if(isDateDifferent)dateVariable=e.application_created_at
+                                                 return (
+                                                    <>
+                                                    {
+                                                        isDateDifferent &&
+                                                        <div className="application-date-indicator"><p>{e.application_created_at}</p></div>
+                                                    }
+                                                    <CandidateCard type="review" 
+                                                                   key={filteredApplicants.indexOf(e)} 
+                                                                   reloadFn={RequestJobApplications} 
+                                                                   applicantList={selectedJobEntry.applicationsReceived} 
+                                                                   jobEntryId={selectedEntry} crLink={receivedData["pathname"]} 
+                                                                   jobApprovalFunction={jobApprovalAPI} 
+                                                                   removeInvite={removeInvite} 
+                                                                   data={e} />
+                                                    </>
+                                                    )}
+                                               )
                         :
                         (filtered.length == 0 ?
                             <div className="no-vacancies-message">
