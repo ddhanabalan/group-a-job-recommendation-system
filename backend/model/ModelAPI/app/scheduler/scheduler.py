@@ -174,7 +174,7 @@ async def model_instance_runner(db:Session = SessionLocal()):
     response = schemas.JobDetailsResponse(
         jobs=job_details_list, applicants=applicant_list
     )
-    # await recommend_applicants(response, limit=100,db=db)
+    await recommend_applicants(response, limit=100,db=db)
     await recommend_jobs_for_applicant(response,db=db)
     logger.info("Model Instance finished!")
 
