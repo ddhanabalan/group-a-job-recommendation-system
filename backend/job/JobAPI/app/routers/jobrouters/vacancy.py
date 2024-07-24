@@ -47,18 +47,20 @@ async def read_filtered_job_vacancies(
         limit,
         title,
     )
+    filter_company_ids = list(set([job.company_id for job in filtered_jobs]))
+    async with httpx.AsyncClient() as client:
+        pics = await client.post(
+            f"http://172.20.0.3:8000/recruiter/pic",
+            json={"company_ids": filter_company_ids},
+        )
+        pics = pics.json()
+        print(pics)
+
     for job in filtered_jobs:
         job.skills = jobcrud.skills.get_all(db, job.job_id)
-        # job.company_pic =
+        job.company_pic = pics[job.company_id]
         job.job_seekers = jobcrud.request.get_all_by_job_id(db, job.job_id)
     return filtered_jobs
-
-@job_vacancy_router.get("/model")
-async def get_job_vacancies(
-    job_ids:List[int],
-    db: Session = Depends(get_db),
-):
-    return jobcrud.vacancy.get_all_by_job_ids()
 
 @job_vacancy_router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_job_vacancy(
@@ -189,20 +191,20 @@ async def delete_job_vacancy_by_user_id(
     user_id: int, db: Session = Depends(get_db), authorization: str = Header(...)
 ):
     await check_authorization(authorization=authorization, user_type="recruiter")
-    job_ids = jobcrud.vacancy.get_all(db, user_id)
-    for i in job_ids:
-        if not jobcrud.request.delete_by_vacancy_id(db, i.job_id):
+    jobs = jobcrud.vacancy.get_all(db, user_id)
+    for job in jobs:
+        if not jobcrud.request.delete_by_vacancy_id(db, job.job_id):
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="Data not deleted from Database",
             )
-        if not jobcrud.invite.delete_by_vacancy_id(db, i.job_id):
+        if not jobcrud.invite.delete_by_vacancy_id(db, job.job_id):
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="Data not deleted from Database",
             )
 
-        if not jobcrud.skills.delete_by_vacancy_id(db, i.job_id):
+        if not jobcrud.skills.delete_by_vacancy_id(db, job.job_id):
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="Data not deleted from Database",
