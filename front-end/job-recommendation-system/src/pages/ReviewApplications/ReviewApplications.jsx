@@ -453,7 +453,7 @@ export default function ReviewApplications({ userType, invite = null }) {
         let arranged=[]
         if(type==="vacancy")
         {
-            objectList.sort((a, b) => b.postDate.localeCompare(a.postDate)); 
+            objectList.sort((a, b) => {return Number(a.closed) - Number(b.closed) || b.postDate.localeCompare(a.postDate)}); 
             arranged = objectList.map((e)=>({...e, postDate: e.postDate.split('T')[0].split('-').reverse().join('-'), last_date: e.last_date.split('T')[0].split('-').reverse().join('-')}))
 
         }
