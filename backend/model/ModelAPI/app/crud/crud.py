@@ -14,6 +14,7 @@ def create_job_input(
     try:
         db.add(job_recommendation_job_input)
         db.commit()
+        
         return True
     except SQLAlchemyError as e:
         db.rollback()
@@ -26,6 +27,7 @@ def create_seeker_input(
     try:
         db.add(job_recommendation_seeker_input)
         db.commit()
+        
         return True
     except SQLAlchemyError as e:
         db.rollback()
@@ -36,6 +38,7 @@ def create_job_output(db: Session, job_recommendation_job_output: schemas.JobOut
     try:
         db.add(model.JobRecommendationJobOutput(**job_recommendation_job_output.dict()))
         db.commit()
+        
         return True
     except SQLAlchemyError as e:
         db.rollback()
@@ -48,6 +51,7 @@ def create_seeker_output(
     try:
         db.add(model.JobRecommendationSeekerOutput(**job_recommendation_seeker_output))
         db.commit()
+        
         return True
     except SQLAlchemyError as e:
         db.rollback()
@@ -58,6 +62,7 @@ def delete_all_job_output(db: Session):
     try:
         db.query(model.JobRecommendationJobOutput).delete()
         db.commit()
+        
         return True
     except SQLAlchemyError:
         db.rollback()
@@ -68,6 +73,7 @@ def delete_all_seeker_output(db: Session):
     try:
         db.query(model.JobRecommendationSeekerOutput).delete()
         db.commit()
+        
         return True
     except SQLAlchemyError:
         db.rollback()
@@ -83,6 +89,7 @@ def delete_job_input(db: Session, job_id: int):
         )
         db.delete(data)
         db.commit()
+        
         return True
     except SQLAlchemyError:
         db.rollback()
@@ -98,6 +105,7 @@ def delete_seeker_input(db: Session, poi_id: int):
         )
         db.delete(data)
         db.commit()
+        
         return True
     except SQLAlchemyError:
         db.rollback()

@@ -4,7 +4,7 @@ import pickle
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from sqlalchemy.orm import Session
 
-from . import crud, schemas
+from . import crud, schemas,get_db
 from ..database import SessionLocal
 
 logger = logging.getLogger(__name__)
@@ -142,7 +142,7 @@ async def recommend_jobs_for_applicant(input_data, db: Session):
     await update_job_recommendation(db=db, data=schemas.JobOutputData(output=output))
 
 
-async def model_instance_runner(db: Session = SessionLocal()):
+async def model_instance_runner():
     """
     Runs the model instance.
     Args:
@@ -151,27 +151,30 @@ async def model_instance_runner(db: Session = SessionLocal()):
     Returns:
         None
     """
-    logger.info("Model Instance started!")
+    db = next(get_db())
+    try:
+        logger.info("Model Instance started!")
 
-    # Get data from database
-    job_details_list = crud.get_job_input(db)
-    applicant_list = crud.get_seeker_input(db)
+        # Get data from database
+        job_details_list = crud.get_job_input(db)
+        applicant_list = crud.get_seeker_input(db)
 
-    logger.info("Total number of job details: %s", len(job_details_list))
-    logger.info("Total number of applicants: %s", len(applicant_list))
+        logger.info("Total number of job details: %s", len(job_details_list))
+        logger.info("Total number of applicants: %s", len(applicant_list))
 
-    # Create a response using the JobDetailsResponse model
-    response = schemas.JobDetailsResponse(
-        jobs=job_details_list, applicants=applicant_list
-    )
-    if (len(job_details_list) > 5) and (len(applicant_list) > 5):
-        logger.info("Model Have Enough Data To Run")
-        await recommend_applicants(response, db=db)
-        await recommend_jobs_for_applicant(response, db=db)
-    else:
-        logger.info("Model Don't Have Enough Data To Run")
-    logger.info("Model Instance finished!")
-
+        # Create a response using the JobDetailsResponse model
+        response = schemas.JobDetailsResponse(
+            jobs=job_details_list, applicants=applicant_list
+        )
+        if (len(job_details_list) > 5) and (len(applicant_list) > 5):
+            logger.info("Model Have Enough Data To Run")
+            await recommend_applicants(response, db=db)
+            await recommend_jobs_for_applicant(response, db=db)
+        else:
+            logger.info("Model Don't Have Enough Data To Run")
+        logger.info("Model Instance finished!")
+    finally:
+        db.close()
 
 job_recommendation_scheduler = AsyncIOScheduler()
 job_recommendation_scheduler.add_job(
