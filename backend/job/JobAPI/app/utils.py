@@ -118,23 +118,23 @@ async def send_invite_notif(
         f"""
             Dear {seeker_name},
 
-We are excited to inform you that {recruiter_name},{recruiter_position} from {company_name} has reviewed your profile and believes you are a great fit for the position of {job_title}!
+                We are excited to inform you that {recruiter_name},{recruiter_position} from {company_name} has reviewed your profile and believes you are a great fit for the position of {job_title}!
 
-Job Title: {job_title}
-Job Description: {job_description}
-Location: {job_location}
+                Job Title: {job_title}
+                Job Description: {job_description}
+                Location: {job_location}
 
-To view more details and apply for this position, please click on the following link: {job_link}
+                To view more details and apply for this position, please click on the following link: {job_link}
 
-Remarks from the Recruiter:
-{remarks}
+                Remarks from the Recruiter:
+                {remarks}
 
-We encourage you to take advantage of this opportunity to further your career with [Company Name]. If you have any questions or need further assistance, please do not hesitate to contact us.
+                We encourage you to take advantage of this opportunity to further your career with {company_name}. If you have any questions or need further assistance, please do not hesitate to contact us.
 
-Best regards,
+                Best regards,
 
-Career Go Team
-www.carreergo.com
+                Career Go Team
+                http://career-go.centralindia.cloudapp.azure.com/
             """
     )
     with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT) as smtp:

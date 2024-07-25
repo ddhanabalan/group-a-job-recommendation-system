@@ -37,9 +37,7 @@ async def job_recommendation(db=Depends(get_db), authorization: str = Header(...
     job_ids = crud.get_applicant_output(db, applicant_id)
 
     if not job_ids:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="No jobs found"
-        )
+        return []
 
     async with httpx.AsyncClient() as client:
         response = await client.post(
@@ -67,6 +65,7 @@ async def job_recommendation(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="No jobs found"
         )
+        return []
 
     async with httpx.AsyncClient() as client:
         response = await client.post(
