@@ -8,7 +8,7 @@ import { FastAverageColor } from 'fast-average-color';
 import ConfBox from "../ConfirmMsgBox/ConfirmMsgBox.jsx"
 import LoaderAnimation from '../../components/LoaderAnimation/LoaderAnimation';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
-import axios from '../../api/axios';
+import axios, { jobAPI } from '../../api/axios';
 import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import profilePlaceholder from '../../images/profile_placeholder.svg';
 import greentick from '../../images/green-confirm.json'
@@ -28,7 +28,7 @@ function SignUpForm2() {
     width: 1,
   });
 
-  const { register, formState: { errors }, handleSubmit, watch } = useForm({ mode: 'onTouched' | 'onSubmit' });
+  const { register, formState: { errors }, handleSubmit, watch } = useForm({ mode: 'onTouched' });
   const signupAge = 18;
   const countries = ['India', 'USA', 'Australia', 'China', 'Japan']
   const genders = ['Male', 'Female', 'Transgender', 'Others']
@@ -50,6 +50,7 @@ function SignUpForm2() {
   const [img, SetImg] = useState();
   const [bannerColor, setBannerColor] = useState();
   const [serverMsg, setServerMsg] = useState({});
+  const [mailInfo, setMailInfo] = useState(location.state?location.state : null);
   const handleChange = (e) => {
     console.log(e)
     const fac = new FastAverageColor();
@@ -110,8 +111,35 @@ function SignUpForm2() {
 
   }
 
+
+
+  const usernameVerify= async(username)=>{
+    console.log("hello")
+    if (!/^[a-zA-Z0-9_]{3,16}$/.test(username)) {
+      return "out of constraints";
+    }
+    try{
+      const r = await (axios.post(`/username/verify/${username}`, {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      }))
+      console.log("username verification", r)
+      return r.data;
+     }
+     catch(e){
+      console.log("username verify error", e)
+      alert("Username verification failed")
+      return "error"
+     }
+  }
+
   const pageClass = `page-container ${userType === "seeker" ? 'signup-page-user' : 'signup-page'}`;
   console.log("serverMessage", serverMsg)
+
+  useEffect(()=>{if( !(mailInfo?.verified)){
+    navigate("/")
+  }},[mailInfo])
   return (
     <>
       {/*SignUp Form part-2(Personal info from seekers/Company info from employers)*/}
@@ -144,10 +172,13 @@ function SignUpForm2() {
                   {...register("username",
                     {
                       required: "username cannot be empty",
-                      pattern: {
-                        value: /^[a-zA-Z0-9_]{3,16}$/,
-                        message: "Please choose a username that is between 3 and 16 characters long and may contain letters (both uppercase and lowercase), numbers, underscores."
-                      }
+                      validate:  async (username)=>{
+                        const r = await usernameVerify(username)
+                        console.log("reasponse",r)
+                        if(r==="error") return "Username couldnt be verified";
+                        else if(!r) return "Username not available"
+                        else if(r === "out of constraints") return "Username must be between 3 and 16 characters long and may contain letters, numbers, and underscores.";
+                      }  ,
                     })} />
                 <p className="error-message">{errors.username?.message || ""}</p>
               </div>
