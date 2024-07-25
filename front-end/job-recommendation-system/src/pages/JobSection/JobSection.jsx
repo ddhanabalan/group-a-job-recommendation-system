@@ -24,6 +24,7 @@ export default function JobSection() {
     const [userInvites, setUserInvites] = useState([]);
     const [AiJobs, setAiJobs] = useState([]) //state to store recommended jobs
     const [aiBtnloading, setAiBtnLoading] = useState(false);//state to control animation of ai button
+    const [blankModelData, setBlankModelData] = useState(false);
     
 
     const filterDataSet = (fdata) => {
@@ -75,12 +76,20 @@ export default function JobSection() {
             })
             console.log("model response", response)
             const mod_response = dataNormalizer(response.data)
+            if(mod_response && !mod_response.length){
+                setBlankModelData(true)
+            }
+            else{
+                setBlankModelData(false)
+            }
             setAiJobs(mod_response)
             setAiBtnLoading(false)
+            return true;
         } catch (e) {
             console.log("model response", e)
 
             alert(e.message);
+            return false;
         }
     }
 
@@ -90,7 +99,9 @@ export default function JobSection() {
             const salaryParts = e.salary.split('-');
             const createdDateParts = e.created_at.split('T');
             const lastDateParts = e.last_date.split('T');
-            const inviteStat = userInvites.length?getInviteStatus(e.job_id):null;
+            const userCreatedApplications = ((((e.job_seekers).map(e => e.user_id)).includes(userData.id))?((e.job_seekers).filter(e => e.user_id == userData.id)):null);
+            const applicationCheckDummy = userCreatedApplications?.map(e=>e.status.toLowerCase()) || [];                                                                     //will have to verify logic
+            const inviteStat = userInvites.length?(!(applicationCheckDummy.includes("approved"))?getInviteStatus(e.job_id):null):null;                                       //will have to verify logic
             console.log("invite stat", inviteStat, userInvites)
             return {
               id: e.job_id,
@@ -113,7 +124,7 @@ export default function JobSection() {
               workingDays: e.working_days,
               closed: e.closed,
               applicationsReceived: e.job_seekers,
-              userApplication: ((((e.job_seekers).map(e => e.user_id)).includes(userData.id))?((e.job_seekers).filter(e => e.user_id == userData.id)):null),
+              userApplication: userCreatedApplications,
               invite_status: inviteStat?inviteStat.status:null/*userInvites.length?userInvites.filter(f=>f.job_id == e.job_id)[0]?.status || null: null*/, 
               job_invite_id: inviteStat?inviteStat.id:null/*userInvites.length?userInvites.filter(f=>f.job_id == e.job_id)[0]?.id || null: null*/
             };
@@ -122,7 +133,9 @@ export default function JobSection() {
 
     }
     const duplicatesFilter=()=>{
-        const originals = jobVacancies.filter(e=>{!(AiJobs.map(job=>job.id).includes(e.id))})
+        const test = AiJobs.map(job=>job.id)
+        const originals = jobVacancies.filter(e=>!(AiJobs.map(job=>job.id).includes(e.id)))
+        console.log("originals", originals, test, jobVacancies, AiJobs)
         setJobVacancies(originals);
     }
     const callModelAPI = async () => {  //function to get recommended jobs
@@ -150,7 +163,9 @@ export default function JobSection() {
             const salaryParts = e.salary.split('-');
             const createdDateParts = e.created_at.split('T');
             const lastDateParts = e.last_date.split('T');
-            const inviteStat = userInvites.length?getInviteStatus(e.job_id):null;
+            const userCreatedApplications = ((((e.job_seekers).map(e => e.user_id)).includes(userData.id))?((e.job_seekers).filter(e => e.user_id == userData.id)):null);
+            const applicationCheckDummy = userCreatedApplications?.map(e=>e.status.toLowerCase()) || [];                                                                     //will have to verify logic
+            const inviteStat = userInvites.length?(!(applicationCheckDummy.includes("approved"))?getInviteStatus(e.job_id):null):null;                                       //will have to verify logic
             console.log("invite stat", inviteStat, userInvites)
             return {
               id: e.job_id,
@@ -173,7 +188,7 @@ export default function JobSection() {
               workingDays: e.working_days,
               closed: e.closed,
               applicationsReceived: e.job_seekers,
-              userApplication: ((((e.job_seekers).map(e => e.user_id)).includes(userData.id))?((e.job_seekers).filter(e => e.user_id == userData.id)):null),
+              userApplication: userCreatedApplications,
               invite_status: inviteStat?inviteStat.status:null/*userInvites.length?userInvites.filter(f=>f.job_id == e.job_id)[0]?.status || null: null*/, 
               job_invite_id: inviteStat?inviteStat.id:null/*userInvites.length?userInvites.filter(f=>f.job_id == e.job_id)[0]?.id || null: null*/
             };
@@ -182,7 +197,9 @@ export default function JobSection() {
 
     }
     const duplicatesFilter=()=>{
-        const originals = jobVacancies.filter(e=>{!(AiJobs.map(job=>job.id).includes(e.id))})
+        const test = AiJobs.map(job=>job.id)
+        const originals = jobVacancies.filter(e=>!(AiJobs.map(job=>job.id).includes(e.id)))
+        console.log("originals", originals, test, jobVacancies, AiJobs)
         setJobVacancies(originals);
     }
     /*
@@ -321,7 +338,7 @@ export default function JobSection() {
                 <Filter title="Filter jobs" userType="seeker" passFilteredDataFn={filterDataSet} />
             </div>
             {!descriptionOn && <NavigationBar active="jobs" />}
-            <StatsAI value="jobs" />
+            <StatsAI value="jobs" callFn={callModelAPI} aiBtnloading={aiBtnloading} blankModelData={blankModelData}/>
 
             <div className="job-search">
                 {descriptionOn ?

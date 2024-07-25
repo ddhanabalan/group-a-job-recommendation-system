@@ -27,7 +27,7 @@ export default function JobVacancyForm({ data = {} }) {
     const prefilleddata = data;
     const locating = useLocation();
     const navigate = useNavigate();
-    const dta = (locating.state ? locating.state : {})
+    const [dta, setDta] = useState((locating.state ? locating.state : {}))
     console.log("received state data for edit", dta, "pre", prefilleddata)
     const salary_threshold = 5000;
     const profile_picture = getStorage("profile pic")
@@ -256,6 +256,11 @@ export default function JobVacancyForm({ data = {} }) {
         }
     }
 
+    const handleEdit = ()=>{
+        setDta(finalApplicationData);
+        setPreview(false);
+    }
+
 
     const handlePostVacancy =async() =>{
         //Application submission data
@@ -324,7 +329,7 @@ export default function JobVacancyForm({ data = {} }) {
                         {/* <Button variant="contained" color="success" onClick={() => setPreview(false)} sx={{ color: "white" }} startIcon={<EditIcon />}>
                             <p>Edit</p>
                         </Button> */}
-                        <button className='continue-btn post-vacancy-edit-btn' onClick={() => setPreview(false)} >
+                        <button className='continue-btn post-vacancy-edit-btn' onClick={handleEdit} >
                             <EditIcon /> Edit 
                         </button>
                         {/* <Button variant="contained" onClick={handlePostVacancy} sx={{ color: submit ? "gray" : "white" }} startIcon={submit ? <DoneIcon /> : <MailIcon />}>
@@ -521,7 +526,7 @@ export default function JobVacancyForm({ data = {} }) {
                                     <p><span className='details-header'>Closing date:</span></p>
                                     <div className='option-divs'>
                                         <CreateFormTextFields inputPlaceholder="Title" wparam="200px"
-                                            defaultValue={dta.last_date ? dta.last_date || null : null}
+                                            defaultValue={dta.last_date ? (dta.last_date || null) : null}
                                             type="date"
                                             error={'last_date' in errors}
                                             {...register("last_date",
