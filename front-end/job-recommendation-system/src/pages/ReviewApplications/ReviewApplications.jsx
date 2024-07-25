@@ -246,6 +246,7 @@ export default function ReviewApplications({ userType, invite = null }) {
             const mod_response = await Promise.all(requests.data.map(e => ({ applicantID: e.user_id, username: e.username, candidateName: (e.first_name + " " + e.last_name), first_name: e.first_name, last_name: e.last_name, city: e.city, country: e.country, location: e.location, experience: e.experience, profile_picture: e.profile_picture, job_request_id: applicantList[requests.data.indexOf(e)].id, job_status: applicantList[requests.data.indexOf(e)].status.toLowerCase(), application_created_at: applicantList[requests.data.indexOf(e)].created_at,application_type: "request" })))
             const invite_response = await Promise.all(invites.data.map(e => ({ applicantID: e.user_id, username: e.username, candidateName: (e.first_name + " " + e.last_name), first_name: e.first_name, last_name: e.last_name, city: e.city, country: e.country, location: e.location, experience: e.experience, profile_picture: e.profile_picture, job_vacancy_id: /*inviteApplicantList[invites.data.indexOf(e)].job_id*/inviteApplicants[invites.data.indexOf(e)].job_id, job_invite_id: inviteApplicants[invites.data.indexOf(e)].invite_id,job_status: inviteApplicants[invites.data.indexOf(e)].status.toLowerCase(), application_created_at: inviteApplicants[invites.data.indexOf(e)].created_at, application_type: "invite"  })))
             const final_response = dateProcessor([...mod_response, ...invite_response]);
+            //const test_response = dateTesterFunction(final_response);
             setApplicants(final_response);
             setApplicationErrors(false);
             console.log("applicants receiveed", final_response , mod_response, invite_response);
@@ -463,6 +464,15 @@ export default function ReviewApplications({ userType, invite = null }) {
         }
         return arranged;
     }
+
+    /*const dateTesterFunction=(objectList)=>{
+        let date = 24
+        const date_string = "-08-2024"
+        const resp = objectList.map((e)=>{date -=1;
+                                          return {...e, application_created_at: `${date}` + date_string}
+         })
+        return resp
+    }*/
 
     const filterStateSet = (fstate) => {
         setFilter(fstate);
