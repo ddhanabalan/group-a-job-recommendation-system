@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from sqlalchemy import func, Integer, cast, desc, asc
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
@@ -26,6 +28,11 @@ def get_all(db: Session, company_id: int = None) -> List[Type[jobschema.JobVacan
     except SQLAlchemyError as e:
         return []
 
+def get_all_by_close_time(db: Session,close_date:datetime = datetime.utcnow()):
+    try:
+        return db.query(jobmodel.JobVacancy).filter(jobmodel.JobVacancy.last_date == close_date).all()
+    except SQLAlchemyError as e:
+        return []
 def get_all_by_job_ids(db: Session,job_ids:List[int]):
     try:
         print(job_ids)
