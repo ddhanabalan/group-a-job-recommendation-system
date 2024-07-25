@@ -16,6 +16,7 @@ export default function ({ value, callFn, loading, jobSelection=null, blankModel
             setErrorMsg("Our recommmendation engine is facing some issues.Try again later");
         } 
         else if(blankModelData===true){setErrorMsg("No recommendations found")}
+        console.log("blank model ", blankModelData);
         
     }
 

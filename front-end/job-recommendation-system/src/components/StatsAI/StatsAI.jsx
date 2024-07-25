@@ -7,7 +7,7 @@ export default function StatsAI({ value, callFn, aiBtnloading,jobs=[], chooseEnt
         <div className="StatsAIContainer">
             <AiButton value={value} callFn={callFn} loading={aiBtnloading}  jobSelection={selectedEntry} blankModelData={blankModelData}/>
             {value==="candidates" && !selectedEntry && <div className='prompt-text'><p>Select a job vacancy from the list</p></div>}
-            {value==="candidates" && <OpeningsListBar data={jobs} userType={"employer"} pageType={"candidates"} chooseEntry={chooseEntryFunc} searchBar={jobSearchFunc} listToDescParentFunc={listToDescParentFunc}   />}
+            {value==="candidates" && <OpeningsListBar data={jobs} userType={"employer"} pageType={"candidates"} chooseEntry={chooseEntryFunc} searchBar={jobSearchFunc} listToDescParentFunc={listToDescParentFunc} revertibleSelection={true}   />}
 
         </div>
     )
