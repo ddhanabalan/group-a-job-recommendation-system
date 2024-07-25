@@ -58,7 +58,7 @@ async def update_job_request(
     db: Session = Depends(get_db),
     authorization: str = Header(...),
 ):
-    await check_authorization(authorization=authorization,user_type="recruiter")
+    await check_authorization(authorization=authorization, user_type="recruiter")
     db_job_request = jobcrud.request.update(db, job_request_id, job_request)
     if db_job_request is None:
         raise HTTPException(

@@ -11,7 +11,7 @@ from .. import (
     decode64_image,
     encode64_image,
     get_current_user,
-check_authorization
+    check_authorization,
 )
 
 router = APIRouter()
@@ -19,7 +19,7 @@ router = APIRouter()
 
 @router.post("/init", status_code=status.HTTP_201_CREATED)
 async def user_recruiters_init(
-        user: recruiterschema.RecruiterBaseInDB, db: Session = Depends(get_db)
+    user: recruiterschema.RecruiterBaseInDB, db: Session = Depends(get_db)
 ):
     if user.profile_picture is not None:
         contents = await decode64_image(user.profile_picture)
@@ -119,8 +119,15 @@ async def profile_by_username(username: str, db: Session = Depends(get_db)):
 
 
 @router.post("/pic")
-async def get_recruiter_pic(companys: recruiterschema.CompanyIDSIn, db: Session = Depends(get_db)):
+async def get_recruiter_pic(
+    companys: recruiterschema.CompanyIDSIn, db: Session = Depends(get_db)
+):
     # await check_authorization(authorization=authorization)
-    datas=crud.recruiter.details.get_all_pic(db=db, user_ids=companys.company_ids)
-    response = {data.user_id: await encode64_image(data.profile_picture) if data.profile_picture is not None else None for data in datas}
+    datas = crud.recruiter.details.get_all_pic(db=db, user_ids=companys.company_ids)
+    response = {
+        data.user_id: await encode64_image(data.profile_picture)
+        if data.profile_picture is not None
+        else None
+        for data in datas
+    }
     return response

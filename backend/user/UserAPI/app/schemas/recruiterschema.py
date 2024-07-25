@@ -92,6 +92,7 @@ class RecruiterProfile(RecruiterDetails):
     class Config:
         from_attributes = True
 
+
 class CompanyIDSIn(BaseModel):
     company_ids: Optional[List[int]] = None
 

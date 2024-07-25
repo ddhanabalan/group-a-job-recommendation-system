@@ -7,7 +7,15 @@ from email.message import EmailMessage
 from pydantic import EmailStr
 
 from .database import SessionLocal
-from .config import AUTH_API_HOST, PORT, USER_API_HOST, SMTP_SERVER, SMTP_PORT,EMAIL_ADDRESS,EMAIL_PASSWORD
+from .config import (
+    AUTH_API_HOST,
+    PORT,
+    USER_API_HOST,
+    SMTP_SERVER,
+    SMTP_PORT,
+    EMAIL_ADDRESS,
+    EMAIL_PASSWORD,
+)
 
 
 def get_db():
@@ -76,7 +84,8 @@ async def get_company_details(authorization: str = Header(...)) -> dict:
             )
         return response.json()
 
-async def get_seeker_details(user_id:int,authorization: str = Header(...)) -> dict:
+
+async def get_seeker_details(user_id: int, authorization: str = Header(...)) -> dict:
     headers = {"Authorization": authorization}
     async with httpx.AsyncClient() as client:
         response = await client.get(
@@ -88,13 +97,25 @@ async def get_seeker_details(user_id:int,authorization: str = Header(...)) -> di
             )
         return response.json()
 
-async def send_invite_notif(seeker_name: str, recruiter_name: str,company_name: str,recruiter_position: str,job_description: str,job_location: str,remarks: str, job_link: str,job_title: str, to_email: EmailStr):
-        msg = EmailMessage()
-        msg["Subject"] = f"Exciting Job Opportunity at {company_name}!"
-        msg["From"] = EMAIL_ADDRESS
-        msg["To"] = to_email
-        msg.set_content(
-            f"""
+
+async def send_invite_notif(
+    seeker_name: str,
+    recruiter_name: str,
+    company_name: str,
+    recruiter_position: str,
+    job_description: str,
+    job_location: str,
+    remarks: str,
+    job_link: str,
+    job_title: str,
+    to_email: EmailStr,
+):
+    msg = EmailMessage()
+    msg["Subject"] = f"Exciting Job Opportunity at {company_name}!"
+    msg["From"] = EMAIL_ADDRESS
+    msg["To"] = to_email
+    msg.set_content(
+        f"""
             Dear {seeker_name},
 
 We are excited to inform you that {recruiter_name},{recruiter_position} from {company_name} has reviewed your profile and believes you are a great fit for the position of {job_title}!
@@ -115,7 +136,7 @@ Best regards,
 Career Go Team
 www.carreergo.com
             """
-        )
-        with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT) as smtp:
-            smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
-            smtp.send_message(msg)
+    )
+    with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT) as smtp:
+        smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+        smtp.send_message(msg)

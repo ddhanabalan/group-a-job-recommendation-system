@@ -9,7 +9,7 @@ from .. import (
     crud,
     Session,
     decode64_image,
-check_authorization,
+    check_authorization,
     encode64_image,
 )
 
@@ -131,7 +131,9 @@ async def profile_by_username(username: str, db: Session = Depends(get_db)):
 
 
 @router.get("/info/{user_id}")
-async def seeker_info(user_id: int,authorization: str = Header(...), db: Session = Depends(get_db)):
+async def seeker_info(
+    user_id: int, authorization: str = Header(...), db: Session = Depends(get_db)
+):
     await check_authorization(authorization=authorization, user_type="recruiter")
     user = crud.seeker.details.get(db=db, user_id=user_id)
     return {"username": user.username, "email": user.email}

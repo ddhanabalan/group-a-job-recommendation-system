@@ -26,6 +26,7 @@ async def check_authorization(
                 status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid access token"
             )
 
+
 async def get_current_user(
     authorization: str = Header(...), user_type: str = "seeker"
 ) -> dict:

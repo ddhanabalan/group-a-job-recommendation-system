@@ -116,7 +116,9 @@ def update(db: Session, user_id: int, user_update: dict) -> bool:
         if not filtered_update:
             print("No valid fields to update.")
             return True
-        db.query(authmodel.UserAuth).filter(authmodel.UserAuth.id == user_id).update(filtered_update)
+        db.query(authmodel.UserAuth).filter(authmodel.UserAuth.id == user_id).update(
+            filtered_update
+        )
         db.commit()
 
         return True
@@ -147,19 +149,23 @@ def delete(db: Session, user_id: int) -> bool:
         db.rollback()
         return False
 
-def update_refresh_token(db: Session, user_id: int, token:str,init:int=0, retries: int = 3) -> bool:
-    
+
+def update_refresh_token(
+    db: Session, user_id: int, token: str, init: int = 0, retries: int = 3
+) -> bool:
+
     print("Resh_token")
     for attempt in range(retries):
         try:
 
-
-            result = db.query(authmodel.UserAuth).filter(
-                authmodel.UserAuth.id == user_id
-            ).first()
+            result = (
+                db.query(authmodel.UserAuth)
+                .filter(authmodel.UserAuth.id == user_id)
+                .first()
+            )
             result.refresh_token = token
             if init:
-                result.last_login=datetime.utcnow()
+                result.last_login = datetime.utcnow()
             # Check if any rows were affected
             if result == 0:
                 print(f"User with id {user_id} not found.")

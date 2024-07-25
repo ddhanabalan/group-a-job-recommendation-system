@@ -100,9 +100,11 @@ def update(
     """
     try:
 
-        job_request_value = db.query(jobmodel.JobRequest).filter(
-            jobmodel.JobRequest.id == job_request_id
-        ).first()
+        job_request_value = (
+            db.query(jobmodel.JobRequest)
+            .filter(jobmodel.JobRequest.id == job_request_id)
+            .first()
+        )
         for key, value in job_request.dict().items():
             if key not in ["job_id", "created_at"] and value is not None:
                 setattr(job_request_value, key, value)
@@ -136,7 +138,6 @@ def delete(db: Session, job_request_id: int) -> bool:
         return False
 
 
-
 def delete_by_user_id(db: Session, user_id: int) -> bool:
     """
     Delete a job request from the database.py by ID.
@@ -149,12 +150,15 @@ def delete_by_user_id(db: Session, user_id: int) -> bool:
         bool: True if the job request was deleted successfully, False otherwise.
     """
     try:
-        db.query(jobmodel.JobRequest).filter(jobmodel.JobRequest.user_id == user_id).delete()
+        db.query(jobmodel.JobRequest).filter(
+            jobmodel.JobRequest.user_id == user_id
+        ).delete()
         db.commit()
         return True
     except SQLAlchemyError as e:
         db.rollback()
         return False
+
 
 def delete_by_vacancy_id(db: Session, job_id: int) -> bool:
     """
@@ -168,7 +172,9 @@ def delete_by_vacancy_id(db: Session, job_id: int) -> bool:
         bool: True if the job request was deleted successfully, False otherwise.
     """
     try:
-        db.query(jobmodel.JobRequest).filter(jobmodel.JobRequest.job_id == job_id).delete()
+        db.query(jobmodel.JobRequest).filter(
+            jobmodel.JobRequest.job_id == job_id
+        ).delete()
         db.commit()
         return True
     except SQLAlchemyError as e:

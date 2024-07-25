@@ -13,7 +13,7 @@ from .. import (
     check_authorization,
     encode64_image,
     decode64_image,
-    JOB_API_HOST
+    JOB_API_HOST,
 )
 
 router = APIRouter(prefix="/details")

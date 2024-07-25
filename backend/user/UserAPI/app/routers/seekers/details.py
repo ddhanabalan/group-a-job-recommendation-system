@@ -12,7 +12,7 @@ from .. import (
     Session,
     check_authorization,
     encode64_image,
-JOB_API_HOST,
+    JOB_API_HOST,
     decode64_image,
 )
 

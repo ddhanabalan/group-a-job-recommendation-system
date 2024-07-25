@@ -28,19 +28,31 @@ def get_all(db: Session, company_id: int = None) -> List[Type[jobschema.JobVacan
     except SQLAlchemyError as e:
         return []
 
-def get_all_by_close_time(db: Session,close_date:datetime = datetime.utcnow()):
+
+def get_all_by_close_time(db: Session, close_date: datetime = datetime.utcnow()):
     try:
-        return db.query(jobmodel.JobVacancy).filter(jobmodel.JobVacancy.last_date == close_date).all()
+        return (
+            db.query(jobmodel.JobVacancy)
+            .filter(jobmodel.JobVacancy.last_date == close_date)
+            .all()
+        )
     except SQLAlchemyError as e:
         return []
-def get_all_by_job_ids(db: Session,job_ids:List[int]):
+
+
+def get_all_by_job_ids(db: Session, job_ids: List[int]):
     try:
         print(job_ids)
-        query = db.query(jobmodel.JobVacancy).filter(jobmodel.JobVacancy.job_id.in_(job_ids)).all()
+        query = (
+            db.query(jobmodel.JobVacancy)
+            .filter(jobmodel.JobVacancy.job_id.in_(job_ids))
+            .all()
+        )
         print(query)
         return query
     except SQLAlchemyError as e:
         return []
+
 
 def get(db: Session, job_vacancy_id: int) -> Type[jobmodel.JobVacancy] | None:
     """
@@ -125,7 +137,7 @@ def delete(db: Session, job_vacancy_id: int) -> bool:
 
 # Get all Data for model
 def get_all_for_model(
-        db: Session,
+    db: Session,
 ) -> List[Type[jobmodel.JobVacancy]] | []:
     """
     Retrieve all job vacancies from the database.py.
@@ -143,18 +155,18 @@ def get_all_for_model(
 
 
 def get_filtered_jobs(
-        db: Session,
-        emp_type: Optional[List[str]] = None,
-        loc_type: Optional[List[str]] = None,
-        location: Optional[List[str]] = None,
-        working_day: Optional[List[str]] = None,
-        salary: Optional[int] = None,
-        experience: Optional[List[str]] = None,
-        filter_job_id: Optional[List[str]] = None,
-        sort: Optional[str] = None,
-        order: Optional[str] = "asc",
-        limit: Optional[int] = None,
-        title: Optional[str] = None,
+    db: Session,
+    emp_type: Optional[List[str]] = None,
+    loc_type: Optional[List[str]] = None,
+    location: Optional[List[str]] = None,
+    working_day: Optional[List[str]] = None,
+    salary: Optional[int] = None,
+    experience: Optional[List[str]] = None,
+    filter_job_id: Optional[List[str]] = None,
+    sort: Optional[str] = None,
+    order: Optional[str] = "asc",
+    limit: Optional[int] = None,
+    title: Optional[str] = None,
 ) -> List[Type[jobschema.JobVacancySearch]]:
     """
     Retrieve job vacancies from the database, filtered by various criteria, with sorting and limit options.
@@ -230,8 +242,9 @@ def get_filtered_jobs(
 
 
 def delete_by_user_id(
-        db: Session,
-        user_id: int, ):
+    db: Session,
+    user_id: int,
+):
     """
     Delete all job vacancies associated with a user.
 
@@ -243,7 +256,11 @@ def delete_by_user_id(
         bool: True if job vacancies were deleted successfully, False otherwise.
     """
     try:
-        allVacany = db.query(jobmodel.JobVacancy).filter(jobmodel.JobVacancy.user_id == user_id).all()
+        allVacany = (
+            db.query(jobmodel.JobVacancy)
+            .filter(jobmodel.JobVacancy.user_id == user_id)
+            .all()
+        )
         for i in allVacany:
             invite.delete_by_vacancy_id(db, i.job_id)
             request.delete_by_vacancy_id(db, i.job_id)

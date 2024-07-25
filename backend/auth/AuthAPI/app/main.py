@@ -82,12 +82,12 @@ app.add_middleware(
 )
 
 
-def verify_password(plain_password: str, salt:str, hashed_password:str):
-    return pwd_context.verify(plain_password+salt, hashed_password)
+def verify_password(plain_password: str, salt: str, hashed_password: str):
+    return pwd_context.verify(plain_password + salt, hashed_password)
 
 
-def get_password_hashed(password:str,salt:str):
-    return pwd_context.hash(password+salt)
+def get_password_hashed(password: str, salt: str):
+    return pwd_context.hash(password + salt)
 
 
 async def authenticate_user(
@@ -97,7 +97,7 @@ async def authenticate_user(
     user = authcrud.get_by_email(db=db, email=username)
     if not user:
         return False
-    if not verify_password(password,user.hash_key, user.hashed_password):
+    if not verify_password(password, user.hash_key, user.hashed_password):
         return False
     if user.disabled:
         raise HTTPException(
@@ -105,7 +105,15 @@ async def authenticate_user(
         )
     if not user.verified:
         await send_verify(
-            token=create_token({"sub": user.username, "token": create_token({"sub": user.username, "type": "emailVerify"},secret_key=user.hash_key)}),
+            token=create_token(
+                {
+                    "sub": user.username,
+                    "token": create_token(
+                        {"sub": user.username, "type": "emailVerify"},
+                        secret_key=user.hash_key,
+                    ),
+                }
+            ),
             username=user.username,
             to_email=user.email,
         )
@@ -115,7 +123,9 @@ async def authenticate_user(
     return user
 
 
-def create_token(data: dict,secret_key=SECRET_KEY, expires_delta: timedelta or None = None):
+def create_token(
+    data: dict, secret_key=SECRET_KEY, expires_delta: timedelta or None = None
+):
     to_encode = data.copy()
     if expires_delta:
         expires = datetime.utcnow() + expires_delta
@@ -126,11 +136,11 @@ def create_token(data: dict,secret_key=SECRET_KEY, expires_delta: timedelta or N
     return encoded_jwt
 
 
-def validate_access_token(token,secret_key=SECRET_KEY,db:Session =Depends(get_db)):
+def validate_access_token(token, secret_key=SECRET_KEY, db: Session = Depends(get_db)):
     payload = jwt.decode(token, secret_key, algorithms=[ALGORITHM])
     username = payload.get("sub", None)
     token = payload.get("token", None)
-    print(token,username)
+    print(token, username)
     if username is None or token is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -149,7 +159,8 @@ def validate_access_token(token,secret_key=SECRET_KEY,db:Session =Depends(get_db
         )
     return username, data_type
 
-def validate_refresh_token(token,secret_key=SECRET_KEY,db:Session =Depends(get_db)):
+
+def validate_refresh_token(token, secret_key=SECRET_KEY, db: Session = Depends(get_db)):
     payload = jwt.decode(token, secret_key, algorithms=[ALGORITHM])
     username = payload.get("sub", None)
     token = payload.get("token", None)
@@ -170,7 +181,9 @@ def validate_refresh_token(token,secret_key=SECRET_KEY,db:Session =Depends(get_d
             detail="Could not validate",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    return username, data_type,token
+    return username, data_type, token
+
+
 async def get_current_user(
     token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
 ) -> Type[authmodel.UserAuth]:
@@ -180,7 +193,7 @@ async def get_current_user(
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        username, data_type = validate_access_token(token,db=db)
+        username, data_type = validate_access_token(token, db=db)
         if username is None or data_type != "access_token":
             raise credential_exception
         token_data = authschema.TokenData(username=username)
@@ -213,7 +226,7 @@ async def get_refresh_user(
         headers={"WWW-Authenticate": "Bearer"},
     )
     try:
-        username, data_type,refresh_token = validate_refresh_token(token,db=db)
+        username, data_type, refresh_token = validate_refresh_token(token, db=db)
         if username is None or data_type != "refresh_token":
             raise credential_exception
         token_data = authschema.TokenData(username=username)
@@ -242,15 +255,26 @@ async def login_for_access_token(
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     refresh_token_expires = timedelta(minutes=REFRESH_TOKEN_EXPIRE_MINUTES)
     access_token = create_token(
-        data={"sub": user.username, "token":create_token({"sub": user.username, "type": "access_token"},secret_key=user.hash_key,expires_delta=access_token_expires)},
+        data={
+            "sub": user.username,
+            "token": create_token(
+                {"sub": user.username, "type": "access_token"},
+                secret_key=user.hash_key,
+                expires_delta=access_token_expires,
+            ),
+        },
         expires_delta=access_token_expires,
     )
-    refresh_token_inside = create_token({"sub": user.username, "type": "refresh_token"},secret_key=user.hash_key,expires_delta=refresh_token_expires)
-    refresh_token = create_token(
-        data={"sub": user.username, "token":refresh_token_inside},
+    refresh_token_inside = create_token(
+        {"sub": user.username, "type": "refresh_token"},
+        secret_key=user.hash_key,
         expires_delta=refresh_token_expires,
     )
-    authcrud.update_refresh_token(db, user.id, refresh_token_inside,init=1)
+    refresh_token = create_token(
+        data={"sub": user.username, "token": refresh_token_inside},
+        expires_delta=refresh_token_expires,
+    )
+    authcrud.update_refresh_token(db, user.id, refresh_token_inside, init=1)
     return {
         "access_token": access_token,
         "refresh_token": refresh_token,
@@ -259,7 +283,9 @@ async def login_for_access_token(
 
 
 @app.get("/refresh_token")
-async def refresh_token_validate(user=Depends(get_refresh_user), db: Session = Depends(get_db)):
+async def refresh_token_validate(
+    user=Depends(get_refresh_user), db: Session = Depends(get_db)
+):
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -270,12 +296,23 @@ async def refresh_token_validate(user=Depends(get_refresh_user), db: Session = D
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     refresh_token_expires = timedelta(minutes=REFRESH_TOKEN_EXPIRE_MINUTES)
     access_token = create_token(
-        data={"sub": user.username, "token":create_token({"sub": user.username, "type": "access_token"},secret_key=user.hash_key,expires_delta=access_token_expires)},
+        data={
+            "sub": user.username,
+            "token": create_token(
+                {"sub": user.username, "type": "access_token"},
+                secret_key=user.hash_key,
+                expires_delta=access_token_expires,
+            ),
+        },
         expires_delta=access_token_expires,
     )
-    refresh_token_inside = create_token({"sub": user.username, "type": "refresh_token"},secret_key=user.hash_key,expires_delta=refresh_token_expires)
+    refresh_token_inside = create_token(
+        {"sub": user.username, "type": "refresh_token"},
+        secret_key=user.hash_key,
+        expires_delta=refresh_token_expires,
+    )
     refresh_token = create_token(
-        data={"sub": user.username, "token":refresh_token_inside},
+        data={"sub": user.username, "token": refresh_token_inside},
         expires_delta=refresh_token_expires,
     )
     authcrud.update_refresh_token(db, user.id, refresh_token_inside)
@@ -347,7 +384,7 @@ async def email_verify(token: str, db: Session = Depends(get_db)):
         status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Verification"
     )
     try:
-        username, data_type = validate_access_token(token,db=db)
+        username, data_type = validate_access_token(token, db=db)
         if username is None or data_type != "emailVerify":
             raise credential_exception
         verified = authcrud.get_verified_by_username(db=db, username=username)
@@ -377,7 +414,7 @@ async def register(
     unique_id = uuid.uuid4()
     input_data = f"H{unique_id}".encode()
     hash_key = hashlib.sha256(input_data).hexdigest()[:32]
-    hashed_pwd = get_password_hashed(user.password,hash_key)
+    hashed_pwd = get_password_hashed(user.password, hash_key)
     user_dict = user.dict()
     user_dict.pop("password")
     response = await httpx.AsyncClient().post(
@@ -396,17 +433,17 @@ async def register(
             "hashed_password": hashed_pwd,
             "user_type": "seeker",
             "user_id": res_data["user_id"],
-            "hash_key": hash_key
+            "hash_key": hash_key,
         }
     )
     if response.status_code == status.HTTP_201_CREATED:
-        user = authcrud.get_by_email(db,user_db.email)
+        user = authcrud.get_by_email(db, user_db.email)
         if user is not None:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail="User Already Exists!",
             )
-        user = authcrud.get_by_username(db,user_db.username)
+        user = authcrud.get_by_username(db, user_db.username)
         if user is not None:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -420,7 +457,15 @@ async def register(
             )
 
     await send_verify(
-        token=create_token({"sub": user_db.username, "token":create_token({"sub": user_db.username, "type": "emailVerify"},secret_key=user_db.hash_key,)}),
+        token=create_token(
+            {
+                "sub": user_db.username,
+                "token": create_token(
+                    {"sub": user_db.username, "type": "emailVerify"},
+                    secret_key=user_db.hash_key,
+                ),
+            }
+        ),
         username=user_db.username,
         to_email=user_db.email,
     )
@@ -442,7 +487,7 @@ async def register(
     unique_id = uuid.uuid4()
     input_data = f"H{unique_id}".encode()
     hash_key = hashlib.sha256(input_data).hexdigest()[:32]
-    hashed_pwd = get_password_hashed(user.password,hash_key)
+    hashed_pwd = get_password_hashed(user.password, hash_key)
     user_dict = user.dict()
     user_dict.pop("password")
     response = await httpx.AsyncClient().post(
@@ -461,7 +506,7 @@ async def register(
             "hashed_password": hashed_pwd,
             "user_type": "recruiter",
             "user_id": res_data["user_id"],
-            "hash_key": hash_key
+            "hash_key": hash_key,
         }
     )
     if response.status_code == status.HTTP_201_CREATED:
@@ -473,7 +518,15 @@ async def register(
             )
 
     await send_verify(
-        token=create_token({"sub": user_db.username, "token":create_token({"sub": user_db.username, "type": "emailVerify"},secret_key=user_db.hash_key,)}),
+        token=create_token(
+            {
+                "sub": user_db.username,
+                "token": create_token(
+                    {"sub": user_db.username, "type": "emailVerify"},
+                    secret_key=user_db.hash_key,
+                ),
+            }
+        ),
         username=user_db.username,
         to_email=user_db.email,
     )
@@ -497,7 +550,15 @@ async def forgot_password_email(
                 status_code=status.HTTP_400_BAD_REQUEST, detail="Account Not Verified"
             )
         await send_pwd_reset(
-            token=create_token({"sub": user.username, "token":create_token({"sub":user.username,"type": "forgotPassword"},secret_key=user.hash_key,)}),
+            token=create_token(
+                {
+                    "sub": user.username,
+                    "token": create_token(
+                        {"sub": user.username, "type": "forgotPassword"},
+                        secret_key=user.hash_key,
+                    ),
+                }
+            ),
             username=user.username,
             to_email=user.email,
         )
@@ -515,11 +576,11 @@ async def forgot_password_verify(
         status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Link"
     )
     try:
-        username, data_type = validate_access_token(token,db=db)
+        username, data_type = validate_access_token(token, db=db)
         if username is None or data_type != "forgotPassword":
             raise credential_exception
         user = authcrud.get_by_username(db=db, username=username)
-        hashed_pwd = get_password_hashed(password.new_password,user.hash_key)
+        hashed_pwd = get_password_hashed(password.new_password, user.hash_key)
         if not user:
             raise credential_exception
         res = authcrud.update(

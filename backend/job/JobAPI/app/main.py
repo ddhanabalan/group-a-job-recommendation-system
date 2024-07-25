@@ -31,6 +31,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.on_event("startup")
 async def startup_event():
     logger.info("Scheduler started!")
@@ -41,6 +42,8 @@ async def startup_event():
 async def shutdown_event():
     vacancy_close_scheduler.close_vacancy.shutdown()
     logger.info("Scheduler stopped!")
+
+
 jobmodel.Base.metadata.create_all(bind=engine)
 
 app.include_router(router=router)

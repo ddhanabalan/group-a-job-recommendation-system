@@ -32,7 +32,7 @@ class JobRecommendationJobInput(Base):
 class SeekerInputPOI(Base):
     __tablename__ = "seekers_input_poi"
     id = Column(Integer, primary_key=True)
-    poi_id = Column(Integer,index=True)
+    poi_id = Column(Integer, index=True)
     user_id = Column(Integer, index=True)
     position = Column(String(32))
     created_at = Column(DateTime, default=datetime.utcnow)

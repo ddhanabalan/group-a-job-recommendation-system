@@ -1,5 +1,5 @@
 import httpx
-from fastapi import APIRouter, Depends, HTTPException, status, Query, Header,Body
+from fastapi import APIRouter, Depends, HTTPException, status, Query, Header, Body
 from typing import Type, List, Optional
 from .. import (
     get_db,
@@ -57,9 +57,10 @@ async def read_filtered_job_vacancies(
 
     for job in filtered_jobs:
         job.skills = jobcrud.skills.get_all(db, job.job_id)
-        job.company_pic = pics[f'{job.company_id}']
+        job.company_pic = pics[f"{job.company_id}"]
         job.job_seekers = jobcrud.request.get_all_by_job_id(db, job.job_id)
     return filtered_jobs
+
 
 @job_vacancy_router.post("/", status_code=status.HTTP_201_CREATED)
 async def create_job_vacancy(
@@ -86,14 +87,17 @@ async def create_job_vacancy(
         job_skill_data = jobschema.JobSkillsCreate(job_id=job_id, skill=_)
         jobcrud.skills.create(db, job_skill_data)
 
-    job_model = jobschema.JobDetails(**{
-        "job_id": job_vacancy_instance.job_id,
-        "job_name": job_vacancy_instance.job_name,
-        "job_position": job_vacancy_instance.job_position,
-        "company_name": job_vacancy_instance.company_name,
-        "city": job_vacancy_instance.location,
-        "work_style": job_vacancy_instance.work_style,
-        "job_description":job_vacancy_instance.job_desc})
+    job_model = jobschema.JobDetails(
+        **{
+            "job_id": job_vacancy_instance.job_id,
+            "job_name": job_vacancy_instance.job_name,
+            "job_position": job_vacancy_instance.job_position,
+            "company_name": job_vacancy_instance.company_name,
+            "city": job_vacancy_instance.location,
+            "work_style": job_vacancy_instance.work_style,
+            "job_description": job_vacancy_instance.job_desc,
+        }
+    )
     async with httpx.AsyncClient() as client:
         response = await client.post(
             "http://172.20.0.7:8000/model/job/input",
@@ -108,12 +112,14 @@ async def create_job_vacancy(
 
 
 @job_vacancy_router.post("/model/data")
-async def read_job_vacancies_by_job_ids(job_in: jobschema.JobIDSIn, db: Session = Depends(get_db)):
-    jobs =  jobcrud.vacancy.get_all_by_job_ids(db, job_in.job_ids)
+async def read_job_vacancies_by_job_ids(
+    job_in: jobschema.JobIDSIn, db: Session = Depends(get_db)
+):
+    jobs = jobcrud.vacancy.get_all_by_job_ids(db, job_in.job_ids)
     for job in jobs:
         job.skills = jobcrud.skills.get_all(db, job.job_id)
         job.job_seekers = jobcrud.request.get_all_by_job_id(db, job.job_id)
-    
+
     return jobs
 
 
@@ -192,6 +198,7 @@ async def update_job_vacancy(
             )
     return {"details": "Job Vacancy Updated successfully"}
 
+
 @job_vacancy_router.delete("/user/{user_id}")
 async def delete_job_vacancy_by_user_id(
     user_id: int, db: Session = Depends(get_db), authorization: str = Header(...)
@@ -230,6 +237,8 @@ async def delete_job_vacancy_by_user_id(
             detail="Data not deleted from Database",
         )
     return {"details": "Job Vacancy Deleted successfully"}
+
+
 # Delete job vacancy by ID
 @job_vacancy_router.delete("/{job_vacancy_id}")
 async def delete_job_vacancy(

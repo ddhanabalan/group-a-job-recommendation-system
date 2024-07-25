@@ -23,6 +23,7 @@ class UserAuth(Base):
         created_at (datetime): The timestamp of when the user account was created.
         updated_at (datetime): The timestamp of when the user account was last updated.
     """
+
     __tablename__ = "user_auth"
 
     id = Column(Integer, primary_key=True, index=True)
@@ -38,4 +39,3 @@ class UserAuth(Base):
     last_login = Column(DateTime)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
-

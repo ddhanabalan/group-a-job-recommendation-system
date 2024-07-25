@@ -3,9 +3,16 @@ from sqlalchemy.orm import Session
 
 from ..schemas import jobschema
 from ..models import jobmodel
-from ..utils import get_db, check_authorization, get_current_user, get_company_details, send_invite_notif,get_seeker_details
+from ..utils import (
+    get_db,
+    check_authorization,
+    get_current_user,
+    get_company_details,
+    send_invite_notif,
+    get_seeker_details,
+)
 from ..crud import jobcrud
-from .jobrouters import vacancy, request, skills,invite
+from .jobrouters import vacancy, request, skills, invite
 
 router = APIRouter()
 

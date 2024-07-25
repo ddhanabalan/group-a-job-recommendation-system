@@ -6,4 +6,3 @@ from ..models import (
 )
 from ..schemas import schemas
 from . import crud
-

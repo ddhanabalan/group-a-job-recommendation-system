@@ -101,12 +101,16 @@ class JobInviteCreate(BaseModel):
 
     class Config:
         from_attributes = True
+
+
 class JobInviteInfo(JobInviteCreate):
     recruiter_name: Optional[str] = None
     recruiter_position: Optional[str] = None
     remarks: Optional[str] = None
+
     class Config:
         from_attributes = True
+
 
 class JobInviteUpdate(BaseModel):
     status: Optional[str] = None
@@ -121,7 +125,6 @@ class JobInvite(JobInviteCreate):
     updated_at: Optional[datetime] = None
 
 
-
 class JobDetails(BaseModel):
     job_id: Optional[int]
     job_name: Optional[str]
@@ -129,10 +132,11 @@ class JobDetails(BaseModel):
     company_name: Optional[str]
     city: Optional[str]
     work_style: Optional[str]
-    job_description: Optional[str] ="Nil"
+    job_description: Optional[str] = "Nil"
 
     class Config:
         from_attributes = True
 
+
 class JobIDSIn(BaseModel):
-    job_ids:Optional[List[int]]
+    job_ids: Optional[List[int]]

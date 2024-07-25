@@ -16,10 +16,12 @@ class SeekersBase(BaseModel):
     phone: Optional[str] = None
     city: Optional[str] = None
 
+
 class SeekerModelIn(BaseModel):
-    poi_id:Optional[int]
+    poi_id: Optional[int]
     user_id: Optional[int]
     position: Optional[str]
+
 
 class SeekersBaseIn(SeekersBase):
     profile_picture: Optional[str] = None

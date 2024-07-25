@@ -1,12 +1,12 @@
-
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 import logging
 
 from sqlalchemy.orm import Session
 
-from . import utils,crud
+from . import utils, crud
 
 logger = logging.getLogger(__name__)
+
 
 def close_vacancy_scheduler(db: Session = utils.SessionLocal()) -> None:
     """

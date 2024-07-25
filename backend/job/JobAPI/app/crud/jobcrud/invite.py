@@ -24,17 +24,24 @@ def create(db: Session, db_job_invite: jobmodel.JobInvite) -> bool:
         db.rollback()
         return False
 
+
 def get_all(db: Session) -> list[jobmodel.JobInvite] | list[Any]:
     try:
         return db.query(jobmodel.JobInvite).all()
     except SQLAlchemyError as e:
         return []
 
+
 def get_all_by_job_id(db: Session, job_id: int) -> list[jobmodel.JobInvite] | list[Any]:
     try:
-        return db.query(jobmodel.JobInvite).filter(jobmodel.JobInvite.job_id == job_id).all()
+        return (
+            db.query(jobmodel.JobInvite)
+            .filter(jobmodel.JobInvite.job_id == job_id)
+            .all()
+        )
     except SQLAlchemyError as e:
         return []
+
 
 def get(db: Session, job_invite_id: int) -> jobmodel.JobInvite | None:
     """
@@ -48,7 +55,11 @@ def get(db: Session, job_invite_id: int) -> jobmodel.JobInvite | None:
         jobmodel.JobInvite: Job invite object if found, None otherwise.
     """
     try:
-        return db.query(jobmodel.JobInvite).filter(jobmodel.JobInvite.id == job_invite_id).first()
+        return (
+            db.query(jobmodel.JobInvite)
+            .filter(jobmodel.JobInvite.id == job_invite_id)
+            .first()
+        )
     except SQLAlchemyError as e:
         return None
 
@@ -65,12 +76,15 @@ def delete(db: Session, job_invite_id: int) -> bool:
         bool: True if the job invite was deleted successfully, False otherwise.
     """
     try:
-        db.query(jobmodel.JobInvite).filter(jobmodel.JobInvite.id == job_invite_id).delete()
+        db.query(jobmodel.JobInvite).filter(
+            jobmodel.JobInvite.id == job_invite_id
+        ).delete()
         db.commit()
         return True
     except SQLAlchemyError as e:
         db.rollback()
         return False
+
 
 def delete_by_user_id(db: Session, user_id: int) -> bool:
     """
@@ -84,12 +98,15 @@ def delete_by_user_id(db: Session, user_id: int) -> bool:
         bool: True if the job invite was deleted successfully, False otherwise.
     """
     try:
-        db.query(jobmodel.JobInvite).filter(jobmodel.JobInvite.user_id == user_id).delete()
+        db.query(jobmodel.JobInvite).filter(
+            jobmodel.JobInvite.user_id == user_id
+        ).delete()
         db.commit()
         return True
     except SQLAlchemyError as e:
         db.rollback()
         return False
+
 
 def delete_by_vacancy_id(db: Session, job_id: int) -> bool:
     """
@@ -103,12 +120,15 @@ def delete_by_vacancy_id(db: Session, job_id: int) -> bool:
         bool: True if the job invite was deleted successfully, False otherwise.
     """
     try:
-        db.query(jobmodel.JobInvite).filter(jobmodel.JobInvite.job_id == job_id).delete()
+        db.query(jobmodel.JobInvite).filter(
+            jobmodel.JobInvite.job_id == job_id
+        ).delete()
         db.commit()
         return True
     except SQLAlchemyError as e:
         db.rollback()
         return False
+
 
 def update(db: Session, job_invite_id: int, update_job_invite: dict) -> bool:
     """
@@ -123,7 +143,11 @@ def update(db: Session, job_invite_id: int, update_job_invite: dict) -> bool:
         jobmodel.JobInvite: Updated job invite object.
     """
     try:
-        job_invite = db.query(jobmodel.JobInvite).filter(jobmodel.JobInvite.id == job_invite_id).first()
+        job_invite = (
+            db.query(jobmodel.JobInvite)
+            .filter(jobmodel.JobInvite.id == job_invite_id)
+            .first()
+        )
         for key, value in update_job_invite.items():
             if key not in ["id", "created_at"] and value is not None:
                 setattr(job_invite, key, value)
@@ -132,6 +156,7 @@ def update(db: Session, job_invite_id: int, update_job_invite: dict) -> bool:
     except SQLAlchemyError as e:
         db.rollback()
         return False
+
 
 def delete_by_job_id(db: Session, job_id: int) -> bool:
     """
@@ -145,21 +170,37 @@ def delete_by_job_id(db: Session, job_id: int) -> bool:
         bool: True if the job invite was deleted successfully, False otherwise.
     """
     try:
-        db.query(jobmodel.JobInvite).filter(jobmodel.JobInvite.job_id == job_id).delete()
+        db.query(jobmodel.JobInvite).filter(
+            jobmodel.JobInvite.job_id == job_id
+        ).delete()
         db.commit()
         return True
     except SQLAlchemyError as e:
         db.rollback()
         return False
 
-def get_all_by_user_id(db: Session, user_id: int) -> list[jobmodel.JobInvite] | list[Any]:
+
+def get_all_by_user_id(
+    db: Session, user_id: int
+) -> list[jobmodel.JobInvite] | list[Any]:
     try:
-        return db.query(jobmodel.JobInvite).filter(jobmodel.JobInvite.user_id == user_id).all()
+        return (
+            db.query(jobmodel.JobInvite)
+            .filter(jobmodel.JobInvite.user_id == user_id)
+            .all()
+        )
     except SQLAlchemyError as e:
         return []
 
-def get_all_by_company_id(db: Session, company_id: int) -> list[jobmodel.JobInvite] | list[Any]:
+
+def get_all_by_company_id(
+    db: Session, company_id: int
+) -> list[jobmodel.JobInvite] | list[Any]:
     try:
-        return db.query(jobmodel.JobInvite).filter(jobmodel.JobInvite.company_id == company_id).all()
+        return (
+            db.query(jobmodel.JobInvite)
+            .filter(jobmodel.JobInvite.company_id == company_id)
+            .all()
+        )
     except SQLAlchemyError as e:
         return []

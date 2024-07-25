@@ -19,7 +19,7 @@ class JobDetails(BaseModel):
 
 class SeekerDetails(BaseModel):
     id: Optional[int] = None
-    poi_id:Optional[int]
+    poi_id: Optional[int]
     user_id: Optional[int]
     position: Optional[str]
     created_at: Optional[datetime] = None
@@ -70,4 +70,4 @@ class JobDetailsResponse(BaseModel):
 
 
 class JobPositionIn(BaseModel):
-    job_position:str
+    job_position: str

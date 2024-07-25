@@ -14,6 +14,7 @@ class Token(BaseModel):
         token_type (str): The type of the token.
 
     """
+
     access_token: str
     refresh_token: str
     token_type: str
@@ -27,6 +28,7 @@ class TokenData(BaseModel):
         username (str): The username of the user associated with the token.
 
     """
+
     username: Optional[str] = None
 
 
@@ -39,6 +41,7 @@ class UserTypeEnum(Enum):
         recruiter (str): The recruiter user type.
 
     """
+
     seeker = "seeker"
     recruiter = "recruiter"
 
@@ -59,12 +62,13 @@ class UserBase(BaseModel):
         updated_at (Optional[datetime]): The timestamp of when the user account was last updated.
 
     """
+
     username: str
     email: EmailStr
     disabled: bool = False
     user_id: Optional[int] = None
     user_type: UserTypeEnum
-    hash_key:Optional[str] = None
+    hash_key: Optional[str] = None
     verified: bool = False
     last_login: Optional[datetime] = None
     created_at: Optional[datetime] = None
@@ -82,6 +86,7 @@ class User(UserBase):
         id (int): The primary key of the user.
 
     """
+
     id: int
 
 
@@ -93,6 +98,7 @@ class UserInDB(UserBase):
         hashed_password (str): The hashed password of the user.
 
     """
+
     hashed_password: str
 
     class Config:
@@ -109,6 +115,7 @@ class UserIn(BaseModel):
         password (str): The password of the user.
 
     """
+
     username: str
     email: EmailStr
     password: str
@@ -130,6 +137,7 @@ class UserInSeeker(UserIn):
         dob (Optional[str]): The date of birth of the user.
 
     """
+
     first_name: Optional[str] = None
     last_name: Optional[str] = None
     gender: Optional[str] = None
@@ -157,6 +165,7 @@ class UserInRecruiter(UserIn):
         phone (Optional[str]): The phone number of the user.
 
     """
+
     company_name: Optional[str] = None
     address: Optional[str] = None
     pincode: Optional[str] = None
@@ -176,6 +185,7 @@ class ForgetPassword(BaseModel):
         new_password (str): The new password of the user.
 
     """
+
     new_password: str
 
 
@@ -189,6 +199,7 @@ class UserUpdate(BaseModel):
         email (Optional[EmailStr]): The email address of the user.
 
     """
+
     username: Optional[str] = None
     password: Optional[str] = None
     email: Optional[EmailStr] = None
