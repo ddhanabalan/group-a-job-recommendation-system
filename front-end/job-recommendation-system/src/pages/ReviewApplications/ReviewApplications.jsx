@@ -84,7 +84,8 @@ export default function ReviewApplications({ userType, invite = null }) {
             //const second_response = await jobAPI.get(`/job_vacancy/company/${companyId}`)
             console.log("received job response", response)
             
-            const mod_response = response.data.map(e => ({ id: e.job_id, jobTitle: e.job_name, companyName: e.company_name, tags: e.tags, currency: e.salary.split('-')[0], salary: [e.salary.split('-')[1], e.salary.split('-')[2]], postDate: e.created_at.split('T')[0], last_date: e.last_date.split('T')[0], location: e.location, poi: e.job_position, empType: e.emp_type, exp: e.experience, workStyle: e.work_style, workingDays: e.working_days, jobDesc: e.job_desc, jobReq: e.requirement, skills: e.skills.length ? e.skills : [{ 'skill': "" }], applicationsReceived: e.job_seekers, closed: e.closed }))
+            const rec_response = response.data.map(e => ({ id: e.job_id, jobTitle: e.job_name, companyName: e.company_name, tags: e.tags, currency: e.salary.split('-')[0], salary: [e.salary.split('-')[1], e.salary.split('-')[2]], postDate: e.created_at, last_date: e.last_date, location: e.location, poi: e.job_position, empType: e.emp_type, exp: e.experience, workStyle: e.work_style, workingDays: e.working_days, jobDesc: e.job_desc, jobReq: e.requirement, skills: e.skills.length ? e.skills : [{ 'skill': "" }], applicationsReceived: e.job_seekers, closed: e.closed }))
+            const mod_response = dateProcessor(rec_response, "vacancy");
             if(userType=="seeker")
             {   const invites = invitesReceived.map(e=>e.job_vacancy_id);
                 const new_mod_response = mod_response.map(e => {
@@ -368,12 +369,12 @@ export default function ReviewApplications({ userType, invite = null }) {
         }
         console.log("job status data", req_data)
         try {
-            const checkInvite = filteredApplicants.filter(e=>(e.applicantID === user_id && e.application_type ==="invite"));
+            /*const checkInvite = filteredApplicants.filter(e=>(e.applicantID === user_id && e.application_type ==="invite"));                    //uncomment if issues faced with approval or status display in job section
             console.log("checkInvite", checkInvite, filteredApplicants)
             if(checkInvite.length) {
                 const r = await removeInvite(checkInvite[0].job_invite_id);
                 if(!r) throw new Error("Failed to delete rejected invite");
-            }
+            }*/
             const response = await jobAPI.put(`/job_request/${job_req_id}`, req_data, {
                 headers: {
                     'Content-Type': 'application/json',
@@ -448,9 +449,18 @@ export default function ReviewApplications({ userType, invite = null }) {
     //console.log("applicants confirmed", jobApplicants)
     //console.log("sidebar", sidebarState)
     //console.log("filtered", filtered);
-    const dateProcessor=(objectList)=>{
+    const dateProcessor=(objectList, type="application")=>{
+        let arranged=[]
+        if(type==="vacancy")
+        {
+            objectList.sort((a, b) => b.postDate.localeCompare(a.postDate)); 
+            arranged = objectList.map((e)=>({...e, postDate: e.postDate.split('T')[0].split('-').reverse().join('-'), last_date: e.last_date.split('T')[0].split('-').reverse().join('-')}))
+
+        }
+        else{
         objectList.sort((a, b) => b.application_created_at.localeCompare(a.application_created_at)); 
-        const arranged = objectList.map((e)=>({...e, application_created_at: e.application_created_at.split('T')[0].split('-').reverse().join('-')}))
+        arranged = objectList.map((e)=>({...e, application_created_at: e.application_created_at.split('T')[0].split('-').reverse().join('-')}))
+        }
         return arranged;
     }
 

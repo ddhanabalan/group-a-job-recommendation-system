@@ -95,7 +95,8 @@ export default function CandidateSection() {
       const callAiCandidateFetch = async() =>{
           if(selectedJobEntryDetails){
             if(selectedJobEntryDetails.poi){
-                callModelAPI(selectedJobEntryDetails.poi)
+                const r = callModelAPI(selectedJobEntryDetails.poi)
+                if(!r) return false;
             }
           }
       }
@@ -112,10 +113,12 @@ export default function CandidateSection() {
             const mod_response = dataNormalizer(response.data)
             setAiCandidates(mod_response)
             setAiBtnLoading(false)
+            return true;
         } catch (e) {
             console.log("model response", e)
-
-            alert(e.message);
+            alert(e);
+            
+            return false;
         }
     }
 
@@ -200,7 +203,7 @@ useEffect(() => {duplicatesFilter()}, [aiCandidates])
             <Filter title="Filter applicants" userType="employer" passFilteredDataFn={filterDataSet} />            
             </div>
             <NavigationBar active="candidates" />
-            <StatsAI value="candidates" loading={aiBtnloading} callFn={callAiCandidateFetch}  jobs={filteredJobs} chooseEntryFunc={chooseJobEntry} jobSearchFunc={jobSearchBar} selectedEntry={selectedJobEntry}/>
+            <StatsAI value="candidates" loading={aiBtnloading} callFn={callAiCandidateFetch}  jobs={filteredJobs} chooseEntryFunc={chooseJobEntry} jobSearchFunc={jobSearchBar} selectedEntry={selectedJobEntry} blankModelData={aiCandidates && !aiCandidates.length}/>
             <div className="candidate-search">
                 <SearchBar toSearch="Search Candidates" onSearch={candidateSearchBar} />
             </div>

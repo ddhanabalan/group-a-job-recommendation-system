@@ -55,7 +55,11 @@ export default function JobOpeningCard({ data, type = null, highlighted = null, 
         }
     };
     
-    
+    const dateFormatter=(date)=>{
+        const r = date.split('-')
+            const formattedDate = [r[2], r[1], r[0]].join('-')
+            return formattedDate
+    }
 
     useEffect(() => {
     if(inviteJob && inviteJob.length)
@@ -105,12 +109,12 @@ export default function JobOpeningCard({ data, type = null, highlighted = null, 
                                     
                                     {data.closed===false?
                                     <>
-                                    <Link to="../employer/job-vacancy" state={{ ...data, edit: true }}>
+                                    <Link to="../employer/job-vacancy" state={{ ...data,"last_date": dateFormatter(data.last_date), edit: true }}>
                                         <Button variant="contained" disableElevation className="opening-edit-button" sx={{ color: 'black', backgroundColor: '#eae9e9', border: 'solid 1px black', width: 'fit-content', paddingY: "2px", paddingX: "10px", textTransform: "none", borderRadius: 20 }} endIcon={<EditIcon />}>
                                             Edit
                                         </Button>
                                     </Link>
-                                    <Button variant="contained" disableElevation onClick={editJobVacancyStatusFunc ? () => editJobVacancyStatusFunc(data, true) : undefined} className="opening-edit-button" sx={{ color: 'black', backgroundColor: '#eae9e9', border: 'solid 1px black', width: 'fit-content', paddingY: "2px", paddingX: "10px", textTransform: "none", borderRadius: 20 }} endIcon={<EditIcon />}>
+                                    <Button variant="contained" disableElevation onClick={editJobVacancyStatusFunc ? () => editJobVacancyStatusFunc({ ...data,"last_date": dateFormatter(data.last_date)}, true) : undefined} className="opening-edit-button" sx={{ color: 'black', backgroundColor: '#eae9e9', border: 'solid 1px black', width: 'fit-content', paddingY: "2px", paddingX: "10px", textTransform: "none", borderRadius: 20 }} endIcon={<EditIcon />}>
                                             Withdraw
                                     </Button>
                                     </>
