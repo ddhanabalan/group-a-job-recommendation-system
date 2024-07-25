@@ -130,12 +130,6 @@ async def recommend_jobs_for_applicant(input_data, db: Session):
         nearest_neighbors_indices = indices.flatten()
 
         top_jobs_for_applicant = [jobs[idx].job_id for idx in nearest_neighbors_indices]
-        print("in")
-        logger.info(
-            "Recommendations for Applicant ID %s: %s",
-            applicant_id,
-            top_jobs_for_applicant,
-        )
         logger.info(
             "Job recommendations for applicant %s %s: %s",
             applicant_id,
