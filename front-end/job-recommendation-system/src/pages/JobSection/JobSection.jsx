@@ -25,7 +25,7 @@ export default function JobSection() {
     const [AiJobs, setAiJobs] = useState([]) //state to store recommended jobs
     const [aiBtnloading, setAiBtnLoading] = useState(false);//state to control animation of ai button
     const [blankModelData, setBlankModelData] = useState(false);
-    
+
 
     const filterDataSet = (fdata) => {
         setParam({ ...fdata });
@@ -76,10 +76,10 @@ export default function JobSection() {
             })
             console.log("model response", response)
             const mod_response = dataNormalizer(response.data)
-            if(mod_response && !mod_response.length){
+            if (mod_response && !mod_response.length) {
                 setBlankModelData(true)
             }
-            else{
+            else {
                 setBlankModelData(false)
             }
             setAiJobs(mod_response)
@@ -95,47 +95,48 @@ export default function JobSection() {
     }
 
 
-    const dataNormalizer=(objectList)=>{
+    const dataNormalizer = (objectList) => {
         const normalized_response = objectList.map(e => {
             const salaryParts = e.salary.split('-');
             const createdDateParts = e.created_at.split('T');
             const lastDateParts = e.last_date.split('T');
-            const userCreatedApplications = ((((e.job_seekers).map(e => e.user_id)).includes(userData.id))?((e.job_seekers).filter(e => e.user_id == userData.id)):null);
-            const applicationCheckDummy = userCreatedApplications?.map(e=>e.status.toLowerCase()) || [];                                                                     //will have to verify logic
-            const inviteStat = userInvites.length?(!(applicationCheckDummy.includes("approved"))?getInviteStatus(e.job_id):null):null;                                       //will have to verify logic
+            const userCreatedApplications = ((((e.job_seekers).map(e => e.user_id)).includes(userData.id)) ? ((e.job_seekers).filter(e => e.user_id == userData.id)) : null);
+            const applicationCheckDummy = userCreatedApplications?.map(e => e.status.toLowerCase()) || [];                                                                     //will have to verify logic
+            const inviteStat = userInvites.length ? (!(applicationCheckDummy.includes("approved")) ? getInviteStatus(e.job_id) : null) : null;                                       //will have to verify logic
             console.log("invite stat", inviteStat, userInvites)
             return {
-              id: e.job_id,
-              companyID: e.company_id,
-              jobTitle: e.job_name,
-              companyUsername: e.company_username,
-              companyName: e.company_name,
-              tags: /* (e.tags.length ? e.tags : */ [{ tag: "" }], // Keeping the comment
-              currency: salaryParts.length > 0 ? salaryParts[0] : "",
-              salary: salaryParts.length > 2 ? [salaryParts[1], salaryParts[2]] : (salaryParts.length === 2 ? [salaryParts[1], ""]:["", ""]),
-              postDate: createdDateParts.length > 0 ? createdDateParts[0] : e.created_at,
-              last_date: lastDateParts.length > 0 ? lastDateParts[0] : e.last_date,
-              location: e.location,
-              empType: e.emp_type,
-              exp: e.experience,
-              jobDesc: e.job_desc,
-              jobReq: e.requirement,
-              skills: e.skills.length ? e.skills : [{ skill: "" }],
-              workStyle: e.work_style,
-              workingDays: e.working_days,
-              closed: e.closed,
-              applicationsReceived: e.job_seekers,
-              userApplication: userCreatedApplications,
-              invite_status: inviteStat?inviteStat.status:null/*userInvites.length?userInvites.filter(f=>f.job_id == e.job_id)[0]?.status || null: null*/, 
-              job_invite_id: inviteStat?inviteStat.id:null/*userInvites.length?userInvites.filter(f=>f.job_id == e.job_id)[0]?.id || null: null*/
+                id: e.job_id,
+                companyID: e.company_id,
+                jobTitle: e.job_name,
+                companyUsername: e.company_username,
+                companyName: e.company_name,
+                tags: /* (e.tags.length ? e.tags : */[{ tag: "" }], // Keeping the comment
+                currency: salaryParts.length > 0 ? salaryParts[0] : "",
+                salary: salaryParts.length > 2 ? [salaryParts[1], salaryParts[2]] : (salaryParts.length === 2 ? [salaryParts[1], ""] : ["", ""]),
+                postDate: createdDateParts.length > 0 ? createdDateParts[0] : e.created_at,
+                last_date: lastDateParts.length > 0 ? lastDateParts[0] : e.last_date,
+                location: e.location,
+                empType: e.emp_type,
+                exp: e.experience,
+                jobDesc: e.job_desc,
+                jobReq: e.requirement,
+                skills: e.skills.length ? e.skills : [{ skill: "" }],
+                workStyle: e.work_style,
+                workingDays: e.working_days,
+                closed: e.closed,
+                companyPic: e.company_pic,
+                applicationsReceived: e.job_seekers,
+                userApplication: userCreatedApplications,
+                invite_status: inviteStat ? inviteStat.status : null/*userInvites.length?userInvites.filter(f=>f.job_id == e.job_id)[0]?.status || null: null*/,
+                job_invite_id: inviteStat ? inviteStat.id : null/*userInvites.length?userInvites.filter(f=>f.job_id == e.job_id)[0]?.id || null: null*/
             };
-          });
-          return normalized_response;
+        });
+        return normalized_response;
 
     }
-    const duplicatesFilter=()=>{
-        const test = AiJobs.map(job=>job.id)
-        const originals = jobVacancies.filter(e=>!(AiJobs.map(job=>job.id).includes(e.id)))
+    const duplicatesFilter = () => {
+        const test = AiJobs.map(job => job.id)
+        const originals = jobVacancies.filter(e => !(AiJobs.map(job => job.id).includes(e.id)))
         console.log("originals", originals, test, jobVacancies, AiJobs)
         setJobVacancies(originals);
     }
@@ -263,8 +264,8 @@ export default function JobSection() {
     console.log("user datum", userData);
     useEffect(() => { if (descriptionOn) GetUserInvites() }, [descriptionOn])
     useEffect(() => { callJobVacancyAPI() }, [filterparam, searchVal, userInvites]);
-    useEffect(() => {if(jobVacancies)duplicatesFilter()},[AiJobs])
-    
+    useEffect(() => { if (jobVacancies) duplicatesFilter() }, [AiJobs])
+
 
     return (
         <div id="page">
@@ -273,7 +274,7 @@ export default function JobSection() {
                 <Filter title="Filter jobs" userType="seeker" passFilteredDataFn={filterDataSet} />
             </div>
             {!descriptionOn && <NavigationBar active="jobs" />}
-            <StatsAI value="jobs" callFn={callModelAPI} aiBtnloading={aiBtnloading} blankModelData={blankModelData}/>
+            <StatsAI value="jobs" callFn={callModelAPI} aiBtnloading={aiBtnloading} blankModelData={blankModelData} />
 
             <div className="job-search">
                 {descriptionOn ?
