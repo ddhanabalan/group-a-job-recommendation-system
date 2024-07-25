@@ -98,6 +98,7 @@ export default function CandidateSection() {
             if(selectedJobEntryDetails.poi){
                 const r = callModelAPI(selectedJobEntryDetails.poi)
                 if(!r) return false;
+                else return true;
             }
           }
       }
@@ -112,19 +113,22 @@ export default function CandidateSection() {
             })
             console.log("model response", response)
             const mod_response = dataNormalizer(response.data)
-            if(mod_response && mod_response.length) 
+            if(mod_response && !mod_response.length) 
             {
-                setBlankModelData(false)
-            }
-            else{
                 setBlankModelData(true)
             }
+            else{
+                setBlankModelData(false)
+            }
+
+            console.log("ai candidates", mod_response, blankModelData)
             setAiCandidates(mod_response)
             setAiBtnLoading(false)
             return true;
         } catch (e) {
             console.log("model response", e)
             alert(e);
+            setAiBtnLoading(false)
             
             return false;
         }
@@ -203,7 +207,15 @@ useEffect(() => {console.log("jobVacancies" , jobVacancies)
 
 useEffect(() => { if (jobVacancies.length != 0 && selectedJobEntry != null) expJob(selectedJobEntry) }, [selectedJobEntry]);
 useEffect(() => { callCandidatesAPI() }, [filterparam, candidateSearchVal]);
-useEffect(() => {duplicatesFilter()}, [aiCandidates])
+useEffect(() => {duplicatesFilter()
+    if(aiCandidates && aiCandidates.length) 
+        {
+            setBlankModelData(false)
+        }
+        else{
+            setBlankModelData(true)
+        
+}}, [aiCandidates])
     return (
         <div id="page">
             {loading && <LoaderAnimation />}

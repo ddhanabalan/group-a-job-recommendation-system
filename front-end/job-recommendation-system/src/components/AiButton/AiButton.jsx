@@ -11,11 +11,11 @@ export default function ({ value, callFn, loading, jobSelection=null, blankModel
     const modelCallingFn=async ()=>{
         if (value ==="candidates" && !jobSelection)return;
         const r = await callFn();
-        console.log("recorded response", r)
+        console.log("recorded response", r);
         if(!r){
             setErrorMsg("Our recommmendation engine is facing some issues.Try again later");
         } 
-        else if(blankModelData===true){setErrorMsg("No recommendations found")}
+        else if( r && blankModelData===true){setErrorMsg("No recommendations found")}
         console.log("blank model ", blankModelData);
         
     }

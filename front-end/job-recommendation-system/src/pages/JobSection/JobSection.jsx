@@ -89,6 +89,7 @@ export default function JobSection() {
             console.log("model response", e)
 
             alert(e.message);
+            setAiBtnLoading(false);
             return false;
         }
     }
