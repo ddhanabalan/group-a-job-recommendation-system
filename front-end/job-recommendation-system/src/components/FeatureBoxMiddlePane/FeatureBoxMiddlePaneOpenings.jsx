@@ -8,8 +8,9 @@ import './FeatureBoxMiddlePane.css';
 export default function FeatureBoxMiddlePaneOpenings({data, childData}) {
     const demoInfo = { jobTitle: "Python Developer", companyName: "Google LLC",workStyle:"on-site",workingDays:"Monday-Friday", skills: ["python","javascript"], currency: "₹", salary: "50k", postDate: "13/9/23" };
     
-    const companyOpenings = data?.vacancies || [];
-
+    const companyOpenings = data?.vacancies.filter(e=>!e.closed) || [];
+    console.log("received middle pane", companyOpenings)
+    
     
     
     return (
