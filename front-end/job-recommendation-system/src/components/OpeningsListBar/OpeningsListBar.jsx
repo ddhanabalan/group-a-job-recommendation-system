@@ -27,7 +27,7 @@ function HighlightableJobCard({ id, highlighted, type, data, listToDescFunc, del
     )
 }
 
-export default function OpeningsListBar({ data, userType, userID, chooseEntry, searchBar, preselectedEntry=null, preselectedEntryType=null, filterFunc = null, pageType, handleApplicationStatus = null, userJobs = null, listToDescParentFunc = null, deleteJobFunc = null,editJobVacancyStatusFunc=null, invite=null, seekerJobs = false }) {
+export default function OpeningsListBar({ data, userType, userID, chooseEntry, searchBar, preselectedEntry=null, preselectedEntryType=null, filterFunc = null, pageType, handleApplicationStatus = null, userJobs = null, listToDescParentFunc = null, deleteJobFunc = null,editJobVacancyStatusFunc=null, invite=null, seekerJobs = false, revertibleSelection=false }) {
     console.log("user received jobs", userJobs, seekerJobs)
     
     console.log("received jobs to openings list bar", data);
@@ -84,7 +84,10 @@ export default function OpeningsListBar({ data, userType, userID, chooseEntry, s
     function highlightDiv(id, application_type = null, application_status = null, application_id=null) {
         //function for highlighting selected opening cards
         //console.log("highlighting id", id)
+        if(revertibleSelection && highlightedId === id) setHighlightedId(null);
+        else{
         setHighlightedId(id);
+        }
         console.log("application da", application_status, application_type)
         if(application_type){
             setApplicationTypeData({"application_type": application_type, "application_status": application_status, "application_id": application_id})
@@ -94,7 +97,10 @@ export default function OpeningsListBar({ data, userType, userID, chooseEntry, s
 
     useEffect(() => {
         if(seekerJobs===false)
-        {if (highlightedId != null) {
+        {   if(revertibleSelection){
+            chooseEntry(highlightedId)
+        }
+            else if(highlightedId!=null) {
             chooseEntry(highlightedId)
         }}
         else{
