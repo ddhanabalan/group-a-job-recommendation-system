@@ -21,7 +21,7 @@ export default function FeatureBoxMiddlePaneOpenings({data, childData}) {
             <div className="feature-box-container">
             {Object.keys(companyOpenings).length?
             <>
-            {Object.keys(companyOpenings).map((card) => (<JobCard key={uuid()} id={companyOpenings[card]["id"]}  data={{ ...companyOpenings[card], 'userType': "seeker" }} link={data.userType == "employer"?"/employer/review-applications": `/seeker/openings/${getStorage("guestUserID")}/${companyOpenings[card]["id"]}`} />)).slice(0,2)}
+            {Object.keys(companyOpenings).map((card) => (<JobCard key={uuid()} id={companyOpenings[card]["id"]}  data={{ ...companyOpenings[card], 'userType': "seeker" }} link={data.userType == "employer"?"/employer/review-applications": `/seeker/openings/${COMPANY_USERNAME || getStorage("guestUsername")}/${companyOpenings[card]["id"]}`} />)).slice(0,2)}
             <hr className="line-separator"/>
                 <div className='see-openings-footer'>
                     <Link to={data.userType == "employer"?"/employer/review-applications": `/seeker/openings/${COMPANY_USERNAME || getStorage("guestUsername")}/all`} state={{user_id: data.user_id}}>

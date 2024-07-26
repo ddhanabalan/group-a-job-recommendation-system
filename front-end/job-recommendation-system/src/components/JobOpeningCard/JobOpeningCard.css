@@ -190,7 +190,14 @@
     background-color: orange;
 }
 .blue{
-    background-color: blue;
+    background-color: blue !important;
+}
+
+.red{
+    background-color: red !important;
+}
+.green{
+    background-color: rgb(144, 234, 8) !important;
 }
 .orange{
     background-color: orange!important;

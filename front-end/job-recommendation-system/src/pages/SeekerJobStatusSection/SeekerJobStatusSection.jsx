@@ -69,21 +69,22 @@ export default function SeekerJobStatusSection({userType}) {
           // Wait for all job details promises to resolve
           const new_req_response = await Promise.all(
             req_response.data.map(async (e) => {
-              const jobDetails = await readJobsAPI({ job_vacancy_id: e.job_id, job_status: e.status, application_id: e.id, type: "request", creation_time: e.created_at });
+              const jobDetails = await readJobsAPI({ job_vacancy_id: e.job_id, job_status: e.status, application_id: e.id, type: "request", creation_time: e.created_at, updation_time: e.updated_at });
               return jobDetails;
             })
           );
       
           const new_invite_response = await Promise.all(
             invite_response.data.map(async (e) => {
-              const jobDetails = await readJobsAPI({ job_vacancy_id: e.job_id, job_status: e.status, application_id: e.id, type: "invite", creation_time: e.created_at });
+              const jobDetails = await readJobsAPI({ job_vacancy_id: e.job_id, job_status: e.status, application_id: e.id, type: "invite", creation_time: e.created_at, updation_time: e.updated_at });
               return jobDetails;
             })
           );
       
           const detailedJobs = dateProcessor([...new_req_response, ...new_invite_response]);
+          const prioritizedJobs = jobPrioritizer(detailedJobs)
           //detailedJobs.sort((a, b) => b.created_at.localeCompare(a.created_at));
-          console.log("after new jobs", detailedJobs);
+          console.log("after new jobs", prioritizedJobs);
           setJobVacancies(detailedJobs);  
           setFilteredJobVacancies([])
         } catch (e) {
@@ -98,13 +99,17 @@ export default function SeekerJobStatusSection({userType}) {
           const r = await jobAPI.delete(`/job_request/request/${job_request_id}`, { headers: { 'Authorization': `Bearer ${getStorage("userToken")}` } });
           await callJobVacancyAPI();
           setEntry(null);
+          setEntryType(null);
+          // if(selectedEntry==0)chooseEntry(1, jobVacancies[1].type);
+          // else if(selectedEntry==jobVacancies.length)chooseEntry(jobVacancies.length - 1, jobVacancies[jobVacancies.length - 1].type)
+          // else chooseEntry(selectedEntry + 1, jobVacancies[selectedEntry + 1].type)
         } catch (e) {
           console.log("job request deletion failed", e);
           alert(e.message);
         }
       };
       
-      const readJobsAPI = async ({ job_vacancy_id, job_status, application_id = null, type = null, creation_time=null }) => {
+      const readJobsAPI = async ({ job_vacancy_id, job_status, application_id = null, type = null, creation_time=null, updation_time=null }) => {
         try {
           const r = await jobAPI.get(`/job_vacancy/${job_vacancy_id}`, { headers: { 'Authorization': `Bearer ${getStorage("userToken")}` } });
           let mod_response = {};
@@ -117,6 +122,7 @@ export default function SeekerJobStatusSection({userType}) {
               invite_status: job_status,
               profilePic:r.data.profile_pic,
               application_created_at: creation_time,
+              application_updated_at: updation_time,
               companyUsername: r.data.company_username,
               companyName: r.data.company_name,
               tags: r.data.tags,
@@ -146,6 +152,7 @@ export default function SeekerJobStatusSection({userType}) {
               companyName: r.data.company_name,
               tags: r.data.tags,
               application_created_at: creation_time,
+              application_updated_at: updation_time,
               currency: r.data.salary.split('-')[0],
               salary: [r.data.salary.split('-')[1], r.data.salary.split('-')[2]],
               postDate: r.data.created_at,
@@ -250,9 +257,25 @@ export default function SeekerJobStatusSection({userType}) {
     }
 
     const dateProcessor=(objectList)=>{
-      objectList.sort((a, b) => b.application_created_at.localeCompare(a.application_created_at)); 
-      const arranged = objectList.map((e)=>({...e, application_created_at: e.application_created_at.split('T')[0].split('-').reverse().join('-'), postDate: e.postDate.split('T')[0].split('-').reverse().join('-'), last_date: e.last_date.split('T')[0].split('-').reverse().join('-') }))
+      objectList.sort((a, b) => b.application_updated_at.localeCompare(a.application_updated_at)); 
+      const arranged = objectList.map((e)=>({...e, application_created_at: e.application_created_at.split('T')[0].split('-').reverse().join('-'), application_updated_at: e.application_updated_at.split('T')[0].split('-').reverse().join('-') ,postDate: e.postDate.split('T')[0].split('-').reverse().join('-'), last_date: e.last_date.split('T')[0].split('-').reverse().join('-') }))
       return arranged;
+    }
+
+    const jobPrioritizer=(objectList)=>{
+      const data = objectList
+      const invite_priority = {"pending": "1", "approved":"2", "rejected":"2"};
+      const request_priority = {"applied": "3", "approved": "4", "rejected": "5"};
+      const resp = data.sort((a,b)=>{if(b.type==="invite"){
+                              if(b.invite_status.toLowerCase()==="pending")
+                              {   
+                                  if(a.type=="invite" && a.invite_status.toLowerCase() ==="pending") return 0;
+                                  else return 1;
+                              }
+                              
+                                 
+      }})
+      return resp;
     }
     //console.log("filter parameters", filterparam);
     const chooseEntry =(entry,entryType)=>{

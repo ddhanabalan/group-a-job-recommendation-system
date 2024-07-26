@@ -12,15 +12,63 @@ import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import profilePlaceholder from '../../images/profile_placeholder.svg';
 import greentick from '../../images/green-confirm.json'
 import failanim from '../../images/fail-animation.json'
+import {Autocomplete} from '@mui/material';
+import {utilsAPI} from '../../api/axios';
 import '../SignUpForm/SignUpForm2.css';
 import './ProfileEdit.css';
 export default function ProfileEdit({ data,isErrorChild,register }) {
     const {  formState: { errors } } = useFormContext();
+    const backupCountries = [{"country":'India'}, {"country":'USA'}, {"country": "Germany"}, {"country": 'Australia'}, {'country': "Japan"}]
+    const [countries, setCountries] = useState([])
     const [user, SetUser] = useState()
+    const [fetchingErrors, setFetchingErrors] = useState({"countries": false});
+
+    const [userCountry, setUserCountry] = useState({"country":data.country})
+
+    const fetchCountries= async ()=>{
+        try{
+          const r = await utilsAPI.get('api/v1/country/');
+          if(r.data.length) 
+            {setCountries(r.data);
+            setFetchingErrors({...fetchingErrors, "countries": false})
+        }
+          else{
+            setCountries(backupCountries);
+            
+            setFetchingErrors({...fetchingErrors, "countries": true})
+    
+          }
+        }
+        catch(e){
+          console.log("industry fetch failed", e);
+          //alert("industries not fetched");
+          setCountries(backupCountries);
+          setFetchingErrors({...fetchingErrors, "countries": true})
+    
+        }
+      }
+    
+    const generateDelay=(delay, callFn, value=null)=>{
+        setTimeout(() => {
+            value?callFn(value):callFn()
+        }, delay);
+    }
+     
+    
+    
+    
+
+
     useEffect(() => {
         SetUser(getStorage("userType"))
+        fetchCountries()
     }, [])
-    console.log("error in head", data.first_name)
+    useEffect(()=>{
+    
+        if(fetchingErrors.countries)generateDelay(3000,fetchCountries)
+    }, [fetchingErrors])
+
+    console.log("error in head", errors)
     Object.keys(errors).length === 0 && isErrorChild(false)
     const myErrors = errors
     useEffect(() => {
@@ -98,14 +146,40 @@ export default function ProfileEdit({ data,isErrorChild,register }) {
                         {/*Country*/}
                         <div id="item-5">
                             <p className="text-head">Country<span className="text-danger"> *</span></p>
-                            <TextField className="personal-details-input profile-edit-input" variant="outlined"
-                                defaultValue={data.country}
-                                error={'country' in errors}
-                                {...register("country",
-                                    {
-                                        required: "Please select country",
-                                    })}>
-                            </TextField>
+                            <Autocomplete
+                                            disablePortal
+                                            options={countries}
+                                            value = {userCountry}
+                                            
+                                            getOptionLabel={(option) => option["country"]}
+                                            isOptionEqualToValue={(option, value)=>value["country"]===option["country"]}
+                                            
+                                            onChange={(event,newInputValue)=>{
+                                                setUserCountry(newInputValue)
+                                            }}
+                                            
+                                            renderInput={(params) => <TextField
+                                                
+                                                className="personal-details-input profile-edit-input"
+                                                {...params}
+                                                InputProps={{
+                                                    ...params.InputProps,
+                                                    disableUnderline: true,
+                                                }}
+                                                
+                                                variant="outlined"
+                                                
+                                                {...register("country", { required: "Field is required",
+                                                    // validate: (value)=>{
+                                                    //     const r= countries.some(e=>e.country===value)
+                                                    //     if( r)
+                                                    //         { console.log("country compare", r)
+                                                    //             return true;}
+                                                    //     else return false;
+                                                    // }
+                                                 })}
+                                            />}
+                                        />
                             <p className="error-message">{errors.country?.message || ""}</p>
                         </div>
 
