@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, Header, status, HTTPException
 from . import crud, get_db, get_current_user, check_authorization
 from ..schemas import schemas
 from ..models import model
-
+import logging
 import httpx
 
 router = APIRouter()
@@ -35,6 +35,8 @@ async def job_recommendation(db=Depends(get_db), authorization: str = Header(...
     user = await get_current_user(authorization=authorization)
     applicant_id = user.get("user_id")
     job_ids = crud.get_applicant_output(db, applicant_id)
+    for job in job_ids:
+        print(f"{applicant_id}:=>",job)
 
     if not job_ids:
         return []
@@ -48,11 +50,12 @@ async def job_recommendation(db=Depends(get_db), authorization: str = Header(...
                 status_code=status.HTTP_404_NOT_FOUND, detail="Error occurred"
             )
         jobs = response.json()
-
+    for i in jobs:
+        print(i["job_id"],i["job_name"])
     return jobs
 
 
-@router.get("/job")
+@router.post("/job")
 async def job_recommendation(
     job_position: schemas.JobPositionIn,
     db=Depends(get_db),
@@ -62,11 +65,8 @@ async def job_recommendation(
     user_ids = crud.get_job_output(db, job_position.job_position)
 
     if not user_ids:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="No jobs found"
-        )
         return []
-
+    print(f"{job_position.job_position}:=> ",user_ids)
     async with httpx.AsyncClient() as client:
         response = await client.post(
             "http://172.20.0.4:8000/seeker/details/list",

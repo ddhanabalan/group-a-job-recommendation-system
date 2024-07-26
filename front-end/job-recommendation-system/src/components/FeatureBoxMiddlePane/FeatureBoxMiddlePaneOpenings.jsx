@@ -7,8 +7,8 @@ import { v4 as uuid } from 'uuid';
 import './FeatureBoxMiddlePane.css';
 export default function FeatureBoxMiddlePaneOpenings({data, childData}) {
     const demoInfo = { jobTitle: "Python Developer", companyName: "Google LLC",workStyle:"on-site",workingDays:"Monday-Friday", skills: ["python","javascript"], currency: "₹", salary: "50k", postDate: "13/9/23" };
-    
-    const companyOpenings = data?.vacancies.filter(e=>!e.closed) || [];
+    const DISPLAY_COUNT = 3;
+    const companyOpenings = (data?.vacancies.filter(e=>!e.closed) || []).slice(0,3);
     console.log("received middle pane", companyOpenings)
     
     

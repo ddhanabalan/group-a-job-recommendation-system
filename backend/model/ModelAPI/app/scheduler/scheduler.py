@@ -74,7 +74,7 @@ async def recommend_applicants(input_data, db: Session):
             input_data.applicants[idx].applicant_id for idx in top_applicants_indices
         ]
         logger.info(
-            "Top applicants for job position %s: %s",
+            # "Top applicants for job position %s: %s",
             job_position,
             top_applicants_for_job,
         )
@@ -131,7 +131,7 @@ async def recommend_jobs_for_applicant(input_data, db: Session):
 
         top_jobs_for_applicant = [jobs[idx].job_id for idx in nearest_neighbors_indices]
         logger.info(
-            "Job recommendations for applicant %s %s: %s",
+            # "Job recommendations for applicant %s %s: %s",
             applicant_id,
             applicant.position_of_interest,
             top_jobs_for_applicant,
@@ -166,7 +166,7 @@ async def model_instance_runner():
         response = schemas.JobDetailsResponse(
             jobs=job_details_list, applicants=applicant_list
         )
-        if (len(job_details_list) > 5) and (len(applicant_list) > 5):
+        if (len(job_details_list) >= 5) and (len(applicant_list) >= 5):
             logger.info("Model Have Enough Data To Run")
             await recommend_applicants(response, db=db)
             await recommend_jobs_for_applicant(response, db=db)

@@ -60,10 +60,11 @@ export default function ReviewApplications({ userType, invite = null }) {
 
     const [filterstat, setFilter] = useState(false);
     const [filterparam, setParam] = useState({});
-    let filtered = (jobVacancies.length != 0 ? jobVacancies.filter(id => id["skills"].map((tag) => (tag["skill"].toLowerCase().includes(searchVal.toLowerCase()))).filter(Boolean).length ? id : false) : []); //Could cause rerenders sometimes.Set to const if issues encountered
+    let filtered = (jobVacancies.length!=0?(searchVal.startsWith("#")?/*search with # to search with tags*/jobVacancies.filter(id => id["skills"].map((tag)=>(tag["skill"].toLowerCase().includes(searchVal.slice(1).toLowerCase()))).filter(Boolean).length?id:false)/*search with # to search with tags*/:/*search without # to search with name*/jobVacancies.filter(id => (id["jobTitle"].toLowerCase()).startsWith(searchVal.toLowerCase()))/*search without # to search with name*/):[]);
     const [filteredApplicants, setFilteredApplicants] = useState([])
     const [invitesSent, setInvitesSent] = useState([]);
     let invitesReceived = [];
+    let dateVariable = "";
     //const filtered = []
     const [selectedJobEntry, setJobEntry] = useState(null);
     //const [filteredApplicants, setfilteredApplicants]=useState(profileInfo.filter(applicants=>(selectedJobEntry["applicationsReceived"].includes(applicants["applicantID"])?applicants:false)));
@@ -83,18 +84,23 @@ export default function ReviewApplications({ userType, invite = null }) {
             //const second_response = await jobAPI.get(`/job_vacancy/company/${companyId}`)
             console.log("received job response", response)
             
-            const mod_response = response.data.map(e => ({ id: e.job_id, jobTitle: e.job_name, companyName: e.company_name, tags: e.tags, currency: e.salary.split('-')[0], salary: [e.salary.split('-')[1], e.salary.split('-')[2]], postDate: e.created_at.split('T')[0], last_date: e.last_date.split('T')[0], location: e.location, poi: e.job_position, empType: e.emp_type, exp: e.experience, workStyle: e.work_style, workingDays: e.working_days, jobDesc: e.job_desc, jobReq: e.requirement, skills: e.skills.length ? e.skills : [{ 'skill': "" }], applicationsReceived: e.job_seekers, closed: e.closed }))
+            const rec_response = response.data.map(e => ({ id: e.job_id, jobTitle: e.job_name, companyName: e.company_name, tags: e.tags, currency: e.salary.split('-')[0], salary: [e.salary.split('-')[1], e.salary.split('-')[2]], postDate: e.created_at, last_date: e.last_date, location: e.location, poi: e.job_position, empType: e.emp_type, exp: e.experience, workStyle: e.work_style, workingDays: e.working_days, jobDesc: e.job_desc, jobReq: e.requirement, skills: e.skills.length ? e.skills : [{ 'skill': "" }], applicationsReceived: e.job_seekers, closed: e.closed }))
+            const mod_response = dateProcessor(rec_response, "vacancy");
             if(userType=="seeker")
             {   const invites = invitesReceived.map(e=>e.job_vacancy_id);
-                const new_mod_response = mod_response
-                                        .map(e => ({
-                                        ...e,
-                                        userApplication: ((((e.applicationsReceived).map(e => e.user_id)).includes(userData.id))?((e.applicationsReceived).filter(e => e.user_id == userData.id)):null),
-        
-                                        userInvited: invites.includes(e.job_id) && invitesReceived[invites.indexOf(e.job_id).job_status != "rejected"],
-                                        invite: (e.userInvited?invitesReceived[invites.indexOf(e.job_id)]: null)/*(invites.includes(e.job_id)?invitesReceived[invites.indexOf(e.job_id)]: null*/
-                                        }));
-                console.log("new mod rep", new_mod_response, invites)
+                const new_mod_response = mod_response.map(e => {
+                    
+                    const userApplication = e.applicationsReceived.filter(app => app.user_id === userData.id);
+                    const application = userApplication.find(app => app.status !== "rejected");
+                    return {
+                            ...e,
+                            userApplication: userApplication.length > 0 ? userApplication : null,
+                            status: application ? (application.status !== "rejected" ? application.status : null) : null,
+                            userInvited: invites.includes(e.id) && invitesReceived[invites.indexOf(e.id)].job_status !== "rejected",
+                            invite: invites.includes(e.id) && invitesReceived[invites.indexOf(e.id)].job_status !== "rejected"? invitesReceived[invites.indexOf(e.id)]: null
+                    };
+                });
+                console.log("new mod rep", new_mod_response, invites, invitesReceived)
             setJobVacancies(new_mod_response);
             }
             else if(userType==="employer"){
@@ -217,7 +223,7 @@ export default function ReviewApplications({ userType, invite = null }) {
         setLoadingApplicants(true);
         if(applicantList)
         {//const modApplicantList = applicantList.map(e => e.user_id)
-        const inviteApplicants = [...new Set(invitesSent.filter(e => e.job_id == selectedEntry).map(f => ({ user_id: f.user_id, job_id: f.job_id, invite_id: f.id, status: f.status })))];
+        const inviteApplicants = [...new Set(invitesSent.filter(e => e.job_id == selectedEntry).map(f => ({ user_id: f.user_id, job_id: f.job_id, invite_id: f.id, status: f.status, created_at: f.created_at })))];
         //const inviteApplicantList = inviteApplicants.map(e=>e.user_id)
         console.log("all invites", invitesSent)
         console.log("applicant listing", applicantList)
@@ -237,9 +243,10 @@ export default function ReviewApplications({ userType, invite = null }) {
             });
             console.log("updating invites",invites.data, invitesSent)
             console.log("updating requests", requests.data, applicantList, selectedJobEntry)
-            const mod_response = await Promise.all(requests.data.map(e => ({ applicantID: e.user_id, username: e.username, candidateName: (e.first_name + " " + e.last_name), first_name: e.first_name, last_name: e.last_name, city: e.city, country: e.country, location: e.location, experience: e.experience, profile_picture: e.profile_picture, job_request_id: applicantList[requests.data.indexOf(e)].id, job_status: applicantList[requests.data.indexOf(e)].status.toLowerCase(), application_type: "request" })))
-            const invite_response = await Promise.all(invites.data.map(e => ({ applicantID: e.user_id, username: e.username, candidateName: (e.first_name + " " + e.last_name), first_name: e.first_name, last_name: e.last_name, city: e.city, country: e.country, location: e.location, experience: e.experience, profile_picture: e.profile_picture, job_vacancy_id: /*inviteApplicantList[invites.data.indexOf(e)].job_id*/inviteApplicants[invites.data.indexOf(e)].job_id, job_invite_id: inviteApplicants[invites.data.indexOf(e)].invite_id,job_status:  /*applicantList[invites.data.indexOf(e)].status*/inviteApplicants[invites.data.indexOf(e)].status.toLowerCase(), application_type: "invite"  })))
-            const final_response = [...mod_response, ...invite_response]
+            const mod_response = await Promise.all(requests.data.map(e => ({ applicantID: e.user_id, username: e.username, candidateName: (e.first_name + " " + e.last_name), first_name: e.first_name, last_name: e.last_name, city: e.city, country: e.country, location: e.location, experience: e.experience, profile_picture: e.profile_picture, job_request_id: applicantList[requests.data.indexOf(e)].id, job_status: applicantList[requests.data.indexOf(e)].status.toLowerCase(), application_created_at: applicantList[requests.data.indexOf(e)].created_at,application_type: "request" })))
+            const invite_response = await Promise.all(invites.data.map(e => ({ applicantID: e.user_id, username: e.username, candidateName: (e.first_name + " " + e.last_name), first_name: e.first_name, last_name: e.last_name, city: e.city, country: e.country, location: e.location, experience: e.experience, profile_picture: e.profile_picture, job_vacancy_id: /*inviteApplicantList[invites.data.indexOf(e)].job_id*/inviteApplicants[invites.data.indexOf(e)].job_id, job_invite_id: inviteApplicants[invites.data.indexOf(e)].invite_id,job_status: inviteApplicants[invites.data.indexOf(e)].status.toLowerCase(), application_created_at: inviteApplicants[invites.data.indexOf(e)].created_at, application_type: "invite"  })))
+            const final_response = dateProcessor([...mod_response, ...invite_response]);
+            //const test_response = dateTesterFunction(final_response);
             setApplicants(final_response);
             setApplicationErrors(false);
             console.log("applicants receiveed", final_response , mod_response, invite_response);
@@ -363,12 +370,12 @@ export default function ReviewApplications({ userType, invite = null }) {
         }
         console.log("job status data", req_data)
         try {
-            const checkInvite = filteredApplicants.filter(e=>(e.applicantID === user_id && e.application_type ==="invite"));
+            /*const checkInvite = filteredApplicants.filter(e=>(e.applicantID === user_id && e.application_type ==="invite"));                    //uncomment if issues faced with approval or status display in job section
             console.log("checkInvite", checkInvite, filteredApplicants)
             if(checkInvite.length) {
                 const r = await removeInvite(checkInvite[0].job_invite_id);
                 if(!r) throw new Error("Failed to delete rejected invite");
-            }
+            }*/
             const response = await jobAPI.put(`/job_request/${job_req_id}`, req_data, {
                 headers: {
                     'Content-Type': 'application/json',
@@ -377,7 +384,7 @@ export default function ReviewApplications({ userType, invite = null }) {
             });
             console.log("updated response", response)
             //const mod_response = response.data.map(e=>({applicantID: e.user_id, username: e.username, candidateName: (e.first_name + " " + e.last_name), first_name: e.first_name, last_name: e.last_name,city: e.city, country: e.country, location: e.location, experience: e.experience, profile_picture: e.profile_picture}))
-            callJobVacancyAPI(COMPANYID);
+            callJobVacancyAPI(companyID);
 
         } catch (e) {
 
@@ -457,6 +464,15 @@ export default function ReviewApplications({ userType, invite = null }) {
         }
         return arranged;
     }
+
+    /*const dateTesterFunction=(objectList)=>{
+        let date = 24
+        const date_string = "-08-2024"
+        const resp = objectList.map((e)=>{date -=1;
+                                          return {...e, application_created_at: `${date}` + date_string}
+         })
+        return resp
+    }*/
 
     const filterStateSet = (fstate) => {
         setFilter(fstate);
@@ -561,7 +577,7 @@ export default function ReviewApplications({ userType, invite = null }) {
             }
             <NavigationBar active={userType == "employer" ? "review-applications" : "none"} />
             <div className={`applications-box${filterstat ? " blur" : ""}${sidebarState ? " wide" : ""}`}>
-                {userType == "employer"?
+                {userType == "employer" && jobApplicants.length != 0?
                 <div className="application-filter">
                     {Object.keys(applicationFilter).map(e=>
                     <button className={`application-filter-btn application-filter-btn-apply application-filter-btn${applicationFilter[e]?`-active-${e.toLowerCase()}`: ""} application-filter-btn${"-" + e.toLowerCase()}`} onClick={()=>{handleApplicationFilter({...applicationFilter, [e]: !applicationFilter[e]})}}> {e}

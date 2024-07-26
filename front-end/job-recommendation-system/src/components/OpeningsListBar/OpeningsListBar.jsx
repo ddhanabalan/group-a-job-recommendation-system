@@ -12,6 +12,7 @@ import { useNavigate, Link } from 'react-router-dom';
 
 function HighlightableJobCard({ id, highlighted, type, data, listToDescFunc, deleteJobFunc,editJobVacancyStatusFunc, onclick, invite, inviteJob, seekerJobs, applicationType }) {
     //console.log("highlighted ", id, " : ", highlighted)
+    console.log("id", id, highlighted)
     const [disabled, setDisabled] = useState(false);
 
     const disableCard =(status)=>{
@@ -27,7 +28,7 @@ function HighlightableJobCard({ id, highlighted, type, data, listToDescFunc, del
     )
 }
 
-export default function OpeningsListBar({ data, userType, userID, chooseEntry, searchBar, preselectedEntry=null, preselectedEntryType=null, filterFunc = null, pageType, handleApplicationStatus = null, userJobs = null, listToDescParentFunc = null, deleteJobFunc = null,editJobVacancyStatusFunc=null, invite=null, seekerJobs = false }) {
+export default function OpeningsListBar({ data, userType, userID, chooseEntry, searchBar, preselectedEntry=null, preselectedEntryType=null, filterFunc = null, pageType, handleApplicationStatus = null, userJobs = null, listToDescParentFunc = null, deleteJobFunc = null,editJobVacancyStatusFunc=null, invite=null, seekerJobs = false, revertibleSelection=false }) {
     console.log("user received jobs", userJobs, seekerJobs)
     
     console.log("received jobs to openings list bar", data);
@@ -38,6 +39,7 @@ export default function OpeningsListBar({ data, userType, userID, chooseEntry, s
     //console.log("opening bar data",data)
     
     const [highlightedId, setHighlightedId] = useState(preselectedEntry);
+    const [highlightedEntryType, setHighlightedEntryType] = useState(preselectedEntryType)
     const [applicationTypeData, setApplicationTypeData] = useState({});
 
     console.log("highlighted id=",preselectedEntry, highlightedId)
@@ -87,8 +89,12 @@ export default function OpeningsListBar({ data, userType, userID, chooseEntry, s
         if(revertibleSelection && highlightedId === id) setHighlightedId(null);
         else{
         setHighlightedId(id);
+        }
         console.log("application da", application_status, application_type)
-        if(application_type){
+        if(application_type && seekerJobs){
+            setHighlightedEntryType(application_type);
+        }
+        else if(application_type && application_id){
             setApplicationTypeData({"application_type": application_type, "application_status": application_status, "application_id": application_id})
         }
 

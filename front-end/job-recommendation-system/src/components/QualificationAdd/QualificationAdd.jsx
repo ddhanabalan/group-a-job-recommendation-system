@@ -68,6 +68,8 @@ export default function QualificationAdd({ submitFn, cancelFn }) {
                             message: "School/College should be at most 128 characters long."
                         }
                     })} />
+                    <p style={{ color: 'red' }}>{errors.education_provider && errors.education_provider.message !== "cannot be empty" && errors.education_provider.message}</p>
+                </div>
                 <div className='qualification-year' style={{ marginBottom: '.5rem' }}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <Controller

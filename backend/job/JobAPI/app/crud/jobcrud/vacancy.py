@@ -42,14 +42,15 @@ def get_all_by_close_time(db: Session, close_date: datetime = datetime.utcnow())
 
 def get_all_by_job_ids(db: Session, job_ids: List[int]):
     try:
-        print(job_ids)
-        query = (
-            db.query(jobmodel.JobVacancy)
-            .filter(jobmodel.JobVacancy.job_id.in_(job_ids))
-            .all()
-        )
-        print(query)
-        return query
+        jobs=[]
+        for job_id in job_ids:
+            query = (
+                db.query(jobmodel.JobVacancy)
+                .filter(jobmodel.JobVacancy.job_id==job_id)
+                .first()
+            )
+            jobs.append(query)
+        return jobs
     except SQLAlchemyError as e:
         return []
 

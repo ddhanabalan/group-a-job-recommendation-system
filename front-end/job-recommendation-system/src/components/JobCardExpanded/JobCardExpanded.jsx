@@ -22,7 +22,7 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
     const userSkills = (userData.type === "employer" || data.length) ? (null) : (data.skills?.map(skill => userData.skills.map(skilltag => skilltag.skill).includes(skill.skill) ? true : false).filter(Boolean).length)
     const [skillIndicator, setSkillIndicator] = useState(true);
     const [userJobRequest, setUserJobRequest] = useState(null);
-
+    const [textJustify, setTextJustify] = useState(true);
     console.log("data", data)
 
     //console.log(userSkills)
@@ -187,14 +187,14 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
 
                         {(userData.type == "employer" || type == "approval" || invite) && !data.closed ?
                             (
-                                invite && (data.invite?.job_status !=="approved" || true) && (data.invite_status.toLowerCase() === "pending")?
+                                invite && ((data.invite && data.invite.job_status !=="approved") || (data.invite_status && data.invite_status.toLowerCase() === "pending" || false))?
                                  <>
                                  <div className='invite-banner'>
                                  <p>You have been invited for an interview</p>
                                  </div>
                                  <div className='invite-buttons-container'>
                                     
-                                    <button className='accept' onClick={()=>{handleInvite("approved", data.job_invite_id || data.invite.job_invite_id)}} >
+                                    {/* <button className='accept' onClick={()=>{handleInvite("approved", data.job_invite_id || data.invite.job_invite_id)}} >
                                         Accept
                                     </button> */}
                                             <button className='continue-btn invite-accept-btn' onClick={()=>{handleInvite("approved", data.job_invite_id || data.invite.job_invite_id)}}>
@@ -225,7 +225,9 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
                                     </button>
                                     :
                                     ((data.invite?.job_status.toLowerCase() === "rejected") || (data.invite_status?.toLowerCase()==="rejected")?
+                                    (userJobRequest?.status.toLowerCase()!=="applied"?
                                     <>
+                                    
                                     <button className='continue-btn invite-rejected-btn' >
                                         Invite Rejected
                                     </button>
@@ -238,6 +240,11 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
                                         </Link>
                                     </div>
                                     </>
+                                    :
+                                    <button className='continue-btn disable-apply-btn' >
+                                        {userJobRequest?.status}
+                                    </button>
+                                    )
                                     :
                                     <></>
                                     )

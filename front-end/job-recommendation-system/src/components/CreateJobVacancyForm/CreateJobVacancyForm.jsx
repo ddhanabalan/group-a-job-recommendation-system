@@ -299,14 +299,14 @@ export default function JobVacancyForm({ data = {} }) {
         }
 
     }
-    useEffect(() => { if (submit === true) { navigate("../employer/review-applications") } }, [submit]);
+    //useEffect(() => { if (submit === true) { navigate("../employer/review-applications") } }, [submit]); //This line is not required
      useEffect(() => {
          console.log("submission status", submissionStatus)
          if(submissionStatus ==="success" || submissionStatus ==="failed"){
                      console.log("rerouting submission status", submissionStatus)
                          setTimeout(() => {
                              navigate("../employer/review-applications")    
-                         }, 5000);
+                         }, 2000);
      }},[submissionStatus])
     useEffect(() => {skillsAPI()}, [skill])
     useEffect(() => {callCompanyAPI()}, [])
@@ -329,7 +329,7 @@ export default function JobVacancyForm({ data = {} }) {
                         {/* <Button variant="contained" color="success" onClick={() => setPreview(false)} sx={{ color: "white" }} startIcon={<EditIcon />}>
                             <p>Edit</p>
                         </Button> */}
-                        <button className='continue-btn post-vacancy-edit-btn' onClick={() => setPreview(false)} >
+                        <button className='continue-btn post-vacancy-edit-btn' onClick={handleEdit} >
                             <EditIcon /> Edit 
                         </button>
                         {/* <Button variant="contained" onClick={handlePostVacancy} sx={{ color: submit ? "gray" : "white" }} startIcon={submit ? <DoneIcon /> : <MailIcon />}>
@@ -360,7 +360,6 @@ export default function JobVacancyForm({ data = {} }) {
                                     <CreateFormTextFields inputPlaceholder="Title" hparam="50px" fontsz="1.875rem" defaultValue={dta.jobTitle || ""} {...register("jobTitle", { required: "Job title is required", })} />
                                 </h1>
                                 <p className='error-message' style={{paddingLeft:'4px'}}>{errors.jobTitle?.message}</p>
-                                <p className='error-message' style={{paddingLeft:'4px'}}>{errors.jobTitle?.message}</p>
                                 <p className='create-job-vacancy-company-name-p'>{Object.keys(companyData).length ? companyData.company_name : ""}</p>
 
 
@@ -379,7 +378,6 @@ export default function JobVacancyForm({ data = {} }) {
                             <div className="create-job-vacancy-details">
 
                                 <div className='detail-divs'>
-                                <span className='details-header'>Position of Interest:</span>
                                 <span className='details-header'>Position of Interest:</span>
                                     <div className='option-divs'>
                                         <Autocomplete
@@ -412,17 +410,14 @@ export default function JobVacancyForm({ data = {} }) {
                                                     borderRadius: "7px",
                                                     '.MuiInputBase-input': { fontFamily: "Inter-regular", fontSize: "15px"},
                                                 }}
-                                                {...register("poi", { required: "field is required", })}
+                                                {...register("poi", { required: "Field is required", })}
                                             />}
 
                                         />
                                         <p className="error-message vacancy-form-error" >{errors.poi?.message}</p>
-                                        <p className="error-message vacancy-form-error" >{errors.poi?.message}</p>
 
                                     </div>
                                 </div>
-                                <div className="detail-divs detail-divs-multiple">
-                                    <span className='details-header'>Location:</span>
                                 <div className="detail-divs detail-divs-multiple">
                                     <span className='details-header'>Location:</span>
                                     <div className='option-divs'>
@@ -489,7 +484,7 @@ export default function JobVacancyForm({ data = {} }) {
                                             <CreateFormTextFields inputPlaceholder="Lower limit" wparam="120px"
                                                 defaultValue={dta.salary ? dta.salary[0] || null : null}
                                                 {...register("salary.0", {
-                                                    required: "salary range is required",
+                                                    required: "Salary range is required",
                                                     pattern: {
                                                         value: /^[0-9]+$/,
                                                         message: "Only numbers allowed"
@@ -545,13 +540,13 @@ export default function JobVacancyForm({ data = {} }) {
 
                                 <div className="create-job-vacancy-description-div">
                                     <p><span>Job description:</span></p>
-                                    <div className="create-job-desc-field"><CreateFormTextFields inputPlaceholder="Enter job details" fontsz="14px" wparam="100%" defaultValue={dta.jobDesc || ""} multipleLine={true} minrows={8} {...register("jobDesc", { required: "Field required", })} /></div>
+                                    <div className="create-job-desc-field"><CreateFormTextFields inputPlaceholder="Enter job details" fontsz="14px" wparam="100%" defaultValue={dta.jobDesc || ""} multipleLine={true} minrows={8}  /*justify={true}*/ {...register("jobDesc", { required: "Field required", })} /></div>
                                     <p className="create-job-desc-field error-message">{errors.jobDesc?.message}</p>
                                 </div>
 
                                 <div className="create-job-vacancy-description-div">
                                     <p><span>Job requirements:</span></p>
-                                    <div className="create-job-desc-field"><CreateFormTextFields inputPlaceholder="Enter criteria" fontsz="14px" wparam="100%" defaultValue={dta.jobReq || ""} multipleLine={true} minrows={8} {...register("jobReq", { required: "Field required", })} /></div>
+                                    <div className="create-job-desc-field"><CreateFormTextFields inputPlaceholder="Enter criteria" fontsz="14px" wparam="100%" defaultValue={dta.jobReq || ""} multipleLine={true} minrows={8} /*justify={true}*/ {...register("jobReq", { required: "Field required", })} /></div>
                                     <p className="create-job-desc-field error-message">{errors.jobReq?.message}</p>
                                 </div>
 

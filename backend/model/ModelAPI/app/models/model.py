@@ -19,12 +19,12 @@ class JobRecommendationJobInput(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     job_id = Column(Integer)
-    job_name = Column(String(32))
+    job_name = Column(String(256))
     job_position = Column(String(32))
-    company_name = Column(String(128))
-    city = Column(String(64))
-    work_style = Column(String(32))
-    job_description = Column(String(500))
+    company_name = Column(String(256))
+    city = Column(String(128))
+    work_style = Column(String(64))
+    job_description = Column(String(1024))
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 

@@ -60,10 +60,6 @@ export default function SeekerJobStatusSection({userType}) {
         if (userType === "seeker") {
           await Promise.all([GetSeekerDetails(), GetSeekerSkills()]);
         }
-    const callJobVacancyAPI = async (companyId) => {
-        if (userType === "seeker") {
-          await Promise.all([GetSeekerDetails(), GetSeekerSkills()]);
-        }
         try {
           const req_response = await jobAPI.get('/job_request/user', { headers: { 'Authorization': `Bearer ${getStorage("userToken")}` } });
           console.log("update job requests", req_response);
@@ -93,20 +89,16 @@ export default function SeekerJobStatusSection({userType}) {
         } catch (e) {
           console.log("jobs failed", e);
           alert(e.message);
-          console.log("jobs failed", e);
-          alert(e.message);
         }
       };
       
     
       const deleteJobRequestAPI = async (job_request_id) => {
         try {
-          const r = await jobAPI.delete(`/job_request/${job_request_id}`, { headers: { 'Authorization': `Bearer ${getStorage("userToken")}` } });
+          const r = await jobAPI.delete(`/job_request/request/${job_request_id}`, { headers: { 'Authorization': `Bearer ${getStorage("userToken")}` } });
           await callJobVacancyAPI();
           setEntry(null);
         } catch (e) {
-          console.log("job request deletion failed", e);
-          alert(e.message);
           console.log("job request deletion failed", e);
           alert(e.message);
         }
@@ -318,7 +310,7 @@ export default function SeekerJobStatusSection({userType}) {
                 :
                 <></>
             }*/}
-                <OpeningsListBar data={jobVacancies} userType={userType} userID={COMPANYID} pageType="review" chooseEntry={chooseEntry} seekerJobs={true} searchBar={searchBar} listToDescParentFunc={listToDescParentFunc} preselectedEntry={selectedEntry} preselectedEntryType={selectedEntryType} filterFunc={filterStateSet} />
+                <OpeningsListBar data={filtered} userType={userType} userID={COMPANYID} pageType="review" chooseEntry={chooseEntry} seekerJobs={true} searchBar={searchBar} listToDescParentFunc={listToDescParentFunc} preselectedEntry={selectedEntry} preselectedEntryType={selectedEntryType} filterFunc={filterStateSet} />
             </div>
             {filterstat?
             <div className="filter enabled">
@@ -332,7 +324,7 @@ export default function SeekerJobStatusSection({userType}) {
             
                 
                 {selectedEntry!=null /*&& filtered.length!=0*/ && jobVacancies.length!=0?
-                    <JobCardExpanded data={selectedJobEntry}  deleteJobRequest={deleteJobRequestAPI} userData={userData} type="approval" invite={selectedJobEntry.type=="invite"?true:false} handleInvite={handleInvite}/>
+                    <JobCardExpanded data={selectedJobEntry}  deleteJobRequest={deleteJobRequestAPI} userData={userData} type="approval" invite={selectedJobEntry?(selectedJobEntry.type=="invite"?true:false):false} handleInvite={handleInvite}/>
                     :
                     <div className="no-job-applications-message">
                             <img className="careergo-web-logo" src={careerGoLogo}/>

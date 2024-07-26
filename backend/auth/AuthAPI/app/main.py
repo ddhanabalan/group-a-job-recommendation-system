@@ -673,3 +673,12 @@ async def update_user(
             detail="Data Update Failed",
         )
     return {"detail": "updated successfully"}
+
+
+@app.post("/username/verify/{username}", status_code=status.HTTP_200_OK)
+def username_verify(username:str,db: Session = Depends(get_db)):
+    return authcrud.get_verify_by_username(db,username)
+
+@app.post("/email/check/{email}", status_code=status.HTTP_200_OK)
+def username_verify(email:str,db: Session = Depends(get_db)):
+    return authcrud.get_verify_by_email(db,email)

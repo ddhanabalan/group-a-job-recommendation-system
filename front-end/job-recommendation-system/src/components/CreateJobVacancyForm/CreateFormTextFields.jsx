@@ -1,12 +1,52 @@
 import React, { forwardRef, useState, useEffect } from 'react';
 import { TextField, MenuItem } from '@mui/material';
 
-const CreateFormTextFields = forwardRef(function CreateFormTextFields({ inputPlaceholder, textVal = "", bordRad = "7px", fontsz = "auto", wparam = "inherit", hparam = "auto", minrows = 1, multipleLine = false, type = "text",bgColor = "#D9D9D9", items = [], select = false, disabled = false, onChange=null, ...props }, ref) {
- const [textInput, setTextInput] = useState('');
- const handleTextInput=(event)=>{
-  setTextInput(event.target.value);
- }
- useEffect(()=>{if(onChange)onChange(textInput)}, [textInput])
+const CreateFormTextFields = forwardRef(function CreateFormTextFields(
+  {
+    inputPlaceholder = "",
+    defaultValue = "",
+    bordRad = "7px",
+    fontsz = "auto",
+    wparam = "inherit",
+    hparam = "auto",
+    minrows = 1,
+    multipleLine = false,
+    type = "text",
+    bgColor = "#D9D9D9",
+    items = [],
+    select = false,
+    disabled = false,
+    justify = false,
+    onChange = null,
+    ...props
+  },
+  ref
+) {
+  const [textInput, setTextInput] = useState(defaultValue);
+
+  const handleTextInput = (event) => {
+    setTextInput(event.target.value);
+  };
+
+  const handlePaste = (event) => {
+    event.preventDefault();
+    const clipboardData = event.clipboardData || window.clipboardData;
+    const pastedText = clipboardData.getData('text');
+
+    // Insert the pasted text at the current cursor position
+    const { selectionStart, selectionEnd } = event.target;
+    const newValue =
+      textInput.slice(0, selectionStart) +
+      pastedText +
+      textInput.slice(selectionEnd);
+
+    setTextInput(newValue);
+  };
+
+  useEffect(() => {
+    if (onChange) onChange(textInput);
+  }, [textInput, onChange]);
+
   return (
     <TextField
       placeholder={inputPlaceholder}
@@ -30,9 +70,8 @@ const CreateFormTextFields = forwardRef(function CreateFormTextFields({ inputPla
       }}
       sx={{
         backgroundColor: bgColor,
-        paddingX: "10px ",
-        paddingY: "5px 5px",
-
+        paddingX: multipleLine && justify ? "20px" : "10px",
+        paddingY: multipleLine && justify ? "20px" : "0px",
         borderRadius: bordRad,
         '.MuiInputBase-input': { fontSize: fontsz, fontFamily: "Inter-regular" },
         height: hparam,

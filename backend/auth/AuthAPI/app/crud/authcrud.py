@@ -153,8 +153,6 @@ def delete(db: Session, user_id: int) -> bool:
 def update_refresh_token(
     db: Session, user_id: int, token: str, init: int = 0, retries: int = 3
 ) -> bool:
-
-    print("Resh_token")
     for attempt in range(retries):
         try:
 
@@ -170,8 +168,6 @@ def update_refresh_token(
             if result == 0:
                 print(f"User with id {user_id} not found.")
                 return False
-            print(result.refresh_token)
-            print(result.last_login)
             db.commit()
             return True
         except StaleDataError as e:
@@ -184,3 +180,15 @@ def update_refresh_token(
             return False
 
     return False
+
+
+
+def get_verify_by_username(db:Session,username:str):
+    if db.query(authmodel.UserAuth.username).filter(authmodel.UserAuth.username == username).first() is not None:
+        return False
+    return True
+
+def get_verify_by_email(db:Session,email:str):
+    if db.query(authmodel.UserAuth.email).filter(authmodel.UserAuth.email == email).first() is not None:
+        return False
+    return True

@@ -2,12 +2,13 @@ import { useState,useEffect } from 'react';
 import JobCard from '../JobCard/JobCard';
 import './AiJobs.css';
 import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
+import  {v4 as uuid} from 'uuid';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 export default function AiJobs({ childData, expandView }) {
     useEffect(() => {
         setRecJobs(childData)
     },[childData])
-const [recJobs,setRecJobs]=useState([])
+    const [recJobs, setRecJobs] = useState([])
     return (
         recJobs.length > 0 &&
         <div className='ai-jobs-container'>
@@ -15,7 +16,8 @@ const [recJobs,setRecJobs]=useState([])
             {
                 recJobs.map(e => {
                     
-                return <JobCard data={e} expandView={expandView}
+                return <JobCard data={{...e, 'userType': "seeker"}} expandView={expandView}
+                    key={uuid()} id={e["id"]}  
                     profilePictureStyle={{backgroundColor:'white'}}
                     background={{ backgroundImage: 'linear-gradient(60deg, rgba(255,255,255,1.00) 0%,rgba(229,153,242,1.00) 100%)', backgroundPosition: 'center center' }} />
             })}
