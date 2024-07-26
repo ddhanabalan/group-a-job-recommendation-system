@@ -5,10 +5,10 @@ from datetime import datetime
 from ..database import Base
 
 
-class Position(Base):
-    __tablename__ = "positions"
+class Industry(Base):
+    __tablename__ = "industry"
 
     id = Column(Integer, primary_key=True, index=True)
-    position = Column(String(32),unique=True)
+    industry = Column(String(32),unique=True)
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
