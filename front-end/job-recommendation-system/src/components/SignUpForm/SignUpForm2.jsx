@@ -171,7 +171,7 @@ function SignUpForm2() {
     try{
       const r = await utilsAPI.get('api/v1/country/');
       if(r.data.length) 
-        {setCountries(r);
+        {setCountries(r.data);
         setFetchingErrors({...fetchingErrors, "countries": false})
     }
       else{
