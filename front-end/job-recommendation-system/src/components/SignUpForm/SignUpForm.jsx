@@ -9,6 +9,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import CircleIcon from '@mui/icons-material/Circle';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
+import axios from "../../api/axios"
 
 
 
@@ -34,7 +35,27 @@ function SignUpForm() {
   function subForm(data) {
     //Form data submission and passing it to sign up page part 2
     console.log(data)
-    navigate(userType==="employer"?"/signup/organization/personal-details":"/signup/personal-details", { state: { "email": data.email, "password": data.password, "userType": userType } })
+    navigate(userType==="employer"?"/signup/organization/personal-details":"/signup/personal-details", { state: { "email": data.email, "password": data.password, "userType": userType, "verified": true } })
+  }
+  const emailVerify= async(email)=>{
+    console.log("hello")
+    if (!/^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(email)) {
+      return "out of constraints";
+    }
+    try{
+      const r = await (axios.post(`/email/check/${email}`, {
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      }))
+      console.log("email verification", r)
+      return r.data;
+     }
+     catch(e){
+      console.log("email verify error", e)
+      alert("email verification failed")
+      return "error"
+     }
   }
   const color = watch("password") === watch("cpassword") ? "#07F407" : "#ff2d00"
   return (
@@ -61,10 +82,13 @@ function SignUpForm() {
                   {...register("email",
                     {
                       required: "please enter email",
-                      pattern: {
-                        value: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-                        message: "Email not valid"
-                      }
+                      validate: async (email) => {
+                        const r = await emailVerify(email)
+                        console.log("reasponse",r)
+                          if(r==="error") return "Email couldnt be verified";
+                          else if(!r) return "Email id already in use"
+                          else if(r === "out of constraints") return "Email not in valid format";
+                      },
                     })}
                   sx={{ width: 230 }} />
 
