@@ -1,6 +1,6 @@
 import './SignUpForm.css'
 import { useForm } from 'react-hook-form'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Mail from '@mui/icons-material/Mail'
 import Lock from '@mui/icons-material/Lock'
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
@@ -15,24 +15,26 @@ import axios from "../../api/axios"
 
 function SignUpForm() {
 
-  const { register, formState: { errors }, handleSubmit, watch } = useForm({ mode: 'onTouched' });
+  const { register, formState: { errors }, handleSubmit, watch, trigger } = useForm({ mode: 'onTouched' });
   const [visible, setVisible] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
   const userType = location["pathname"].includes("organization") ? "employer" : "seeker";
+   const color = watch("password") === watch("cpassword") ? "#07F407" : "#ff2d00"
+  const [fetchingErrors, setFetchingErrors] = useState({'email': false})
 
   //const userType = location.state["userType"];
   // const { info, setInfo } = useState(); 
 
   // console.log("errors", { errors })
 
-  function handleVisibility() {
+  const handleVisibility = () => {
     //Passsword Visibility toggle
     setVisible(!visible);
   }
 
 
-  function subForm(data) {
+  const subForm = (data) => {
     //Form data submission and passing it to sign up page part 2
     console.log(data)
     navigate(userType==="employer"?"/signup/organization/personal-details":"/signup/personal-details", { state: { "email": data.email, "password": data.password, "userType": userType, "verified": true } })
@@ -49,15 +51,31 @@ function SignUpForm() {
         }
       }))
       console.log("email verification", r)
+      setFetchingErrors({...fetchingErrors, "email": false})
+
       return r.data;
      }
      catch(e){
       console.log("email verify error", e)
       alert("email verification failed")
+      setFetchingErrors({...fetchingErrors, "email": true})
+
       return "error"
      }
   }
-  const color = watch("password") === watch("cpassword") ? "#07F407" : "#ff2d00"
+ 
+  const parallelRetryFn = (delay) =>{
+    setTimeout(() => {
+      if(fetchingErrors.email)trigger(['email']);
+    }, delay);
+    console.log(delay, " ms over")
+  return () => clearInterval(parallelRetryFn);
+  }
+  useEffect(()=>
+    {console.log("fetching errors", fetchingErrors)
+    if(Object.keys(fetchingErrors).some((e)=>fetchingErrors[e] === true))parallelRetryFn(RETRY_DELAY);
+
+    }, [fetchingErrors])
   return (
     <>
       {/*SignUp Form*/}

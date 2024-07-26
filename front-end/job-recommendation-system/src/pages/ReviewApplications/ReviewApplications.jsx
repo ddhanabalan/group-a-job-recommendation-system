@@ -565,7 +565,7 @@ export default function ReviewApplications({ userType, invite = null }) {
                         <div className="back-button-review" onClick={() => setSideBar(false)}><BackBtn outlineShape={"square"} butColor={"white"} /></div>
                     </>
                     :
-                    <OpeningsListBar data={filtered} userType={userType} userID={companyID} pageType="review" chooseEntry={chooseEntry} searchBar={searchBar} listToDescParentFunc={listToDescParentFunc} preselectedEntry={selectedEntry} filterFunc={filterStateSet} deleteJobFunc={DeleteJobAPI} editJobVacancyStatusFunc={editJobVacancyStatusAPI} invite={Number(link_data.job_id)} />
+                    <OpeningsListBar data={filtered} userType={userType} userID={companyID} pageType="review" chooseEntry={chooseEntry} searchBar={searchBar} listToDescParentFunc={listToDescParentFunc} preselectedEntry={selectedEntry} /*filterFunc={filterStateSet}*/ deleteJobFunc={DeleteJobAPI} editJobVacancyStatusFunc={editJobVacancyStatusAPI} invite={Number(link_data.job_id)} />
                 }
             </div>
             {filterstat ?

@@ -7,3 +7,11 @@
     padding: 20px;
     overflow: hidden;
 }
+.prompt-text{
+    margin-top: 3%;
+    margin-left: 20%;
+}
+
+.jobs-listing{
+    overflow-y: hidden;
+}

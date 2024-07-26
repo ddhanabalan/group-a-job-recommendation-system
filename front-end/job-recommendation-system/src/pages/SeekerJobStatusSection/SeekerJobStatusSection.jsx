@@ -310,7 +310,7 @@ export default function SeekerJobStatusSection({userType}) {
                 :
                 <></>
             }*/}
-                <OpeningsListBar data={filtered} userType={userType} userID={COMPANYID} pageType="review" chooseEntry={chooseEntry} seekerJobs={true} searchBar={searchBar} listToDescParentFunc={listToDescParentFunc} preselectedEntry={selectedEntry} preselectedEntryType={selectedEntryType} filterFunc={filterStateSet} />
+                <OpeningsListBar data={filtered} userType={userType} userID={COMPANYID} pageType="review" chooseEntry={chooseEntry} seekerJobs={true} searchBar={searchBar} listToDescParentFunc={listToDescParentFunc} preselectedEntry={selectedEntry} preselectedEntryType={selectedEntryType} /*filterFunc={filterStateSet}*/ />
             </div>
             {filterstat?
             <div className="filter enabled">

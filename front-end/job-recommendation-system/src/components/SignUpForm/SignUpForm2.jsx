@@ -14,6 +14,8 @@ import profilePlaceholder from '../../images/profile_placeholder.svg';
 import greentick from '../../images/green-confirm.json'
 import failanim from '../../images/fail-animation.json'
 import moment from 'moment/moment.js';
+import { Autocomplete } from '@mui/material';
+import { utilsAPI } from '../../api/axios';
 
 function SignUpForm2() {
   const VisuallyHiddenInput = styled('input')({
@@ -28,14 +30,19 @@ function SignUpForm2() {
     width: 1,
   });
 
-  const { register, formState: { errors }, handleSubmit, watch } = useForm({ mode: 'onTouched' });
-  const signupAge = 18;
-  const countries = ['India', 'USA', 'Australia', 'China', 'Japan']
+  const { register, formState: { errors }, handleSubmit, watch,trigger } = useForm({ mode: 'onTouched' });
+  const RETRY_DELAY = 5000;
+  const SIGNUP_AGE = 18;
+  const backupCountries = [{"country":'India'}, {"country":'USA'}, {"country": "Germany"}]
   const genders = ['Male', 'Female', 'Transgender', 'Others']
-  const industries = ['Automobile', 'Agriculture', 'Medical', 'Defense', 'Aeronautical', 'Chemical']
+  const backupIndustries = [{"industry":'Automobile'}, {"industry":'Agriculture'}, {"industry": 'Medical'}, {"industry": 'Defense'}, {"industry": 'Aeronautical'}, {"industry": 'Chemical'}]
+
   const location = useLocation();
   const navigate = useNavigate();
   const userType = location["pathname"].includes("organization") ? "employer" : "seeker";
+
+  const [countries, setCountries] = useState([])
+  const [industries, setIndustries] = useState([])
 
   //error messages received after submitting form
   /*const serverErrorMsgs= {200: "Account creation request sent successfully",
@@ -51,6 +58,7 @@ function SignUpForm2() {
   const [bannerColor, setBannerColor] = useState();
   const [serverMsg, setServerMsg] = useState({});
   const [mailInfo, setMailInfo] = useState(location.state?location.state : null);
+  const [fetchingErrors, setFetchingErrors] = useState({"username": false, "industries": false, "countries": false});
   const handleChange = (e) => {
     console.log(e)
     const fac = new FastAverageColor();
@@ -67,7 +75,7 @@ function SignUpForm2() {
   // const { info, setInfo } = useState(); 
   const dateValidation = (dob) => {
     const age = parseInt(moment(new Date()).diff(moment(dob), 'years'));
-    //console.log(age, ">=", signupAge, ":", age>=signupAge)
+    //console.log(age, ">=", sIGNUP_AGE, ":", age>=sIGNUP_AGE)
 
     return age;
   }
@@ -116,6 +124,8 @@ function SignUpForm2() {
   const usernameVerify= async(username)=>{
     console.log("hello")
     if (!/^[a-zA-Z0-9_]{3,16}$/.test(username)) {
+      
+
       return "out of constraints";
     }
     try{
@@ -125,21 +135,95 @@ function SignUpForm2() {
         }
       }))
       console.log("username verification", r)
+      setFetchingErrors({...fetchingErrors, "username": false})
+
       return r.data;
      }
      catch(e){
+      setFetchingErrors({...fetchingErrors, "username": true})
       console.log("username verify error", e)
-      alert("Username verification failed")
-      return "error"
+      //alert("Username verification failed")
+      return true //"error"
      }
   }
+
+  const fetchIndustries= async ()=>{
+    try{
+      const r = await utilsAPI.get('api/v1/industry/');
+      if(r.data.length) 
+        {setIndustries(r.data);
+      setFetchingErrors({...fetchingErrors, "industries": false});
+    }
+      else{
+        setIndustries(backupIndustries);
+        setFetchingErrors({...fetchingErrors, "industries": true});
+      }
+    }
+    catch(e){
+      console.log("industry fetch failed", e);
+      //alert("industries not fetched");
+      setIndustries(backupIndustries);
+      setFetchingErrors({...fetchingErrors, "industries": true});
+    }
+  }
+
+  const fetchCountries= async ()=>{
+    try{
+      const r = await utilsAPI.get('api/v1/country/');
+      if(r.data.length) 
+        {setCountries(r);
+        setFetchingErrors({...fetchingErrors, "countries": false})
+    }
+      else{
+        setCountries(backupCountries);
+        
+        setFetchingErrors({...fetchingErrors, "countries": true})
+
+      }
+    }
+    catch(e){
+      console.log("industry fetch failed", e);
+      //alert("industries not fetched");
+      setCountries(backupCountries);
+      setFetchingErrors({...fetchingErrors, "countries": true})
+
+    }
+  }
+
+  const generateDelay = (delay, callback, value=null) => {
+    setTimeout(() => {
+      value?callback(value):callback()
+    }, delay);
+    console.log(delay, " ms over")
+    return () => clearInterval(generateDelay);
+    }
+
+    const parallelRetryFn = (delay) =>{
+      setTimeout(() => {
+        if(fetchingErrors.username)trigger(['username']);
+          if(fetchingErrors.industries)fetchIndustries();
+          if(fetchingErrors.countries)fetchCountries();
+      }, delay);
+      console.log(delay, " ms over")
+    return () => clearInterval(parallelRetryFn);
+    }
+  
 
   const pageClass = `page-container ${userType === "seeker" ? 'signup-page-user' : 'signup-page'}`;
   console.log("serverMessage", serverMsg)
 
-  useEffect(()=>{if( !(mailInfo?.verified)){
-    navigate("/")
-  }},[mailInfo])
+   useEffect(()=>{if( !(mailInfo?.verified)){
+     navigate("/")
+   }},[mailInfo])
+  useEffect(()=>{
+    fetchIndustries();
+    fetchCountries();
+  }, [])
+  useEffect(()=>
+    {console.log("fetching errors", fetchingErrors, industries, countries)
+    if(Object.keys(fetchingErrors).some((e)=>fetchingErrors[e] === true))parallelRetryFn(RETRY_DELAY);
+
+    }, [fetchingErrors])
   return (
     <>
       {/*SignUp Form part-2(Personal info from seekers/Company info from employers)*/}
@@ -255,14 +339,27 @@ function SignUpForm2() {
                     /*Country*/
                     <div>
                       <p className="text-head">Industry<span className="text-danger"> *</span></p>
-                      <TextField className="personal-details-input" variant="outlined" select defaultValue=""
-                        error={'industry' in errors}
-                        {...register("industry",
-                          {
-                            required: "please select industry"
-                          })}>
-                        {industries.map((op) => (<MenuItem key={op} value={op}>{op}</MenuItem>))}
-                      </TextField>
+                      <Autocomplete
+                                            disablePortal
+                                            options={industries}
+                                            
+                                            
+                                            getOptionLabel={(option) => option["industry"]}
+                                            isOptionEqualToValue={(option) =>industries.some(e => e["industry"] === option)}
+                                            
+                                            renderInput={(params) => <TextField
+                                                className="personal-details-input"
+                                                {...params}
+                                                InputProps={{
+                                                    ...params.InputProps,
+                                                    disableUnderline: true,
+                                                }}
+                                                
+                                                variant="outlined"
+                                                
+                                                {...register("industry", { required: "Field is required", })}
+                                            />}
+                                        />
                       <p className="error-message">{errors.industry?.message || ""}</p>
                     </div>
                 }
@@ -271,16 +368,27 @@ function SignUpForm2() {
               {/*Country*/}
               <div id="item-5">
                 <p className="text-head">Country<span className="text-danger"> *</span></p>
-                <TextField className="personal-details-input" variant="outlined" select
-                  defaultValue=""
-
-                  error={'country' in errors}
-                  {...register("country",
-                    {
-                      required: "please select country",
-                    })}>
-                  {countries.map((op) => (<MenuItem key={op} value={op}>{op}</MenuItem>))}
-                </TextField>
+                                        <Autocomplete
+                                            disablePortal
+                                            options={countries}
+                                            
+                                            
+                                            getOptionLabel={(option) => option["country"]}
+                                            isOptionEqualToValue={(option) =>countries.some(e => e["country"] === option)}
+                                            
+                                            renderInput={(params) => <TextField
+                                                className="personal-details-input"
+                                                {...params}
+                                                InputProps={{
+                                                    ...params.InputProps,
+                                                    disableUnderline: true,
+                                                }}
+                                                
+                                                variant="outlined"
+                                                
+                                                {...register("country", { required: "Field is required", })}
+                                            />}
+                                        />
                 <p className="error-message">{errors.country?.message || ""}</p>
               </div>
 
@@ -333,7 +441,7 @@ function SignUpForm2() {
                           {
 
                             required: "please enter dob",
-                            validate: (val) => dateValidation(val) >= signupAge || "Age should be above 18 to register",
+                            validate: (val) => dateValidation(val) >= SIGNUP_AGE || "Age should be above 18 to register",
                           })} />
                       <p className="error-message">{errors.dob?.message || ""}</p>
                     </div>

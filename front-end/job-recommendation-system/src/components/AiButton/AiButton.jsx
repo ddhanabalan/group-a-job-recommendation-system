@@ -20,14 +20,14 @@ export default function ({ value, callFn, loading, jobSelection=null, blankModel
         
     }
 
-    useEffect(()=>{errorMsg && generateDelay(3000, setErrorMsg, null)}, [errorMsg])
+    useEffect(()=>{errorMsg && generateDelay(2000, setErrorMsg, null)}, [errorMsg])
     
     // const [loading, SetLoading] = useState(false);
     return (
         <div className="ai-btn-container">
             <h3 className='ai-btn-h3'>Let us Find the Best</h3>
             <p className='ai-btn-p'>{value} based on your choices and activities</p>
-            <button className="ai-btn" onClick={!loading && modelCallingFn}>
+            <button className="ai-btn" onClick={!errorMsg && modelCallingFn}>
                 {loading ? <Lottie animationData={AiBtnAnimated} loop={true} /> : <img src={AiBtn} alt="Ai Button" />}
             </button>
             {
