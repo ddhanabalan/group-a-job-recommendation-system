@@ -2,7 +2,7 @@ import './StatsAI.css';
 import AiButton from '../AiButton/AiButton';
 import OpeningsListBar from '../OpeningsListBar/OpeningsListBar';
 export default function StatsAI({ value, callFn, aiBtnloading,jobs=[], chooseEntryFunc, jobSearchFunc, listToDescParentFunc, selectedEntry=null, blankModelData=null }) {
-    
+    console.log("loading ai reco", aiBtnloading)
     return (
         <div className="StatsAIContainer">
             <AiButton value={value} callFn={callFn} loading={aiBtnloading}  jobSelection={selectedEntry} blankModelData={blankModelData}/>

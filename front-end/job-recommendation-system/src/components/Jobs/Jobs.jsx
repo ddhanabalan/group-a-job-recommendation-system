@@ -8,7 +8,9 @@ import { v4 as uuid } from 'uuid';
 
 export default function Jobs({ userData, data=[], modelData=[],dataType=null, dataToParentFn = null, createJobRequest = null, handleInvite=null, desc_state = null, }) {
 
-    const finalInfo = [...data, ...modelData];
+    const randomJobs = [...data]
+    const aiJobs = [...modelData]
+    const finalInfo = [...randomJobs, ...aiJobs];
     console.log("final information to job card", finalInfo)
     //const userType="none";
     //console.log("data to card", finalInfo)
@@ -27,6 +29,12 @@ export default function Jobs({ userData, data=[], modelData=[],dataType=null, da
 
 
     }
+
+    const scrollToStart = ()=>{
+        window.scrollTo({top:0,
+            behavior: 'smooth'}
+        )
+    }
     //console.log("description status job component",descriptionOn);
 
     useEffect(() => {
@@ -39,6 +47,9 @@ export default function Jobs({ userData, data=[], modelData=[],dataType=null, da
     useEffect(() => {
         if (selectedId != null) setSelectedJob(finalInfo.filter(e => (e.id == selectedId ? e : false))[0]);
     }, [finalInfo])
+    useEffect(() => {
+        if(modelData)scrollToStart();
+    }, [modelData])
     const demoInfo = [{ id: 0, jobTitle: "Python Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000", "10000"], postDate: "13/9/23", location: 'London', empType: 'Full-time', exp: '5-10 years', jobDesc: "This is for demo purpose", jobReq: "This is for demo purpose", skills: ["python", "AI", "Django"] },
     { id: 1, jobTitle: "Java Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000", "10000"], postDate: "13/9/23", location: 'Moscow', empType: 'Internship', exp: '1-5 years', jobDesc: "This is for demo purpose", jobReq: "This is for demo purpose", skills: ["java", "AI"] },
     { id: 2, jobTitle: "Ruby Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000", "10000"], postDate: "13/9/23", location: 'Uganda', empType: 'Temporary', exp: 'Fresher', jobDesc: "This is for demo purpose", jobReq: "This is for demo purpose", skills: ["ruby", "AI", "Django"] },
@@ -58,9 +69,9 @@ export default function Jobs({ userData, data=[], modelData=[],dataType=null, da
                 : (
                     <>  
                         {console.log("lenghds ", modelData.length)}
-                        {dataType !== "approval"&& <AiJobs childData={modelData} expandView={openDesc} />}
+                        {(dataType !== "approval"&& aiJobs.length) ?<AiJobs childData={modelData} expandView={openDesc} />: <></>}
                         {
-                            Object.keys(finalInfo).map((card) => (<JobCard key={uuid()} id={finalInfo[card]["id"]} expandView={openDesc} data={{ ...finalInfo[card], 'userType': "seeker" }} />))
+                            randomJobs.map((job) => (<JobCard key={uuid()} id={job.id} expandView={openDesc} data={{ ...job, 'userType': "seeker" }} />))
                         }
                     </>
                 )

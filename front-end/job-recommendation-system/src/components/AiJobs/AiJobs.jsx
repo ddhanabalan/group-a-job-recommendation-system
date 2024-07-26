@@ -6,7 +6,7 @@ import  {v4 as uuid} from 'uuid';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
 export default function AiJobs({ childData, expandView }) {
     useEffect(() => {
-        setRecJobs(childData)
+        if(childData)setRecJobs(childData);
     },[childData])
     const [recJobs, setRecJobs] = useState([])
     return (

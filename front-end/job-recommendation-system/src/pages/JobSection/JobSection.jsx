@@ -75,14 +75,17 @@ export default function JobSection() {
                 }
             })
             console.log("model response", response)
-            const mod_response = dataNormalizer(response.data)
+            let mod_response = dataNormalizer(response.data)
             if (mod_response && !mod_response.length) {
+                
                 setBlankModelData(true)
             }
             else {
+                duplicatesFilter(mod_response);
                 setBlankModelData(false)
+                setAiJobs(mod_response)
             }
-            setAiJobs(mod_response)
+            
             setAiBtnLoading(false)
             return true;
         } catch (e) {
@@ -134,11 +137,11 @@ export default function JobSection() {
         return normalized_response;
 
     }
-    const duplicatesFilter = () => {
-        const test = AiJobs.map(job => job.id)
-        const originals = jobVacancies.filter(e => !(AiJobs.map(job => job.id).includes(e.id)))
-        console.log("originals", originals, test, jobVacancies, AiJobs)
-        setJobVacancies(originals);
+    const duplicatesFilter = (data) => {
+        const test = data.map(job => job.id)
+        const originals = jobVacancies.filter(e => !(data.map(job => job.id).includes(e.id)))
+        console.log("originals", originals, test, jobVacancies, data)
+        if(originals.length)setJobVacancies(originals);
     }
     /*
     const GetSeekerDetails = async () => {
@@ -264,7 +267,7 @@ export default function JobSection() {
     console.log("user datum", userData);
     useEffect(() => { if (descriptionOn) GetUserInvites() }, [descriptionOn])
     useEffect(() => { callJobVacancyAPI() }, [filterparam, searchVal, userInvites]);
-    useEffect(() => { if (jobVacancies) duplicatesFilter() }, [AiJobs])
+   // useEffect(() => { if (jobVacancies) duplicatesFilter() }, [AiJobs])
 
 
     return (
