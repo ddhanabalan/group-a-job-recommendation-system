@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form'
+import { useForm, FormProvider, useFormContext } from 'react-hook-form'
 import { useState, useEffect } from 'react'
 import { Button, TextField, MenuItem } from '@mui/material'
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -14,12 +14,19 @@ import greentick from '../../images/green-confirm.json'
 import failanim from '../../images/fail-animation.json'
 import '../SignUpForm/SignUpForm2.css';
 import './ProfileEdit.css';
-export default function ProfileEdit({ data, register, errors }) {
+export default function ProfileEdit({ data,isErrorChild,register }) {
+    const {  formState: { errors } } = useFormContext();
     const [user, SetUser] = useState()
     useEffect(() => {
         SetUser(getStorage("userType"))
     }, [])
     console.log("error in head", data.first_name)
+    Object.keys(errors).length === 0 && isErrorChild(false)
+    const myErrors = errors
+    useEffect(() => {
+        console.log("hhhwhhw",errors)
+        Object.keys(errors).length !== 0 && isErrorChild(true) 
+    },[myErrors])
     return (
         <>
             {/*SignUp Form part-2(Personal info from seekers/Company info from employers)*/}
@@ -41,7 +48,7 @@ export default function ProfileEdit({ data, register, errors }) {
                                     error={'first_name' in errors}
                                     {...register("first_name",
                                         {
-                                            required: "please enter first name",
+                                            required: "Please enter first name",
                                             pattern: {
                                                 value: /^[a-zA-Z]+$/,
                                                 message: "Only letters allowed"
@@ -60,7 +67,7 @@ export default function ProfileEdit({ data, register, errors }) {
                                     error={'company_name' in errors}
                                     {...register("company_name",
                                         {
-                                            required: "please enter company name",
+                                            required: "Please enter company name",
                                             pattern: {
                                                 value: /^[a-zA-Z]+$/,
                                                 message: "Only letters allowed"
@@ -78,7 +85,7 @@ export default function ProfileEdit({ data, register, errors }) {
                                     error={'last_name' in errors}
                                     {...register("last_name",
                                         {
-                                            required: "please enter last name",
+                                            required: "Please enter last name",
                                             pattern: {
                                                 value: /^[a-zA-Z\s]+$/,
                                                 message: "Only letters and whitespace allowed"
@@ -96,7 +103,7 @@ export default function ProfileEdit({ data, register, errors }) {
                                 error={'country' in errors}
                                 {...register("country",
                                     {
-                                        required: "please select country",
+                                        required: "Please select country",
                                     })}>
                             </TextField>
                             <p className="error-message">{errors.country?.message || ""}</p>
@@ -110,11 +117,8 @@ export default function ProfileEdit({ data, register, errors }) {
                                 error={'city' in errors}
                                 {...register("city",
                                     {
-                                        required: "",
-                                        pattern: {
-                                            value: /^\d{10}$/, // Regular expression to check exactly 10 digits
-                                            // message: "Phone number must be exactly 10 numbers"
-                                        }
+                                        required: "Please enter city",
+                                       
                                     })} />
 
                             <p className="error-message">{errors.city?.message || ""}</p>
@@ -122,7 +126,7 @@ export default function ProfileEdit({ data, register, errors }) {
 
                     </div>
                     <div id="item-8">
-                        <p className="text-head">Bio<span className="text-danger"> *</span></p>
+                        <p className="text-head">Bio</p>
                         <TextField className="personal-details-input profile-edit-bio profile-edit-input" variant="outlined" fullWidth
                             multiline
                             defaultValue={data.bio}

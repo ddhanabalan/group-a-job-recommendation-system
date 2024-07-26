@@ -6,6 +6,8 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Link } from 'react-router-dom';
 import Tooltip from '@mui/material/Tooltip';
 import CorporateFareRoundedIcon from '@mui/icons-material/CorporateFareRounded';
+import LockRoundedIcon from '@mui/icons-material/LockRounded';
+import LockOpenRoundedIcon from '@mui/icons-material/LockOpenRounded';
 import { useState, useEffect } from 'react';
 
 
@@ -114,13 +116,13 @@ export default function JobOpeningCard({ data, type = null, highlighted = null, 
                                             Edit
                                         </Button>
                                     </Link>
-                                    <Button variant="contained" disableElevation onClick={editJobVacancyStatusFunc ? () => editJobVacancyStatusFunc({ ...data,"last_date": dateFormatter(data.last_date)}, true) : undefined} className="opening-edit-button" sx={{ color: 'black', backgroundColor: '#eae9e9', border: 'solid 1px black', width: 'fit-content', paddingY: "2px", paddingX: "10px", textTransform: "none", borderRadius: 20 }} endIcon={<EditIcon />}>
+                                            <Button variant="contained" disableElevation onClick={editJobVacancyStatusFunc ? () => editJobVacancyStatusFunc({ ...data, "last_date": dateFormatter(data.last_date) }, true) : undefined} className="opening-edit-button" sx={{ color: 'black', backgroundColor: '#eae9e9', border: 'solid 1px black', width: 'fit-content', paddingY: "2px", paddingX: "10px", textTransform: "none", borderRadius: 20 }} endIcon={<LockRoundedIcon />}>
                                             Withdraw
                                     </Button>
                                     </>
                                     :
                                     <Link to="../employer/job-vacancy" state={{ ...data, last_date: null, edit: true, reopen: true }}>
-                                        <Button variant="contained" disableElevation  className="opening-edit-button" sx={{ color: 'black', backgroundColor: '#eae9e9', border: 'solid 1px black', width: 'fit-content', paddingY: "2px", paddingX: "10px", textTransform: "none", borderRadius: 20 }} endIcon={<EditIcon />}>
+                                            <Button variant="contained" disableElevation className="opening-edit-button" sx={{ color: 'black', backgroundColor: '#eae9e9', border: 'solid 1px black', width: 'fit-content', paddingY: "2px", paddingX: "10px", textTransform: "none", borderRadius: 20 }} endIcon={<LockOpenRoundedIcon />}>
                                                 Reopen
                                         </Button>
                                     </Link>

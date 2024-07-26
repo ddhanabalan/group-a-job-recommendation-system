@@ -30,7 +30,7 @@ export default function AddTags({ data, availableDomains, updateFn, changeFn, de
 
                 {/*textfield with or without google location search for tagging places*/}
                 {data.isLocation
-                    ? <GoogleLocationSearch data={data} changeFn={changeFn} locationValue={value} value={locationFieldAutoValue} updateValue={updatelocationFieldAutoValue} />
+                    ? <GoogleLocationSearch usedIn="filter" data={data} changeFn={changeFn} locationValue={value} value={locationFieldAutoValue} updateValue={updatelocationFieldAutoValue} />
                     : <Autocomplete
                         options={availableDomains}
                         value={{ "name": value }}

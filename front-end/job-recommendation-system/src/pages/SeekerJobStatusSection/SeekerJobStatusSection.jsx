@@ -115,6 +115,7 @@ export default function SeekerJobStatusSection({userType}) {
               jobTitle: r.data.job_name,
               job_invite_id: application_id,
               invite_status: job_status,
+              profilePic:r.data.profile_pic,
               application_created_at: creation_time,
               companyUsername: r.data.company_username,
               companyName: r.data.company_name,

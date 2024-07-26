@@ -10,6 +10,7 @@ import LoaderAnimation from '../../components/LoaderAnimation/LoaderAnimation';
 import ArrowForwardIcon from '@mui/icons-material/ArrowForward'
 import axios, { jobAPI } from '../../api/axios';
 import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
+import DeleteRoundedIcon from '@mui/icons-material/DeleteRounded';
 import profilePlaceholder from '../../images/profile_placeholder.svg';
 import greentick from '../../images/green-confirm.json'
 import failanim from '../../images/fail-animation.json'
@@ -30,12 +31,12 @@ function SignUpForm2() {
     width: 1,
   });
 
-  const { register, formState: { errors }, handleSubmit, watch,trigger } = useForm({ mode: 'onTouched' });
+  const { register, formState: { errors }, handleSubmit, watch, trigger } = useForm({ mode: 'onTouched' });
   const RETRY_DELAY = 5000;
   const SIGNUP_AGE = 18;
-  const backupCountries = [{"country":'India'}, {"country":'USA'}, {"country": "Germany"}]
+  const backupCountries = [{ "country": 'India' }, { "country": 'USA' }, { "country": "Germany" }]
   const genders = ['Male', 'Female', 'Transgender', 'Others']
-  const backupIndustries = [{"industry":'Automobile'}, {"industry":'Agriculture'}, {"industry": 'Medical'}, {"industry": 'Defense'}, {"industry": 'Aeronautical'}, {"industry": 'Chemical'}]
+  const backupIndustries = [{ "industry": 'Automobile' }, { "industry": 'Agriculture' }, { "industry": 'Medical' }, { "industry": 'Defense' }, { "industry": 'Aeronautical' }, { "industry": 'Chemical' }]
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -54,11 +55,11 @@ function SignUpForm2() {
   //const userType = location.state.userType;
   const [loading, SetLoading] = useState(false)
   const [success, SetSuccess] = useState(false)
-  const [img, SetImg] = useState();
+  const [img, SetImg] = useState(null);
   const [bannerColor, setBannerColor] = useState();
   const [serverMsg, setServerMsg] = useState({});
-  const [mailInfo, setMailInfo] = useState(location.state?location.state : null);
-  const [fetchingErrors, setFetchingErrors] = useState({"username": false, "industries": false, "countries": false});
+  const [mailInfo, setMailInfo] = useState(location.state ? location.state : null);
+  const [fetchingErrors, setFetchingErrors] = useState({ "username": false, "industries": false, "countries": false });
   const handleChange = (e) => {
     console.log(e)
     const fac = new FastAverageColor();
@@ -121,109 +122,111 @@ function SignUpForm2() {
 
 
 
-  const usernameVerify= async(username)=>{
+  const usernameVerify = async (username) => {
     console.log("hello")
     if (!/^[a-zA-Z0-9_]{3,16}$/.test(username)) {
-      
+
 
       return "out of constraints";
     }
-    try{
+    try {
       const r = await (axios.post(`/username/verify/${username}`, {
         headers: {
           'Content-Type': 'application/json',
         }
       }))
       console.log("username verification", r)
-      setFetchingErrors({...fetchingErrors, "username": false})
+      setFetchingErrors({ ...fetchingErrors, "username": false })
 
       return r.data;
-     }
-     catch(e){
-      setFetchingErrors({...fetchingErrors, "username": true})
+    }
+    catch (e) {
+      setFetchingErrors({ ...fetchingErrors, "username": true })
       console.log("username verify error", e)
       //alert("Username verification failed")
       return true //"error"
-     }
+    }
   }
 
-  const fetchIndustries= async ()=>{
-    try{
+  const fetchIndustries = async () => {
+    try {
       const r = await utilsAPI.get('api/v1/industry/');
-      if(r.data.length) 
-        {setIndustries(r.data);
-      setFetchingErrors({...fetchingErrors, "industries": false});
-    }
-      else{
+      if (r.data.length) {
+        setIndustries(r.data);
+        setFetchingErrors({ ...fetchingErrors, "industries": false });
+      }
+      else {
         setIndustries(backupIndustries);
-        setFetchingErrors({...fetchingErrors, "industries": true});
+        setFetchingErrors({ ...fetchingErrors, "industries": true });
       }
     }
-    catch(e){
+    catch (e) {
       console.log("industry fetch failed", e);
       //alert("industries not fetched");
       setIndustries(backupIndustries);
-      setFetchingErrors({...fetchingErrors, "industries": true});
+      setFetchingErrors({ ...fetchingErrors, "industries": true });
     }
   }
 
-  const fetchCountries= async ()=>{
-    try{
+  const fetchCountries = async () => {
+    try {
       const r = await utilsAPI.get('api/v1/country/');
-      if(r.data.length) 
-        {setCountries(r.data);
-        setFetchingErrors({...fetchingErrors, "countries": false})
-    }
-      else{
+      if (r.data.length) {
+        setCountries(r.data);
+        setFetchingErrors({ ...fetchingErrors, "countries": false })
+      }
+      else {
         setCountries(backupCountries);
-        
-        setFetchingErrors({...fetchingErrors, "countries": true})
+
+        setFetchingErrors({ ...fetchingErrors, "countries": true })
 
       }
     }
-    catch(e){
+    catch (e) {
       console.log("industry fetch failed", e);
       //alert("industries not fetched");
       setCountries(backupCountries);
-      setFetchingErrors({...fetchingErrors, "countries": true})
+      setFetchingErrors({ ...fetchingErrors, "countries": true })
 
     }
   }
 
-  const generateDelay = (delay, callback, value=null) => {
+  const generateDelay = (delay, callback, value = null) => {
     setTimeout(() => {
-      value?callback(value):callback()
+      value ? callback(value) : callback()
     }, delay);
     console.log(delay, " ms over")
     return () => clearInterval(generateDelay);
-    }
+  }
 
-    const parallelRetryFn = (delay) =>{
-      setTimeout(() => {
-        if(fetchingErrors.username)trigger(['username']);
-          if(fetchingErrors.industries)fetchIndustries();
-          if(fetchingErrors.countries)fetchCountries();
-      }, delay);
-      console.log(delay, " ms over")
+  const parallelRetryFn = (delay) => {
+    setTimeout(() => {
+      if (fetchingErrors.username) trigger(['username']);
+      if (fetchingErrors.industries) fetchIndustries();
+      if (fetchingErrors.countries) fetchCountries();
+    }, delay);
+    console.log(delay, " ms over")
     return () => clearInterval(parallelRetryFn);
-    }
-  
+  }
+
 
   const pageClass = `page-container ${userType === "seeker" ? 'signup-page-user' : 'signup-page'}`;
   console.log("serverMessage", serverMsg)
 
-   useEffect(()=>{if( !(mailInfo?.verified)){
-     navigate("/")
-   }},[mailInfo])
-  useEffect(()=>{
+  useEffect(() => {
+    if (!(mailInfo?.verified)) {
+      navigate("/")
+    }
+  }, [mailInfo])
+  useEffect(() => {
     fetchIndustries();
     fetchCountries();
   }, [])
-  useEffect(()=>
-    {console.log("fetching errors", fetchingErrors, industries, countries)
-    if(Object.keys(fetchingErrors).some((e)=>fetchingErrors[e] === true))parallelRetryFn(RETRY_DELAY);
+  useEffect(() => {
+    console.log("fetching errors", fetchingErrors, industries, countries)
+    if (Object.keys(fetchingErrors).some((e) => fetchingErrors[e] === true)) parallelRetryFn(RETRY_DELAY);
 
-    }, [fetchingErrors])
+  }, [fetchingErrors])
   return (
     <>
       {/*SignUp Form part-2(Personal info from seekers/Company info from employers)*/}
@@ -256,27 +259,41 @@ function SignUpForm2() {
                   {...register("username",
                     {
                       required: "username cannot be empty",
-                      validate:  async (username)=>{
+                      validate: async (username) => {
                         const r = await usernameVerify(username)
-                        console.log("reasponse",r)
-                        if(r==="error") return "Username couldnt be verified";
-                        else if(!r) return "Username not available"
-                        else if(r === "out of constraints") return "Username must be between 3 and 16 characters long and may contain letters, numbers, and underscores.";
-                      }  ,
+                        console.log("reasponse", r)
+                        if (r === "error") return "Username couldnt be verified";
+                        else if (!r) return "Username not available"
+                        else if (r === "out of constraints") return "Username must be between 3 and 16 characters long and may contain letters, numbers, and underscores.";
+                      },
                     })} />
                 <p className="error-message">{errors.username?.message || ""}</p>
               </div>
               <div id="item-2" className="personal-detail-picture">
                 <p className="text-head">Profile picture (optional)</p>
-                <div className='card-img-container personal-picture' style={{overflow:'visible'}}>
-                  <Button
-                    component="label"
-                    role={undefined}
-                    variant="contained"
-                    startIcon={<AddCircleRoundedIcon />}
-                  >
-                    <VisuallyHiddenInput type="file" onChange={handleChange} />
-                  </Button>
+                <div className='card-img-container personal-picture' style={{ overflow: 'visible' }}>
+                  {img === null ?
+                    <Button
+                      component="label"
+                      role={undefined}
+                      variant="contained"
+                      startIcon={<AddCircleRoundedIcon />}
+                    >
+                      <VisuallyHiddenInput type="file" onChange={handleChange} />
+                    </Button>
+                    :
+                    <Button
+                      component="label"
+                      role={undefined}
+                      variant="contained"
+                      startIcon={<DeleteRoundedIcon />}
+                      sx={{
+                        color: 'red'
+                      }}
+                      onClick={() => SetImg(null)}
+                    >
+                    </Button>
+                  }
                   <div className='p-image'>
                     <img src={img ? img : profilePlaceholder} alt="profile picture" />
                   </div>
@@ -340,26 +357,26 @@ function SignUpForm2() {
                     <div>
                       <p className="text-head">Industry<span className="text-danger"> *</span></p>
                       <Autocomplete
-                                            disablePortal
-                                            options={industries}
-                                            
-                                            
-                                            getOptionLabel={(option) => option["industry"]}
-                                            isOptionEqualToValue={(option) =>industries.some(e => e["industry"] === option)}
-                                            
-                                            renderInput={(params) => <TextField
-                                                className="personal-details-input"
-                                                {...params}
-                                                InputProps={{
-                                                    ...params.InputProps,
-                                                    disableUnderline: true,
-                                                }}
-                                                
-                                                variant="outlined"
-                                                
-                                                {...register("industry", { required: "Field is required", })}
-                                            />}
-                                        />
+                        disablePortal
+                        options={industries}
+
+
+                        getOptionLabel={(option) => option["industry"]}
+                        isOptionEqualToValue={(option) => industries.some(e => e["industry"] === option)}
+
+                        renderInput={(params) => <TextField
+                          className="personal-details-input"
+                          {...params}
+                          InputProps={{
+                            ...params.InputProps,
+                            disableUnderline: true,
+                          }}
+
+                          variant="outlined"
+
+                          {...register("industry", { required: "Field is required", })}
+                        />}
+                      />
                       <p className="error-message">{errors.industry?.message || ""}</p>
                     </div>
                 }
@@ -368,27 +385,27 @@ function SignUpForm2() {
               {/*Country*/}
               <div id="item-5">
                 <p className="text-head">Country<span className="text-danger"> *</span></p>
-                                        <Autocomplete
-                                            disablePortal
-                                            options={countries}
-                                            
-                                            
-                                            getOptionLabel={(option) => option["country"]}
-                                            isOptionEqualToValue={(option) =>countries.some(e => e["country"] === option)}
-                                            
-                                            renderInput={(params) => <TextField
-                                                className="personal-details-input"
-                                                {...params}
-                                                InputProps={{
-                                                    ...params.InputProps,
-                                                    disableUnderline: true,
-                                                }}
-                                                
-                                                variant="outlined"
-                                                
-                                                {...register("country", { required: "Field is required", })}
-                                            />}
-                                        />
+                <Autocomplete
+                  disablePortal
+                  options={countries}
+
+
+                  getOptionLabel={(option) => option["country"]}
+                  isOptionEqualToValue={(option) => countries.some(e => e["country"] === option)}
+
+                  renderInput={(params) => <TextField
+                    className="personal-details-input"
+                    {...params}
+                    InputProps={{
+                      ...params.InputProps,
+                      disableUnderline: true,
+                    }}
+
+                    variant="outlined"
+
+                    {...register("country", { required: "Field is required", })}
+                  />}
+                />
                 <p className="error-message">{errors.country?.message || ""}</p>
               </div>
 
