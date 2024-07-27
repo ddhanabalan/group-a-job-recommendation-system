@@ -557,7 +557,6 @@ export default function JobVacancyForm({ data = {} }) {
                                     <div className="create-job-desc-field"><CreateFormTextFields inputPlaceholder="Enter criteria" fontsz="14px" wparam="100%" defaultValue={dta.jobReq || ""} multipleLine={true} minrows={8} /*justify={true}*/ {...register("jobReq", { required: "Field required", })} /></div>
                                     <p className="create-job-desc-field error-message">{errors.jobReq?.message}</p>
                                 </div>
-
                             </div>
                         </div>
 

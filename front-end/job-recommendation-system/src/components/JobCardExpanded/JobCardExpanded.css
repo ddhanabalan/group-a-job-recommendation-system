@@ -232,6 +232,7 @@
 }
 
 .processing-animation{
-    width: 10rem;
-    height: 10rem;
+    margin-top: 10%;
+    width:5rem;
+    height: 5rem;
 }

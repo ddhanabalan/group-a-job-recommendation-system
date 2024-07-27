@@ -14,9 +14,11 @@ import { jobAPI, userAPI } from "../../api/axios";
 import { LocalConvenienceStoreOutlined } from "@mui/icons-material";
 import NavigationBar from "../../components/NavigationBar/NavigationBar";
 import careerGoLogo from "../../images/careergo_logo.svg"
+import LoaderAnimation from '../../components/LoaderAnimation/LoaderAnimation';
 import { stubTrue } from "lodash";
 
-export default function SeekerJobStatusSection({userType}) {
+export default function SeekerJobStatusSection({ userType }) {
+  const [loading, SetLoading] = useState(true)
     const COMPANYID = (userType==="employer"?getStorage("userID"):getStorage("guestUserID"));
     const PROCESSING_DELAY = 1000;
     const receivedData = useLocation();
@@ -93,7 +95,10 @@ export default function SeekerJobStatusSection({userType}) {
         } catch (e) {
           console.log("jobs failed", e);
           alert(e.message);
-        }
+      }
+        finally {
+          SetLoading(false);
+      }
         
       };
       
@@ -347,7 +352,8 @@ export default function SeekerJobStatusSection({userType}) {
     console.log("updated vacancies", jobVacancies)
 
     return (
-        <div id="page">
+      <div id="page">
+        {loading && <LoaderAnimation />}
             <div className={`review-left-bar${sidebarState?" wide":""}`}>
             {/*{jobVacancies.length!=0?
                 <OpeningsListBar data={jobVacancies} userType={userType} userID={COMPANYID} pageType="review" chooseEntry={chooseEntry} searchBar={searchBar} listToDescParentFunc={listToDescParentFunc} preselectedEntry={selectedEntry} filterFunc={filterStateSet} />

@@ -15,6 +15,7 @@ import LoaderAnimation from '../../components/LoaderAnimation/LoaderAnimation';
 import cloudAnimation from '../../images/cloud-animation.json';
 import './EmployerProfileSection.css';
 export default function EmployerProfileSection({ data }) {
+    const [loading, SetLoading] = useState(true)
     let COMPANY_USERNAME= null;
     let COMPANY_ID = null;
     const [newData, SetnewData] = useState(data);
@@ -70,6 +71,9 @@ export default function EmployerProfileSection({ data }) {
                 console.log(e)
 
                 alert(e.message)
+            }
+            finally {
+                SetLoading(false)
             }
         }
         profileAPI()
@@ -140,6 +144,7 @@ export default function EmployerProfileSection({ data }) {
     }
     return (
         <div id="employer-profile-page">
+            {loading && <LoaderAnimation />}
             {redirectHome && <Navigate to='/' />}
             <ProfileHead logOutFn={logOut} data={newData} blurFn={blurBody} subForm={subForm} isNotEditing={isNotEditing} setIsNotEditing={updateEditStatus} />
             <NavigationBar active="profile" />

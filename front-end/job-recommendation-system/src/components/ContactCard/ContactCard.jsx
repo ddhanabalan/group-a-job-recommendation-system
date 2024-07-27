@@ -16,10 +16,18 @@ import './ContactCard.css';
 export default function ContactCard({ access, data, contactData, reloadFn, showSuccessMsg, showFailMsg }) {
     const [isNotEditing, SetIsNotEditing] = useState(true);
     const [user, SetUser] = useState()
-    const { register, formState: { errors }, getValues, trigger, setError } = useForm({});
+    const { register, formState: { errors }, getValues, trigger,watch,setError } = useForm({ mode: 'onChange' });
     useEffect(() => {
         SetUser(getStorage("userType"))
     })
+    useEffect(() => {
+        const watchedField = watch('website')
+        if (watchedField !== undefined && watchedField !== null && watchedField.length > 128) {
+            console.log("mow")
+            'website' in errors ?"": setError("website", { message: "Link should not exceed 128 characters" })
+            console.log("bow")
+        }
+    }, [watch(['website'])])
     async function updateContact(data) {
         SetIsNotEditing(true)
         console.log(data)
@@ -67,26 +75,32 @@ export default function ContactCard({ access, data, contactData, reloadFn, showS
             {
                 isNotEditing ?
                     <Stack direction="column" spacing={1} className='contact-cards'>
-                        <Stack direction="row" spacing={1} className='contact-medium'>
-                            <IconButton aria-label="email" disabled>
-                                <EmailIcon />
-                            </IconButton>
-                            <p className="contact-p">{contactData.contact_email ? contactData.contact_email : <span className='data-not-present-handle'>not linked</span>}</p>
-                        </Stack>
-                        {user === "seeker" &&
+                        <a target='_blank' href={contactData.contact_email !== "" ? `mailto:${contactData.contact_email}` : "#"} style={{ color: 'black' }} rel="noopener noreferrer">
                             <Stack direction="row" spacing={1} className='contact-medium'>
-                                <IconButton aria-label="github" disabled>
-                                    <GitHubIcon />
+                                <IconButton aria-label="email" disabled>
+                                    <EmailIcon />
                                 </IconButton>
-                                <p className="contact-p">{contactData.github ? contactData.github : <span className='data-not-present-handle'>not linked</span>}</p>
+                                <p className="contact-p">{contactData.contact_email ? contactData.contact_email : <span className='data-not-present-handle'>not linked</span>}</p>
                             </Stack>
+                        </a>
+                        {user === "seeker" &&
+                            <a target='_blank' href={contactData.github !== "" ? `https://github.com/${contactData.github}` : "#"} style={{ color: 'black' }} rel="noopener noreferrer">
+                                <Stack direction="row" spacing={1} className='contact-medium'>
+                                    <IconButton aria-label="github" disabled>
+                                        <GitHubIcon />
+                                    </IconButton>
+                                    <p className="contact-p">{contactData.github ? contactData.github : <span className='data-not-present-handle'>not linked</span>}</p>
+                                </Stack>
+                            </a>
                         }
-                        <Stack direction="row" spacing={1} className='contact-medium'>
-                            <IconButton aria-label="website" disabled>
-                                <PublicIcon />
-                            </IconButton>
-                            <p className="contact-p">{contactData.website ? contactData.website : <span className='data-not-present-handle'>not linked</span>}</p>
-                        </Stack>
+                        <a href={contactData.website ? contactData.website : "#"} target="_blank" rel="noopener noreferrer" style={{ color: 'black' }} >
+                            <Stack direction="row" spacing={1} className='contact-medium'>
+                                <IconButton aria-label="website" disabled>
+                                    <PublicIcon />
+                                </IconButton>
+                                <p className="contact-p">{contactData.website ? (contactData.website.includes("https://") ? contactData.website.replace("https://", "") : contactData.website.replace("http://", "")) : <span className='data-not-present-handle'>not linked</span>}</p>
+                            </Stack>
+                        </a>
                     </Stack>
 
                     :
@@ -97,18 +111,18 @@ export default function ContactCard({ access, data, contactData, reloadFn, showS
                                 <EmailIcon />
                             </IconButton>
                             <div style={{ width: '80%' }}>
-                            <TextField sx={{width: '100%'}} className="personal-details-input profile-edit-bio contact-card-textfield" variant="outlined"
-                                defaultValue={contactData.contact_email}
-                                placeholder='example@mail.com'
-                                error={'contact_email' in errors}
-                                {...register("contact_email",
-                                    {
-                                        pattern: {
-                                            value: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
-                                            message: "Email not valid"
-                                        },
-                                        onChange: onTrigger
-                                    })}>
+                                <TextField sx={{ width: '100%' }} className="personal-details-input profile-edit-bio contact-card-textfield" variant="outlined"
+                                    defaultValue={contactData.contact_email}
+                                    placeholder='example@mail.com'
+                                    error={'contact_email' in errors}
+                                    {...register("contact_email",
+                                        {
+                                            pattern: {
+                                                value: /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+                                                message: "Email not valid"
+                                            },
+                                            onChange: onTrigger
+                                        })}>
                                 </TextField>
                                 <p className="error-message" style={{ fontSize: '.8rem' }}>{errors.contact_email?.message || ""}</p>
                             </div>
@@ -135,27 +149,27 @@ export default function ContactCard({ access, data, contactData, reloadFn, showS
                                 <PublicIcon />
                             </IconButton>
                             <div style={{ width: '80%' }}>
-                            <TextField sx={{ width: '100%' }} className="personal-details-input profile-edit-bio contact-card-textfield" variant="outlined"
-                                onInput={onTrigger}
-                                defaultValue={contactData.website}
-                                placeholder='website url'
-                                error={'website' in errors}
-                                {...register("website",
-                                    {
-                                        pattern: {
-                                            value: /^(http(s)?:\/\/)?(www\.)?[a-zA-Z0-9_\-.]+\.[a-zA-Z]{2,5}(\/\S*)?$/,
-                                            message: "invalid website"
-                                        },
-                                        onChange: onTrigger
-                                    })}>
+                                <TextField sx={{ width: '100%' }} className="personal-details-input profile-edit-bio contact-card-textfield" variant="outlined"
+                                    onInput={onTrigger}
+                                    defaultValue={contactData.website}
+                                    placeholder='website url'
+                                    error={'website' in errors}
+                                    {...register("website",
+                                        {
+                                            pattern: {
+                                                value: /^(http(s)?:\/\/)?(www\.)?[a-zA-Z0-9_\-.]+\.[a-zA-Z]{2,5}(\/\S*)?$/,
+                                                message: "invalid website"
+                                            },
+                                            onChange: onTrigger
+                                        })}>
                                 </TextField>
-                                <p className="error-message" style={{fontSize:'.8rem'}}>{errors.website?.message || ""}</p>
+                                <p className="error-message" style={{ fontSize: '.8rem' }}>{errors.website?.message || ""}</p>
                             </div>
                         </Stack>
-                       
+
                     </Stack>
 
             }
-        </form>
+        </form >
     )
 }

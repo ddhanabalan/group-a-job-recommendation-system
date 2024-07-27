@@ -38,10 +38,10 @@ export default function Filter({ title, userType=null, passFilteredDataFn = null
     }, [domain])
 
     useEffect(() => {
-        const tags = domains.map(e => e.tag);
+        const skills = domains.map(e => e.tag);
         const location = locations.map(e => e.tag);
         const extras = {'sort': "created_at", "order": sortOrder, 'salary' : salaryCutOff};
-        const filterData = (userType=="employer")?{ tags, ...preferences, location}: {tags, ...preferences, location, ...extras};
+        const filterData = (userType=="employer")?{ skills, ...preferences, location}: {skills, ...preferences, location, ...extras};
     
         const finalFilterData = Object.keys(filterData)
         .filter(key => filterData[key].length !== 0).reduce((acc, key) => {acc[key] = filterData[key];return acc;}, {});     
@@ -150,7 +150,7 @@ export default function Filter({ title, userType=null, passFilteredDataFn = null
 
                     </>
             }
-            <MultipleOptions heading={"Experience"} options={["Fresher", "1-5 years", "5-10 years", "10+ years"]} dataType="exp" onChange={handleCheckboxChange} />
+            <MultipleOptions heading={"Experience"} options={["Fresher", "1-5 Years", "5-10 Years", "10+ Years"]} dataType="experience" onChange={handleCheckboxChange} />
             {userType=="seeker"?
                 <>
                 <span>Salary</span>

@@ -55,12 +55,12 @@ export default function JobSection() {
                             return `${key}=${encodeURIComponent(value)}`;
                         }).join('&');
                     }
-                }).then(SetLoading(false))
+                });
             const mod_response = dataNormalizer(response.data);
             setJobVacancies(mod_response);
             console.log(response);
             console.log(" after new job vacancies", mod_response);
-            //console.log("filtered", filtered);
+            SetLoading(false)
         } catch (e) {
 
             console.log("jobs failed", e);

@@ -218,15 +218,7 @@ useEffect(() => {console.log("jobVacancies" , jobVacancies)
 useEffect(() => { if (jobVacancies.length != 0 && selectedJobEntry != null) expJob(selectedJobEntry) }, [selectedJobEntry]);
 useEffect(() => { callCandidatesAPI() }, [filterparam, candidateSearchVal]);
 useEffect(() => {console.log("canidates ai loading", aiBtnloading)}, [aiBtnloading])
-// useEffect(() => {//duplicatesFilter()
-//     if(aiCandidates && aiCandidates.length) 
-//         {
-//             setBlankModelData(false)
-//         }
-//         else{
-//             setBlankModelData(true)
-        
-// }}, [aiCandidates])
+
     return (
         <div id="page">
             {loading && <LoaderAnimation />}

@@ -12,8 +12,10 @@ import { jobAPI, userAPI } from "../../api/axios";
 import NavigationBar from "../../components/NavigationBar/NavigationBar";
 import noApplicationsFiller from "../../images/no-applications-found.json";
 import careerGoLogo from "../../images/careergo_logo.svg";
+import LoaderAnimation from '../../components/LoaderAnimation/LoaderAnimation';
 
 export default function ReviewApplications({ userType, invite = null }) {
+    const [loading, SetLoading] = useState(true)
     const PROCESSING_DELAY = 1000;
     console.log("user is ", userType)
     const link_data = useParams();
@@ -115,6 +117,9 @@ export default function ReviewApplications({ userType, invite = null }) {
             console.log("jobs failed", e )
 
             alert(e.message);
+        }
+        finally {
+            SetLoading(false)
         }
     }
 
@@ -574,6 +579,7 @@ export default function ReviewApplications({ userType, invite = null }) {
 
     return (
         <div id="page" >
+            {loading && <LoaderAnimation />}
             <div className={`review-left-bar${sidebarState ? " wide" : ""}`}>
                 {sidebarState ?
                     <>

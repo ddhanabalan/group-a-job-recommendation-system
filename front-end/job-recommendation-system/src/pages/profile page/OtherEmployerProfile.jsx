@@ -11,8 +11,10 @@ import NavigationBar from '../../components/NavigationBar/NavigationBar';
 import DetailsCard from '../../components/DetailsCard/DetailsCard';
 import FeatureBoxMiddlePaneText from '../../components/FeatureBoxMiddlePane/FeatureBoxMiddlePaneText';
 import FeatureBoxMiddlePaneOpenings from '../../components/FeatureBoxMiddlePane/FeatureBoxMiddlePaneOpenings';
+import LoaderAnimation from '../../components/LoaderAnimation/LoaderAnimation';
 import './EmployerProfileSection.css';
 export default function OtherEmployerProfile({ data }) {
+    const [loading, SetLoading] = useState(true)
     let COMPANY_USERNAME= null;
     let COMPANY_ID = null;
     const [newData, SetnewData] = useState(data);
@@ -67,6 +69,9 @@ export default function OtherEmployerProfile({ data }) {
 
                 alert(e.message)
             }
+            finally {
+                SetLoading(false)
+            }
         };
         profileAPI();
     }, []);
@@ -99,6 +104,7 @@ export default function OtherEmployerProfile({ data }) {
     }
     return (
         <div id="employer-profile-page">
+            {loading && <LoaderAnimation />}
             {redirectHome && <Navigate to='/' />}
             <ProfileHead access="viewOnly" data={newData} isNotEditing={isNotEditing} setIsNotEditing={updateEditStatus} />
             <NavigationBar active="employer-profile" />
