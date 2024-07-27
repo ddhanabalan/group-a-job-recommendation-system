@@ -13,5 +13,6 @@
 }
 
 .jobs-listing{
-    overflow-y: hidden;
+    overflow: hidden;
+    height: 60%;
 }
