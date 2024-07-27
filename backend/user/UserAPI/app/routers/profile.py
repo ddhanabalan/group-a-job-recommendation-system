@@ -1,16 +1,7 @@
 from fastapi import APIRouter, Depends
 from fastapi.responses import RedirectResponse
-import base64
 
 from . import (
-    get_db,
-    get_current_user,
-    seekerschema,
-    seekermodel,
-    crud,
-    Session,
-    decode64_image,
-    encode64_image,
     get_user_type,
 )
 

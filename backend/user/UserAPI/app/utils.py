@@ -74,33 +74,3 @@ async def get_current_user(
             )
         return response.json()
 
-async def decode64_image(image: str) -> bytes:
-    """
-    Decodes a base64 encoded image string, ensuring it is properly padded.
-
-    Args:
-        image (str): The base64 encoded image string.
-
-    Returns:
-        bytes: The decoded image bytes.
-
-    Raises:
-        ValueError: If the base64 string is invalid.
-    """
-
-    # Ensure the base64 string is properly padded
-    padded_image = image + "=" * ((4 - len(image) % 4) % 4)
-    try:
-        decoded_image = base64.urlsafe_b64decode(padded_image)
-    except binascii.Error as e:
-        raise ValueError("Invalid base64-encoded string") from e
-
-    return decoded_image
-
-
-async def encode64_image(image) -> str:
-    """
-    Encodes the image as a base64 string.
-    """
-    profile_picture64 = base64.b64encode(image).decode("utf-8")
-    return f"data:image/png;base64,{profile_picture64.split('base64')[1]}"

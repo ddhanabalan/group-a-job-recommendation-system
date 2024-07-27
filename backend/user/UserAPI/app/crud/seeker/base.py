@@ -1,7 +1,7 @@
 from .. import seekermodel, seekerschema, Session, SQLAlchemyError
 
 
-def create(db: Session, user: seekerschema.SeekersBase, profile_picture) -> bool:
+def create(db: Session, user: seekerschema.SeekersBase) -> bool:
     """
     Create a new seeker's details in the database.py.
 
@@ -14,7 +14,7 @@ def create(db: Session, user: seekerschema.SeekersBase, profile_picture) -> bool
     """
     try:
         user_model = seekermodel.SeekersDetails(
-            **user.dict(), profile_picture=profile_picture
+            **user.dict()
         )
         db.add(user_model)
         db.commit()

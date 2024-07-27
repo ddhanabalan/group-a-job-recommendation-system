@@ -15,10 +15,8 @@ class RecruiterBase(BaseModel):
     industry: Optional[str] = None
     city: Optional[str] = None
     phone: Optional[str] = None
-
-
-class RecruiterBaseInDB(RecruiterBase):
     profile_picture: Optional[str] = None
+
 
 
 class RecruiterDetails(RecruiterBase):

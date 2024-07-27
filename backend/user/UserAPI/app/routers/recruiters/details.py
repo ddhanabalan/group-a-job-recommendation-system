@@ -11,8 +11,6 @@ from .. import (
     crud,
     Session,
     check_authorization,
-    encode64_image,
-    decode64_image,
     JOB_API_HOST,
 )
 
@@ -45,9 +43,6 @@ async def update_recruiter_details(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
         )
-    profile_pic = user_details.get("profile_picture", None)
-    if profile_pic is not None:
-        user_details.update({"profile_picture": await decode64_image(profile_pic)})
     updated_user = crud.recruiter.details.update(
         db=db, user_id=existing_user.user_id, recruiter_details=user_details
     )

@@ -11,9 +11,7 @@ from .. import (
     crud,
     Session,
     check_authorization,
-    encode64_image,
     JOB_API_HOST,
-    decode64_image,
 )
 
 router = APIRouter(prefix="/details")
@@ -73,16 +71,10 @@ async def get_seeker_details_list(
         user_id = user_details.user_id
         user_skills = crud.seeker.skill.get_all(db=db, user_id=user_id)
 
-        if user_details.profile_picture is not None:
-            profile_pic = user_details.profile_picture
-            profile_picture64 = await encode64_image(profile_pic)
-        else:
-            profile_picture64 = None
-
         seeker_view = seekerschema.SeekerView(
             user_id=user_details.user_id,
             username=user_details.username,
-            profile_picture=profile_picture64,
+            profile_picture=user_details.profile_picture,
             first_name=user_details.first_name,
             last_name=user_details.last_name,
             experience=user_details.experience,
@@ -108,16 +100,11 @@ async def get_seeker_details_list_by_ids(
             raise HTTPException(status_code=404, detail="User not found")
         user_skills = crud.seeker.skill.get_all(db=db, user_id=user_id)
 
-        if user_detail.profile_picture is not None:
-            profile_pic = user_detail.profile_picture
-            profile_picture64 = await encode64_image(profile_pic)
-        else:
-            profile_picture64 = None
 
         seeker_view = seekerschema.SeekerView(
             user_id=user_detail.user_id,
             username=user_detail.username,
-            profile_picture=profile_picture64,
+            profile_picture=user_detail.profile_picture,
             first_name=user_detail.first_name,
             last_name=user_detail.last_name,
             experience=user_detail.experience,
@@ -145,9 +132,6 @@ async def update_seeker_details(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
         )
-    profile_pic = user_details.get("profile_picture", None)
-    if profile_pic is not None:
-        user_details.update({"profile_picture": await decode64_image(profile_pic)})
     updated_user = crud.seeker.details.update(
         db=db, user_id=existing_user.user_id, updated_details=user_details
     )

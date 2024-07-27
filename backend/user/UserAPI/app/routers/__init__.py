@@ -9,8 +9,6 @@ from ..utils import (
     get_db,
     check_authorization,
     get_current_user,
-    decode64_image,
-    encode64_image,
     get_user_type,
 )
 from . import profile

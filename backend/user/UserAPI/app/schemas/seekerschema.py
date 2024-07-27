@@ -12,6 +12,7 @@ class SeekersBase(BaseModel):
     dob: Optional[PastDate] = None
     gender: Optional[str] = None
     country: Optional[str] = None
+    profile_picture: Optional[str] = None
     profile_banner_color: Optional[str] = None
     phone: Optional[str] = None
     city: Optional[str] = None
@@ -22,9 +23,6 @@ class SeekerModelIn(BaseModel):
     user_id: Optional[int]
     position: Optional[str]
 
-
-class SeekersBaseIn(SeekersBase):
-    profile_picture: Optional[str] = None
 
 
 class SeekersDetails(SeekersBase):

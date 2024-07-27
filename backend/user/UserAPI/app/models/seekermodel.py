@@ -6,6 +6,7 @@ from sqlalchemy import (
     DateTime,
     ForeignKey,
     LargeBinary,
+    Text
 )
 from sqlalchemy.orm import relationship
 from datetime import datetime
@@ -26,7 +27,7 @@ class SeekersDetails(Base):
     address = Column(String(256))
     city = Column(String(128))
     country = Column(String(128))
-    profile_picture = Column(LargeBinary(length=(2 ** 24) - 1))
+    profile_picture = Column(Text(length=(2 ** 22) - 1))
     institution = Column(String(256))
     experience = Column(Integer, default=0)
     education = Column(String(256))
