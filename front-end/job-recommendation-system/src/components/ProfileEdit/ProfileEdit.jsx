@@ -58,10 +58,13 @@ export default function ProfileEdit({ data, isErrorChild, getProfileValues }) {
         fetchCountries()
         setValue('country', data.country)
     }, [])
-    const watchedFields = watch()
-    useEffect(() => {
+    // const watchedFields = watch()
+    // useEffect(() => {
+    //     getProfileValues({ ...getValues() })
+    // }, [watchedFields,getProfileValues])
+    watch(() => {
         getProfileValues({ ...getValues() })
-    }, [watchedFields,getProfileValues])
+    })
     useEffect(() => {
 
         if (fetchingErrors.countries) generateDelay(3000, fetchCountries)

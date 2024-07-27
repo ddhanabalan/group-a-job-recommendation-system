@@ -98,8 +98,8 @@ export default function ProfileHead({ access, data, blurFn, logOutFn, subForm, i
                                        
                                         setIsNotEditing(true)
                                         blurFn(false)
-                                        subForm({ ...profileValues, 'profile_banner_color': bannerColor, 'profile_picture': img })
-                                        console.log({ ...profileValues, 'profile_banner_color': bannerColor, 'profile_picture': img })
+                                        subForm({ ...data,...profileValues, 'profile_banner_color': bannerColor, 'profile_picture': img })
+                                        console.log({...data,...profileValues, 'profile_banner_color': bannerColor, 'profile_picture': img })
                                     }
                                 }}>
                                     <CheckRoundedIcon />
@@ -111,7 +111,7 @@ export default function ProfileHead({ access, data, blurFn, logOutFn, subForm, i
                 <div className="profile-head-info">
                     <div className="profile-head-info-div profile-head-info-div1">
                         {!isNotEditing &&
-                            img === null ?
+                            img === null &&
                             <Button
                                 component="label"
                                 role={undefined}
@@ -119,8 +119,9 @@ export default function ProfileHead({ access, data, blurFn, logOutFn, subForm, i
                                 startIcon={<EditIcon />}
                             >
                                 <VisuallyHiddenInput type="file" onChange={handleChange} />
-                            </Button> :
-                            !isNotEditing &&
+                            </Button>}
+                        
+                            {!isNotEditing && img !== null &&
                             <Button
                                 component="label"
                                 role={undefined}
@@ -139,7 +140,8 @@ export default function ProfileHead({ access, data, blurFn, logOutFn, subForm, i
                         }
 
                         <div className='profile-img-container p-image'>
-                            {data.profile_picture || img ? <img src={data.profile_picture || img ? img : profilePlaceholder} alt="profile picture" /> : <Skeleton className="profile-img-container-skeleton" variant="circular" />}
+                            {console.log("img blah",img)}
+                            { img ? <img src={ img ? img : profilePlaceholder} alt="profile picture" /> : <Skeleton className="profile-img-container-skeleton" variant="circular" />}
                         </div>
                     </div>
                     {isNotEditing ?
