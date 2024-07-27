@@ -12,69 +12,68 @@ import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import profilePlaceholder from '../../images/profile_placeholder.svg';
 import greentick from '../../images/green-confirm.json'
 import failanim from '../../images/fail-animation.json'
-import {Autocomplete} from '@mui/material';
-import {utilsAPI} from '../../api/axios';
+import { Autocomplete } from '@mui/material';
+import { utilsAPI } from '../../api/axios';
 import '../SignUpForm/SignUpForm2.css';
 import './ProfileEdit.css';
-export default function ProfileEdit({ data,isErrorChild,register }) {
-    const {  formState: { errors } } = useFormContext();
-    const backupCountries = [{"country":'India'}, {"country":'USA'}, {"country": "Germany"}, {"country": 'Australia'}, {'country': "Japan"}]
+export default function ProfileEdit({ data, isErrorChild, getProfileValues }) {
+    const { register, getValues, formState: { errors }, watch, setValue } = useFormContext();
+    const backupCountries = [{ "country": 'India' }, { "country": 'USA' }, { "country": "Germany" }, { "country": 'Australia' }, { 'country': "Japan" }]
     const [countries, setCountries] = useState([])
     const [user, SetUser] = useState()
-    const [fetchingErrors, setFetchingErrors] = useState({"countries": false});
+    const [fetchingErrors, setFetchingErrors] = useState({ "countries": false });
+    const [userCountry, setUserCountry] = useState({ "country": data.country })
 
-    const [userCountry, setUserCountry] = useState({"country":data.country})
+    const fetchCountries = async () => {
+        try {
+            const r = await utilsAPI.get('api/v1/country/');
+            if (r.data.length) {
+                setCountries(r.data);
+                setFetchingErrors({ ...fetchingErrors, "countries": false })
+            }
+            else {
+                setCountries(backupCountries);
 
-    const fetchCountries= async ()=>{
-        try{
-          const r = await utilsAPI.get('api/v1/country/');
-          if(r.data.length) 
-            {setCountries(r.data);
-            setFetchingErrors({...fetchingErrors, "countries": false})
+                setFetchingErrors({ ...fetchingErrors, "countries": true })
+
+            }
         }
-          else{
+        catch (e) {
+            console.log("industry fetch failed", e);
+            //alert("industries not fetched");
             setCountries(backupCountries);
-            
-            setFetchingErrors({...fetchingErrors, "countries": true})
-    
-          }
+            setFetchingErrors({ ...fetchingErrors, "countries": true })
+
         }
-        catch(e){
-          console.log("industry fetch failed", e);
-          //alert("industries not fetched");
-          setCountries(backupCountries);
-          setFetchingErrors({...fetchingErrors, "countries": true})
-    
-        }
-      }
-    
-    const generateDelay=(delay, callFn, value=null)=>{
+    }
+
+    const generateDelay = (delay, callFn, value = null) => {
         setTimeout(() => {
-            value?callFn(value):callFn()
+            value ? callFn(value) : callFn()
         }, delay);
     }
-     
-    
-    
-    
-
 
     useEffect(() => {
         SetUser(getStorage("userType"))
         fetchCountries()
+        setValue('country', data.country)
     }, [])
-    useEffect(()=>{
-    
-        if(fetchingErrors.countries)generateDelay(3000,fetchCountries)
+    const watchedFields = watch()
+    useEffect(() => {
+        getProfileValues({ ...getValues() })
+    }, [watchedFields,getProfileValues])
+    useEffect(() => {
+
+        if (fetchingErrors.countries) generateDelay(3000, fetchCountries)
     }, [fetchingErrors])
 
     console.log("error in head", errors)
     Object.keys(errors).length === 0 && isErrorChild(false)
     const myErrors = errors
     useEffect(() => {
-        console.log("hhhwhhw",errors)
-        Object.keys(errors).length !== 0 && isErrorChild(true) 
-    },[myErrors])
+        console.log("hhhwhhw", errors)
+        Object.keys(errors).length !== 0 && isErrorChild(true)
+    }, [myErrors])
     return (
         <>
             {/*SignUp Form part-2(Personal info from seekers/Company info from employers)*/}
@@ -122,7 +121,7 @@ export default function ProfileEdit({ data,isErrorChild,register }) {
                                             }
                                         })} />
                                 <p className="error-message">{errors.company_name?.message || ""}</p>
-                        </div>}
+                            </div>}
 
                         {/* Last Name */}
                         {user === "seeker" &&
@@ -147,39 +146,41 @@ export default function ProfileEdit({ data,isErrorChild,register }) {
                         <div id="item-5">
                             <p className="text-head">Country<span className="text-danger"> *</span></p>
                             <Autocomplete
-                                            disablePortal
-                                            options={countries}
-                                            value = {userCountry}
-                                            
-                                            getOptionLabel={(option) => option["country"]}
-                                            isOptionEqualToValue={(option, value)=>value["country"]===option["country"]}
-                                            
-                                            onChange={(event,newInputValue)=>{
-                                                setUserCountry(newInputValue)
-                                            }}
-                                            
-                                            renderInput={(params) => <TextField
-                                                
-                                                className="personal-details-input profile-edit-input"
-                                                {...params}
-                                                InputProps={{
-                                                    ...params.InputProps,
-                                                    disableUnderline: true,
-                                                }}
-                                                
-                                                variant="outlined"
-                                                
-                                                {...register("country", { required: "Field is required",
-                                                    // validate: (value)=>{
-                                                    //     const r= countries.some(e=>e.country===value)
-                                                    //     if( r)
-                                                    //         { console.log("country compare", r)
-                                                    //             return true;}
-                                                    //     else return false;
-                                                    // }
-                                                 })}
-                                            />}
-                                        />
+                                disablePortal
+                                options={countries}
+                                value={userCountry}
+                                defaultValue={{ "country": data.country }}
+                                getOptionLabel={(option) => option["country"]}
+                                isOptionEqualToValue={(option, value) => value["country"] === option["country"]}
+
+                                onChange={(event, newInputValue) => {
+                                    setUserCountry(newInputValue)
+                                    setValue('country', newInputValue["country"])
+                                }}
+
+                                renderInput={(params) => <TextField
+
+                                    className="personal-details-input profile-edit-input"
+                                    {...params}
+                                    InputProps={{
+                                        ...params.InputProps,
+                                        disableUnderline: true
+                                    }}
+
+                                    variant="outlined"
+                                    defaultValue={data.country}
+                                    {...register("country", {
+                                        required: "Field is required",
+                                        // validate: (value)=>{
+                                        //     const r= countries.some(e=>e.country===value)
+                                        //     if( r)
+                                        //         { console.log("country compare", r)
+                                        //             return true;}
+                                        //     else return false;
+                                        // }
+                                    })}
+                                />}
+                            />
                             <p className="error-message">{errors.country?.message || ""}</p>
                         </div>
 
@@ -192,7 +193,7 @@ export default function ProfileEdit({ data,isErrorChild,register }) {
                                 {...register("city",
                                     {
                                         required: "Please enter city",
-                                       
+
                                     })} />
 
                             <p className="error-message">{errors.city?.message || ""}</p>

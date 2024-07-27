@@ -67,6 +67,12 @@ export default function ProfileHead({ access, data, blurFn, logOutFn, subForm, i
         console.log("receieved error", data)
         setErrorChild(data)
     }
+ 
+    const [profileValues, setProfileValues] = useState()
+    const getProfileValues = (data) => {
+        console.log("pikachu", data)
+        setProfileValues(data)
+    }
     return (
         <FormProvider {...methods}>
             <form noValidate autoComplete='on' className="profile-head-section"  >
@@ -89,10 +95,11 @@ export default function ProfileHead({ access, data, blurFn, logOutFn, subForm, i
                                 :
                                 <IconButton aria-label="check" onClick={() => {
                                     if (errorChild === false) {
+                                       
                                         setIsNotEditing(true)
                                         blurFn(false)
-                                        subForm({ ...getValues(), 'profile_banner_color': bannerColor, 'profile_picture': img })
-                                        console.log({ ...getValues(), 'profile_banner_color': bannerColor, 'profile_picture': img })
+                                        subForm({ ...profileValues, 'profile_banner_color': bannerColor, 'profile_picture': img })
+                                        console.log({ ...profileValues, 'profile_banner_color': bannerColor, 'profile_picture': img })
                                     }
                                 }}>
                                     <CheckRoundedIcon />
@@ -158,7 +165,7 @@ export default function ProfileHead({ access, data, blurFn, logOutFn, subForm, i
                             </div>)
                         :
                         <div className="profile-head-info-div profile-head-info-div2">
-                            <ProfileEdit data={data} register={register}  isErrorChild={isErrorChild} />
+                            <ProfileEdit data={data} getProfileValues={getProfileValues} isErrorChild={isErrorChild} />
                         </div>
                     }
 
