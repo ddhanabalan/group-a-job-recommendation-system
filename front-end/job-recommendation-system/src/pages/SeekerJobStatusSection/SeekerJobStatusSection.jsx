@@ -18,6 +18,7 @@ import { stubTrue } from "lodash";
 
 export default function SeekerJobStatusSection({userType}) {
     const COMPANYID = (userType==="employer"?getStorage("userID"):getStorage("guestUserID"));
+    const PROCESSING_DELAY = 1000;
     const receivedData = useLocation();
     const [userData, setUserData] = useState({'type': userType, 'skills': []});
     console.log("received data",receivedData)
@@ -48,6 +49,7 @@ export default function SeekerJobStatusSection({userType}) {
     
     const [filterstat, setFilter] = useState(false);
     const [filterparam, setParam] = useState({});
+    const [processing, setProcessing] = useState(false)
     //const filtered = (jobVacancies.length!=0?jobVacancies.filter(id => id["skills"].map((tag)=>(tag["skill"].toLowerCase().includes(searchVal.toLowerCase()))).filter(Boolean).length?id:false):[]);
     let filtered = (jobVacancies.length!=0?(searchVal.startsWith("#")?/*search with # to search with tags*/jobVacancies.filter(id => id["skills"].map((tag)=>(tag["skill"].toLowerCase().includes(searchVal.slice(1).toLowerCase()))).filter(Boolean).length?id:false)/*search with # to search with tags*/:/*search without # to search with name*/jobVacancies.filter(id => (id["jobTitle"].toLowerCase()).startsWith(searchVal.toLowerCase()))/*search without # to search with name*/):[]);
 
@@ -57,6 +59,7 @@ export default function SeekerJobStatusSection({userType}) {
     const [sidebarState, setSideBar] = useState(false);
     const [queryJob, setQueryJob] = useState({});
     const callJobVacancyAPI = async (companyId) => {
+        
         if (userType === "seeker") {
           await Promise.all([GetSeekerDetails(), GetSeekerSkills()]);
         }
@@ -91,10 +94,12 @@ export default function SeekerJobStatusSection({userType}) {
           console.log("jobs failed", e);
           alert(e.message);
         }
+        
       };
       
     
       const deleteJobRequestAPI = async (job_request_id) => {
+        processDelay(true)
         try {
           const r = await jobAPI.delete(`/job_request/request/${job_request_id}`, { headers: { 'Authorization': `Bearer ${getStorage("userToken")}` } });
           await callJobVacancyAPI();
@@ -106,6 +111,9 @@ export default function SeekerJobStatusSection({userType}) {
         } catch (e) {
           console.log("job request deletion failed", e);
           alert(e.message);
+        }
+        finally{
+          processDelay(false);
         }
       };
       
@@ -180,7 +188,7 @@ export default function SeekerJobStatusSection({userType}) {
       };
     
     const handleInvite=async(status, job_invite_id)=>{
-      
+        processDelay(true)
         const req_data = {
             "status": status,
         }
@@ -201,6 +209,9 @@ export default function SeekerJobStatusSection({userType}) {
             console.log("failed to invite", e)
 
             alert(e.message);
+        }
+        finally{
+          processDelay(false)
         }
     
 
@@ -267,15 +278,24 @@ export default function SeekerJobStatusSection({userType}) {
       const invite_priority = {"pending": "1", "approved":"2", "rejected":"2"};
       const request_priority = {"applied": "3", "approved": "4", "rejected": "5"};
       const resp = data.sort((a,b)=>{if(b.type==="invite"){
-                              if(b.invite_status.toLowerCase()==="pending")
-                              {   
-                                  if(a.type=="invite" && a.invite_status.toLowerCase() ==="pending") return 0;
+                              if(b.invite_status.toLowerCase()==="pending" && !b.closed )
+                              {   console.log("closure status", a, b)
+                                  if(a.type==="invite" && a.invite_status.toLowerCase() ==="pending") return 0;
                                   else return 1;
                               }
                               
                                  
       }})
       return resp;
+    }
+
+    const processDelay = (value)=>{
+      if(value===true) setProcessing(true)
+      else{
+      setTimeout(() => {
+        setProcessing(false)
+      }, PROCESSING_DELAY);
+    }
     }
     //console.log("filter parameters", filterparam);
     const chooseEntry =(entry,entryType)=>{
@@ -348,7 +368,7 @@ export default function SeekerJobStatusSection({userType}) {
             
                 
                 {selectedEntry!=null /*&& filtered.length!=0*/ && jobVacancies.length!=0?
-                    <JobCardExpanded data={selectedJobEntry}  deleteJobRequest={deleteJobRequestAPI} userData={userData} type="approval" invite={selectedJobEntry?(selectedJobEntry.type=="invite"?true:false):false} handleInvite={handleInvite}/>
+                    <JobCardExpanded data={selectedJobEntry}  deleteJobRequest={deleteJobRequestAPI} userData={userData} type="approval" invite={selectedJobEntry?(selectedJobEntry.type=="invite"?true:false):false} handleInvite={handleInvite} processing={processing}/>
                     :
                     <div className="no-job-applications-message">
                             <img className="careergo-web-logo" src={careerGoLogo}/>

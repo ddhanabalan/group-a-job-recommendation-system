@@ -200,6 +200,11 @@ export default function CandidateSection() {
         }
     }*/
 
+    const resetAiCandidates= async ()=>{
+        setAiCandidates([]);
+        await callCandidatesAPI();
+    }
+
 useEffect(()=>{if(companyID){callJobVacancyAPI(companyID);}}, [companyID])
 
 useEffect(() => {console.log("jobVacancies" , jobVacancies)
@@ -233,7 +238,7 @@ useEffect(() => {console.log("canidates ai loading", aiBtnloading)}, [aiBtnloadi
             <div className="candidate-search">
                 <SearchBar toSearch="Search Candidates" onSearch={candidateSearchBar} />
             </div>
-            <Candidates candidateData={candidates} modelData={aiCandidates}/>
+            <Candidates candidateData={candidates} modelData={aiCandidates} setAiCandidates={resetAiCandidates}/>
         </div>
         
     )

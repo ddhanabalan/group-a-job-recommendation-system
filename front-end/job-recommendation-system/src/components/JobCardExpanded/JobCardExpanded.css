@@ -230,3 +230,8 @@
 .invite-reject-btn{
     --primary-color: #e01414 !important;
 }
+
+.processing-animation{
+    width: 10rem;
+    height: 10rem;
+}

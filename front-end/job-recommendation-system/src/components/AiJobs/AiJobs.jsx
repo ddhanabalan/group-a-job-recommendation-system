@@ -4,7 +4,7 @@ import './AiJobs.css';
 import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 import  {v4 as uuid} from 'uuid';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-export default function AiJobs({ childData, expandView }) {
+export default function AiJobs({ childData, expandView, setAiJobs }) {
     useEffect(() => {
         if(childData)setRecJobs(childData);
     },[childData])
@@ -21,9 +21,7 @@ export default function AiJobs({ childData, expandView }) {
                     profilePictureStyle={{backgroundColor:'white'}}
                     background={{ backgroundImage: 'linear-gradient(60deg, rgba(255,255,255,1.00) 0%,rgba(229,153,242,1.00) 100%)', backgroundPosition: 'center center' }} />
             })}
-                <button className='ai-clear-response-btn' onClick={() => setRecJobs([])
-                    
-            } >
+                <button className='ai-clear-response-btn' onClick={() => setAiJobs([])} >
                 Clear response
                 <div class="arrow-wrapper">
                    <CloseRoundedIcon/>

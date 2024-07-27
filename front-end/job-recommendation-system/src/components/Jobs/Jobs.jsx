@@ -6,7 +6,7 @@ import AiJobs from '../../components/AiJobs/AiJobs';
 import { v4 as uuid } from 'uuid';
 
 
-export default function Jobs({ userData, data=[], modelData=[],dataType=null, dataToParentFn = null, createJobRequest = null, handleInvite=null, desc_state = null, }) {
+export default function Jobs({ userData, data=[], modelData=[],dataType=null, dataToParentFn = null, createJobRequest = null, handleInvite=null, desc_state = null, processing=null, setAiJobs=null}) {
 
     const randomJobs = [...data]
     const aiJobs = [...modelData]
@@ -31,8 +31,7 @@ export default function Jobs({ userData, data=[], modelData=[],dataType=null, da
     }
 
     const scrollToStart = ()=>{
-        window.scrollTo({top:0,
-            behavior: 'smooth'}
+        window.scrollTo({top:0}
         )
     }
     //console.log("description status job component",descriptionOn);
@@ -65,11 +64,11 @@ export default function Jobs({ userData, data=[], modelData=[],dataType=null, da
         <div className="cards-container">
 
             {descriptionOn ?
-                <JobCardExpanded data={selectedJob} createJobRequest={createJobRequest} handleInvite={handleInvite} userData={userData} invite={selectedJob.invite_status?true:null}/>
+                <JobCardExpanded data={selectedJob} createJobRequest={createJobRequest} handleInvite={handleInvite} userData={userData} invite={selectedJob.invite_status?true:null} processing={processing}/>
                 : (
                     <>  
                         {console.log("lenghds ", modelData.length)}
-                        {(dataType !== "approval"&& aiJobs.length) ?<AiJobs childData={modelData} expandView={openDesc} />: <></>}
+                        {(dataType !== "approval"&& aiJobs.length) ?<AiJobs childData={modelData} expandView={openDesc} setAiJobs={setAiJobs} />: <></>}
                         {
                             randomJobs.map((job) => (<JobCard key={uuid()} id={job.id} expandView={openDesc} data={{ ...job, 'userType': "seeker" }} />))
                         }

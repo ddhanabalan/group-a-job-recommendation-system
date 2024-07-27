@@ -13,6 +13,7 @@ import { IconButton } from '@mui/material';
 import LoaderAnimation from '../../components/LoaderAnimation/LoaderAnimation';
 
 export default function JobSection() {
+    const PROCESSING_DELAY = 1000;
     const [loading, SetLoading] = useState(true)
     const [userData, setUserData] = useState({ 'type': 'seeker', 'id': Number(getStorage("userID")), 'skills': [] });
     const [jobVacancies, setJobVacancies] = useState([]);
@@ -25,7 +26,7 @@ export default function JobSection() {
     const [AiJobs, setAiJobs] = useState([]) //state to store recommended jobs
     const [aiBtnloading, setAiBtnLoading] = useState(false);//state to control animation of ai button
     const [blankModelData, setBlankModelData] = useState(false);
-
+    const [processing, setProcessing] = useState(false)
 
     const filterDataSet = (fdata) => {
         setParam({ ...fdata });
@@ -178,6 +179,7 @@ export default function JobSection() {
         return invite.length ? invite[index] : null;
     };
     const GetUserInvites = async () => {
+        processDelay(true)
         try {
             const response = await jobAPI.get('/job_invite/user', {
                 headers: {
@@ -189,6 +191,9 @@ export default function JobSection() {
         }
         catch (e) {
             console.log("failed to fetch user invites", e)
+        }
+        finally{
+            processDelay(false)
         }
     }
     const GetSeekerSkills = async () => {
@@ -212,6 +217,7 @@ export default function JobSection() {
     }
 
     const CreateJobRequest = async (jobId) => {
+        processDelay(true)
         try {
             const response = await jobAPI.post('/job_request/', {
                 "job_id": Number(jobId),
@@ -234,10 +240,13 @@ export default function JobSection() {
 
             alert(e.message);
         }
+        finally{
+            processDelay(false)
+        }
     }
 
     const handleInvite = async (status, job_invite_id) => {
-
+        processDelay(true)
         const req_data = {
             "status": status,
         }
@@ -252,7 +261,7 @@ export default function JobSection() {
             console.log("updated response", response)
             //const mod_response = response.data.map(e=>({applicantID: e.user_id, username: e.username, candidateName: (e.first_name + " " + e.last_name), first_name: e.first_name, last_name: e.last_name,city: e.city, country: e.country, location: e.location, experience: e.experience, profile_picture: e.profile_picture}))
 
-            GetUserInvites();
+            await GetUserInvites();
 
         } catch (e) {
 
@@ -260,12 +269,33 @@ export default function JobSection() {
 
             alert(e.message);
         }
+        finally{
+            
+            processDelay(false)
+        }
 
 
     }
 
+    const resetRecommendedJobs = async(data) => {
+        setAiJobs([]);
+        await callJobVacancyAPI();
+    }
+    const processDelay = (value)=>{
+        if(value===true) setProcessing(true)
+        else{
+        setTimeout(() => {
+          setProcessing(false)
+        }, PROCESSING_DELAY);
+      }
+      }
+
+    
+
     console.log("user datum", userData);
-    useEffect(() => { if (descriptionOn) GetUserInvites() }, [descriptionOn])
+    useEffect(() => { 
+        if(AiJobs.length)duplicatesFilter(AiJobs);
+        if (descriptionOn) GetUserInvites(); }, [descriptionOn])
     useEffect(() => { callJobVacancyAPI() }, [filterparam, searchVal, userInvites]);
    // useEffect(() => { if (jobVacancies) duplicatesFilter() }, [AiJobs])
 
@@ -291,7 +321,7 @@ export default function JobSection() {
                 }
                 <SearchBar toSearch="Search Jobs" onSearch={searchBar} />
             </div>
-            <Jobs data={jobVacancies} modelData={AiJobs} createJobRequest={CreateJobRequest} dataToParentFn={OpenDesc} handleInvite={handleInvite} desc_state={descriptionOn} userData={userData} />
+            <Jobs data={jobVacancies} modelData={AiJobs} createJobRequest={CreateJobRequest} dataToParentFn={OpenDesc} handleInvite={handleInvite} desc_state={descriptionOn} userData={userData} processing={processing} setAiJobs={resetRecommendedJobs} />
         </div>
     )
 }
