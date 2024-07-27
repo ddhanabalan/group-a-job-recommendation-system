@@ -183,7 +183,7 @@
    border-radius: 0.5rem; 
    margin-left: 6rem;
    position: absolute;
-   top: 0;
+   top: .2rem;
    right: 2rem;
 }
 .yellow{

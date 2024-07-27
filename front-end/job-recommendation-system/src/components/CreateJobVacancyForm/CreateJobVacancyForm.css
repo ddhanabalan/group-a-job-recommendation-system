@@ -72,6 +72,9 @@ form{
     border-radius: 50%;
     background-color: #D9D9D9;
     overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .create-job-vacancy-img-container img{
@@ -212,7 +215,6 @@ padding-left: 2rem;
     align-items: start !important;
 }
 .create-job-vacancy-body p{
-    
     font-size: 0.85rem;
     font-family: "Inter-regular";
 }
@@ -228,7 +230,7 @@ padding-left: 2rem;
     position: relative;
 }
 .create-job-vacancy-details span{
-    font-size: 1rem;    
+    font-size: 1rem;
 }
 
 .skill-status{
@@ -279,4 +281,7 @@ padding-left: 2rem;
 
 .status-failed{
     background-color: rgb(247, 186, 105);
+}
+.details-header{
+    font-family: "Inter-sb";
 }
