@@ -14,6 +14,8 @@
 }
 
 .detail-medium {
+    display: flex;
+    align-items: center;
     width: 100%;
     flex-wrap: wrap;
 }
@@ -30,7 +32,9 @@
 .details-actions svg {
     color: black;
 }
-
+.detail-medium svg {
+    color: black;
+}
 .stat-title {
     font-family: "Inter-sb";
     font-size: .813rem;
