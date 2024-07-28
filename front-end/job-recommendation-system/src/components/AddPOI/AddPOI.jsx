@@ -32,7 +32,7 @@ console.log("user poi",pois)
     const poiListAPI = async () => {
         try {
             const response = await utilsAPI.get(`/api/v1/positions?q=${poi}`)
-            SetPoisList([{ "position": "" }, ...response.data])
+            SetPoisList([...response.data])
         }
         catch (e) {
             console.log(e)

@@ -102,7 +102,9 @@
     color: red;
     width: 18.75rem;
 }
-
+.warning-pic-size{
+    color: red;
+}
 .alert-boxes {
     margin-top: 10px;
     margin-bottom: 30px;

@@ -8,6 +8,7 @@ import axios from '../../api/axios';
 import { getStorage,setStorage } from '../../storage/storage';
 import qs from 'qs';
 import ConfBox from '../../components/ConfirmMsgBox/ConfirmMsgBox';
+import LogoRedirect from "../../components/LogoRedirect/LogoRedirect";
 import '../pages.css';
 export default function LoginPage({fixUser}) {
     const [redirect, SetRedirect] = useState(false)
@@ -54,6 +55,7 @@ export default function LoginPage({fixUser}) {
 
     return (
         <div id="page" className='login-page'>
+            {/* <LogoRedirect /> */}
             {redirect && < Navigate to="/profile" />}
             {serverMsg ?
                 <div className='message-box-login'>

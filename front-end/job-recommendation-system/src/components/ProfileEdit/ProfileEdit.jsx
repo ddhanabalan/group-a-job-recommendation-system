@@ -100,8 +100,8 @@ export default function ProfileEdit({ data, isErrorChild, getProfileValues }) {
                                         {
                                             required: "Please enter first name",
                                             pattern: {
-                                                value: /^[a-zA-Z]+$/,
-                                                message: "Only letters allowed"
+                                                value: /^[a-zA-Z]{1,32}$/,
+                                                message: "Only letters allowed, with a maximum length of 32 characters"
                                             }
                                         })} />
                                 <p className="error-message">{errors.first_name?.message || ""}</p>
@@ -119,8 +119,8 @@ export default function ProfileEdit({ data, isErrorChild, getProfileValues }) {
                                         {
                                             required: "Please enter company name",
                                             pattern: {
-                                                value: /^[a-zA-Z]+$/,
-                                                message: "Only letters allowed"
+                                                value: /^[a-zA-Z0-9\s]{1,128}$/,
+                                                message: "Only letters, numbers and whitespace with a maximum length of 128 characters"
                                             }
                                         })} />
                                 <p className="error-message">{errors.company_name?.message || ""}</p>
@@ -137,8 +137,8 @@ export default function ProfileEdit({ data, isErrorChild, getProfileValues }) {
                                         {
                                             required: "Please enter last name",
                                             pattern: {
-                                                value: /^[a-zA-Z\s]+$/,
-                                                message: "Only letters and whitespace allowed"
+                                                value: /^[a-zA-Z\s]{1,32}$/,
+                                                message: "Only letters and whitespace with a maximum length of 32 characters"
                                             }
                                         })} />
                                 <p className="error-message">{errors.last_name?.message || ""}</p>
@@ -196,6 +196,10 @@ export default function ProfileEdit({ data, isErrorChild, getProfileValues }) {
                                 {...register("city",
                                     {
                                         required: "Please enter city",
+                                        pattern: {
+                                            value: /^[a-zA-Z]{1,128}$/,
+                                            message: "Only letters allowed, with a maximum length of 128 characters"
+                                        }
 
                                     })} />
 
@@ -211,7 +215,11 @@ export default function ProfileEdit({ data, isErrorChild, getProfileValues }) {
                             error={'bio' in errors}
                             {...register("bio",
                                 {
-                                    required: ""
+                                    required: "",
+                                    pattern: {
+                                        value: /^[a-zA-Z0-9\s.,'?!@#$%^&*()_+\-=\[\]{};:"\\|<>\/~`]{1,512}$/,
+                                        message: "Maximum length of 512 characters allowed."
+                                    }
                                 })}>
                         </TextField>
                         <p className="error-message">{errors.bio?.message || ""}</p>

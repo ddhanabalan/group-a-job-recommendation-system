@@ -170,6 +170,7 @@
 }
 .job-status-text {
     font-family: Inter-sb;
+    text-transform: capitalize;
 }
 
 .job-status-text.color-black {

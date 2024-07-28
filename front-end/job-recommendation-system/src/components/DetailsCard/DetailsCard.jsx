@@ -129,7 +129,7 @@ export default function ContactCard({access, data, companyInfo, reloadFn, showSu
                             </div>
                             <p className="contact-p details-p">{companyInfo.company_size ? companyInfo.company_size : <span className='data-not-present-handle'>not linked</span>}</p>
                         </Stack>
-                        <Stack direction="row" spacing={1} className='detail-medium'>
+                        {/* <Stack direction="row" spacing={1} className='detail-medium'>
                             <div className='detail-identifier'>
                                 <IconButton aria-label="headquarters" disabled>
                                     <LocationCityRoundedIcon />
@@ -137,7 +137,7 @@ export default function ContactCard({access, data, companyInfo, reloadFn, showSu
                                 <p className='stat-title'>Headquarters</p>
                             </div>
                             <p className="contact-p details-p">{companyInfo.headquarters ? companyInfo.headquarters : <span className='data-not-present-handle'>not linked</span>}</p>
-                        </Stack>
+                        </Stack> */}
                         {/* <Stack direction="row" spacing={1} className='contact-medium detail-medium'>
                             <div className='detail-identifier'>
                                 <IconButton aria-label="specialities" disabled>
@@ -196,7 +196,7 @@ export default function ContactCard({access, data, companyInfo, reloadFn, showSu
                                 })}>
                             </TextField>
                         </Stack>
-                        <Stack direction="row" spacing={1} className='detail-medium'>
+                        {/* <Stack direction="row" spacing={1} className='detail-medium'>
                             <div className='detail-identifier'>
                                 <IconButton aria-label="headquarters" disabled>
                                     <LocationCityRoundedIcon />
@@ -230,7 +230,7 @@ export default function ContactCard({access, data, companyInfo, reloadFn, showSu
                                     {...register("headquarters") }
                                 />}
                             />
-                        </Stack>
+                        </Stack> */}
                         {/* <Stack direction="row" spacing={1} className='contact-medium detail-medium'>
                             <div className='detail-identifier'>
                                 <IconButton aria-label="email" disabled>

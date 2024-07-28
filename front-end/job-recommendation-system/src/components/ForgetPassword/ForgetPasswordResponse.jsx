@@ -4,7 +4,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import CircleIcon from '@mui/icons-material/Circle';
 import { useForm } from 'react-hook-form';
-import { useNavigate,useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useState } from 'react';
 import axios from '../../api/axios';
 import ConfBox from '../ConfirmMsgBox/ConfirmMsgBox';
@@ -16,7 +16,7 @@ export default function ForgetPasswordResponse() {
 
     const params = useParams();
     const token = params.token;
-    const { register, formState: { errors }, handleSubmit,watch,getValues } = useForm();
+    const { register, formState: { errors }, handleSubmit, watch, getValues } = useForm();
     const navigate = useNavigate();
     const [success, setSuccess] = useState(false)
     const [validationError, SetValidationError] = useState(false)
@@ -28,11 +28,13 @@ export default function ForgetPasswordResponse() {
     const forgetPassword = async (data) => {
         console.log(data)
         try {
-            const response = await axios.post(`/forgot_password/verify/${token}`, { new_password :getValues("cpassword") })
-            response.status === 200 && setSuccess(true) &&
+            const response = await axios.post(`/forgot_password/verify/${token}`, { new_password: getValues("cpassword") })
+            if (response.status === 200) {
+                setSuccess(true)
                 setTimeout(() => {
                     navigate(`/`)
-                }, 5000)
+                }, 2000)
+            }
             SetValidationError(false)
         } catch (e) {
             console.log(e);
@@ -53,46 +55,46 @@ export default function ForgetPasswordResponse() {
                 <p>Please enter your new password below. Ensure that it is strong and unique, containing a mix of letters,
                     numbers, and special characters for better security.</p>
                 <Stack spacing={2} sx={{ width: '100%' }}>
-                {/*password box validation checking*/}
-                <Box sx={{ display: 'flex', alignItems: 'password' in errors ? 'baseline' : 'flex-end', gap: 1 }}>
-                    <Lock sx={{ position: 'relative', top: 0 }} />
-                    <TextField variant="standard"
-                        label="Password"
-                        type={visible ? "text" : "password"}
-                        helperText={'password' in errors ? errors.password?.message : ""}
-                        error={'password' in errors}
-                        {...register("password",
-                            {
-                                required: "password is required",
-                                pattern: {
-                                    value: /^(?=.*[0-9])(?=.*[!@#$%^&*.,])[a-zA-Z0-9!@#$%^&*.,]{8,16}$/,
-                                    message: "Your password should have one lowercase, one uppercase, one number, one special symbol from [!@#$%^&*_=+-], and be 8 to 16 characters long"
-                                }
-                            })}
-                        sx={{ width: "60%" }} />
-                    <Box onClick={handleVisibility}>{visible ? <VisibilityIcon sx={{ fontSize: 'medium', position: 'relative', top: -2, left: -3 }} /> : <VisibilityOffIcon sx={{ fontSize: 'medium', position: 'relative', top: -3 }} />}</Box>
-                </Box>
-
-                <Box sx={{ display: 'flex', alignItems: 'cpassword' in errors ? 'center' : 'flex-end', gap: 1 }}>
-                    <Box sx={{}}>
+                    {/*password box validation checking*/}
+                    <Box sx={{ display: 'flex', alignItems: 'password' in errors ? 'baseline' : 'flex-end', gap: 1 }}>
                         <Lock sx={{ position: 'relative', top: 0 }} />
-                        <CircleIcon sx={{ color: color, fontSize: "small", position: "relative", bottom: -8, left: -10 }} />
+                        <TextField variant="standard"
+                            label="Password"
+                            type={visible ? "text" : "password"}
+                            helperText={'password' in errors ? errors.password?.message : ""}
+                            error={'password' in errors}
+                            {...register("password",
+                                {
+                                    required: "password is required",
+                                    pattern: {
+                                        value: /^(?=.*[0-9])(?=.*[!@#$%^&*.,])[a-zA-Z0-9!@#$%^&*.,]{8,16}$/,
+                                        message: "Your password should have one lowercase, one uppercase, one number, one special symbol from [!@#$%^&*_=+-], and be 8 to 16 characters long"
+                                    }
+                                })}
+                            sx={{ width: "60%" }} />
+                        <Box onClick={handleVisibility}>{visible ? <VisibilityIcon sx={{ fontSize: 'medium', position: 'relative', top: -2, left: -3 }} /> : <VisibilityOffIcon sx={{ fontSize: 'medium', position: 'relative', top: -3 }} />}</Box>
                     </Box>
 
-                    <TextField variant="standard"
-                        label="Confirm Password"
-                        type='password'
-                        helperText={'cpassword' in errors ? errors.cpassword?.message : ""}
-                        error={'cpassword' in errors}
+                    <Box sx={{ display: 'flex', alignItems: 'cpassword' in errors ? 'center' : 'flex-end', gap: 1 }}>
+                        <Box sx={{}}>
+                            <Lock sx={{ position: 'relative', top: 0 }} />
+                            <CircleIcon sx={{ color: color, fontSize: "small", position: "relative", bottom: -8, left: -10 }} />
+                        </Box>
 
-                        {...register("cpassword",
-                            {
-                                required: "password is required",
-                                validate: (val) => val === watch("password") || "The passwords don't match",
-                            })}
-                        sx={{ width: '60%', position: 'relative', left: -12 }} />
-                </Box>
-           </Stack>
+                        <TextField variant="standard"
+                            label="Confirm Password"
+                            type='password'
+                            helperText={'cpassword' in errors ? errors.cpassword?.message : ""}
+                            error={'cpassword' in errors}
+
+                            {...register("cpassword",
+                                {
+                                    required: "password is required",
+                                    validate: (val) => val === watch("password") || "The passwords don't match",
+                                })}
+                            sx={{ width: '60%', position: 'relative', left: -12 }} />
+                    </Box>
+                </Stack>
                 <Button variant="contained"
                     disableElevation
                     className='forget-btn'
