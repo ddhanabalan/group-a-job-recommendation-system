@@ -23,7 +23,7 @@ models.Base.metadata.create_all(bind=engine)
 @router.get("/")
 async def get_country(
     q: Optional[str] = None,
-    limit: Optional[int] = 100,
+    limit: Optional[int] = 200,
     db: Session = Depends(get_db)
 ):
     """
