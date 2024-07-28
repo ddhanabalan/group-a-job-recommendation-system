@@ -106,7 +106,7 @@ export default function OtherEmployerProfile({ data }) {
         <div id="employer-profile-page">
             {loading && <LoaderAnimation />}
             {redirectHome && <Navigate to='/' />}
-            <ProfileHead access="viewOnly" data={newData} isNotEditing={isNotEditing} setIsNotEditing={updateEditStatus} />
+            <ProfileHead access="viewOnly" data={newData} isNotEditing={isNotEditing} setIsNotEditing={updateEditStatus} originFrom="other" />
             <NavigationBar active="employer-profile" />
             <div className="employer-profile-body-section">
                 <div className="employer-profile-pane employer-profile-left-pane">

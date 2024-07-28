@@ -64,7 +64,7 @@ export default function ContactCard({ access, data, contactData, reloadFn, showS
                         if (shouldSubmit) {
                             SetIsNotEditing(false)
                             const data = user === "seeker" ? getValues() : { contact_email: getValues("contact_email"), website: getValues("website") };
-                            updateContact(data)
+                           Object.keys(errors).length===0&&updateContact(data)
                         }
 
                     }}>

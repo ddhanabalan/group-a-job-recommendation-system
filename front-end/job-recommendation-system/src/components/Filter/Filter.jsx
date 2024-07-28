@@ -12,8 +12,8 @@ import { v4 as uuid } from 'uuid';
 import Slider from '@mui/material/Slider';
 export default function Filter({ title, userType=null, passFilteredDataFn = null }) {
     const SALARYMULTIPLIER= 1000;
-    const DEFAULTSLIDERVALUE = 10;
-    const USERCURRENCY ='₹';
+    const DEFAULTSLIDERVALUE = 5;
+    const USERCURRENCY ='';
     const [googleLocationAutoField, SetGoogleLocationAutoField] = useState(null);
     const [domain, SetDomain] = useState('');
     const [preferences, SetPreferences] = useState({});
@@ -135,17 +135,17 @@ export default function Filter({ title, userType=null, passFilteredDataFn = null
                 :
                 <></>
             }
-            <AddTags availableDomains={skillsList} value={domain} tags={domains} deleteFn={handleDeleteDomain} changeFn={handleChangeDomain} updateFn={handleDomain} data={{ heading: "Interested domains", inputPlaceholder: "Marketing", isLocation: false }} />
+            <AddTags availableDomains={skillsList} value={domain} tags={domains} deleteFn={handleDeleteDomain} changeFn={handleChangeDomain} updateFn={handleDomain} data={{ heading: "Interested Domains", inputPlaceholder: "Marketing", isLocation: false }} />
             <div className='domain-gap'></div>
             {userType=="employer"?
                     <>
-                    <AddTags locationFieldAutoValue={googleLocationAutoField} updatelocationFieldAutoValue={setGoogleAutoField} value={location} tags={locations} deleteFn={handleDeleteLocation} changeFn={handleChangeLocation} updateFn={handleLocation} data={{ heading: "Preferred candidate locations", inputPlaceholder: "Kerala", isLocation: true }} />
+                    <AddTags locationFieldAutoValue={googleLocationAutoField} updatelocationFieldAutoValue={setGoogleAutoField} value={location} tags={locations} deleteFn={handleDeleteLocation} changeFn={handleChangeLocation} updateFn={handleLocation} data={{ heading: "Preferred Candidate Locations", inputPlaceholder: "Kerala", isLocation: true }} />
                     </>
                     :
                     <>
                     <MultipleOptions heading={"Preferred Work Environment"} options={["On-site", "Hybrid", "Work from home"]} dataType="work_style" onChange={handleCheckboxChange} />
                     <MultipleOptions heading={"Working Days"} options={["Monday-Friday", "Monday-Saturday"]} dataType="working_days" onChange={handleCheckboxChange} />
-                    <AddTags locationFieldAutoValue={googleLocationAutoField} updatelocationFieldAutoValue={setGoogleAutoField} value={location} tags={locations} deleteFn={handleDeleteLocation} changeFn={handleChangeLocation} updateFn={handleLocation} data={{ heading: "Preferred job locations", inputPlaceholder: "Kerala", isLocation: true }} />
+                    <AddTags locationFieldAutoValue={googleLocationAutoField} updatelocationFieldAutoValue={setGoogleAutoField} value={location} tags={locations} deleteFn={handleDeleteLocation} changeFn={handleChangeLocation} updateFn={handleLocation} data={{ heading: "Preferred Job Locations", inputPlaceholder: "Kerala", isLocation: true }} />
                     <MultipleOptions heading={"Employment Type"} options={["Full-time", "Internship", "Temporary"]} dataType="emp_type" onChange={handleCheckboxChange} />
 
                     </>
@@ -156,7 +156,7 @@ export default function Filter({ title, userType=null, passFilteredDataFn = null
                 <span>Salary</span>
                 <div className='salary-cutoff'>
                     
-                    <Slider defaultValue={DEFAULTSLIDERVALUE} step={10} marks min={10} max={100} onChange={(_, value) => SetSalaryCutOff(value * SALARYMULTIPLIER)} /> 
+                    <Slider defaultValue={DEFAULTSLIDERVALUE} step={10} marks min={5} max={100} onChange={(_, value) => SetSalaryCutOff(value * SALARYMULTIPLIER)} /> 
                     <p>Above &nbsp;<span className='salary-threshold'> {USERCURRENCY} {salaryCutOff}</span></p>
                     <br/>
                 </div>

@@ -15,8 +15,8 @@ import CorporateFareRoundedIcon from '@mui/icons-material/CorporateFareRounded';
 import ProcessingAnimation from '../../images/processing.json'
 import { getStorage } from '../../storage/storage';
 
-export default function JobCardExpanded({ data = [], createJobRequest = null, deleteJobRequest = null, userData, handleSub = null, handleInvite=null, type, invite=null, applicationErrors = null, processing=null }) {
-    console.log("data received by form", userData, "jobdata", data, "invite", invite, type, "checkword", data.invite?.job_status !=="approved", data.invite_status?.toLowerCase() === "pending" )
+export default function JobCardExpanded({ data = [], createJobRequest = null, deleteJobRequest = null, userData, handleSub = null, handleInvite = null, type, invite = null, applicationErrors = null, processing = null }) {
+    console.log("data received by form", userData, "jobdata", data, "invite", invite, type, "checkword", data.invite?.job_status !== "approved", data.invite_status?.toLowerCase() === "pending")
 
     //console.log(userData.appliedJobs.includes("4"))
     const [submit, setSubmit] = useState(false);
@@ -31,32 +31,32 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
     //function for senting applicant details from the form to company
 
     useEffect(() => {
-        
+
         if (userData.type == "seeker" && type != "approval" && data.length != 0) {
-            
-        const appliedSeekers=data.applicationsReceived
-        if(data.userApplication?.length /*((appliedSeekers).map(e => e.user_id)).includes(userData.id)*/)
-        {   const r = data.userApplication.filter(e=>e.status!=="rejected");
-            console.log("rejcted ", r, "data", data)
-            if(r.length)
-            {   setSubmit(true)
-                setUserJobRequest(r[0]/*((appliedSeekers).filter(e => e.user_id == userData.id))[0]*/)   
-                
+
+            const appliedSeekers = data.applicationsReceived
+            if (data.userApplication?.length /*((appliedSeekers).map(e => e.user_id)).includes(userData.id)*/) {
+                const r = data.userApplication.filter(e => e.status !== "rejected");
+                console.log("rejcted ", r, "data", data)
+                if (r.length) {
+                    setSubmit(true)
+                    setUserJobRequest(r[0]/*((appliedSeekers).filter(e => e.user_id == userData.id))[0]*/)
+
+                }
+                else {
+                    setSubmit(false);
+                    setUserJobRequest(null);
+
+                }
             }
-            else{
+
+            else {
+
                 setSubmit(false);
                 setUserJobRequest(null);
-                
             }
         }
-
-         else
-         {
-                
-             setSubmit(false);
-             setUserJobRequest(null);
-         }
-    } }, [data]) //UNCOMMENT THIS AFTER BACKEND FIX FOR MISSING DATA IN THE RESPONSE(i.e.applicationsReceived, tags, skills) 
+    }, [data]) //UNCOMMENT THIS AFTER BACKEND FIX FOR MISSING DATA IN THE RESPONSE(i.e.applicationsReceived, tags, skills) 
     //console.log(userData.id, "applied=", submit, (data.applicationsReceived)?.map(e=>e.user_id) || "", "status", ((data.applicationsReceived)?.map(e=>e.user_id)).includes(userData.id), "submit status", submit)
 
     function handleApplication() {
@@ -71,7 +71,7 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
         else if (status == "approved") return "green";
         else if (status == "rejected") return "red";
     }
-    console.log("user job request received", userJobRequest , data.invite_status, submit);
+    console.log("user job request received", userJobRequest, data.invite_status, submit);
     useEffect(() => setSkillIndicator(true), [data])
     return (
         <>
@@ -100,7 +100,7 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
                             </div>
                             <div className='job-desc-div2'>
                                 <div className='card-img-container qualification-card-image  job-card-img-container'>
-                                    {data['profile_picture'] ? <img  src={data['profile_picture']} alt="" /> :
+                                    {data['profile_picture'] ? <img src={data['profile_picture']} alt="" /> :
                                         <IconButton disabled>
                                             <CorporateFareRoundedIcon fontSize='large' />
                                         </IconButton>}
@@ -121,23 +121,23 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
 
                             <div className="job-description">
                                 <h6>Job description</h6>
-                                <pre className={`overview-formatted desc ${textJustify?"justified-pre":""}`}>{data.jobDesc}</pre>
+                                <pre className={`overview-formatted desc ${textJustify ? "justified-pre" : ""}`}>{data.jobDesc}</pre>
                                 {/* <p className="desc">{data.jobDesc}</p> */}
                             </div>
 
                             <div className="job-requirements">
                                 <h6>Job requirements</h6>
-                                <pre className={`overview-formatted desc ${textJustify?"justified-pre":""}`}>{data.jobReq}</pre>
+                                <pre className={`overview-formatted desc ${textJustify ? "justified-pre" : ""}`}>{data.jobReq}</pre>
                                 {/* <p className='desc'>{data.jobReq}</p> */}
                             </div>
 
                             {data.skills && skillIndicator ?
                                 <div className="job-skills">
-                                    <h6>Skills&nbsp;{userData.type == "seeker" ?  <span className='skill-counter'>You have {userSkills} out of {data.skills.length} skills required for the job</span> : <></>}</h6>
+                                    <h6>Skills&nbsp;{userData.type == "seeker" ? <span className='skill-counter'>You have {userSkills} out of {data.skills.length} skills required for the job</span> : <></>}</h6>
                                     {/*skill tags */}
                                     <div className='desc'><Stack className="job-desc-tags" direction="row" spacing={1}>
                                         {data.skills.map(e => {
-                                            if (e!="" && e.skill != ""/* && e.skill !=""*/) {
+                                            if (e != "" && e.skill != ""/* && e.skill !=""*/) {
                                                 return (<div className="job-desc-skill-tags-child" key={typeof (e) == "string" ? uuid() : e.id}>
                                                     {typeof (e) == "string" ? e : e.skill} {userData.type === "employer" ?
                                                         <></>
@@ -159,13 +159,13 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
                             }
                         </div>
 
-                        {!processing?
-                        userData.type == "seeker" && type == "approval" && data.status && !data.closed ?
-                            <>
-                                <div className='job-approval-status-label'>
-                                    Status: <span className={`job-status-text color-${handleStatus(data.status.toLowerCase())}`}>{data.status}</span>
-                                </div>
-                                {data.status == "Applied" &&
+                        {!processing ?
+                            userData.type == "seeker" && type == "approval" && data.status && !data.closed ?
+                                <>
+                                    <div className='job-approval-status-label'>
+                                        Status: <span className={`job-status-text color-${handleStatus(data.status.toLowerCase())}`}>{data.status}</span>
+                                    </div>
+                                    {data.status == "Applied" &&
                                         <button className='continue-btn invite-reject-btn' onClick={() => { deleteJobRequest(data.job_req_id) }} >
                                             Cancel Application
                                             <div class="arrow-wrapper">
@@ -173,141 +173,141 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
 
                                             </div>
                                         </button>
-                                }
-                                {data.status == "rejected" &&
-                                    <div className="cancel-application-button">
-                                        <Link to={`/seeker/openings/${data.companyUsername}/${data.id}`}>
-                                        <Button variant="outlined"  sx={{ color: "black", border: "1px solid #254CE1" }} endIcon={<FileOpenIcon />}>
-                                            <p>View Vacancy</p>
-                                        </Button>
-                                        </Link>
-                                    </div>
-                                }
-                            </>
+                                    }
+                                    {data.status == "rejected" &&
+                                        <div className="cancel-application-button">
+                                            <Link to={`/seeker/openings/${data.companyUsername}/${data.id}`}>
+                                                <Button variant="outlined" sx={{ color: "black", border: "1px solid #254CE1", textTransform: "none" }} endIcon={<FileOpenIcon />}>
+                                                    <p>More Jobs at {data.companyName}</p>
+                                                </Button>
+                                            </Link>
+                                        </div>
+                                    }
+                                </>
 
+                                :
+                                <></>
                             :
                             <></>
-                        :
-                        <></>
                         }
 
-                        {!processing?
-                        (userData.type == "employer" || type == "approval" || invite) && !data.closed ?
-                            (
-                                invite && ((data.invite && data.invite.job_status !=="approved") || (data.invite_status && data.invite_status.toLowerCase() === "pending" || false))?
-                                 <>
-                                 <div className='invite-banner'>
-                                 <p>You have been invited for an interview</p>
-                                 </div>
-                                 <div className='invite-buttons-container'>
-                                    
-                                    {/* <button className='accept' onClick={()=>{handleInvite("approved", data.job_invite_id || data.invite.job_invite_id)}} >
+                        {!processing ?
+                            (userData.type == "employer" || type == "approval" || invite) && !data.closed ?
+                                (
+                                    invite && ((data.invite && data.invite.job_status !== "approved") || (data.invite_status && data.invite_status.toLowerCase() === "pending" || false)) ?
+                                        <>
+                                            <div className='invite-banner'>
+                                                <p>You have been invited for an interview</p>
+                                            </div>
+                                            <div className='invite-buttons-container'>
+
+                                                {/* <button className='accept' onClick={()=>{handleInvite("approved", data.job_invite_id || data.invite.job_invite_id)}} >
                                         Accept
                                     </button> */}
-                                            <button className='continue-btn invite-accept-btn' onClick={()=>{handleInvite("approved", data.job_invite_id || data.invite.job_invite_id)}}>
-                                                Accept
-                                                <div class="arrow-wrapper">
-                                                    <div class="arrow"></div>
+                                                <button className='continue-btn invite-accept-btn' onClick={() => { handleInvite("approved", data.job_invite_id || data.invite.job_invite_id) }}>
+                                                    Accept
+                                                    <div class="arrow-wrapper">
+                                                        <div class="arrow"></div>
 
-                                                </div>
-                                            </button>
-                                    {/* <button className='reject' onClick={()=>{handleInvite("rejected", data.job_invite_id || data.invite.job_invite_id)}} >
+                                                    </div>
+                                                </button>
+                                                {/* <button className='reject' onClick={()=>{handleInvite("rejected", data.job_invite_id || data.invite.job_invite_id)}} >
                                         Reject
                                     </button> */}
-                                            <button className='continue-btn invite-reject-btn' onClick={()=>{handleInvite("rejected", data.job_invite_id || data.invite.job_invite_id)}}>
-                                                Reject
-                                                <div class="arrow-wrapper">
-                                                    <div class="arrow"></div>
+                                                <button className='continue-btn invite-reject-btn' onClick={() => { handleInvite("rejected", data.job_invite_id || data.invite.job_invite_id) }}>
+                                                    Reject
+                                                    <div class="arrow-wrapper">
+                                                        <div class="arrow"></div>
 
-                                                </div>
+                                                    </div>
+                                                </button>
+
+                                            </div>
+                                        </>
+
+                                        :
+                                        ((data.invite?.job_status.toLowerCase() === "approved") || (data.invite_status?.toLowerCase() === "approved") ?
+                                            <button className='continue-btn invite-accepted-btn' >
+                                                Invite Accepted
                                             </button>
+                                            :
+                                            ((data.invite?.job_status.toLowerCase() === "rejected") || (data.invite_status?.toLowerCase() === "rejected") ?
+                                                (userJobRequest?.status.toLowerCase() !== "applied" ?
+                                                    <>
 
-                                 </div>
-                                 </>
-                                 
-                                 :
-                                 ((data.invite?.job_status.toLowerCase() === "approved") || (data.invite_status?.toLowerCase()==="approved")?
-                                    <button className='continue-btn invite-accepted-btn' >
-                                        Invite Accepted
-                                    </button>
-                                    :
-                                    ((data.invite?.job_status.toLowerCase() === "rejected") || (data.invite_status?.toLowerCase()==="rejected")?
-                                    (userJobRequest?.status.toLowerCase()!=="applied"?
-                                    <>
-                                    
-                                    <button className='continue-btn invite-rejected-btn' >
-                                        Invite Rejected
-                                    </button>
-                                    
-                                    <div className="cancel-application-button">
-                                        <Link to={`/seeker/openings/${data.companyUsername}/${data.id}`}>
-                                        <Button variant="outlined"  sx={{ color: "black", border: "1px solid #254CE1" }} endIcon={<FileOpenIcon />}>
-                                            <p>View Vacancy</p>
-                                        </Button>
-                                        </Link>
-                                    </div>
-                                    </>
-                                    :
-                                    <button className='continue-btn disable-apply-btn' >
-                                        {userJobRequest?.status}
-                                    </button>
-                                    )
-                                    :
-                                    <></>
-                                    )
-                                    
-                                 )
-                                 
-                                
-                                 
-                            )
-                            :
-                            <div className="apply-button">
-                                {/* <Button variant="outlined" disabled={submit}  onClick={submit ? () => { } : handleApplication} sx={{ color: submit ? "gray" : "black", border: "1px solid #254CE1",textTransform:'none' }} startIcon={submit ? <DoneIcon /> : <MailIcon />}>
-                                    <p>{submit ? "Applied" : "Apply for the job"}</p>
-                                </Button> */}
-                                {
-                                (!submit && !data.closed?
-                                    (applicationErrors===true?
-                                    <div className='invite-banner'>
-                                        <p>Application window temporarily unavailable</p>
-                                    </div>
-                                    
-                                    :
-                                    <button className='continue-btn' onClick={submit ? () => { } : handleApplication} >
-                                        {data.closed?"Application window closed":"Apply"}
-                                        <div class="arrow-wrapper">
-                                            <div class="arrow"></div>
+                                                        <button className='continue-btn invite-rejected-btn' >
+                                                            Invite Rejected
+                                                        </button>
 
-                                        </div>
-                                    </button>
-                                    )
-                                    :
-                                    // <button className='continue-btn disable-apply-btn' onClick={submit ? () => { } : handleApplication} >
-                                    //     {((userJobRequest && userJobRequest.status && !data.closed)?userJobRequest.status:(data.closed?"Job Vacancy closed":""))}
-                                    // </button>             //if errors uncomment this and comment bottom bracket
-                                    (
-                                    (userJobRequest && userJobRequest.status && !data.closed)?
-                                    <button className='continue-btn disable-apply-btn' onClick={submit ? () => { } : handleApplication} >
-                                        {userJobRequest.status}
-                                    </button>
-                                    :
-                                     (data.closed?
-                                     <button className='continue-btn disable-apply-btn' onClick={submit ? () => { } : handleApplication} >
-                                       Job Vacancy Closed
-                                    </button>
-                                    :
-                                    <></>)
-                                    )
+                                                        <div className="cancel-application-button">
+                                                            <Link to={`/seeker/openings/${data.companyUsername}/${data.id}`}>
+                                                                <Button variant="outlined" sx={{ color: "black", border: "1px solid #254CE1", textTransform: "none" }} endIcon={<FileOpenIcon />}>
+                                                                    <p>More Jobs at {data.companyName}</p>
+                                                                </Button>
+                                                            </Link>
+                                                        </div>
+                                                    </>
+                                                    :
+                                                    <button className='continue-btn disable-apply-btn' >
+                                                        {userJobRequest?.status}
+                                                    </button>
+                                                )
+                                                :
+                                                <></>
+                                            )
+
+                                        )
+
+
 
                                 )
-                                }
-                            </div>
+                                :
+                                <div className="apply-button">
+                                    {/* <Button variant="outlined" disabled={submit}  onClick={submit ? () => { } : handleApplication} sx={{ color: submit ? "gray" : "black", border: "1px solid #254CE1",textTransform:'none' }} startIcon={submit ? <DoneIcon /> : <MailIcon />}>
+                                    <p>{submit ? "Applied" : "Apply for the job"}</p>
+                                </Button> */}
+                                    {
+                                        (!submit && !data.closed ?
+                                            (applicationErrors === true ?
+                                                <div className='invite-banner'>
+                                                    <p>Application window temporarily unavailable</p>
+                                                </div>
+
+                                                :
+                                                <button className='continue-btn' onClick={submit ? () => { } : handleApplication} >
+                                                    {data.closed ? "Application window closed" : "Apply"}
+                                                    <div class="arrow-wrapper">
+                                                        <div class="arrow"></div>
+
+                                                    </div>
+                                                </button>
+                                            )
+                                            :
+                                            // <button className='continue-btn disable-apply-btn' onClick={submit ? () => { } : handleApplication} >
+                                            //     {((userJobRequest && userJobRequest.status && !data.closed)?userJobRequest.status:(data.closed?"Job Vacancy closed":""))}
+                                            // </button>             //if errors uncomment this and comment bottom bracket
+                                            (
+                                                (userJobRequest && userJobRequest.status && !data.closed) ?
+                                                    <button className='continue-btn disable-apply-btn' onClick={submit ? () => { } : handleApplication} >
+                                                        {userJobRequest.status}
+                                                    </button>
+                                                    :
+                                                    (data.closed ?
+                                                        <button className='continue-btn disable-apply-btn' onClick={submit ? () => { } : handleApplication} >
+                                                            Job Vacancy Closed
+                                                        </button>
+                                                        :
+                                                        <></>)
+                                            )
+
+                                        )
+                                    }
+                                </div>
                             :
                             <div className="processing-animation">
-                                    <Lottie animationData={ProcessingAnimation} loop={true}  />
-                            </div>    
-                            }
+                                <Lottie animationData={ProcessingAnimation} loop={true} />
+                            </div>
+                        }
                     </>
                     :
                     <></>

@@ -87,7 +87,7 @@ export default function OtherUserProfile({ data }) {
             {isEmployer && <Navigate to={'/e/profile/' + user} />}
             {data ?
                 <div id="profile-page">
-                    <ProfileHead access={"viewOnly"} data={newData} logOutFn={logOut} isNotEditing={isNotEditing} setIsNotEditing={updateEditStatus} />
+                    <ProfileHead access={"viewOnly"} data={newData} logOutFn={logOut} isNotEditing={isNotEditing} setIsNotEditing={updateEditStatus} originFrom="other" />
                     <NavigationBar active="profile" redirect={state} />
                     <div className="profile-body-section">
                         <div className="profile-pane profile-left-pane">
