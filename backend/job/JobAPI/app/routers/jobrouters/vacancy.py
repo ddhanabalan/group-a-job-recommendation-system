@@ -189,8 +189,16 @@ async def update_job_vacancy(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Job Vacancy not found"
         )
+    async with httpx.AsyncClient() as client:
+        response = await client.delete(
+            f"http://172.20.0.7:8000/model/job/input/{job_vacancy_id}",
+        )
+        if response.status_code != status.HTTP_200_OK:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Error Occured"
+            )
     data = job_vacancy.dict(exclude_unset=True)
-    skills = data.pop("skill", [])
+    skills = data.pop("skills", [])
     skills_delete = data.pop("skills_delete", [])
     resp = jobcrud.vacancy.update(db, job_vacancy_id, data)
     if not resp:
@@ -198,6 +206,27 @@ async def update_job_vacancy(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Data not updated to Database",
         )
+    job_vacancy_instance = jobcrud.vacancy.get(db, job_vacancy_id)
+    job_model = jobschema.JobDetails(
+        **{
+            "job_id": job_vacancy_instance.job_id,
+            "job_name": job_vacancy_instance.job_name,
+            "job_position": job_vacancy_instance.job_position,
+            "company_name": job_vacancy_instance.company_name,
+            "city": job_vacancy_instance.location,
+            "work_style": job_vacancy_instance.work_style,
+            "job_description": job_vacancy_instance.job_desc,
+        }
+    )
+    async with httpx.AsyncClient() as client:
+        response = await client.post(
+            "http://172.20.0.7:8000/model/job/input",
+            json=job_model.dict(),
+        )
+        if response.status_code != status.HTTP_200_OK:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Error Occured"
+            )
     for skill in skills_delete:
         if not jobcrud.skills.delete(db, skill):
             raise HTTPException(

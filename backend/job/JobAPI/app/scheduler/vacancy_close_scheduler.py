@@ -1,14 +1,17 @@
+import httpx
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 import logging
 
+from fastapi import HTTPException
 from sqlalchemy.orm import Session
+from starlette import status
 
 from . import utils, crud
 
 logger = logging.getLogger(__name__)
 
 
-def close_vacancy_scheduler(db: Session = utils.SessionLocal()) -> None:
+async def close_vacancy_scheduler(db: Session = utils.SessionLocal()) -> None:
     """
     Closes all jobs that have reached their closing time.
 
@@ -20,10 +23,18 @@ def close_vacancy_scheduler(db: Session = utils.SessionLocal()) -> None:
     """
     logger.info("Running close_vacancy_scheduler")
     jobs = crud.jobcrud.vacancy.get_all_by_close_time(db)
-    job_ids = [job.job_id for job in jobs]
-    for job_id in job_ids:
-        logger.info(f"Closing job_id {job_id}")
-        crud.jobcrud.vacancy.update(db, job_id, {"closed": True})
+    for job in jobs:
+        logger.info(f"Closing job_id {job.job_id}")
+        crud.jobcrud.vacancy.update(db, job.job_id, {"closed": True})
+        async with httpx.AsyncClient() as client:
+            response = await client.delete(
+                f"http://172.20.0.7:8000/model/job/input/{job.job_id}",
+            )
+            if response.status_code != status.HTTP_200_OK:
+                logger.error(f"Error closing job_id {job.job_id}")
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND, detail="Error Occured"
+                )
 
 
 close_vacancy = AsyncIOScheduler()

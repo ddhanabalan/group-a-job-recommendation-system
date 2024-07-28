@@ -7,10 +7,8 @@ from .. import (
     get_db,
     get_current_user,
     recruiterschema,
-    recruitermodel,
     crud,
     Session,
-    check_authorization,
     JOB_API_HOST,
 )
 

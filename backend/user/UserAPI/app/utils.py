@@ -1,8 +1,5 @@
-import base64
-import binascii
 import httpx
 from fastapi import Header, status, HTTPException
-import re
 from .database import SessionLocal
 from .config import AUTH_API_HOST, PORT
 
