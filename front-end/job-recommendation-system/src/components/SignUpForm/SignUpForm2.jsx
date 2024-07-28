@@ -60,7 +60,7 @@ function SignUpForm2() {
   const [serverMsg, setServerMsg] = useState({});
   const [mailInfo, setMailInfo] = useState(location.state ? location.state : null);
   const [fetchingErrors, setFetchingErrors] = useState({ "username": false, "industries": false, "countries": false });
-  const [imgSize, setImgSize] = useState();
+  const [imgSize, setImgSize] = useState(null);
   const handleChange = (e) => {
     console.log(e)
     const fac = new FastAverageColor();
@@ -86,7 +86,7 @@ function SignUpForm2() {
 
   async function subForm(data) {
     //form data submission and redirecting to login
-    if(imgSize <=16 ) {
+    if (imgSize <= 16 || imgSize=== null ) {
       SetLoading(true)
     console.log(location)
     const newdata = { ...data, ...location.state, 'profile_picture': img, 'profile_banner_color': bannerColor };
@@ -262,11 +262,11 @@ function SignUpForm2() {
                   error={'username' in errors}
                   {...register("username",
                     {
-                      required: "username cannot be empty",
+                      required: "Username cannot be empty",
                       validate: async (username) => {
                         const r = await usernameVerify(username)
                         console.log("reasponse", r)
-                        if (r === "error") return "Username couldnt be verified";
+                        if (r === "error") return "Username couldn't be verified";
                         else if (!r) return "Username not available"
                         else if (r === "out of constraints") return "Username must be between 3 and 16 characters long and may contain letters, numbers, and underscores.";
                       },
@@ -317,7 +317,7 @@ function SignUpForm2() {
                         error={'first_name' in errors}
                         {...register("first_name",
                           {
-                            required: "please enter first name",
+                            required: "Please enter first name",
                             pattern: {
                               value: /^[a-zA-Z]{1,32}$/,
                               message: "Only letters allowed, with a maximum length of 32 characters"
@@ -333,7 +333,7 @@ function SignUpForm2() {
                         error={'company_name' in errors}
                         {...register("company_name",
                           {
-                            required: "please enter company name",
+                            required: "Please enter company name",
                             pattern: {
                               value: /^[a-zA-Z0-9\s]{1,128}$/,
                               message: "Only letters, numbers and whitespace with a maximum length of 128 characters"
@@ -355,7 +355,7 @@ function SignUpForm2() {
                         error={'last_name' in errors}
                         {...register("last_name",
                           {
-                            required: "please enter last name",
+                            required: "Please enter last name",
                             pattern: {
                               value: /^[a-zA-Z\s]{1,32}$/,
                               message: "Only letters and whitespace with a maximum length of 32 characters"
@@ -450,7 +450,7 @@ function SignUpForm2() {
                   error={'phone' in errors}
                   {...register("phone",
                     {
-                      required: "please enter phone number",
+                      required: "Please enter phone number",
                       pattern: {
                         value: /^\d{10}$/, // Regular expression to check exactly 10 digits
                         message: "Phone number must be exactly 10 numbers"
@@ -472,7 +472,7 @@ function SignUpForm2() {
                         {...register("dob",
                           {
 
-                            required: "please enter dob",
+                            required: "Please enter dob",
                             validate: (val) => dateValidation(val) >= SIGNUP_AGE || "Age should be above 18 to register",
                           })} />
                       <p className="error-message">{errors.dob?.message || ""}</p>
@@ -485,7 +485,7 @@ function SignUpForm2() {
                         error={'pincode' in errors}
                         {...register("pincode",
                           {
-                            required: "please enter pincode",
+                            required: "Please enter pincode",
                             pattern: {
                               value: /^[0-9]{1,8}$/,
                               message: "Only numbers allowed, with a maximum length of 8 characters"
@@ -506,7 +506,7 @@ function SignUpForm2() {
                         error={'gender' in errors}
                         {...register("gender",
                           {
-                            required: "please select gender"
+                            required: "Please select gender"
                           })}>
                         {genders.map((op) => (<MenuItem key={op} value={op}>{op}</MenuItem>))}
                       </TextField>
@@ -521,7 +521,7 @@ function SignUpForm2() {
                         error={'address' in errors}
                         {...register("address",
                           {
-                            required: "please enter address",
+                            required: "Please enter address",
                             pattern: {
                               value: /^[a-zA-Z0-9\s,'-.#]{1,256}$/,
                               message: "Invalid address format. Maximum length of 256 characters."
