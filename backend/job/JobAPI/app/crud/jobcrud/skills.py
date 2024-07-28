@@ -32,7 +32,7 @@ def get_filtered_skills(db: Session, skills: List[str]):
         return []
 
 
-def get_all(db: Session, job_id: int) -> List[Type[jobschema.JobSkill]]:
+def get_all(db: Session, job_id: int) -> List[Type[jobschema.JobSkills]]:
     """
     Retrieve job skills associated with a job ID from the database.py.
 

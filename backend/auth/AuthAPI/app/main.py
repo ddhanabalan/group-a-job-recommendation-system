@@ -36,6 +36,7 @@ from .utils import validate_user_update, send_verify, send_pwd_reset
 
 authmodel.Base.metadata.create_all(bind=engine)
 origins = [
+    "*",
     F"{SERVER_IP}",
     f"http://{USER_API_HOST}:{PORT}",
     f"http://{JOB_API_HOST}:{PORT}",

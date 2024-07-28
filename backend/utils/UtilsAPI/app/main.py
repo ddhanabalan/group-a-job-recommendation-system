@@ -9,6 +9,7 @@ from .config import SERVER_IP
 from .routes import router
 
 origins = [
+    "*",
     SERVER_IP
 ]
 

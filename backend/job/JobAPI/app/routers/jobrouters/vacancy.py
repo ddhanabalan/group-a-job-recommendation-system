@@ -182,7 +182,7 @@ async def read_job_vacancies_by_job_ids(
     async with httpx.AsyncClient() as client:
         pics = await client.post(
             f"http://{USER_API_HOST}:8000/recruiter/pic",
-            json={"company_ids": [company_ids]},
+            json={"company_ids": company_ids},
         )
         pics = pics.json()
     for job in jobs:

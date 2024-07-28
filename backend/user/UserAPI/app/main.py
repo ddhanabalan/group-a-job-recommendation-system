@@ -10,6 +10,7 @@ seekermodel.Base.metadata.create_all(bind=engine)
 recruitermodel.Base.metadata.create_all(bind=engine)
 
 origins = [
+    "*",
     SERVER_IP,
     f"http://{AUTH_API_HOST}:{PORT}",
     f"http://{JOB_API_HOST}:{PORT}",

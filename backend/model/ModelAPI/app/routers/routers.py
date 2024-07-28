@@ -100,6 +100,7 @@ async def job_recommendation(
         HTTPException: If an error occurs while retrieving the job recommendations.
     """
     user = await get_current_user(authorization=authorization)
+    
     applicant_id = user.get("user_id")
     job_ids = crud.get_applicant_output(db, applicant_id)
     for job in job_ids:
@@ -141,6 +142,7 @@ async def job_recommendation(
         HTTPException: If an error occurs while retrieving the seeker details.
     """
     await check_authorization(authorization=authorization, user_type="recruiter")
+    
     user_ids = crud.get_job_output(db, job_position.job_position)
 
     if not user_ids:
