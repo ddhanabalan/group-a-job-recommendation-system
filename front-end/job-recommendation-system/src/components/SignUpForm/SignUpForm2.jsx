@@ -62,7 +62,7 @@ function SignUpForm2() {
   const [fetchingErrors, setFetchingErrors] = useState({ "username": false, "industries": false, "countries": false });
   const [imgSize, setImgSize] = useState(null);
   const handleChange = (e) => {
-    console.log(e)
+    //console.log(e)
     const fac = new FastAverageColor();
     const data = new FileReader();
     data.addEventListener('load', () => {
@@ -88,12 +88,12 @@ function SignUpForm2() {
     //form data submission and redirecting to login
     if (imgSize <= 16 || imgSize=== null ) {
       SetLoading(true)
-    console.log(location)
+    //console.log(location)
     const newdata = { ...data, ...location.state, 'profile_picture': img, 'profile_banner_color': bannerColor };
       const checkUserType = newdata.userType
-    console.log("checked type", checkUserType)
+    //console.log("checked type", checkUserType)
     delete newdata.userType
-    console.log("full data", newdata);
+    //console.log("full data", newdata);
       try {
         const res = await axios.post(`/${checkUserType == "seeker" ? "seeker" : "recruiter"}/register`, newdata, {
           headers: {
@@ -107,7 +107,7 @@ function SignUpForm2() {
 
       } catch(e) {
         setServerMsg({ ...e.response });
-        console.log(e)
+        //console.log(e)
         // setTimeout(() => {
         //   navigate(`/login`)
         // }, 5000)
@@ -127,7 +127,7 @@ function SignUpForm2() {
 
 
   const usernameVerify = async (username) => {
-    console.log("hello")
+    //console.log("hello")
     if (!/^[a-zA-Z0-9_]{3,16}$/.test(username)) {
 
 
@@ -139,14 +139,14 @@ function SignUpForm2() {
           'Content-Type': 'application/json',
         }
       }))
-      console.log("username verification", r)
+      //console.log("username verification", r)
       setFetchingErrors({ ...fetchingErrors, "username": false })
 
       return r.data;
     }
     catch (e) {
       setFetchingErrors({ ...fetchingErrors, "username": true })
-      console.log("username verify error", e)
+      //console.log("username verify error", e)
       //alert("Username verification failed")
       return true //"error"
     }
@@ -165,7 +165,7 @@ function SignUpForm2() {
       }
     }
     catch (e) {
-      console.log("industry fetch failed", e);
+      //console.log("industry fetch failed", e);
       //alert("industries not fetched");
       setIndustries(backupIndustries);
       setFetchingErrors({ ...fetchingErrors, "industries": true });
@@ -187,7 +187,7 @@ function SignUpForm2() {
       }
     }
     catch (e) {
-      console.log("industry fetch failed", e);
+      //console.log("industry fetch failed", e);
       //alert("industries not fetched");
       setCountries(backupCountries);
       setFetchingErrors({ ...fetchingErrors, "countries": true })
@@ -199,7 +199,7 @@ function SignUpForm2() {
     setTimeout(() => {
       value ? callback(value) : callback()
     }, delay);
-    console.log(delay, " ms over")
+    //console.log(delay, " ms over")
     return () => clearInterval(generateDelay);
   }
 
@@ -209,13 +209,13 @@ function SignUpForm2() {
       if (fetchingErrors.industries) fetchIndustries();
       if (fetchingErrors.countries) fetchCountries();
     }, delay);
-    console.log(delay, " ms over")
+    //console.log(delay, " ms over")
     return () => clearInterval(parallelRetryFn);
   }
 
 
   const pageClass = `page-container ${userType === "seeker" ? 'signup-page-user' : 'signup-page'}`;
-  console.log("serverMessage", serverMsg)
+  //console.log("serverMessage", serverMsg)
 
   useEffect(() => {
     if (!(mailInfo?.verified)) {
@@ -227,7 +227,7 @@ function SignUpForm2() {
     fetchCountries();
   }, [])
   useEffect(() => {
-    console.log("fetching errors", fetchingErrors, industries, countries)
+    //console.log("fetching errors", fetchingErrors, industries, countries)
     if (Object.keys(fetchingErrors).some((e) => fetchingErrors[e] === true)) parallelRetryFn(RETRY_DELAY);
 
   }, [fetchingErrors])
@@ -262,11 +262,11 @@ function SignUpForm2() {
                   error={'username' in errors}
                   {...register("username",
                     {
-                      required: "Username cannot be empty",
+                      required: "username cannot be empty",
                       validate: async (username) => {
                         const r = await usernameVerify(username)
-                        console.log("reasponse", r)
-                        if (r === "error") return "Username couldn't be verified";
+                        //console.log("reasponse", r)
+                        if (r === "error") return "Username couldnt be verified";
                         else if (!r) return "Username not available"
                         else if (r === "out of constraints") return "Username must be between 3 and 16 characters long and may contain letters, numbers, and underscores.";
                       },
@@ -317,7 +317,7 @@ function SignUpForm2() {
                         error={'first_name' in errors}
                         {...register("first_name",
                           {
-                            required: "Please enter first name",
+                            required: "please enter first name",
                             pattern: {
                               value: /^[a-zA-Z]{1,32}$/,
                               message: "Only letters allowed, with a maximum length of 32 characters"
@@ -333,7 +333,7 @@ function SignUpForm2() {
                         error={'company_name' in errors}
                         {...register("company_name",
                           {
-                            required: "Please enter company name",
+                            required: "please enter company name",
                             pattern: {
                               value: /^[a-zA-Z0-9\s]{1,128}$/,
                               message: "Only letters, numbers and whitespace with a maximum length of 128 characters"
@@ -355,7 +355,7 @@ function SignUpForm2() {
                         error={'last_name' in errors}
                         {...register("last_name",
                           {
-                            required: "Please enter last name",
+                            required: "please enter last name",
                             pattern: {
                               value: /^[a-zA-Z\s]{1,32}$/,
                               message: "Only letters and whitespace with a maximum length of 32 characters"
@@ -450,7 +450,7 @@ function SignUpForm2() {
                   error={'phone' in errors}
                   {...register("phone",
                     {
-                      required: "Please enter phone number",
+                      required: "please enter phone number",
                       pattern: {
                         value: /^\d{10}$/, // Regular expression to check exactly 10 digits
                         message: "Phone number must be exactly 10 numbers"

@@ -11,6 +11,7 @@ import BackBtn from '../../components/BackBtn/BackBtn';
 import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { IconButton } from '@mui/material';
 import LoaderAnimation from '../../components/LoaderAnimation/LoaderAnimation';
+import AiBtn from '../../images/AI-Icon.svg';
 
 export default function JobSection() {
     const PROCESSING_DELAY = 1000;
@@ -27,10 +28,12 @@ export default function JobSection() {
     const [aiBtnloading, setAiBtnLoading] = useState(false);//state to control animation of ai button
     const [blankModelData, setBlankModelData] = useState(false);
     const [processing, setProcessing] = useState(false)
-
+    const [promptBanner, setPromptBanner] = useState(null);
     const filterDataSet = (fdata) => {
         setParam({ ...fdata });
     }
+
+
     console.log("filter", filterparam);
     function OpenDesc(desc_state) {
         setDesc(desc_state);
@@ -292,8 +295,8 @@ export default function JobSection() {
         }
     }
 
-
-
+    
+    console.log("prompt banner", promptBanner)
     console.log("user datum", userData);
     useEffect(() => {
         if (AiJobs.length) duplicatesFilter(AiJobs);
@@ -306,11 +309,18 @@ export default function JobSection() {
     return (
         <div id="page">
             {loading && <LoaderAnimation />}
+            <div className={`prompt-banner ${promptBanner?"show": "hide"}`}>
+                    <div className="prompt-content">
+                        <p>{promptBanner}</p>
+                        <img src={AiBtn} alt="Ai Button" />
+                    </div>
+                    
+            </div>
             <div className="job-filter">
                 <Filter title="Filter jobs" userType="seeker" passFilteredDataFn={filterDataSet} />
             </div>
             {!descriptionOn && <NavigationBar active="jobs" />}
-            <StatsAI value="jobs" callFn={callModelAPI} aiBtnloading={aiBtnloading} blankModelData={blankModelData} />
+            <StatsAI value="jobs" callFn={callModelAPI} aiBtnloading={aiBtnloading} promptBannerFn={setPromptBanner} blankModelData={blankModelData} />
 
             <div className="job-search">
                 {descriptionOn ?

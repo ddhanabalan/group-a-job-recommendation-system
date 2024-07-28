@@ -11,8 +11,11 @@ import Box from '@mui/material/Box';
 import './AddPOI.css';
 export default function AddPOI({ callAPI, showSuccessMsg, showFailMsg }) {
     // poi-position of interests
+    const POPUP_START_DELAY = 3000;
+    const POPUP_STAY_DELAY = 8000;
     const [poi, SetPOI] = useState('');
     const [pois, SetPOIS] = useState([]);
+    const [showMsg, setShowMsg] = useState(null);
 console.log("user poi",pois)
     const [poisList, SetPoisList] = useState([])
     const poiAPI = async () => {
@@ -24,6 +27,10 @@ console.log("user poi",pois)
             })
             console.log("poi", response)
             SetPOIS([...response.data])
+            if(response.data && !response.data.length){
+                generateDelay(POPUP_START_DELAY, setShowMsg,"Please add your position of interests to let us start recommending you jobs",)
+                generateDelay(POPUP_STAY_DELAY, setShowMsg, null)
+            }
         }
         catch (e) {
             console.log(e)
@@ -33,6 +40,7 @@ console.log("user poi",pois)
         try {
             const response = await utilsAPI.get(`/api/v1/positions?q=${poi}`)
             SetPoisList([...response.data])
+            
         }
         catch (e) {
             console.log(e)
@@ -66,6 +74,12 @@ console.log("user poi",pois)
         //stores the poi value from the input field as user types
         SetPOI(v)
     };
+
+    const generateDelay = (delay, callFn, value=null)=>{
+        setTimeout(() => {
+            value?callFn(value):callFn();
+        }, delay);
+    }
 
     const updateFn = async (n) => {
         //accepts a new domain value from the input field and updates the domains array to display the newly added domain and resets the input box value when user clicks the add button
@@ -143,6 +157,13 @@ console.log("user poi",pois)
 
                 }
             </Box>
+
+            {showMsg && 
+                
+                <div className='poi-alert-msg'>
+                    <p>{showMsg}</p>
+                </div>
+            }
         </div>
 
     )

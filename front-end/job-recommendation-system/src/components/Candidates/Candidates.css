@@ -1,0 +1,13 @@
+.prompt-section{
+    display: flex; /* Hidden by default */
+    position: absolute; /* Stay in place */
+    
+    top: 10rem;
+    left: 10rem;
+    width: 20rem;
+    height: 20px;
+    z-index: 100;
+    background-color: rgb(240, 240, 240); /* Black background with opacity */
+    justify-content: center;
+    align-items: center;
+}

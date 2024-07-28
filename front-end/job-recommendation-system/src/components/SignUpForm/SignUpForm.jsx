@@ -99,7 +99,7 @@ function SignUpForm() {
                   error={'email' in errors}
                   {...register("email",
                     {
-                      required: "Please enter email",
+                      required: "please enter email",
                       validate: async (email) => {
                         const r = await emailVerify(email)
                         console.log("reasponse",r)
@@ -122,9 +122,9 @@ function SignUpForm() {
                   error={'password' in errors}
                   {...register("password",
                     {
-                      required: "Password is required",
+                      required: "password is required",
                       pattern: {
-                        value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*_=+\-])[a-zA-Z0-9!@#$%^&*_=+\-]{8,32}$/,
+                        value: /^(?=.*[0-9])(?=.*[!@#$%^&*.,])[a-zA-Z0-9!@#$%^&*.,]{8,32}$/,
                         message: "Your password should have one lowercase, one uppercase, one number, one special symbol from [!@#$%^&*_=+-], and be 8 to 32 characters long"
                       }
                     })}
@@ -146,7 +146,7 @@ function SignUpForm() {
 
                   {...register("cpassword",
                     {
-                      required: "Password is required",
+                      required: "password is required",
                       validate: (val) => val === watch("password") || "The passwords don't match",
                     })}
                   sx={{ width: 230, position: 'relative', left: -12 }} />
