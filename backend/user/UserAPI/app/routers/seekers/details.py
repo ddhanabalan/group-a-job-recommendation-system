@@ -29,12 +29,13 @@ async def get_seeker_details(
 @router.get("/list", response_model=List[seekerschema.SeekerView])
 async def get_seeker_details_list(
     name: Optional[str] = Query(None),
-    experience: Optional[str] = Query(None),
-    location: Optional[str] = Query(None),
+    experience: Optional[List[str]] = Query(None),
+    skills:Optional[List[str]] = Query(None),
+    location: Optional[List[str]] = Query(None),
     db: Session = Depends(get_db),
-    authorization: str = Header(...),
+    # authorization: str = Header(...),
 ):
-    await check_authorization(authorization=authorization, user_type="recruiter")
+    # await check_authorization(authorization=authorization, user_type="recruiter")
 
     # Build filter conditions
     filters = []
@@ -43,28 +44,40 @@ async def get_seeker_details_list(
             lambda user_details: name.lower()
             in (user_details.first_name.lower() + " " + user_details.last_name.lower())
         )
+    experience_filters = []
     if experience is not None:
-        (min_experience, max_experience) = (
-            experience.split("-") if "-" in experience else (experience, None)
-        )
-        filters.append(lambda user_details: user_details.experience >= min_experience)
-        if max_experience is not None:
-            filters.append(
-                lambda user_details: user_details.experience <= max_experience
-            )
+        for exp in experience:
+            if exp.lower() == 'fresher':
+                experience_filters.append(lambda user_details: user_details.experience == 0)
+            elif '-' in exp:
+                min_exp, max_exp = map(int, exp.replace(' Years', '').split('-'))
+                experience_filters.append(lambda user_details, min_exp=min_exp, max_exp=max_exp: min_exp <= user_details.experience <= max_exp)
+            elif '+' in exp:
+                min_exp = int(exp.replace('+ Years', ''))
+                experience_filters.append(lambda user_details, min_exp=min_exp: user_details.experience >= min_exp)
+
+    if experience_filters:
+        def combined_experience_filter(user_details):
+            return any(f(user_details) for f in experience_filters)
+        filters.append(combined_experience_filter)
+
     if location:
-        filters.append(
-            lambda user_details: location.lower() in user_details.city.lower()
-            or location.lower() in user_details.country.lower()
-        )
+        def location_filter(user_details):
+            return any(loc.lower() in user_details.city.lower() or loc.lower() in user_details.country.lower() for loc in location)
+        filters.append(location_filter)
 
     # Fetch user details based on filters
     user_details_list = crud.seeker.details.get_all(db=db)
-    print(list(user_details_list))
     filtered_user_details_list = []
     for user_details in user_details_list:
         if all(f(user_details) for f in filters):
             filtered_user_details_list.append(user_details)
+    user_skills_ids = crud.seeker.skill.get_all_list(db=db,skills=skills)
+    if skills:
+        filtered_user_details_list = [
+            user_details for user_details in filtered_user_details_list
+            if user_details.user_id in user_skills_ids
+        ]
 
     seeker_views = []
     for user_details in filtered_user_details_list:
@@ -96,8 +109,9 @@ async def get_seeker_details_list_by_ids(
     user_details = []
     for user_id in user_ids.user_ids:
         user_detail = crud.seeker.details.get(db=db, user_id=user_id)
+
         if user_detail is None:
-            raise HTTPException(status_code=404, detail="User not found")
+            continue
         user_skills = crud.seeker.skill.get_all(db=db, user_id=user_id)
 
 

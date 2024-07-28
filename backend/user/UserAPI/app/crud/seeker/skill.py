@@ -65,6 +65,15 @@ def create(db: Session, skill: seekerschema.SeekersSkill) -> bool:
         db.rollback()
         return False
 
+def get_all_list(db: Session,skills:List[str]):
+    try:
+        result = (db.query(seekermodel.SeekersSkill.user_id)
+            .filter(seekermodel.SeekersSkill.skill.in_(skills))
+            .all()
+        )
+        return list(set([_[0] for _ in result]))
+    except SQLAlchemyError:
+        return []
 
 def update(db: Session, id: int, updated_skill: seekerschema.SeekersSkill) -> bool:
     """

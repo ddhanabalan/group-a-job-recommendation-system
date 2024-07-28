@@ -1,6 +1,6 @@
 from pydantic import BaseModel, EmailStr, PastDate
 from datetime import datetime
-from typing import Optional, List
+from typing import Optional, List, Union
 
 
 class SeekersBase(BaseModel):
@@ -27,7 +27,7 @@ class SeekerModelIn(BaseModel):
 
 class SeekersDetails(SeekersBase):
     bio: Optional[str] = None
-    contact_email: Optional[EmailStr]
+    contact_email: Optional[Union[EmailStr,str]] = None
     address: Optional[str] = None
     institution: Optional[str] = None
     experience: Optional[int] = 0

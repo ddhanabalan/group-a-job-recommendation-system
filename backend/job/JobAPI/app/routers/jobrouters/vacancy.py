@@ -116,9 +116,18 @@ async def read_job_vacancies_by_job_ids(
     job_in: jobschema.JobIDSIn, db: Session = Depends(get_db)
 ):
     jobs = jobcrud.vacancy.get_all_by_job_ids(db, job_in.job_ids)
+    company_ids = list(set([job.company_id for job in jobs]))
+
+    async with httpx.AsyncClient() as client:
+        pics = await client.post(
+            f"http://172.20.0.4:8000/recruiter/pic",
+            json={"company_ids": [company_ids]},
+        )
+        pics = pics.json()
     for job in jobs:
         job.skills = jobcrud.skills.get_all(db, job.job_id)
         job.job_seekers = jobcrud.request.get_all_by_job_id(db, job.job_id)
+        ob.company_pic = pics[f"{job.company_id}"]
 
     return jobs
 
@@ -150,9 +159,16 @@ async def read_job_vacancies_by_company_id(
 
 
 # Read job vacancy by ID
-@job_vacancy_router.get("/{job_vacancy_id}", response_model=jobschema.JobVacancy)
+@job_vacancy_router.get("/{job_vacancy_id}")
 async def read_job_vacancy(job_vacancy_id: int, db: Session = Depends(get_db)):
     db_job_vacancy = jobcrud.vacancy.get(db, job_vacancy_id)
+    async with httpx.AsyncClient() as client:
+        pics = await client.post(
+            f"http://172.20.0.4:8000/recruiter/pic",
+            json={"company_ids": [db_job_vacancy.company_id]},
+        )
+        pics = pics.json()
+        db_job_vacancy.company_pic = pics[f"{db_job_vacancy.company_id}"]
     if db_job_vacancy is None:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="Job Vacancy not found"

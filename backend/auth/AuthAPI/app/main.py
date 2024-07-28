@@ -235,6 +235,7 @@ async def get_refresh_user(
     user = authcrud.get_by_username(db, token_data.username)
     if user is None:
         raise credential_exception
+    print(user.refresh_token,refresh_token)
     if user.refresh_token != refresh_token or user.disabled:
         raise credential_exception
     return user
@@ -292,6 +293,7 @@ async def refresh_token_validate(
             detail="Invalid Username or Password",
             headers={"WWW-Authenticate": "Bearer"},
         )
+    print(user)
 
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     refresh_token_expires = timedelta(minutes=REFRESH_TOKEN_EXPIRE_MINUTES)
