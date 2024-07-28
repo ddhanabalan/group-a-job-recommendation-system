@@ -20,7 +20,7 @@ from .. import (
     SERVER_IP
 )
 from ...models import jobmodel
-from ...utils import get_company_details, get_company_email, send_seeker_status_notif
+from ...utils import get_company_details, get_company_email, send_seeker_status_notif, get_seeker_info
 
 job_invite_router = APIRouter(prefix="/job_invite")
 
@@ -52,7 +52,7 @@ async def create_job_invite(
     db_job_invite = jobmodel.JobInvite(**job_inv.dict())
     res = jobcrud.invite.create(db, db_job_invite)
     job = jobcrud.vacancy.get(db, job_inv.job_id)
-    seeker = await get_seeker_details(job_inv.user_id, authorization=authorization)
+    seeker = await get_seeker_info(job_inv.user_id, authorization=authorization)
     if not res:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -104,7 +104,7 @@ async def update_job_invite(
     job_invite = jobcrud.invite.get(db, job_invite_id)
     job = jobcrud.vacancy.get(db, job_invite.job_id)
     recruiter = await get_company_email(job_invite.company_id,authorization=authorization)
-    seeker = await get_seeker_details(job_invite.user_id, authorization=authorization)
+    seeker = await get_seeker_details( authorization=authorization)
     await send_seeker_status_notif(
         recruiter.get("username"),
         job.company_name,

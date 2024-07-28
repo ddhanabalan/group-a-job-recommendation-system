@@ -158,3 +158,22 @@ async def get_recruiter_pic(
         for data in datas
     }
     return response
+
+@router.get("/info/{user_id}")
+async def recruiter_info(
+    user_id: int, authorization: str = Header(...), db: Session = Depends(get_db)
+) -> dict:
+    """
+    Get the username and email of a seeker user.
+
+    Args:
+        user_id (int): The user id of the seeker.
+        authorization (str, optional): The authorization token. Defaults to Header(...).
+        db (Session, optional): The database session. Defaults to Depends(get_db).
+
+    Returns:
+        dict: The username and email of the seeker user.
+    """
+    await check_authorization(authorization=authorization)
+    user = crud.recruiter.details.get(db=db, user_id=user_id)
+    return {"username": user.username, "email": user.email}

@@ -175,7 +175,7 @@ async def get_company_email(company_id:int,authorization: str = Header(...) ) ->
             )
         return response.json()
 
-async def get_seeker_details(user_id: int, authorization: str = Header(...)) -> dict:
+async def get_seeker_details( authorization: str = Header(...)) -> dict:
     """
     Retrieves the details of a seeker using the provided user ID and authorization token.
 
@@ -200,7 +200,30 @@ async def get_seeker_details(user_id: int, authorization: str = Header(...)) -> 
             )
         return response.json()
 
+async def get_seeker_info(user_id: int, authorization: str = Header(...)) -> dict:
+    """
+    Retrieves the details of a seeker using the provided user ID and authorization token.
 
+    Args:
+        user_id (int): The ID of the seeker.
+        authorization (str, optional): The authorization token for the seeker. Defaults to the value of the 'Authorization' header.
+
+    Returns:
+        dict: A dictionary containing the details of the seeker.
+
+    Raises:
+        HTTPException: If the request to the seeker details API fails or returns an error.
+    """
+    headers = {"Authorization": authorization}
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            f"http://{USER_API_HOST}:{PORT}/seeker/info/{user_id}", headers=headers
+        )
+        if response.status_code != status.HTTP_200_OK:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Error Occurred"
+            )
+        return response.json()
 async def send_invite_notif(
     seeker_name: str,
     recruiter_name: str,
