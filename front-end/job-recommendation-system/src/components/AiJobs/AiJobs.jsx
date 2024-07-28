@@ -4,7 +4,7 @@ import './AiJobs.css';
 import AutoAwesomeRoundedIcon from '@mui/icons-material/AutoAwesomeRounded';
 import  {v4 as uuid} from 'uuid';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
-export default function AiJobs({ childData, expandView, setAiJobs }) {
+export default function AiJobs({ childData, expandView, setAiJobs, chooseSelectedId }) {
     useEffect(() => {
         if(childData)setRecJobs(childData);
     },[childData])
@@ -16,8 +16,8 @@ export default function AiJobs({ childData, expandView, setAiJobs }) {
             {
                 recJobs.map(e => {
                     
-                return <JobCard data={{...e, 'userType': "seeker"}} expandView={expandView}
-                    key={uuid()} id={e["id"]}  
+                return <JobCard data={{...e, 'userType': "seeker"}} expandView={expandView} chooseSelectedId={chooseSelectedId}
+                    key={uuid()} id={`ai-job-${e.id}`} 
                     profilePictureStyle={{backgroundColor:'white'}}
                     background={{ backgroundImage: 'linear-gradient(60deg, rgba(255,255,255,1.00) 0%,rgba(229,153,242,1.00) 100%)', backgroundPosition: 'center center' }} />
             })}

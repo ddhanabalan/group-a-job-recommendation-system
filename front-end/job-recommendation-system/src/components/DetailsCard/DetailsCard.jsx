@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { TextField } from '@mui/material';
 import { userAPI } from '../../api/axios';
@@ -16,12 +16,44 @@ import StarsRoundedIcon from '@mui/icons-material/StarsRounded';
 import AddLocationAltRoundedIcon from '@mui/icons-material/AddLocationAltRounded';
 import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import PublicIcon from '@mui/icons-material/Public';
+import { utilsAPI } from '../../api/axios';
+import {Autocomplete} from '@mui/material';
 import './DetailsCard.css';
 // import '../FeatureBox/FeatureBox.css';
 // import './ContactCard.css';
 export default function ContactCard({access, data, companyInfo, reloadFn, showSuccessMsg, showFailMsg }) {
     const [isNotEditing, SetIsNotEditing] = useState(true);
-    const { register, formState: { errors }, getValues, trigger, setError } = useForm({});
+    const { register, formState: { errors }, getValues, trigger, setError, setValue } = useForm({});
+
+    const backupCountries = [{ "country": 'India' }, { "country": 'USA' }, { "country": "Germany" }, { "country": 'Australia' }, { 'country': "Japan" }]
+    const [countries, setCountries] = useState([])
+    
+    const [fetchingErrors, setFetchingErrors] = useState({ "countries": false });
+    const [userHeadquarters, setUserHeadquarters] = useState({ "country": data.headquarters })
+
+    const fetchCountries = async () => {
+        try {
+            const r = await utilsAPI.get('api/v1/country/');
+            if (r.data.length) {
+                setCountries(r.data);
+                setFetchingErrors({ ...fetchingErrors, "countries": false })
+            }
+            else {
+                setCountries(backupCountries);
+
+                setFetchingErrors({ ...fetchingErrors, "countries": true })
+
+            }
+        }
+        catch (e) {
+            console.log("industry fetch failed", e);
+            //alert("industries not fetched");
+            setCountries(backupCountries);
+            setFetchingErrors({ ...fetchingErrors, "countries": true })
+
+        }
+    }
+
     async function updateContact(data) {
         SetIsNotEditing(true)
         console.log(data)
@@ -46,6 +78,16 @@ export default function ContactCard({access, data, companyInfo, reloadFn, showSu
         const result = await trigger(["website", "contact_email"])
         result ? setShouldSubmit(true) : setShouldSubmit(false)
     }
+    const generateDelay = (delay, callFn, value = null) => {
+        setTimeout(() => {
+            value ? callFn(value) : callFn()
+        }, delay);
+    }
+
+    useEffect(()=>{
+        fetchCountries()
+        setValue('headquarters', data.headquarters)
+    }, [])
     return (
         <form className="feature-box detail-box" >
             < h4 className="feature-title" > {data.title}</h4 >
@@ -161,12 +203,33 @@ export default function ContactCard({access, data, companyInfo, reloadFn, showSu
                                 </IconButton>
                                 <p className='stat-title'>Headquarters</p>
                             </div>
-                            <TextField className="personal-details-input profile-edit-bio contact-card-textfield" variant="outlined"
-                                defaultValue={companyInfo.headquarters}
-                                placeholder='Tampa, FL'
-                                error={'headquarters' in errors}
-                                {...register("headquarters")}>
-                            </TextField>
+                            <Autocomplete
+                                disablePortal
+                                options={countries}
+                                value={userHeadquarters}
+                                defaultValue={{ "country": data.country }}
+                                getOptionLabel={(option) => option["country"]}
+                                isOptionEqualToValue={(option, value) => value["country"] === option["country"]}
+
+                                onChange={(event, newInputValue) => {
+                                    setUserHeadquarters(newInputValue)
+                                    setValue('headquarters', newInputValue["country"])
+                                }}
+
+                                renderInput={(params) => <TextField
+
+                                    className="personal-details-input profile-edit-input"
+                                    {...params}
+                                    InputProps={{
+                                        ...params.InputProps,
+                                        disableUnderline: true
+                                    }}
+
+                                    variant="outlined"
+                                    defaultValue={data.country}
+                                    {...register("headquarters") }
+                                />}
+                            />
                         </Stack>
                         {/* <Stack direction="row" spacing={1} className='contact-medium detail-medium'>
                             <div className='detail-identifier'>

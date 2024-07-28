@@ -18,6 +18,7 @@ export default function ExperienceBox({ access, childData, reloadFn, experiencei
     const [newExp, SetNewExp] = useState(false)
     // const [totalExp, SetTotalExp] = useState()
     const updateTotalExperience = async (data) => {
+        if(getStorage("userType")==="seeker"){
         try {
             const response = await userAPI.put('/seeker/details/', { "experience": data },
                 {
@@ -33,6 +34,8 @@ export default function ExperienceBox({ access, childData, reloadFn, experiencei
             // alert(e.message)
         }
     }
+    }
+    
     const addExperience = async (e) => {
         //accepts new Experience data and adds it into existing array of Experiences
         try {

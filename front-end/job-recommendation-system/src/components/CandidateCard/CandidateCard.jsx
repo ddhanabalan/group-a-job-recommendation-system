@@ -11,7 +11,8 @@ import { IconButton } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
 import Tooltip from '@mui/material/Tooltip';
-export default function CandidateCard({ type = null, jobEntryId = null, crLink = null, data, jobApprovalFunction = null, removeInvite=null, applicantList=null, background, profilePictureStyle,reloadFn }) {
+import {getStorage, setStorage} from '../../storage/storage';
+export default function CandidateCard({ type = null,id=null,  jobEntryId = null, crLink = null, data, jobApprovalFunction = null, removeInvite=null, applicantList=null, background, profilePictureStyle,reloadFn }) {
     const [profile, setProfile] = useState(false)
     const [approval, setApproval] = useState('')
     console.log("cand data", data)
@@ -21,9 +22,11 @@ export default function CandidateCard({ type = null, jobEntryId = null, crLink =
     }
 
     useEffect(() => {
-        if (profile) navigate(`/profile/${data.username}`
-            , { state: { presentjobId: jobEntryId, link: crLink } })
-        setProfile(false)
+        if (profile) {
+            navigate(`/profile/${data.username}`, { state: { presentjobId: jobEntryId, link: crLink,  } })
+            if(id){setStorage("current_candidate_element", id);}
+            setProfile(false)
+        }
     }, [profile])
     useEffect(() => {
         if (jobApprovalFunction) {
@@ -35,7 +38,7 @@ export default function CandidateCard({ type = null, jobEntryId = null, crLink =
     console.log("experience", data.experience)
     const candidateCardClass = `card job-card ${data.job_status === "approved" && 'approved-candidate-card ' || data.job_status === "rejected" && 'rejected-candidate-card' ||data.application_type === "invite" && 'invited-candidate-card '|| data.job_status === "applied" && 'applied-candidate-card '}`
     return (
-        <div className={candidateCardClass} style={background} onClick={() => setProfile(true)}>
+        <div className={candidateCardClass} id={id} style={background} onClick={() => setProfile(true)}>
             <div className='job-card-div1'>
                 <h1 className='card-h1'>{data.first_name} {data.last_name}</h1>
                 <Stack direction="row" spacing={1}>

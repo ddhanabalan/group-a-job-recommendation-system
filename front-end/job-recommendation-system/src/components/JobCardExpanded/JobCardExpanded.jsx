@@ -18,6 +18,7 @@ import { getStorage } from '../../storage/storage';
 export default function JobCardExpanded({ data = [], createJobRequest = null, deleteJobRequest = null, userData, handleSub = null, handleInvite = null, type, invite = null, applicationErrors = null, processing = null }) {
     console.log("data received by form", userData, "jobdata", data, "invite", invite, type, "checkword", data.invite?.job_status !== "approved", data.invite_status?.toLowerCase() === "pending")
 
+    
     //console.log(userData.appliedJobs.includes("4"))
     const [submit, setSubmit] = useState(false);
     //const [tag_state,setTagState] = useState(false);

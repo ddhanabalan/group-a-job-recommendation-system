@@ -102,6 +102,7 @@ export default function ProfileSection({ data }) {
         profileAPI()
     }, []);
     const subForm = async (data) => {
+        
         SetnewData({ ...newData, city: data.city, first_name: data.first_name, last_name: data.last_name, country: data.country, bio: data.bio, profile_picture: data.profile_picture, profile_banner_color: data.profile_banner_color })
         console.log("data", data);
         try {

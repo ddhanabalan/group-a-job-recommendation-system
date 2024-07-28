@@ -130,7 +130,7 @@ export default function JobSection() {
                 workStyle: e.work_style,
                 workingDays: e.working_days,
                 closed: e.closed,
-                companyPic: e.company_pic,
+                profile_picture: e.company_pic,
                 applicationsReceived: e.job_seekers,
                 userApplication: userCreatedApplications,
                 invite_status: inviteStat ? inviteStat.status : null/*userInvites.length?userInvites.filter(f=>f.job_id == e.job_id)[0]?.status || null: null*/,

@@ -31,7 +31,7 @@ export default function JobVacancyForm({ data = {} }) {
     const [dta, setDta] = useState((locating.state ? locating.state : {}))
     console.log("received state data for edit", dta, "pre", prefilleddata)
     const salary_threshold = 5000;
-    const profile_picture = getStorage("profile pic")
+    let profile_picture = getStorage("profile pic") || getStorage("profile_pic")
     const [companyData, setCompanyData] = useState({});
     const { register, formState: { errors }, handleSubmit, setValue, watch } = useForm({ mode: 'onTouched' });
 
@@ -90,6 +90,7 @@ export default function JobVacancyForm({ data = {} }) {
             })
             console.log("logged comp data", response.data)
             console.log("profile pic", profile_picture)
+            if(response.data.profile_picture) profile_picture=response.data.profile_picture;
             setCompanyData(response.data)
         } catch (e) {
             console.log("company failed", e)

@@ -14,6 +14,7 @@ export default function AiCandidates({ childData = [], expandView, setAiCandidat
         <div className='ai-jobs-container'>
             {recCandidates.map(e => {
                 return <CandidateCard key={uuid()} data={e} 
+                    id={`ai-candidates-${e.applicantID}`}
                     profilePictureStyle={{backgroundColor:'white'}}
                     background={{ backgroundImage: 'linear-gradient(60deg, rgba(255,255,255,1.00) 0%,rgba(229,153,242,1.00) 100%)', backgroundPosition: 'center center' }} />
             })}

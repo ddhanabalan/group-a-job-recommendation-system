@@ -14,6 +14,7 @@ export default function ({ value, callFn, loading, jobSelection=null, blankModel
         const r = await callFn();
         console.log("recorded response", r, blankModelData);
         if(!r){
+            console.log("recorded response error")
             setErrorMsg("Our recommmendation engine is facing some issues.Try again later");
         } 
         else if( r && blankModelData===true){setErrorMsg("No recommendations found")}

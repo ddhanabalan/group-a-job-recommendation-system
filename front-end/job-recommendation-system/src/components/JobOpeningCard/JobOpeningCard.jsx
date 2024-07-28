@@ -212,10 +212,11 @@ export default function JobOpeningCard({ data, type = null, highlighted = null, 
                                 }
                             </div>
                             :
-                            <div className='card-img-container qualification-card-image opening-card-img' >
-                                <IconButton disabled>
-                                    <CorporateFareRoundedIcon fontSize='large' />
-                                </IconButton>
+                            <div className='card-img-container qualification-card-image  job-card-img-container'>
+                                {data['profile_picture'] ? <img  src={data['profile_picture']} alt="" /> :
+                                    <IconButton disabled>
+                                        <CorporateFareRoundedIcon fontSize='large' />
+                                    </IconButton>}
                             </div>
                         }
                         {data.application_created_at?
