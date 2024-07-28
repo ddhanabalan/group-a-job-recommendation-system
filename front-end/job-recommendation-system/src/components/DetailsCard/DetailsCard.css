@@ -39,7 +39,16 @@
     font-family: "Inter-sb";
     font-size: .813rem;
 }
-
+/* .details-card-industry{
+    width:100% !important;
+} */
+.details-card-industry .MuiOutlinedInput-root{
+    padding: 0 !important;
+}
+.details-card-industry .MuiAutocomplete-input{
+    width: 100% !important;
+    padding: .5rem !important;
+}
 .stat-body {
     margin-left: 12px;
 }
