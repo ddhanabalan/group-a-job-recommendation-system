@@ -27,7 +27,9 @@ def get_db():
     """
     Returns a generator that yields a database session.
 
-    This function creates a new database session using the `SessionLocal` class from the `database` module. The session is yielded, allowing the caller to use it within a `with` statement or a `for` loop. The session is closed in the `finally` block, ensuring that it is properly cleaned up even if an exception occurs.
+    This function creates a new database session using the `SessionLocal` class from the `database` module. The
+    session is yielded, allowing the caller to use it within a `with` statement or a `for` loop. The session is
+    closed in the `finally` block, ensuring that it is properly cleaned up even if an exception occurs.
 
     Returns:
         Generator: A generator that yields a database session.
@@ -148,6 +150,31 @@ async def get_company_details(authorization: str = Header(...)) -> dict:
         return response.json()
 
 
+async def get_company_email(company_id:int,authorization: str = Header(...) ) -> dict:
+    """
+    Retrieves the details of a company using the provided authorization token.
+
+    Args:
+        authorization (str): The authorization token for the company.
+
+    Returns:
+        dict: A dictionary containing the details of the company.
+
+    Raises:
+        HTTPException: If the request to the company details API fails or returns an error.
+
+    """
+    headers = {"Authorization": authorization}
+    async with httpx.AsyncClient() as client:
+        response = await client.get(
+            f"http://{USER_API_HOST}:{PORT}/recruiter/info/{company_id}", headers=headers
+        )
+        if response.status_code != status.HTTP_200_OK:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Error Occurred"
+            )
+        return response.json()
+
 async def get_seeker_details(user_id: int, authorization: str = Header(...)) -> dict:
     """
     Retrieves the details of a seeker using the provided user ID and authorization token.
@@ -165,7 +192,7 @@ async def get_seeker_details(user_id: int, authorization: str = Header(...)) -> 
     headers = {"Authorization": authorization}
     async with httpx.AsyncClient() as client:
         response = await client.get(
-            f"http://{USER_API_HOST}:{PORT}/seeker/info/{user_id}", headers=headers
+            f"http://{USER_API_HOST}:{PORT}/seeker/details/", headers=headers
         )
         if response.status_code != status.HTTP_200_OK:
             raise HTTPException(
@@ -182,7 +209,6 @@ async def send_invite_notif(
     job_description: str,
     job_location: str,
     remarks: str,
-    job_link: str,
     job_title: str,
     to_email: EmailStr,
 ):
@@ -221,7 +247,7 @@ async def send_invite_notif(
                 Job Description: {job_description}
                 Location: {job_location}
 
-                To view more details and apply for this position, please click on the following link: {job_link}
+                You can see more details by logging into your account at {SERVER_IP}.
 
                 Remarks from the Recruiter:
                 {remarks}
@@ -233,6 +259,114 @@ async def send_invite_notif(
                 Career Go Team
                 {SERVER_IP}
             """
+    )
+    with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT) as smtp:
+        smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+        smtp.send_message(msg)
+
+
+async def send_request_status_notif(
+    seeker_name: str,
+    company_name: str,
+    job_description: str,
+    job_location: str,
+    job_title: str,
+    to_email: EmailStr,
+    status: str,
+) -> None:
+    """
+    Sends an email notification to a job seeker about the status change of a request.
+
+    Args:
+        seeker_name (str): The name of the job seeker.
+        company_name (str): The name of the company offering the job.
+        job_description (str): The description of the job.
+        job_location (str): The location of the job.
+        job_title (str): The title of the job.
+        to_email (EmailStr): The email address of the job seeker.
+        status (str): The status change of the invite.
+
+    Raises:
+        smtplib.SMTPException: If there is an error in sending the email.
+    """
+    msg = EmailMessage()
+    msg["Subject"] = f"Status Update: Your Job Request at {company_name} for job {job_title}!"
+    msg["From"] = EMAIL_ADDRESS
+    msg["To"] = to_email
+    msg.set_content(
+        f"""
+        Dear {seeker_name},
+
+        We wanted to inform you that there has been a change in the status of your job request at {company_name}.
+
+        Job Title: {job_title}
+        Job Description: {job_description}
+        Location: {job_location}
+        New Status: {status}
+
+        You can see more details by logging into your account at {SERVER_IP}.
+
+        If you have any questions or need further assistance, please do not hesitate to contact us.
+
+        Best regards,
+
+        Career Go Team
+        {SERVER_IP}
+        """
+    )
+    with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT) as smtp:
+        smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)
+        smtp.send_message(msg)
+
+
+async def send_seeker_status_notif(
+    company_username:str,
+    company_name: str,
+    seeker_name: str,
+    job_description: str,
+    job_location: str,
+    job_title: str,
+    to_email: EmailStr,
+    status: str,
+) -> None:
+    """
+    Sends an email notification to a recruiter about the status change of a job invite accepted by a job seeker.
+
+    Args:
+        company_name (str): The name of the company offering the job.
+        seeker_name (str): The name of the job seeker.
+        job_description (str): The description of the job.
+        job_location (str): The location of the job.
+        job_title (str): The title of the job.
+        to_email (EmailStr): The email address of the recruiter.
+        status (str): The status change of the invite.
+
+    Raises:
+        smtplib.SMTPException: If there is an error in sending the email.
+    """
+    msg = EmailMessage()
+    msg["Subject"] = f"Status Update: {seeker_name} has {status} the Job Invite for {job_title}"
+    msg["From"] = EMAIL_ADDRESS
+    msg["To"] = to_email
+    msg.set_content(
+        f"""
+        Dear {company_username},
+
+        We wanted to inform you that {seeker_name} has {status} the job invite from {company_name}.
+
+        Job Title: {job_title}
+        Job Description: {job_description}
+        Location: {job_location}
+
+        You can see more details by logging into your account at {SERVER_IP}.
+
+        If you have any questions or need further assistance, please do not hesitate to contact us.
+
+        Best regards,
+
+        Career Go Team
+        {SERVER_IP}
+        """
     )
     with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT) as smtp:
         smtp.login(EMAIL_ADDRESS, EMAIL_PASSWORD)

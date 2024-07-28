@@ -129,7 +129,6 @@ async def authenticate_user(
     Raises:
         HTTPException: If the user is not verified or inactive.
     """
-    print("in")
     user = authcrud.get_by_email(db=db, email=username)
     if not user:
         return False
@@ -206,7 +205,6 @@ def validate_access_token(token, secret_key=SECRET_KEY, db: Session = Depends(ge
     payload = jwt.decode(token, secret_key, algorithms=[ALGORITHM])
     username = payload.get("sub", None)
     token = payload.get("token", None)
-    print(token, username)
     if username is None or token is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -245,7 +243,6 @@ def validate_refresh_token(token, secret_key=SECRET_KEY, db: Session = Depends(g
     payload = jwt.decode(token, secret_key, algorithms=[ALGORITHM])
     username = payload.get("sub", None)
     token = payload.get("token", None)
-    print(username)
     if username is None or token is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -354,7 +351,6 @@ async def get_refresh_user(
     user = authcrud.get_by_username(db, token_data.username)
     if user is None:
         raise credential_exception
-    print(user.refresh_token, refresh_token)
     if user.refresh_token != refresh_token or user.disabled:
         raise credential_exception
     return user

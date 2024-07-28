@@ -133,7 +133,6 @@ async def get_seeker_details_list(
             res = await client.get(
                 f"http://{AUTH_API_HOST}:8000/user/verified/{user_details.username}"
             )
-            print(res.text)
             if res.text =="false":
                 continue
         user_skills = crud.seeker.skill.get_all(db=db, user_id=user_id)
