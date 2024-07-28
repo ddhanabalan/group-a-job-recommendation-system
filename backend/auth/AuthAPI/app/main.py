@@ -1,20 +1,21 @@
+"""
+Main module for the authentication API.
+"""
+import hashlib
 import uuid
 from datetime import datetime, timedelta
-import httpx
-from typing import Union, Type
+from typing import Type, Generator, Union, Dict
 
-from fastapi import FastAPI, Depends, HTTPException, status, Request, Header, Body
-from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
-from fastapi.middleware.cors import CORSMiddleware
+import httpx
 from authlib.integrations.starlette_client import OAuth, OAuthError
-from pydantic import EmailStr
-from starlette.middleware.sessions import SessionMiddleware
+from fastapi import FastAPI, Depends, HTTPException, status, Request, Header
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from sqlalchemy.orm import Session
-import hashlib
+from starlette.middleware.sessions import SessionMiddleware
 
-from . import models
 from .config import (
     SECRET_KEY,
     ALGORITHM,
@@ -24,27 +25,21 @@ from .config import (
     GOOGLE_OAUTH_CLIENT_SECRET,
     JOB_API_HOST,
     USER_API_HOST,
+    MODEL_API_HOST,
     PORT,
 )
-
 from .crud import authcrud
 from .database import SessionLocal, engine
 from .models import authmodel
-from .models.authmodel import UserAuth
 from .schemas import authschema
 from .utils import validate_user_update, send_verify, send_pwd_reset
 
 authmodel.Base.metadata.create_all(bind=engine)
 origins = [
-    "*",
     "http://career-go.centralindia.cloudapp.azure.com",
-    "http://localhost.tiangolo.com",
-    "https://localhost.tiangolo.com",
-    "http://localhost",
     f"http://{USER_API_HOST}:{PORT}",
     f"http://{JOB_API_HOST}:{PORT}",
-    "http://172.20.0.8:4173",
-    "http://localhost:5500",
+    f"http://{MODEL_API_HOST}:{PORT}",
 ]
 
 oauth = OAuth()
@@ -60,7 +55,10 @@ oauth.register(
 )
 
 
-def get_db():
+def get_db() -> Generator[Session, None, None]:
+    """
+    Returns a session instance for the database.
+    """
     db = SessionLocal()
     try:
         yield db
@@ -83,16 +81,53 @@ app.add_middleware(
 
 
 def verify_password(plain_password: str, salt: str, hashed_password: str):
+    """
+    Verify if the given plain password matches the hashed password.
+
+    Args:
+        plain_password (str): The plain password to verify.
+        salt (str): The salt used to hash the password.
+        hashed_password (str): The hashed password to compare against.
+
+    Returns:
+        bool: True if the plain password matches the hashed password, False otherwise.
+    """
     return pwd_context.verify(plain_password + salt, hashed_password)
 
 
-def get_password_hashed(password: str, salt: str):
+def get_password_hashed(password: str, salt: str) -> str:
+    """
+    Hash the given password using the provided salt.
+
+    Args:
+        password (str): The password to hash.
+        salt (str): The salt to use for hashing.
+
+    Returns:
+        str: The hashed password.
+    """
     return pwd_context.hash(password + salt)
 
 
 async def authenticate_user(
     username: str, password: str, db: Session = Depends(get_db)
-):
+) -> Union[bool, authschema.UserInDB]:
+    """
+    Authenticate a user by checking if the provided username and password match.
+
+    Args:
+        username (str): The username (email) of the user.
+        password (str): The password of the user.
+        db (Session, optional): The database session. Defaults to Depends(get_db).
+
+    Returns:
+        Union[bool, authschema.UserInDB]:
+            - False if the username or password is incorrect.
+            - The user object if the authentication is successful.
+
+    Raises:
+        HTTPException: If the user is not verified or inactive.
+    """
     print("in")
     user = authcrud.get_by_email(db=db, email=username)
     if not user:
@@ -124,8 +159,23 @@ async def authenticate_user(
 
 
 def create_token(
-    data: dict, secret_key=SECRET_KEY, expires_delta: timedelta or None = None
-):
+    data: dict,
+    secret_key=SECRET_KEY,
+    expires_delta: timedelta or None = None,
+) -> str:
+    """
+    Create a JSON Web Token (JWT) with the given data.
+
+    Args:
+        data (dict): The data to be encoded in the JWT.
+        secret_key (str, optional): The secret key used for signing the JWT.
+            Defaults to SECRET_KEY.
+        expires_delta (timedelta or None, optional): The time until the JWT expires.
+            Defaults to None, which sets the expiration time to 15 minutes from now.
+
+    Returns:
+        str: The encoded JWT.
+    """
     to_encode = data.copy()
     if expires_delta:
         expires = datetime.utcnow() + expires_delta
@@ -137,6 +187,21 @@ def create_token(
 
 
 def validate_access_token(token, secret_key=SECRET_KEY, db: Session = Depends(get_db)):
+    """
+    Validate the access token by decoding it and checking its validity.
+
+    Args:
+        token (str): The access token to be validated.
+        secret_key (str, optional): The secret key used for signing the JWT.
+            Defaults to SECRET_KEY.
+        db (Session, optional): The database session. Defaults to Depends(get_db).
+
+    Returns:
+        tuple: A tuple containing the username and data type of the user.
+
+    Raises:
+        HTTPException: If the token is invalid or could not be validated.
+    """
     payload = jwt.decode(token, secret_key, algorithms=[ALGORITHM])
     username = payload.get("sub", None)
     token = payload.get("token", None)
@@ -161,6 +226,21 @@ def validate_access_token(token, secret_key=SECRET_KEY, db: Session = Depends(ge
 
 
 def validate_refresh_token(token, secret_key=SECRET_KEY, db: Session = Depends(get_db)):
+    """
+    Validate the refresh token by decoding it and checking its validity.
+
+    Args:
+        token (str): The refresh token to be validated.
+        secret_key (str, optional): The secret key used for signing the JWT.
+            Defaults to SECRET_KEY.
+        db (Session, optional): The database session. Defaults to Depends(get_db).
+
+    Returns:
+        tuple: A tuple containing the username, data type and refresh token of the user.
+
+    Raises:
+        HTTPException: If the token is invalid or could not be validated.
+    """
     payload = jwt.decode(token, secret_key, algorithms=[ALGORITHM])
     username = payload.get("sub", None)
     token = payload.get("token", None)
@@ -187,6 +267,19 @@ def validate_refresh_token(token, secret_key=SECRET_KEY, db: Session = Depends(g
 async def get_current_user(
     token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
 ) -> Type[authmodel.UserAuth]:
+    """
+    Get the current user by validating the access token.
+
+    Args:
+        token (str): The access token to validate.
+        db (Session, optional): The database session. Defaults to Depends(get_db).
+
+    Returns:
+        Type[authmodel.UserAuth]: The user information.
+
+    Raises:
+        HTTPException: If the token is invalid or could not be validated.
+    """
     credential_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -210,6 +303,18 @@ async def get_current_user(
 async def get_current_active_user(
     current_user: authschema.UserInDB = Depends(get_current_user),
 ) -> authschema.UserInDB:
+    """
+    Get the current active user.
+
+    Args:
+        current_user (authschema.UserInDB): The current user.
+
+    Raises:
+        HTTPException: If the user is inactive.
+
+    Returns:
+        authschema.UserInDB: The current active user.
+    """
     if current_user.disabled:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST, detail="Inactive user"
@@ -220,6 +325,19 @@ async def get_current_active_user(
 async def get_refresh_user(
     token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)
 ) -> Type[authmodel.UserAuth]:
+    """
+    Get the user by validating the refresh token.
+
+    Args:
+        token (str): The refresh token to validate.
+        db (Session, optional): The database session. Defaults to Depends(get_db).
+
+    Returns:
+        Type[authmodel.UserAuth]: The user information.
+
+    Raises:
+        HTTPException: If the token is invalid or could not be validated.
+    """
     credential_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -235,18 +353,29 @@ async def get_refresh_user(
     user = authcrud.get_by_username(db, token_data.username)
     if user is None:
         raise credential_exception
-    print(user.refresh_token,refresh_token)
+    print(user.refresh_token, refresh_token)
     if user.refresh_token != refresh_token or user.disabled:
         raise credential_exception
     return user
 
-
 @app.post("/token", response_model=authschema.Token)
 async def login_for_access_token(
     form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
-):
+) -> authschema.Token:
+    """
+    Authenticate the user and return access and refresh tokens.
+
+    Args:
+        form_data (OAuth2PasswordRequestForm): The form data containing username and password.
+        db (Session, optional): The database session. Defaults to Depends(get_db).
+
+    Returns:
+        authschema.Token: The access and refresh tokens.
+
+    Raises:
+        HTTPException: If the username or password is invalid.
+    """
     user = await authenticate_user(form_data.username, form_data.password, db=db)
-    print(user)
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -282,18 +411,34 @@ async def login_for_access_token(
         "token_type": "bearer",
     }
 
-
 @app.get("/refresh_token")
 async def refresh_token_validate(
-    user=Depends(get_refresh_user), db: Session = Depends(get_db)
-):
+    user: Type[authmodel.UserAuth] = Depends(get_refresh_user),
+    db: Session = Depends(get_db)
+) -> Dict[str, str]:
+    """
+    Validate the refresh token and return new access and refresh tokens.
+
+    Args:
+        user (Type[authmodel.UserAuth]): The user information.
+        db (Session, optional): The database session. Defaults to Depends(get_db).
+
+    Returns:
+        Dict[str, str]: A dictionary containing the new access and refresh tokens.
+            The dictionary has the following keys:
+            - "access_token" (str): The new access token.
+            - "refresh_token" (str): The new refresh token.
+            - "token_type" (str): The type of the token ("bearer").
+
+    Raises:
+        HTTPException: If the user is invalid or the token could not be validated.
+    """
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Invalid Username or Password",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    print(user)
 
     access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     refresh_token_expires = timedelta(minutes=REFRESH_TOKEN_EXPIRE_MINUTES)
@@ -327,7 +472,19 @@ async def refresh_token_validate(
 
 
 @app.get("/me")
-async def users_info(current_user=Depends(get_current_active_user)):
+async def users_info(current_user=Depends(get_current_active_user)) -> dict:
+    """
+    Get the user information of the current active user.
+
+    Args:
+        current_user (authschema.UserInDB): The current active user.
+
+    Returns:
+        dict: The user information with the following keys:
+            - user_id (int): The user id.
+            - user (str): The username.
+            - type (str): The user type.
+    """
     return {
         "user_id": current_user.user_id,
         "user": current_user.username,
@@ -369,8 +526,20 @@ async def auth(request: Request, db: Session = Depends(get_db)):
 @app.get("/verify/{user_type}", status_code=status.HTTP_200_OK)
 async def verify_token(
     user_type: authschema.UserTypeEnum, current_user=Depends(get_current_active_user)
-):
-    print(current_user.user_type)
+) -> dict:
+    """
+    Verify the current user's user type matches the provided user type.
+
+    Args:
+        user_type (authschema.UserTypeEnum): The user type to verify.
+        current_user (authschema.UserInDB): The current active user.
+
+    Raises:
+        HTTPException: If the user type does not match.
+
+    Returns:
+        dict: A dictionary with a successful detail message.
+    """
     if current_user.user_type != user_type:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -379,9 +548,22 @@ async def verify_token(
         )
     return {"detail": "Successful"}
 
-
 @app.get("/email/verify/{token}")
 async def email_verify(token: str, db: Session = Depends(get_db)):
+    """
+    Verify the email of a user by validating the provided token.
+
+    Args:
+        token (str): The verification token.
+        db (Session, optional): The database session. Defaults to Depends(get_db).
+
+    Raises:
+        HTTPException: If the token is invalid or could not be validated.
+
+    Returns:
+        dict: A dictionary with a successful detail message if the verification is successful.
+
+    """
     credential_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Verification"
     )
@@ -407,6 +589,20 @@ async def register(
     user: authschema.UserInSeeker,
     db: Session = Depends(get_db),
 ):
+    """
+    Register a new seeker user.
+
+    Args:
+        user (authschema.UserInSeeker): The user information.
+        db (Session, optional): The database session. Defaults to Depends(get_db).
+
+    Raises:
+        HTTPException: If the user already exists or the registration was not successful.
+
+    Returns:
+        dict: A dictionary with a detail message if the registration is successful.
+
+    """
     existing_user = authcrud.get_by_username(db=db, username=user.username)
     if existing_user:
         raise HTTPException(
@@ -480,6 +676,20 @@ async def register(
     user: authschema.UserInRecruiter,
     db: Session = Depends(get_db),
 ):
+    """
+    Registers a new recruiter user.
+
+    Args:
+        user (authschema.UserInRecruiter): The user information.
+        db (Session, optional): The database session. Defaults to Depends(get_db).
+
+    Raises:
+        HTTPException: If the user already exists or the registration was not successful.
+
+    Returns:
+        dict: A dictionary with a detail message if the registration is successful.
+
+    """
     existing_user = authcrud.get_by_username(db=db, username=user.username)
     if existing_user:
         raise HTTPException(
@@ -540,6 +750,19 @@ async def register(
 async def forgot_password_email(
     forgot_pass: authschema.ForgotPasswordIn, db: Session = Depends(get_db)
 ):
+    """
+    Sends a password reset email to the user with the provided email address.
+
+    Parameters:
+        - forgot_pass (authschema.ForgotPasswordIn): The forgot password input model containing the email address.
+        - db (Session, optional): The database session. Defaults to Depends(get_db).
+
+    Returns:
+        - dict: A dictionary with a "detail" key set to "Reset Link Sent".
+
+    Raises:
+        - HTTPException: If the email is invalid or the account is not verified.
+    """
     credential_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Email"
     )
@@ -574,6 +797,20 @@ async def forgot_password_email(
 async def forgot_password_verify(
     token: str, password: authschema.ForgetPassword, db: Session = Depends(get_db)
 ):
+    """
+    Verify a password reset token and update the user's password.
+
+    Args:
+        token (str): The password reset token.
+        password (authschema.ForgetPassword): The new password for the user.
+        db (Session, optional): The database session. Defaults to Depends(get_db).
+
+    Returns:
+        dict: A dictionary with a "detail" key containing the message "Password Changed".
+
+    Raises:
+        HTTPException: If the token is invalid or could not be validated, or if the data update fails.
+    """
     credential_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid Link"
     )
@@ -600,6 +837,19 @@ async def forgot_password_verify(
 
 @app.get("/user_type/{username}", status_code=status.HTTP_200_OK)
 async def get_user_type(username: str, db: Session = Depends(get_db)):
+    """
+    Retrieves the user type for a given username.
+
+    Args:
+        username (str): The username of the user.
+        db (Session, optional): The database session. Defaults to Depends(get_db).
+
+    Returns:
+        dict: A dictionary containing the user type.
+
+    Raises:
+        HTTPException: If the user is not found, or if the account is not verified or disabled.
+    """
     user = authcrud.get_by_username(db=db, username=username)
     if not user:
         raise HTTPException(
@@ -620,8 +870,21 @@ async def delete_user(
     authorization: str = Header(...),
     db: Session = Depends(get_db),
 ):
+    """
+    Deletes a user from the database.
+
+    Args:
+        user (UserInDB): The current active user.
+        authorization (str): The authorization token for the user.
+        db (Session): The database session.
+
+    Returns:
+        dict: A dictionary with the message "deleted successfully" if the user is deleted successfully.
+
+    Raises:
+        HTTPException: If the user is not found, the user type is not valid, or the data deletion fails.
+    """
     user_type = user.user_type.value
-    print(user_type)
     response = await httpx.AsyncClient().delete(
         url=f"http://{USER_API_HOST}:{PORT}/{user_type}/details/",
         headers={"Authorization": authorization},
@@ -648,11 +911,25 @@ async def update_user(
     authorization: str = Header(...),
     db: Session = Depends(get_db),
 ):
+    """
+    Update a user in the database.
+
+    Args:
+        user_update (authschema.UserUpdate): The updated user information.
+        user (UserInDB): The current active user.
+        authorization (str): The authorization token for the user.
+        db (Session): The database session.
+
+    Returns:
+        dict: A dictionary with the message "updated successfully" if the user is updated successfully.
+
+    Raises:
+        HTTPException: If the data update fails.
+    """
     update_details = user_update.dict(exclude_unset=True)
     password = user_update.pop("password", None)
     if update_details is not None:
         user_type = user.user_type.value
-        print(user_type)
         response = await httpx.AsyncClient().put(
             url=f"http://{USER_API_HOST}:{PORT}/{user_type}/details",
             headers={"Authorization": authorization},
@@ -678,9 +955,30 @@ async def update_user(
 
 
 @app.post("/username/verify/{username}", status_code=status.HTTP_200_OK)
-def username_verify(username:str,db: Session = Depends(get_db)):
-    return authcrud.get_verify_by_username(db,username)
+def username_verify(username: str, db: Session = Depends(get_db)):
+    """
+    Verify the username.
+
+    Args:
+        username (str): The username to verify.
+        db (Session): The database session.
+
+    Returns:
+        bool: True if the username is verified, False otherwise.
+    """
+    return authcrud.get_verify_by_username(db, username)
+
 
 @app.post("/email/check/{email}", status_code=status.HTTP_200_OK)
-def username_verify(email:str,db: Session = Depends(get_db)):
-    return authcrud.get_verify_by_email(db,email)
+def username_verify(email: str, db: Session = Depends(get_db)):
+    """
+    Check if the given email is verified in the database.
+
+    Args:
+        email (str): The email address to check.
+        db (Session, optional): The database session. Defaults to Depends(get_db).
+
+    Returns:
+        bool: True if the email is verified, False otherwise.
+    """
+    return authcrud.get_verify_by_email(db, email)

@@ -1,3 +1,10 @@
+"""
+
+Utility functions for the AuthAPI.
+
+This module contains utility functions for the AuthAPI.
+
+"""
 import smtplib
 from pydantic import EmailStr
 from fastapi import Depends

@@ -12,6 +12,7 @@ ENV PORT=8000
 ENV RELOAD=True
 ENV USER_API_HOST=userapi
 ENV JOB_API_HOST=jobapi
+ENV MODEL_API_HOST=modelapi
 ENV SMTP_SERVER="smtp.gmail.com"
 ENV SMTP_PORT=465
 ENV EMAIL_ADDRESS="careergo.noreply@gmail.com"

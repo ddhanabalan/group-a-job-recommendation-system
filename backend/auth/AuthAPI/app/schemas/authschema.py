@@ -1,3 +1,8 @@
+"""
+
+This module contains the Pydantic models for the authentication API.
+
+"""
 from pydantic import BaseModel, EmailStr, PastDate
 from datetime import datetime
 from typing import Optional

@@ -1,9 +1,19 @@
+"""
+
+Crud operations for the authentication API.
+
+"""
+
 from typing import Type
 
 from sqlalchemy.orm import Session
 from datetime import datetime
 from sqlalchemy.exc import SQLAlchemyError
 from pydantic import EmailStr
+import time
+
+from sqlalchemy.orm.exc import StaleDataError
+
 from ..models import authmodel
 from ..schemas import authschema
 
@@ -153,6 +163,19 @@ def delete(db: Session, user_id: int) -> bool:
 def update_refresh_token(
     db: Session, user_id: int, token: str, init: int = 0, retries: int = 3
 ) -> bool:
+    """
+    Update the refresh token for a user in the database.
+
+    Args:
+        db (Session): SQLAlchemy database.py session.
+        user_id (int): ID of the user.
+        token (str): New refresh token.
+        init (int, optional): If set to 1, update the last login time. Defaults to 0.
+        retries (int, optional): Number of retries in case of a StaleDataError. Defaults to 3.
+
+    Returns:
+        bool: True if the update was successful, False otherwise.
+    """
     for attempt in range(retries):
         try:
 
@@ -165,7 +188,7 @@ def update_refresh_token(
             if init:
                 result.last_login = datetime.utcnow()
             # Check if any rows were affected
-            if result == 0:
+            if result is None:
                 print(f"User with id {user_id} not found.")
                 return False
             db.commit()
@@ -182,13 +205,38 @@ def update_refresh_token(
     return False
 
 
+def check_username_available(db: Session, username: str) -> bool:
+    """
+    Check if a username is already in use.
 
-def get_verify_by_username(db:Session,username:str):
-    if db.query(authmodel.UserAuth.username).filter(authmodel.UserAuth.username == username).first() is not None:
-        return False
-    return True
+    Args:
+        db (Session): SQLAlchemy database.py session.
+        username (str): Username to check.
 
-def get_verify_by_email(db:Session,email:str):
-    if db.query(authmodel.UserAuth.email).filter(authmodel.UserAuth.email == email).first() is not None:
-        return False
-    return True
+    Returns:
+        bool: False if the username is already in use, True otherwise.
+    """
+    return (
+        db.query(authmodel.UserAuth.username)
+        .filter(authmodel.UserAuth.username == username)
+        .first() is None
+    )
+
+
+def check_email_available(db: Session, email: str) -> bool:
+    """
+    Check if an email is already in use.
+
+    Args:
+        db (Session): SQLAlchemy database.py session.
+        email (str): Email address to check.
+
+    Returns:
+        bool: False if the email address is already in use, True otherwise.
+    """
+    return (
+        db.query(authmodel.UserAuth.email)
+        .filter(authmodel.UserAuth.email == email)
+        .first()
+        is None
+    )

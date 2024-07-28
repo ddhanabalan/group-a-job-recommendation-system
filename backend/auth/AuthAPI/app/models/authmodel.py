@@ -1,3 +1,8 @@
+"""
+Module for representing user authentication records in the database.
+
+"""
+
 from sqlalchemy import Column, String, Integer, Date, DateTime, Boolean, Enum, Text
 from sqlalchemy.orm import relationship
 from datetime import datetime
@@ -7,7 +12,7 @@ from ..database import Base
 
 class UserAuth(Base):
     """
-    Class representing the 'user_auth' table in the database.
+    Represents a user authentication record in the database.
 
     Attributes:
         id (int): The primary key of the user authentication record.
