@@ -4,8 +4,11 @@ Utility functions for the ModelAPI application.
 This module contains utility functions for the ModelAPI application.
 
 """
+from typing import Generator
+
 import httpx
 from fastapi import Header, status, HTTPException
+from sqlalchemy.orm import Session
 
 from .database import SessionLocal
 from .config import AUTH_API_HOST, PORT, USER_API_HOST

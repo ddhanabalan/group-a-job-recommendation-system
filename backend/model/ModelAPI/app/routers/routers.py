@@ -17,7 +17,7 @@ router = APIRouter()
 @router.post("/job/input")
 async def job_recommendation(
     job: schemas.JobDetails, db=Depends(get_db)
-) -> model.JobRecommendationJobInput:
+):
     """
     Create a job recommendation input.
 
@@ -51,7 +51,7 @@ async def delete_job_input(
 @router.post("/seeker/input")
 async def create_seeker_input(
     seeker: schemas.SeekerDetails, db=Depends(get_db)
-) -> model.SeekerInputPOI:
+):
     """
     Create a seeker input.
 

@@ -25,7 +25,7 @@ async def get_country(
     q: Optional[str] = None,
     limit: Optional[int] = 100,
     db: Session = Depends(get_db)
-) -> List[models.Country]:
+):
     """
     Get countries with optional query and limit.
 

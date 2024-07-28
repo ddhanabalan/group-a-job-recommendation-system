@@ -23,7 +23,7 @@ models.Base.metadata.create_all(bind=engine)
 @router.get("/")
 async def get_industry(
     q: Optional[str] = None, limit: Optional[int] = 100, db: Session = Depends(get_db)
-) -> List[models.Industry]:
+):
     """
     Get industry data.
 

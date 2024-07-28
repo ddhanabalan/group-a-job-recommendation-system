@@ -259,7 +259,7 @@ def get_filtered_jobs(
         )
         query = query.filter(middle_salary_expr >= salary)
     if title:
-        query = query.filter(jobmodel.JobVacancy.job_name.startswith(title))
+        query = query.filter(jobmodel.JobVacancy.job_name.startswith(title) or jobmodel.JobVacancy.company_name.startswith(title))
 
     # Apply sorting
     if sort:
