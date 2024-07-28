@@ -967,7 +967,7 @@ def username_verify(username: str, db: Session = Depends(get_db)):
     Returns:
         bool: True if the username is verified, False otherwise.
     """
-    return authcrud.get_verify_by_username(db, username)
+    return authcrud.check_username_available(db, username)
 
 
 @app.post("/email/check/{email}", status_code=status.HTTP_200_OK)
@@ -982,7 +982,7 @@ def username_verify(email: str, db: Session = Depends(get_db)):
     Returns:
         bool: True if the email is verified, False otherwise.
     """
-    return authcrud.get_verify_by_email(db, email)
+    return authcrud.check_email_available(db, email)
 
 
 @app.get("/user/verified/{username}", status_code=status.HTTP_200_OK)

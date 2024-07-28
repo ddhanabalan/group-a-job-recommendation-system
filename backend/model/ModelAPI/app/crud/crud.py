@@ -97,7 +97,7 @@ def create_seeker_output(db: Session, job_recommendation_seeker_output: schemas.
         SQLAlchemyError: If an error occurs during the creation of the seeker output.
     """
     try:
-        db.add(model.JobRecommendationSeekerOutput(**job_recommendation_seeker_output.dict()))
+        db.add(model.JobRecommendationSeekerOutput(**job_recommendation_seeker_output))
         db.commit()
 
         return True
@@ -316,8 +316,8 @@ def get_job_input(db: Session) -> List[Dict[str, Union[int, str]]] | []:
                     [
                         job.job_name,
                         job.job_position,
-                        job.city,
-                        job.work_style,
+                        job.city if job.city is not None else "",
+                        job.work_style if job.work_style is not None else "",
                         job.job_description,
                     ]
                 ),

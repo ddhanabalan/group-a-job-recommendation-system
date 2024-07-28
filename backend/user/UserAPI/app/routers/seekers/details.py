@@ -131,9 +131,10 @@ async def get_seeker_details_list(
         user_id = user_details.user_id
         async with httpx.AsyncClient() as client:
             res = await client.get(
-                f"http://{AUTH_API_HOST}:8000/user/verified/{user_id}"
+                f"http://{AUTH_API_HOST}:8000/user/verified/{user_details.username}"
             )
-            if bool(res.text):
+            print(res.text)
+            if res.text =="false":
                 continue
         user_skills = crud.seeker.skill.get_all(db=db, user_id=user_id)
 
@@ -177,9 +178,9 @@ async def get_seeker_details_list_by_ids(
             continue
         async with httpx.AsyncClient() as client:
             res = await client.get(
-                f"http://{AUTH_API_HOST}:8000/user/verified/{user_id}"
+                f"http://{AUTH_API_HOST}:8000/user/verified/{user_detail.username}"
             )
-            if bool(res.text):
+            if res.text=="false":
                 continue
         user_skills = crud.seeker.skill.get_all(db=db, user_id=user_id)
 

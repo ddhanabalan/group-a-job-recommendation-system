@@ -252,9 +252,11 @@ def check_user_verified(db: Session, username: str) -> bool:
     Returns:
         bool: True if the user is verified, False otherwise.
     """
-    return (
+    res = (
         db.query(authmodel.UserAuth.verified)
         .filter(authmodel.UserAuth.username == username)
         .first()
-        .verified
     )
+    if res is not None:
+        return res.verified
+    return False
