@@ -1,384 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `jobDB` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `jobDB`;
--- MySQL dump 10.13  Distrib 8.0.36, for Linux (x86_64)
---
--- Host: career-go.centralindia.cloudapp.azure.com    Database: jobDB
--- ------------------------------------------------------
--- Server version	9.0.1
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
---
--- Table structure for table `job_invite`
---
-
-DROP TABLE IF EXISTS `job_invite`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `job_invite` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `job_id` int DEFAULT NULL,
-  `company_id` int DEFAULT NULL,
-  `status` varchar(64) DEFAULT NULL,
-  `user_id` int DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `ix_job_invite_company_id` (`company_id`),
-  KEY `ix_job_invite_job_id` (`job_id`),
-  KEY `ix_job_invite_user_id` (`user_id`),
-  CONSTRAINT `job_invite_ibfk_1` FOREIGN KEY (`job_id`) REFERENCES `job_vacancy` (`job_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `job_invite`
---
-
-LOCK TABLES `job_invite` WRITE;
-/*!40000 ALTER TABLE `job_invite` DISABLE KEYS */;
-INSERT INTO `job_invite` VALUES (1,6,3,'Pending',1,'2024-07-25 05:31:33','2024-07-25 05:31:33'),(2,5,4,'Pending',1,'2024-07-25 05:39:03','2024-07-25 05:39:03'),(3,5,4,'Pending',2,'2024-07-25 05:39:53','2024-07-25 05:39:53'),(4,4,2,'rejected',3,'2024-07-25 05:52:30','2024-07-25 05:53:02'),(5,4,2,'rejected',3,'2024-07-25 05:54:39','2024-07-25 05:55:06'),(6,3,2,'Pending',2,'2024-07-25 05:57:08','2024-07-25 05:57:08'),(7,6,3,'approved',10,'2024-07-26 16:52:50','2024-07-26 17:00:00'),(8,8,3,'rejected',10,'2024-07-26 17:19:32','2024-07-26 17:19:45'),(9,3,2,'approved',3,'2024-07-26 20:32:20','2024-07-27 09:37:28'),(10,14,2,'rejected',3,'2024-07-27 09:43:14','2024-07-27 09:43:30'),(11,14,2,'rejected',3,'2024-07-27 09:43:58','2024-07-27 09:44:30'),(12,14,2,'rejected',3,'2024-07-27 09:49:12','2024-07-27 09:49:25'),(13,14,2,'rejected',3,'2024-07-27 09:55:41','2024-07-27 09:56:12'),(14,14,2,'rejected',3,'2024-07-27 10:02:29','2024-07-27 10:05:18'),(15,14,2,'rejected',3,'2024-07-27 10:13:20','2024-07-27 10:13:44'),(16,14,2,'rejected',3,'2024-07-27 10:20:38','2024-07-27 10:21:32'),(17,14,2,'rejected',3,'2024-07-27 10:23:42','2024-07-27 12:13:42'),(18,16,2,'approved',3,'2024-07-27 11:13:27','2024-07-27 11:17:57'),(19,14,2,'rejected',3,'2024-07-27 12:15:46','2024-07-27 12:16:02');
-/*!40000 ALTER TABLE `job_invite` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `job_requests`
---
-
-DROP TABLE IF EXISTS `job_requests`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `job_requests` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `job_id` int DEFAULT NULL,
-  `user_id` int DEFAULT NULL,
-  `status` varchar(64) DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `ix_job_requests_user_id` (`user_id`),
-  KEY `ix_job_requests_job_id` (`job_id`),
-  CONSTRAINT `job_requests_ibfk_1` FOREIGN KEY (`job_id`) REFERENCES `job_vacancy` (`job_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `job_requests`
---
-
-LOCK TABLES `job_requests` WRITE;
-/*!40000 ALTER TABLE `job_requests` DISABLE KEYS */;
-INSERT INTO `job_requests` VALUES (1,4,3,'rejected','2024-07-25 05:45:51','2024-07-25 05:46:09'),(2,3,3,'rejected','2024-07-25 05:46:32','2024-07-25 05:47:00'),(3,4,3,'rejected','2024-07-25 05:53:10','2024-07-25 05:53:43'),(4,4,3,'approved','2024-07-25 05:55:11','2024-07-25 05:55:23'),(5,2,1,'Applied','2024-07-25 06:03:28','2024-07-25 06:03:28'),(6,7,2,'approved','2024-07-25 06:29:29','2024-07-25 06:30:19'),(9,1,10,'Applied','2024-07-25 17:31:59','2024-07-25 17:31:59'),(10,7,15,'Applied','2024-07-26 09:50:16','2024-07-26 09:50:16'),(11,11,15,'Applied','2024-07-26 09:50:26','2024-07-26 09:50:26'),(13,10,3,'Applied','2024-07-26 11:26:23','2024-07-26 11:26:23'),(14,11,10,'Applied','2024-07-26 16:04:16','2024-07-26 16:04:16'),(19,3,3,'rejected','2024-07-26 20:03:06','2024-07-26 20:04:10'),(20,3,3,'rejected','2024-07-26 20:04:44','2024-07-26 20:08:28'),(26,8,3,'Applied','2024-07-27 08:54:52','2024-07-27 08:54:52'),(32,12,3,'approved','2024-07-27 10:12:48','2024-07-27 20:47:05'),(33,14,3,'rejected','2024-07-27 10:22:09','2024-07-27 10:22:41'),(35,14,3,'approved','2024-07-27 12:20:29','2024-07-27 12:22:26'),(36,15,3,'approved','2024-07-27 12:20:37','2024-07-27 12:22:12'),(37,4,10,'rejected','2024-07-27 14:05:09','2024-07-27 20:12:02'),(38,21,3,'Applied','2024-07-27 16:06:07','2024-07-27 16:06:07'),(39,1,3,'Applied','2024-07-27 20:45:58','2024-07-27 20:45:58');
-/*!40000 ALTER TABLE `job_requests` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `job_skill`
---
-
-DROP TABLE IF EXISTS `job_skill`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `job_skill` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `job_id` int DEFAULT NULL,
-  `skill` varchar(125) DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `ix_job_skill_job_id` (`job_id`),
-  CONSTRAINT `job_skill_ibfk_1` FOREIGN KEY (`job_id`) REFERENCES `job_vacancy` (`job_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `job_skill`
---
-
-LOCK TABLES `job_skill` WRITE;
-/*!40000 ALTER TABLE `job_skill` DISABLE KEYS */;
-INSERT INTO `job_skill` VALUES (1,1,'Project Management','2024-07-25 04:06:35','2024-07-25 04:06:35'),(2,1,'Java','2024-07-25 04:06:35','2024-07-25 04:06:35'),(3,2,'UI Design','2024-07-25 04:53:59','2024-07-25 04:53:59'),(4,2,'UX Design','2024-07-25 04:53:59','2024-07-25 04:53:59'),(5,2,'HTML','2024-07-25 04:53:59','2024-07-25 04:53:59'),(6,2,'React','2024-07-25 04:53:59','2024-07-25 04:53:59'),(9,5,'Product Management','2024-07-25 05:23:15','2024-07-25 05:23:15'),(10,6,'Learning and Development','2024-07-25 05:29:15','2024-07-25 05:29:15'),(11,8,'Automation','2024-07-25 18:01:42','2024-07-25 18:01:42'),(12,8,'Physical Security','2024-07-25 18:01:42','2024-07-25 18:01:42'),(13,9,'Patent Law','2024-07-25 18:05:51','2024-07-25 18:05:51'),(14,9,'Labor Relations','2024-07-25 18:05:51','2024-07-25 18:05:51'),(15,10,'Network Administration','2024-07-25 18:07:43','2024-07-25 18:07:43'),(16,10,'Network Security','2024-07-25 18:07:43','2024-07-25 18:07:43'),(17,11,'Network Security','2024-07-25 18:09:42','2024-07-25 18:09:42'),(18,12,'Business Analysis','2024-07-26 16:07:14','2024-07-26 16:07:14'),(19,12,'Business Development','2024-07-26 16:07:14','2024-07-26 16:07:14'),(22,15,'Design Engineering','2024-07-27 11:07:29','2024-07-27 11:07:29'),(23,16,'Python','2024-07-27 11:11:11','2024-07-27 11:11:11'),(24,16,'FEA','2024-07-27 11:11:11','2024-07-27 11:11:11'),(25,4,'Communication','2024-07-27 11:55:10','2024-07-27 11:55:10'),(26,14,'SQL','2024-07-27 11:56:02','2024-07-27 11:56:02'),(27,14,'3D Modeling','2024-07-27 11:56:02','2024-07-27 11:56:02'),(28,17,'Java','2024-07-27 13:51:49','2024-07-27 13:51:49'),(29,18,'Python','2024-07-27 13:55:59','2024-07-27 13:55:59'),(32,20,'3D Modeling','2024-07-27 14:40:50','2024-07-27 14:40:50'),(33,21,'Operations Management','2024-07-27 14:50:12','2024-07-27 14:50:12'),(34,22,'Artificial Intelligence','2024-07-27 18:03:34','2024-07-27 18:03:34'),(35,22,'Machine Learning','2024-07-27 18:03:34','2024-07-27 18:03:34'),(36,22,'Deep Learning','2024-07-27 18:03:34','2024-07-27 18:03:34'),(37,22,'Python','2024-07-27 18:03:34','2024-07-27 18:03:34'),(38,23,'fashion designing','2024-07-27 20:48:43','2024-07-27 20:48:43');
-/*!40000 ALTER TABLE `job_skill` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `job_vacancy`
---
-
-DROP TABLE IF EXISTS `job_vacancy`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `job_vacancy` (
-  `job_id` int NOT NULL AUTO_INCREMENT,
-  `company_id` int DEFAULT NULL,
-  `job_name` varchar(256) DEFAULT NULL,
-  `job_desc` varchar(1024) DEFAULT NULL,
-  `company_name` varchar(256) DEFAULT NULL,
-  `company_pic` mediumblob,
-  `company_username` varchar(128) DEFAULT NULL,
-  `requirement` varchar(5120) DEFAULT NULL,
-  `salary` varchar(256) DEFAULT NULL,
-  `experience` varchar(128) DEFAULT NULL,
-  `work_style` varchar(64) DEFAULT NULL,
-  `job_position` varchar(32) DEFAULT NULL,
-  `location` varchar(128) DEFAULT NULL,
-  `working_days` varchar(128) DEFAULT NULL,
-  `emp_type` varchar(128) DEFAULT NULL,
-  `last_date` datetime DEFAULT NULL,
-  `closed` tinyint(1) DEFAULT NULL,
-  `no_of_request` int DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`job_id`),
-  KEY `ix_job_vacancy_company_id` (`company_id`),
-  KEY `ix_job_vacancy_job_id` (`job_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `job_vacancy`
---
-
-LOCK TABLES `job_vacancy` WRITE;
-/*!40000 ALTER TABLE `job_vacancy` DISABLE KEYS */;
-INSERT INTO `job_vacancy` VALUES (1,1,'Automobile AC Technician','Need An engineer Who is Skilled In AC Fixing','Mercedes-Benz',NULL,'benz','Skill: Electrical Engineering, Min: UG passout','RS-16700-','1-5 years','Work from home','Electrical Engineer','Kōchi,Kochi Prefecture,Kochi Prefecture','Monday-Friday','Full-time','2024-08-24 00:00:00',0,0,'2024-07-25 04:06:35','2024-07-25 14:48:13'),(2,3,'Need UI/UX Designer','Need a UI/UX Designer Ready to work and ready on call. ','My Design Space LTD',NULL,'my_design','Experience in React, HTML,CSS,JS and have Creative Thought','RS-120000-','1-5 years','Hybrid','UX/UI Designer','Hong Kong,undefined','Monday-Friday','Full-time','2024-08-25 00:00:00',0,0,'2024-07-25 04:53:59','2024-07-26 16:08:58'),(3,2,'Senior Aerodynamics Engineer','**1. Design and Analysis:\n\n    Lead the aerodynamic design process for new products or improvements to existing designs.\n    Use Computational Fluid Dynamics (CFD) tools and wind tunnel testing to analyze and optimize aerodynamic performance.\n    Develop and implement aerodynamic models and simulations.\n\n**2. Research and Development:\n\n    Conduct research to explore new aerodynamic technologies and methodologies.\n    Stay updated with the latest advancements in aerodynamics and related fields.\n\n**3. Testing and Validation:\n\n    Plan and oversee wind tunnel tests, flight tests, or other experimental methods to validate aerodynamic designs.\n    Analyze test data to refine models and improve performance predictions.','Raven Aeronautics',NULL,'raven_official','1. Educational Background:\n\n    Bachelor\'s degree in Aerodynamics, Aerospace Engineering, Mechanical Engineering, or a related field is required.\n    A Master\'s or Ph.D. in Aerodynamics or a related field is often preferred.\n\n**2. Experience:\n\n    Several years (typically 5-10 years) of experience in aerodynamics engineering, with a proven track record of working on relevant projects.\n    Experience in using CFD tools, such as ANSYS Fluent, OpenFOAM, or STAR-CCM+, and familiarity with wind tunnel testing.\n\n**3. Skills and Competencies:\n\n    Strong analytical and problem-solving skills, with the ability to interpret complex data and make informed decisions.\n    Proficiency in programming languages such as Python, MATLAB, or C++ is often required for developing models and simulations.\n    Excellent communication and teamwork skills, with the ability to collaborate effectively with diverse teams.\n    Detail-oriented and capable of managing multiple projects simultaneously.\n\n**4. Knowledge:\n\n    In-depth understanding of fluid dynamics, thermodynamics, and other relevant principles.\n    Familiarity with industry standards, regulations, and certification processes related to aerodynamics.\n\n**5. Additional Qualities:\n\n    A proactive approach to innovation and a willingness to explore new technologies and methodologies.\n    Leadership capabilities and experience in project management can be an asset for senior-level positions.\n\n','DLR-60000-','5-10 years','Onsite','Aircraft Mechanic','Sydenham','Monday-Friday','Full-time','2024-08-26 00:00:00',0,0,'2024-07-25 04:59:08','2024-07-27 09:36:49'),(4,2,'Aeronautical Engineer','**1. Design and Analysis:\n\n    Lead the aerodynamic design process for new products or improvements to existing designs.\n    Use Computational Fluid Dynamics (CFD) tools and wind tunnel testing to analyze and optimize aerodynamic performance.\n    Develop and implement aerodynamic models and simulations.\n\n**2. Research and Development:\n\n    Conduct research to explore new aerodynamic technologies and methodologies.\n    Stay updated with the latest advancements in aerodynamics and related fields.\n\n**3. Testing and Validation:\n\n    Plan and oversee wind tunnel tests, flight tests, or other experimental methods to validate aerodynamic designs.\n    Analyze test data to refine models and improve performance predictions.','Raven Aeronautics',NULL,'raven_official','1. Educational Background:\n\n    Bachelor\'s degree in Aerodynamics, Aerospace Engineering, Mechanical Engineering, or a related field is required.\n    A Master\'s or Ph.D. in Aerodynamics or a related field is often preferred.\n\n**2. Experience:\n\n    Several years (typically 5-10 years) of experience in aerodynamics engineering, with a proven track record of working on relevant projects.\n    Experience in using CFD tools, such as ANSYS Fluent, OpenFOAM, or STAR-CCM+, and familiarity with wind tunnel testing.\n\n**3. Skills and Competencies:\n\n    Strong analytical and problem-solving skills, with the ability to interpret complex data and make informed decisions.\n    Proficiency in programming languages such as Python, MATLAB, or C++ is often required for developing models and simulations.\n    Excellent communication and teamwork skills, with the ability to collaborate effectively with diverse teams.\n    Detail-oriented and capable of managing multiple projects simultaneously.\n\n**4. Knowledge:\n\n    In-depth understanding of fluid dynamics, thermodynamics, and other relevant principles.\n    Familiarity with industry standards, regulations, and certification processes related to aerodynamics.\n\n**5. Additional Qualities:\n\n    A proactive approach to innovation and a willingness to explore new technologies and methodologies.\n    Leadership capabilities and experience in project management can be an asset for senior-level positions.\n\n','DLR-60000-','1-5 years','Onsite','Aircraft Mechanic','Sydney','Monday-Friday','Full-time','2024-08-24 00:00:00',0,0,'2024-07-25 05:05:11','2024-07-27 11:47:18'),(5,4,'Defence Research','need to build a product','scorp',NULL,'Sid','should build a product','RS-10000-','10+ years','Onsite','Electrical Engineer','Mumbai,Maharashtra,Maharashtra','Monday-Saturday','Full-time','2024-08-01 00:00:00',0,0,'2024-07-25 05:23:15','2024-07-25 05:25:03'),(6,3,'QWERTY-UI','Internship For UG for UI/UX design','My Design Space LTD',NULL,'my_design','No minimum Requirement','RS-5001-','1-5 years','Onsite','UX/UI Designer','Hong Kong,undefined','Monday-Friday','Internship','2024-08-24 00:00:00',0,0,'2024-07-25 05:29:15','2024-07-25 05:33:49'),(7,6,'Technician','As a Laboratory Technician, you will be integral to conducting scientific experiments and analyses in a laboratory setting. Your primary responsibilities will include preparing and analyzing samples, operating and maintaining laboratory equipment, and ensuring the accuracy and reliability of test results. You will be responsible for documenting and interpreting findings, adhering to strict safety protocols, and maintaining a clean and organized work environment.','Roguestar',NULL,'jonathan','The ideal candidate for the Laboratory Technician position will hold an Associate’s or Bachelor’s degree in Laboratory Technology, Biological Sciences, Chemistry, or a related field. Previous experience in a laboratory setting is preferred, with a strong familiarity with relevant techniques and equipment being advantageous. Candidates should demonstrate proficiency in operating and maintaining laboratory instruments, possess strong analytical and problem-solving skills, and exhibit meticulous attention to detail in their work. Effective communication skills are essential for reporting findings and collaborating with team members.','RS-40000-','1-5 years','Work from home','Laboratory Technician','Kerala,undefined','Monday-Friday','Full-time','2024-08-10 00:00:00',0,0,'2024-07-25 06:27:18','2024-07-25 06:27:51'),(8,3,'Mechanical Engineer','Design and develop mechanical systems and components.\nConduct research to solve engineering problems.\nTest and evaluate prototypes.\nCollaborate with other engineers and departments.\nEnsure projects meet specifications, budgets, and timelines.\nPrepare documentation and reports.','My Design Space LTD',NULL,'my_design','Education: Bachelor\'s degree in Mechanical Engineering or related field.\n\nExperience: 2-5 years of experience in mechanical engineering or related roles.\n\nSkills: Proficiency in CAD software, strong analytical and problem-solving skills, knowledge of manufacturing processes, excellent communication skills.\n\nCertifications: Professional Engineering (PE) license preferred.\n\nAbilities: Ability to work in a team, manage multiple projects, and meet deadlines.','DLR-20000-50000','5-10 years','Hybrid','Machinist','Monaco','Monday-Friday','Full-time','2024-08-24 00:00:00',0,0,'2024-07-25 18:01:42','2024-07-25 18:01:42'),(9,3,'Paralegal','A Paralegal assists lawyers by conducting legal research, drafting documents, organizing files, and managing case information. They help prepare for trials, hearings, and meetings.','My Design Space LTD',NULL,'my_design','Education: Associate\'s degree or certificate in Paralegal Studies; Bachelor\'s degree preferred.\n\nExperience: 1-3 years of experience in a legal setting.\n\nSkills: Strong research and writing skills, proficiency in legal software, attention to detail, excellent organizational abilities.\n\nCertifications: Paralegal certification preferred (e.g., NALA, NFPA).\n\nAbilities: Ability to work under pressure, handle confidential information, and communicate effectively.','RS-75000-500000','Fresher','Hybrid','Paralegal','Tamil Nadu','Monday-Friday','Temporary','2024-08-24 00:00:00',1,0,'2024-07-25 18:05:51','2024-07-26 16:07:39'),(10,3,'Python Developer','A Network Administrator manages and maintains computer networks to ensure reliable and efficient network operations. They install, support, and configure hardware and software, and troubleshoot network issues.','My Design Space LTD',NULL,'my_design','Education: Bachelor\'s degree in Computer Science, Information Technology, or related field.\n\nExperience: 2-4 years of experience in network administration or related roles.\n\nSkills: Proficiency in network hardware/software, strong problem-solving abilities, knowledge of network protocols and security, excellent communication skills.\n\nCertifications: Relevant certifications such as CompTIA Network+, Cisco CCNA, or Microsoft MCSE preferred.\n\nAbilities: Ability to work independently, manage multiple tasks, and provide technical support.','RS-70000','1-5 years','Hybrid','Network Administrator','Kenya','Monday-Saturday','Full-time','2024-08-24 00:00:00',1,0,'2024-07-25 18:07:43','2024-07-26 16:07:34'),(11,3,'Assistan Python Developer','A Network Administrator manages and maintains computer networks to ensure reliable and efficient network operations. They install, support, and configure hardware and software, and troubleshoot network issues.','My Design Space LTD',NULL,'my_design','Education: Bachelor\'s degree in Computer Science, Information Technology, or related field.\n\nExperience: 2-4 years of experience in network administration or related roles.\n\nSkills: Proficiency in network hardware/software, strong problem-solving abilities, knowledge of network protocols and security, excellent communication skills.\n\nCertifications: Relevant certifications such as CompTIA Network+, Cisco CCNA, or Microsoft MCSE preferred.\n\nAbilities: Ability to work independently, manage multiple tasks, and provide technical support.','RS-20000','Fresher','Hybrid','Network Administrator','Kenya','Monday-Friday','Full-time','2024-08-24 00:00:00',1,0,'2024-07-25 18:09:42','2024-07-26 16:07:33'),(12,3,'Junior Business Analyst','A Business Analyst evaluates business processes, identifies needs, and develops strategies to maximize opportunities. They work with stakeholders to gather requirements and ensure solutions meet business objectives.','My Design Space LTD',NULL,'my_design','Education: Bachelor\'s degree in Business Administration, Information Systems, or related field.\n\nExperience: 2-5 years of experience in business analysis or a related role.\n\nSkills: Strong analytical and problem-solving skills, proficiency in business analysis tools, excellent communication and presentation skills.\n\nCertifications: Certified Business Analysis Professional (CBAP) or equivalent preferred.\n\nAbilities: Ability to work with cross-functional teams, manage multiple projects, and understand complex business processes.','RS-70000-','Fresher','Hybrid','Business Analyst','Kochi','Monday-Friday','Full-time','2024-08-25 00:00:00',0,0,'2024-07-26 16:07:14','2024-07-26 16:07:14'),(14,2,'Aircraft Mechanic','We seek experts','Raven Aeronautics',NULL,'raven_official','Expertise in Aircraft maintaenance and repairing','DLR-70000-','1-5 years','Onsite','Aircraft Mechanic','Texas','Monday-Saturday','Full-time','2024-08-26 00:00:00',0,0,'2024-07-27 09:42:22','2024-07-27 09:42:22'),(15,2,'Aerospace Engineer','SkyTech Aeronautics is seeking an experienced Aerospace Engineer to join our dynamic team. The successful candidate will be responsible for designing and developing advanced aerospace systems, including aircraft structures and propulsion systems.','Raven Aeronautics',NULL,'raven_official','Responsibilities:\n\n    Design and analyze aerospace systems, ensuring compliance with industry standards.\n    Conduct simulations and testing to validate designs.\n    Collaborate with manufacturing teams to oversee the production of components.\n    Prepare technical reports and presentations.\n    Stay updated with the latest advancements in aerospace technology.\n\nRequirements:\n\n    Education: Bachelor\'s degree in Aerospace Engineering or related field. A master’s degree is preferred.\n    Experience: 5+ years of experience in aerospace engineering.\n    Skills: Proficiency in CAD software, experience with finite element analysis, strong problem-solving skills, and knowledge of aerodynamics and materials science.','DLR-70000-','5-10 years','Onsite','Aircraft Mechanic','Texas County','Monday-Saturday','Full-time','2024-08-26 00:00:00',0,0,'2024-07-27 11:07:29','2024-07-27 11:07:29'),(16,2,'Avionics Technician','Looking for a skilled Avionics Technician to join our maintenance team. The ideal candidate will be responsible for the installation, inspection, and repair of avionics systems in various aircraft.','Raven Aeronautics',NULL,'raven_official','Responsibilities:\n\n    Install and maintain avionics equipment such as navigation, communication, and radar systems.\n    Perform regular inspections and troubleshooting of avionics systems.\n    Ensure all work complies with aviation safety standards and regulations.\n    Document all maintenance activities and report any issues.\n\nRequirements:\n\n    Education: Associate\'s degree or technical certification in avionics or a related field.\n    Experience: 3+ years of experience in avionics maintenance.\n    Skills: Knowledge of avionics systems, familiarity with diagnostic tools, strong attention to detail, and excellent technical and manual skills.','DLR-80000-','1-5 years','Onsite','Aircraft Mechanic','Houston','Monday-Saturday','Full-time','2024-08-26 00:00:00',0,0,'2024-07-27 11:11:11','2024-07-27 11:11:11'),(17,7,'UI UX Designer','demo','Ford Motor Company',NULL,'ford','demo','RS-70000-','Fresher','Hybrid','Laboratory Technician','Taiwan','Monday-Friday','Full-time','2024-08-26 00:00:00',0,0,'2024-07-27 13:51:49','2024-07-27 13:51:49'),(18,7,'Assistan Python Developer','demo','Ford Motor Company',NULL,'ford','demo','RS-20000-','Fresher','Hybrid','Restaurant Manager','Manzana M','Monday-Friday','Full-time','2024-08-26 00:00:00',0,0,'2024-07-27 13:55:59','2024-07-27 14:00:00'),(20,2,'Flight Response Manager','JetStream Aviation is searching for a Flight Operations Manager to oversee the day-to-day operations of our flight department. The role involves managing flight schedules, ensuring regulatory compliance, and optimizing operational efficiency.','Raven Aeronautics',NULL,'raven_official','Responsibilities:\n\n    Plan and coordinate flight schedules, crew assignments, and maintenance activities.\n    Monitor and ensure compliance with aviation regulations and company policies.\n    Coordinate with pilots, ground staff, and other departments to ensure smooth operations.\n    Handle any operational issues that arise and implement solutions.\n    Prepare and manage the department\'s budget.\n\nRequirements:\n\n    Education: Bachelor\'s degree in Aviation Management, Business Administration, or a related field.\n    Experience: 7+ years of experience in flight operations or aviation management.\n    Skills: Strong leadership and organizational skills, knowledge of FAA regulations, excellent communication abilities, and experience with flight scheduling software.','DLR-800000-','1-5 years','Onsite','Mechanical Engineer','AT&T','Monday-Saturday','Full-time','2024-08-26 00:00:00',0,0,'2024-07-27 14:40:50','2024-07-27 14:40:50'),(21,2,'Flight Operations Manager','JetStream Aviation is searching for a Flight Operations Manager to oversee the day-to-day operations of our flight department. The role involves managing flight schedules, ensuring regulatory compliance, and optimizing operational efficiency.','Raven Aeronautics',NULL,'raven_official','Responsibilities:\n\n    Plan and coordinate flight schedules, crew assignments, and maintenance activities.\n    Monitor and ensure compliance with aviation regulations and company policies.\n    Coordinate with pilots, ground staff, and other departments to ensure smooth operations.\n    Handle any operational issues that arise and implement solutions.\n    Prepare and manage the department\'s budget.\n\nRequirements:\n\n    Education: Bachelor\'s degree in Aviation Management, Business Administration, or a related field.\n    Experience: 7+ years of experience in flight operations or aviation management.\n    Skills: Strong leadership and organizational skills, knowledge of FAA regulations, excellent communication abilities, and experience with flight scheduling software.','DLR-80000-','5-10 years','Onsite','Aircraft Mechanic','Texas County','Monday-Friday','Full-time','2024-08-26 00:00:00',0,0,'2024-07-27 14:50:12','2024-07-27 14:50:12'),(22,10,'AI Architect','AI_Conquer Pvt.Ltd is a leading innovator in the field of AI/ML, dedicated to leveraging cutting-edge technology to solve complex problems and create meaningful impact. We are seeking a talented AI Engineer to join our dynamic team and contribute to the development and deployment of advanced artificial intelligence solutions.\nThe company is looking for freshers who completed their B.Tech/BCA degree in the field of computer science and technology.\n\n','AI Conquer Pvt.Ltd',NULL,'AI_Mission','The AI Engineer will design, develop, and implement AI and machine learning models to enhance our products and services. This role requires a deep understanding of machine learning algorithms, data structures, and software engineering principles. The AI Engineer will collaborate with cross-functional teams to integrate AI capabilities into various applications and drive continuous improvement through innovation and research.','RS-300000-1000000','Fresher',NULL,'AI engineer','Alaska','Monday-Friday','Full-time','2024-08-28 00:00:00',0,0,'2024-07-27 18:03:34','2024-07-27 18:03:34'),(23,8,'Fashion Designer','Fashion Designing','Void',NULL,'void_fashion','Expertise in designing clothes','DLR-120000-','5-10 years','Onsite','Fashion Designer','Germany','Monday-Friday','Full-time','2024-08-27 00:00:00',0,0,'2024-07-27 20:48:43','2024-07-27 20:48:43');
-/*!40000 ALTER TABLE `job_vacancy` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2024-07-28  8:49:25
-CREATE DATABASE  IF NOT EXISTS `modelDB` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `modelDB`;
--- MySQL dump 10.13  Distrib 8.0.36, for Linux (x86_64)
---
--- Host: career-go.centralindia.cloudapp.azure.com    Database: modelDB
--- ------------------------------------------------------
--- Server version	9.0.1
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
---
--- Table structure for table `job_recommendation_job_input`
---
-
-DROP TABLE IF EXISTS `job_recommendation_job_input`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `job_recommendation_job_input` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `job_id` int DEFAULT NULL,
-  `job_name` varchar(256) DEFAULT NULL,
-  `job_position` varchar(32) DEFAULT NULL,
-  `company_name` varchar(256) DEFAULT NULL,
-  `city` varchar(128) DEFAULT NULL,
-  `work_style` varchar(64) DEFAULT NULL,
-  `job_description` varchar(1024) DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `ix_job_recommendation_job_input_id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `job_recommendation_job_input`
---
-
-LOCK TABLES `job_recommendation_job_input` WRITE;
-/*!40000 ALTER TABLE `job_recommendation_job_input` DISABLE KEYS */;
-INSERT INTO `job_recommendation_job_input` VALUES (1,1,'Automobile AC Technician','Electrical Engineer','Mercedes-Benz','Kōchi,Kochi Prefecture,Kochi Prefecture','Work from home','Need An engineer Who is Skilled In AC Fixing','2024-07-25 04:06:35','2024-07-25 04:06:35'),(2,2,'Need UI/UX Designer','UX/UI Designer','My Design Space LTD','Hong Kong,undefined','Hybrid','Need a UI/UX Designer Ready to work and ready on call. ','2024-07-25 04:53:59','2024-07-25 04:53:59'),(3,5,'defence research','Electrical Engineer','scorp','Mumbai,Maharashtra,Maharashtra','Onsite','need to build a product','2024-07-25 05:23:15','2024-07-25 05:23:15'),(4,6,'qwertyui','UX/UI Designer','My Design Space LTD','Hong Kong,undefined','Onsite','Internship For UG for UI/UX design','2024-07-25 05:29:15','2024-07-25 05:29:15'),(5,7,'Technician','Laboratory Technician','Roguestar','Kerala,undefined','Work from home','As a Laboratory Technician, you will be integral to conducting scientific experiments and analyses in a laboratory setting. Your primary responsibilities will include preparing and analyzing samples, operating and maintaining laboratory equipment, and ensuring the accuracy and reliability of test results. You will be responsible for documenting and interpreting findings, adhering to strict safety protocols, and maintaining a clean and organized work environment.','2024-07-25 06:27:18','2024-07-25 06:27:18'),(6,3,'Senior Aerodynamics Engineer','Aircraft Mechanic','Raven Aeronautics','Sydenham','Onsite','**1. Design and Analysis:\n\n    Lead the aerodynamic design process for new products or improvements to existing designs.\n    Use Computational Fluid Dynamics (CFD) tools and wind tunnel testing to analyze and optimize aerodynamic performance.\n    Develop and implement aerodynamic models and simulations.\n\n**2. Research and Development:\n\n    Conduct research to explore new aerodynamic technologies and methodologies.\n    Stay updated with the latest advancements in aerodynamics and related fields.\n\n**3. Testing and Validation:\n\n    Plan and oversee wind tunnel tests, flight tests, or other experimental methods to validate aerodynamic designs.\n    Analyze test data to refine models and improve performance predictions.',NULL,NULL),(7,4,'Aeronautical Engineer','Aircraft Mechanic','Raven Aeronautics','Sydney','Onsite','**1. Design and Analysis:\n\n    Lead the aerodynamic design process for new products or improvements to existing designs.\n    Use Computational Fluid Dynamics (CFD) tools and wind tunnel testing to analyze and optimize aerodynamic performance.\n    Develop and implement aerodynamic models and simulations.\n\n**2. Research and Development:\n\n    Conduct research to explore new aerodynamic technologies and methodologies.\n    Stay updated with the latest advancements in aerodynamics and related fields.\n\n**3. Testing and Validation:\n\n    Plan and oversee wind tunnel tests, flight tests, or other experimental methods to validate aerodynamic designs.\n    Analyze test data to refine models and improve performance predictions.',NULL,NULL),(8,8,'Mechanical Engineer','Machinist','My Design Space LTD','Monaco','Hybrid','Design and develop mechanical systems and components.\nConduct research to solve engineering problems.\nTest and evaluate prototypes.\nCollaborate with other engineers and departments.\nEnsure projects meet specifications, budgets, and timelines.\nPrepare documentation and reports.','2024-07-25 18:01:42','2024-07-25 18:01:42'),(9,9,'Paralegal','Paralegal','My Design Space LTD','Tamil Nadu','Hybrid','A Paralegal assists lawyers by conducting legal research, drafting documents, organizing files, and managing case information. They help prepare for trials, hearings, and meetings.','2024-07-25 18:05:51','2024-07-25 18:05:51'),(10,10,'Python Developer','Network Administrator','My Design Space LTD','Kenya','Hybrid','A Network Administrator manages and maintains computer networks to ensure reliable and efficient network operations. They install, support, and configure hardware and software, and troubleshoot network issues.','2024-07-25 18:07:43','2024-07-25 18:07:43'),(11,11,'Assistan Python Developer','Network Administrator','My Design Space LTD','Kenya','Hybrid','A Network Administrator manages and maintains computer networks to ensure reliable and efficient network operations. They install, support, and configure hardware and software, and troubleshoot network issues.','2024-07-25 18:09:42','2024-07-25 18:09:42'),(12,12,'Junior Business Analyst','Business Analyst','My Design Space LTD','Kochi','Hybrid','A Business Analyst evaluates business processes, identifies needs, and develops strategies to maximize opportunities. They work with stakeholders to gather requirements and ensure solutions meet business objectives.','2024-07-26 16:07:14','2024-07-26 16:07:14'),(14,14,'Aircraft Mechanic','Aircraft Mechanic','Raven Aeronautics','Texas','Onsite','We seek experts','2024-07-27 09:42:22','2024-07-27 09:42:22'),(15,15,'Aerospace Engineer','Aircraft Mechanic','Raven Aeronautics','Texas County','Onsite','SkyTech Aeronautics is seeking an experienced Aerospace Engineer to join our dynamic team. The successful candidate will be responsible for designing and developing advanced aerospace systems, including aircraft structures and propulsion systems.','2024-07-27 11:07:29','2024-07-27 11:07:29'),(16,16,'Avionics Technician','Aircraft Mechanic','Raven Aeronautics','Houston','Onsite','Looking for a skilled Avionics Technician to join our maintenance team. The ideal candidate will be responsible for the installation, inspection, and repair of avionics systems in various aircraft.','2024-07-27 11:11:11','2024-07-27 11:11:11'),(17,17,'UI UX Designer','Laboratory Technician','Ford Motor Company','Taiwan','Hybrid','demo','2024-07-27 13:51:49','2024-07-27 13:51:49'),(18,18,'Assistan Python Developer','Restaurant Manager','Ford Motor Company','K11','Hybrid','demo','2024-07-27 13:55:59','2024-07-27 13:55:59'),(20,20,'Flight Response Manager','Mechanical Engineer','Raven Aeronautics','AT&T','Onsite','JetStream Aviation is searching for a Flight Operations Manager to oversee the day-to-day operations of our flight department. The role involves managing flight schedules, ensuring regulatory compliance, and optimizing operational efficiency.','2024-07-27 14:40:50','2024-07-27 14:40:50'),(21,21,'Flight Operations Manager','Aircraft Mechanic','Raven Aeronautics','Texas County','Onsite','JetStream Aviation is searching for a Flight Operations Manager to oversee the day-to-day operations of our flight department. The role involves managing flight schedules, ensuring regulatory compliance, and optimizing operational efficiency.','2024-07-27 14:50:12','2024-07-27 14:50:12'),(22,22,'AI Architect','AI engineer','AI Conquer Pvt.Ltd','Alaska',NULL,'AI_Conquer Pvt.Ltd is a leading innovator in the field of AI/ML, dedicated to leveraging cutting-edge technology to solve complex problems and create meaningful impact. We are seeking a talented AI Engineer to join our dynamic team and contribute to the development and deployment of advanced artificial intelligence solutions.\nThe company is looking for freshers who completed their B.Tech/BCA degree in the field of computer science and technology.\n\n','2024-07-27 18:03:34','2024-07-27 18:03:34'),(23,23,'Fashion Designer','Fashion Designer','Void','Germany','Onsite','Fashion Designing','2024-07-27 20:48:43','2024-07-27 20:48:43');
-/*!40000 ALTER TABLE `job_recommendation_job_input` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `job_recommendation_job_output`
---
-
-DROP TABLE IF EXISTS `job_recommendation_job_output`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `job_recommendation_job_output` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `user_id` int DEFAULT NULL,
-  `job_id` int DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `ix_job_recommendation_job_output_id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=181 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `job_recommendation_job_output`
---
-
-LOCK TABLES `job_recommendation_job_output` WRITE;
-/*!40000 ALTER TABLE `job_recommendation_job_output` DISABLE KEYS */;
-INSERT INTO `job_recommendation_job_output` VALUES (151,1,2,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(152,1,6,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(153,1,17,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(154,1,14,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(155,1,15,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(156,6,1,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(157,6,15,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(158,6,5,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(159,6,8,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(160,6,20,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(161,8,1,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(162,8,5,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(163,8,17,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(164,8,7,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(165,8,16,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(166,3,8,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(167,3,20,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(168,3,1,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(169,3,15,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(170,3,5,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(171,9,14,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(172,9,16,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(173,9,15,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(174,9,21,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(175,9,4,'2024-07-27 16:37:46','2024-07-27 16:37:46'),(176,10,2,'2024-07-27 16:37:46','2024-07-27 16:37:46'),(177,10,6,'2024-07-27 16:37:46','2024-07-27 16:37:46'),(178,10,17,'2024-07-27 16:37:46','2024-07-27 16:37:46'),(179,10,14,'2024-07-27 16:37:46','2024-07-27 16:37:46'),(180,10,15,'2024-07-27 16:37:46','2024-07-27 16:37:46');
-/*!40000 ALTER TABLE `job_recommendation_job_output` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `job_recommendation_seeker_output`
---
-
-DROP TABLE IF EXISTS `job_recommendation_seeker_output`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `job_recommendation_seeker_output` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `job_position` varchar(32) DEFAULT NULL,
-  `user_id` int DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `ix_job_recommendation_seeker_output_id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=246 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `job_recommendation_seeker_output`
---
-
-LOCK TABLES `job_recommendation_seeker_output` WRITE;
-/*!40000 ALTER TABLE `job_recommendation_seeker_output` DISABLE KEYS */;
-INSERT INTO `job_recommendation_seeker_output` VALUES (196,'Electrical Engineer',8,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(197,'Electrical Engineer',6,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(198,'Electrical Engineer',3,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(199,'Electrical Engineer',1,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(200,'Electrical Engineer',9,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(201,'UX/UI Designer',10,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(202,'UX/UI Designer',1,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(203,'UX/UI Designer',3,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(204,'UX/UI Designer',6,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(205,'UX/UI Designer',9,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(206,'Laboratory Technician',8,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(207,'Laboratory Technician',9,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(208,'Laboratory Technician',1,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(209,'Laboratory Technician',3,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(210,'Laboratory Technician',6,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(211,'Aircraft Mechanic',9,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(212,'Aircraft Mechanic',8,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(213,'Aircraft Mechanic',1,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(214,'Aircraft Mechanic',3,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(215,'Aircraft Mechanic',6,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(216,'Machinist',9,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(217,'Machinist',8,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(218,'Machinist',1,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(219,'Machinist',3,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(220,'Machinist',6,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(221,'Paralegal',9,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(222,'Paralegal',8,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(223,'Paralegal',1,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(224,'Paralegal',3,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(225,'Paralegal',6,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(226,'Network Administrator',9,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(227,'Network Administrator',8,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(228,'Network Administrator',1,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(229,'Network Administrator',3,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(230,'Network Administrator',6,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(231,'Business Analyst',9,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(232,'Business Analyst',8,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(233,'Business Analyst',1,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(234,'Business Analyst',3,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(235,'Business Analyst',6,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(236,'Restaurant Manager',9,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(237,'Restaurant Manager',8,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(238,'Restaurant Manager',1,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(239,'Restaurant Manager',3,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(240,'Restaurant Manager',6,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(241,'Mechanical Engineer',3,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(242,'Mechanical Engineer',6,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(243,'Mechanical Engineer',8,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(244,'Mechanical Engineer',1,'2024-07-27 16:37:45','2024-07-27 16:37:45'),(245,'Mechanical Engineer',9,'2024-07-27 16:37:45','2024-07-27 16:37:45');
-/*!40000 ALTER TABLE `job_recommendation_seeker_output` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `seekers_input_poi`
---
-
-DROP TABLE IF EXISTS `seekers_input_poi`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `seekers_input_poi` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `poi_id` int DEFAULT NULL,
-  `user_id` int DEFAULT NULL,
-  `position` varchar(32) DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `ix_seekers_input_poi_poi_id` (`poi_id`),
-  KEY `ix_seekers_input_poi_user_id` (`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `seekers_input_poi`
---
-
-LOCK TABLES `seekers_input_poi` WRITE;
-/*!40000 ALTER TABLE `seekers_input_poi` DISABLE KEYS */;
-INSERT INTO `seekers_input_poi` VALUES (1,1,1,'UX/UI Designer','2024-07-25 04:54:09','2024-07-25 04:54:09'),(14,14,6,'AI engineer','2024-07-25 08:29:00','2024-07-25 08:29:00'),(17,17,8,'Automotive Technician','2024-07-25 10:09:15','2024-07-25 10:09:15'),(18,18,8,'Electrical Engineer','2024-07-25 10:09:21','2024-07-25 10:09:21'),(19,19,3,'Mechanical Engineer','2024-07-25 11:37:37','2024-07-25 11:37:37'),(20,20,9,'Aircraft Mechanic','2024-07-25 12:21:08','2024-07-25 12:21:08'),(22,22,10,'UX/UI Designer','2024-07-25 17:38:51','2024-07-25 17:38:51'),(23,23,4,'AI engineer','2024-07-27 17:14:43','2024-07-27 17:14:43'),(24,24,4,'Data Scientist','2024-07-27 17:14:51','2024-07-27 17:14:51'),(25,25,4,'AI architect','2024-07-27 17:15:04','2024-07-27 17:15:04'),(26,26,5,'Art Assistant','2024-07-27 17:16:07','2024-07-27 17:16:07'),(27,27,5,'Content Writer','2024-07-27 17:16:16','2024-07-27 17:16:16'),(28,28,6,'Accountant','2024-07-27 17:17:04','2024-07-27 17:17:04'),(29,29,7,'Pastry Chef','2024-07-27 17:20:00','2024-07-27 17:20:00'),(30,30,7,'Chef','2024-07-27 17:20:12','2024-07-27 17:20:12');
-/*!40000 ALTER TABLE `seekers_input_poi` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2024-07-28  8:49:27
-CREATE DATABASE  IF NOT EXISTS `authDB` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `authDB`;
--- MySQL dump 10.13  Distrib 8.0.36, for Linux (x86_64)
---
--- Host: career-go.centralindia.cloudapp.azure.com    Database: authDB
--- ------------------------------------------------------
--- Server version	9.0.1
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
---
--- Table structure for table `user_auth`
---
-
-DROP TABLE IF EXISTS `user_auth`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `user_auth` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `username` varchar(32) DEFAULT NULL,
-  `hashed_password` varchar(128) DEFAULT NULL,
-  `email` varchar(32) DEFAULT NULL,
-  `refresh_token` varchar(256) DEFAULT NULL,
-  `disabled` tinyint(1) DEFAULT NULL,
-  `user_id` int DEFAULT NULL,
-  `hash_key` varchar(32) DEFAULT NULL,
-  `user_type` enum('seeker','recruiter') DEFAULT NULL,
-  `verified` tinyint(1) DEFAULT NULL,
-  `last_login` datetime DEFAULT NULL,
-  `created_at` datetime DEFAULT NULL,
-  `updated_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `username` (`username`),
-  UNIQUE KEY `email` (`email`),
-  KEY `ix_user_auth_id` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `user_auth`
---
-
-LOCK TABLES `user_auth` WRITE;
-/*!40000 ALTER TABLE `user_auth` DISABLE KEYS */;
-INSERT INTO `user_auth` VALUES (1,'sreeraj_s','$2b$12$ZuLjtp8RjeBe53dn5FZJeuG.5TyEhZPBFn2GKoEPC8O6OvOouVSri','sathishranji1@gmail.com','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzcmVlcmFqX3MiLCJ0eXBlIjoicmVmcmVzaF90b2tlbiIsImV4cCI6MTcyMjE2MjkyM30.JcGRPOmeSRATN07SQUVJRHkx9sAiYMF5SaKoAyXAXhw',0,1,'3cf27a8ecc5f842d5fcaac0399a9597c','seeker',1,'2024-07-27 10:35:24','2024-07-25 03:52:21','2024-07-27 10:35:24'),(2,'benz','$2b$12$CQrk.I.ahT4XN2K5F/km2e7gYMXcLmH.NxBPko1wYx18JPETwES/S','sreerajs1063@gmail.com','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiZW56IiwidHlwZSI6InJlZnJlc2hfdG9rZW4iLCJleHAiOjE3MjIxNjI4OTZ9.MNW7-mtZQRShyyYo5a4ut8Y6cFpdkZQLC6E_fxSrdDk',0,1,'c0d0415b3dc4e79d6c78095123d67156','recruiter',1,'2024-07-27 10:34:57','2024-07-25 03:56:45','2024-07-27 10:34:57'),(3,'raven_official','$2b$12$zrhWg52q5wwA8QuSMkEyxexQfzGZi7KzxnPRSG6RLak2pesZi2h6G','bijocif412@modotso.com','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJyYXZlbl9vZmZpY2lhbCIsInR5cGUiOiJyZWZyZXNoX3Rva2VuIiwiZXhwIjoxNzIyMTk5MjQ5fQ.uqlxstFigTHr8XE5KE71j3PlhI-_TEWiz1s5zOUGpdU',0,2,'50d688a7e0d3ba933c27df8eb2645c99','recruiter',1,'2024-07-27 20:26:20','2024-07-25 04:10:47','2024-07-27 20:40:49'),(4,'my_design','$2b$12$qpcQeWLRLOKcn8IZ5mz5X.PZVgxc2LIxFOWi3FaVIf90VYQWPrgT6','ggplknight@gmail.com','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJteV9kZXNpZ24iLCJ0eXBlIjoicmVmcmVzaF90b2tlbiIsImV4cCI6MTcyMjE5OTU4Mn0.JGGcvOkfqe-5OsXbQ9I0lDWRHoGIjIOBQkV3sXzhBjs',0,3,'e637af2e07ecdc3b41ec58cb6f96a52a','recruiter',1,'2024-07-27 20:46:23','2024-07-25 04:51:04','2024-07-27 20:46:23'),(5,'Sid','$2b$12$y0F5j6mEgAthL371Y.qKoON4jmP5ZZAVs9UkIyyZv1JgCf7jYRYD2','sidharthsathyamkrishna@gmail.com','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJTaWQiLCJ0eXBlIjoicmVmcmVzaF90b2tlbiIsImV4cCI6MTcyMTk3MjE1MX0.0Ds9ODBBQWl7YNkV90uPPKR-98U-ij9nC1DtKUnjsFo',0,4,'526bbd731bb125281e5d5ae20a907a34','recruiter',1,'2024-07-25 05:06:21','2024-07-25 05:05:38','2024-07-25 05:35:52'),(6,'ARJUN','$2b$12$gbEQK.eYAciWnRbEhw7TM.M5V3DTZv7A081vNrCbUsePjX4WXQWL6','arjunsivavilas@gmail.com','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBUkpVTiIsInR5cGUiOiJyZWZyZXNoX3Rva2VuIiwiZXhwIjoxNzIyMDEwOTE0fQ.bfUra0R5PqaSUoERG3C83e6SrGb_kM0uSnX291StV24',0,2,'191bcc6d5ef8c9b8a6481588715cfbcb','seeker',1,'2024-07-25 16:21:55','2024-07-25 05:12:28','2024-07-25 16:21:55'),(7,'lan_herald','$2b$12$EHPxUcq5uXSAUomC5EUXPungTs8FfJUzG3F5RzEXsGT6L.itM6UYa','wabeyec409@modotso.com','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJsYW5faGVyYWxkIiwidHlwZSI6InJlZnJlc2hfdG9rZW4iLCJleHAiOjE3MjIyMDI2OTN9.t_-FANP0jelQIwd9nj9bRpg-g63aFLFMwpL1DmlxKfE',0,3,'619458aad99a9ca4588b91fb8cc7f584','seeker',1,'2024-07-27 20:45:06','2024-07-25 05:44:49','2024-07-27 21:38:14'),(8,'Sreeju_Akasam','$2b$12$9uRIKz8HHbapFjnWc1tkT.oSxw1Mow3PVWqtLmzf5X0VwTy9Ced86','sreejuworks647@gmail.com','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJTcmVlanVfQWthc2FtIiwidHlwZSI6InJlZnJlc2hfdG9rZW4iLCJleHAiOjE3MjE5NzM5ODF9.XbMi8TTHyHazk2EK4m_9-H3TflnBeAOUF69yPmumpMI',0,5,'ce7e8dc3dc145845b2f5abf13e854f0e','recruiter',1,'2024-07-25 06:06:22','2024-07-25 05:46:13','2024-07-25 06:06:22'),(9,'jonathan','$2b$12$VWFC4WNOnZFJO1AdCg/MUuWVYjpmkpDfbcHh9Xf7wtu2Poe4MbhvG','roguestar60@gmail.com','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqb25hdGhhbiIsInR5cGUiOiJyZWZyZXNoX3Rva2VuIiwiZXhwIjoxNzIyMDEwOTQyfQ.7DYE8VXhtHjmyAMeWEseei5uGFedq_R29jLymY5NDuE',0,6,'9d41ab24ee94a1b9d6b836e96e641afb','recruiter',1,'2024-07-25 16:22:23','2024-07-25 06:07:49','2024-07-25 16:22:23'),(10,'Suresh','$2b$12$4KjJPAllsscTvVZcDzcPf.2a3iJU1P4sf7o2PaUy84QolQzVLtwTS','sureshgopi@gotgel.org','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJTdXJlc2giLCJ0eXBlIjoicmVmcmVzaF90b2tlbiIsImV4cCI6MTcyMjE4ODYzOX0.iraadj66TD81d9l-1nTZExjt_2TmZwfquOjjggwOLok',0,4,'25b267182ba98a11bfbccf35f393b132','seeker',1,'2024-07-27 17:44:00','2024-07-25 08:13:26','2024-07-27 17:44:00'),(11,'Gopi','$2b$12$8Zbl5WQuB7IqvB2NCFkeZOHKOvBhOBI4N1c8HL5semgfMB5UVD5LG','gopisundar@rungel.net','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJHb3BpIiwidHlwZSI6InJlZnJlc2hfdG9rZW4iLCJleHAiOjE3MjIxODY5NDN9.AZnEANvXXK6luVTCEWWD7tg0fJNHy3D8-ZteI4hkhDg',0,5,'1f0a9236bdc353bffb44da46893b6a43','seeker',1,'2024-07-27 17:15:44','2024-07-25 08:17:17','2024-07-27 17:15:44'),(12,'Mani','$2b$12$O8orMjo5hMpd3U0R4cJiF.K458ed2JJCAZ3OC8sC52q3OKPkq9lCS','manikkandan123@rungel.net','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJNYW5pIiwidHlwZSI6InJlZnJlc2hfdG9rZW4iLCJleHAiOjE3MjIxODcwMDd9.pfvxeiY5E7khGvMMdEJ26eTzf-aGSgFPFgVs-U21--0',0,6,'ab365a3c26d1554697001aa22ff98717','seeker',1,'2024-07-27 17:16:48','2024-07-25 08:22:17','2024-07-27 17:16:48'),(13,'sadham','$2b$12$fW.aCkxiIMTbLfImaWNPQeXHl/Ls.ezMmX3fAeOrj6iGLyDX62w.2','sadhamhussain123@gotgel.org','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzYWRoYW0iLCJ0eXBlIjoicmVmcmVzaF90b2tlbiIsImV4cCI6MTcyMjE4NzE5NH0.c_y4MbeU6DYFYesWjg46lqG6RgmQ-jQUjj9z_5h2Kd0',0,7,'83ca3addf579afa131f95789cfa2a153','seeker',1,'2024-07-27 17:19:54','2024-07-25 08:38:32','2024-07-27 17:19:54'),(14,'Rangan','$2b$12$YtAo.bwUopYhE/DCQBDUJOEpewxzmEQ0KrFxD0MSyPpcXuKkDKPCm','rinemev470@stikezz.com','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJSYW5nYW4iLCJ0eXBlIjoicmVmcmVzaF90b2tlbiIsImV4cCI6MTcyMjE5OTU3MH0.HCKS0iuDc_IgZKBOpDnQixyrPQWVshLcKM3hFspdAX8',0,8,'db4c01904ee4bf8389861eb6e21a2ac7','seeker',1,'2024-07-27 20:46:10','2024-07-25 10:07:13','2024-07-27 20:46:10'),(16,'sreyas','$2b$12$.RmF2XUmsyt9OJTXx9tkjes/ON4URKKJ6Gq9e8RscFkkk6C7UNEDm','sreyaskumar40@gmail.com','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzcmV5YXMiLCJ0eXBlIjoicmVmcmVzaF90b2tlbiIsImV4cCI6MTcyMjE5Nzc5MX0.7NUJyCJoqUyOldjYVL4P5FlaBciq-e80lzFT72zOpDs',0,10,'0fc01f9fe87c858d1c15a6b54323d643','seeker',1,'2024-07-27 18:54:31','2024-07-25 14:54:47','2024-07-27 20:16:31'),(17,'wan_raltimore','$2b$12$Bod1tQdbMn9YDpR4WtpHAOFyUvcby3/lsfWK5iTSMi.6iIr59EFee','begelic914@elahan.com',NULL,0,11,'c457be27a62a4d895bc186fb58d18483','seeker',0,NULL,'2024-07-25 16:22:56','2024-07-25 16:22:56'),(18,'huan_hoser','$2b$12$96WPtIX3RplVORgaR.9.g.o4q.CqNM1TXh3uiTrt971Z2VsIk6xFC','lirilis828@padvn.com',NULL,0,12,'cae6835d4d83d92a3405f589f6bcfebc','seeker',0,NULL,'2024-07-25 16:42:55','2024-07-25 16:42:55'),(19,'ford','$2b$12$tGQoSgWYqaA.Zas0CNUiTOyyeXE5taxMnldoCDw5cztUoDyFMZsfS','backupsreyas@gmail.com','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmb3JkIiwidHlwZSI6InJlZnJlc2hfdG9rZW4iLCJleHAiOjE3MjIxOTc4NzZ9.gptJH8ZpaNeioMQBICdw0r0cuDr2epBVT9RYXyfRB-8',0,7,'f9b35f83a3b3703cf942e97285a81c8c','recruiter',1,'2024-07-27 18:41:52','2024-07-25 17:30:57','2024-07-27 20:17:57'),(20,'uden_ton','$2b$12$N2EKvJTkeNg9POQzgjqdFONq3V2bbzWSt3BkcsYgy.N3q83ssgSFe','kegoje4441@elahan.com',NULL,0,13,'114cb267cd157893dc57dd59f080cbe8','seeker',0,NULL,'2024-07-26 05:02:15','2024-07-26 05:02:15'),(21,'uden_dton','$2b$12$jeWJpKX7x.BouVI1n8lm5.H8se3y7P86tSPJ4Fy5nyNOkKQuUBFdG','jaretif337@digdy.com','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1ZGVuX2R0b24iLCJ0eXBlIjoicmVmcmVzaF90b2tlbiIsImV4cCI6MTcyMjA2MDA4MX0.XmGuSvjryO3hFlYhkTF-S6dgJQ6FFXaKHE65wRKi3NU',0,14,'8b42d89600307ed727edb103578064bb','seeker',1,'2024-07-26 05:11:19','2024-07-26 05:10:45','2024-07-26 06:01:21'),(22,'void_fashion','$2b$12$J3xZeThJiUSIb6cK1bc9.uWDBtndRzfpgqDU8yvTd/c0LyBK.CR9i','hisih25791@digdy.com','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ2b2lkX2Zhc2hpb24iLCJ0eXBlIjoicmVmcmVzaF90b2tlbiIsImV4cCI6MTcyMjIwMTQ0OX0.72MXvMRF4HI916ouBxDKg-TEqxEIa1noDGpdYc1aQRo',0,8,'dee8de3e5dc1ac8b12daf28276da71d9','recruiter',1,'2024-07-27 20:46:52','2024-07-26 05:26:11','2024-07-27 21:17:30'),(23,'travis_leyton','$2b$12$Y5fWQjUrqdnOHbJN3tICOe/5MSojKydOhIUJB/gJmM4HqrbJLqt2q','nojane1685@hostlace.com','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0cmF2aXNfbGV5dG9uIiwidHlwZSI6InJlZnJlc2hfdG9rZW4iLCJleHAiOjE3MjIwNzM3Nzd9.k3r7mAhRCW-lY1eVENhtvlegqb9Eul6NAkArHq6PJ_E',0,15,'b85076033bb9fae26f0045131ae1fb6f','seeker',1,'2024-07-26 09:49:38','2024-07-26 09:48:56','2024-07-26 09:49:38'),(25,'top','$2b$12$7E/K6LDIIvFU6ou/v/n9OOPCAyjZnF0WUNk7vK6v4tIxMJ3bKfpJa','towow55713@maxturns.com','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0b3AiLCJ0eXBlIjoicmVmcmVzaF90b2tlbiIsImV4cCI6MTcyMjE3MDMzNn0.irAmALiN3rBuYTqlV0zqMocwUWmp_Iok7cThcR-TXqA',0,16,'6b6ccc0d128eac16fd77387fd06331ef','seeker',1,'2024-07-27 10:42:02','2024-07-27 10:38:14','2024-07-27 12:38:56'),(26,'AI_Mission','$2b$12$AxuiJlZ41kr2DFuIe5RG1ezif.f84f/KQCGXUFyFsF3pSpXQpl7Fe','genaistartup@gotgel.org','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBSV9NaXNzaW9uIiwidHlwZSI6InJlZnJlc2hfdG9rZW4iLCJleHAiOjE3MjIxOTA4MjR9.2kOOWiADPqbiIdE52-qI_JV6yDDFW-eZfhNCkcNurFQ',0,10,'2641021df8374b63c9a016959ec36e8f','recruiter',1,'2024-07-27 18:20:25','2024-07-27 17:50:04','2024-07-27 18:20:25');
-/*!40000 ALTER TABLE `user_auth` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2024-07-28  8:49:28
 CREATE DATABASE  IF NOT EXISTS `usersDB` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `usersDB`;
 -- MySQL dump 10.13  Distrib 8.0.36, for Linux (x86_64)
@@ -855,4 +474,329 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-07-28  8:49:38
+-- Dump completed on 2024-07-28 10:21:57
+CREATE DATABASE  IF NOT EXISTS `authDB` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `authDB`;
+-- MySQL dump 10.13  Distrib 8.0.36, for Linux (x86_64)
+--
+-- Host: career-go.centralindia.cloudapp.azure.com    Database: authDB
+-- ------------------------------------------------------
+-- Server version	9.0.1
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `user_auth`
+--
+
+DROP TABLE IF EXISTS `user_auth`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `user_auth` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `username` varchar(32) DEFAULT NULL,
+  `hashed_password` varchar(128) DEFAULT NULL,
+  `email` varchar(32) DEFAULT NULL,
+  `refresh_token` varchar(256) DEFAULT NULL,
+  `disabled` tinyint(1) DEFAULT NULL,
+  `user_id` int DEFAULT NULL,
+  `hash_key` varchar(32) DEFAULT NULL,
+  `user_type` enum('seeker','recruiter') DEFAULT NULL,
+  `verified` tinyint(1) DEFAULT NULL,
+  `last_login` datetime DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`),
+  UNIQUE KEY `email` (`email`),
+  KEY `ix_user_auth_id` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_auth`
+--
+
+LOCK TABLES `user_auth` WRITE;
+/*!40000 ALTER TABLE `user_auth` DISABLE KEYS */;
+INSERT INTO `user_auth` VALUES (1,'sreeraj_s','$2b$12$ZuLjtp8RjeBe53dn5FZJeuG.5TyEhZPBFn2GKoEPC8O6OvOouVSri','sathishranji1@gmail.com','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzcmVlcmFqX3MiLCJ0eXBlIjoicmVmcmVzaF90b2tlbiIsImV4cCI6MTcyMjE2MjkyM30.JcGRPOmeSRATN07SQUVJRHkx9sAiYMF5SaKoAyXAXhw',0,1,'3cf27a8ecc5f842d5fcaac0399a9597c','seeker',1,'2024-07-27 10:35:24','2024-07-25 03:52:21','2024-07-27 10:35:24'),(2,'benz','$2b$12$CQrk.I.ahT4XN2K5F/km2e7gYMXcLmH.NxBPko1wYx18JPETwES/S','sreerajs1063@gmail.com','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJiZW56IiwidHlwZSI6InJlZnJlc2hfdG9rZW4iLCJleHAiOjE3MjIxNjI4OTZ9.MNW7-mtZQRShyyYo5a4ut8Y6cFpdkZQLC6E_fxSrdDk',0,1,'c0d0415b3dc4e79d6c78095123d67156','recruiter',1,'2024-07-27 10:34:57','2024-07-25 03:56:45','2024-07-27 10:34:57'),(3,'raven_official','$2b$12$zrhWg52q5wwA8QuSMkEyxexQfzGZi7KzxnPRSG6RLak2pesZi2h6G','bijocif412@modotso.com','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJyYXZlbl9vZmZpY2lhbCIsInR5cGUiOiJyZWZyZXNoX3Rva2VuIiwiZXhwIjoxNzIyMTk5MjQ5fQ.uqlxstFigTHr8XE5KE71j3PlhI-_TEWiz1s5zOUGpdU',0,2,'50d688a7e0d3ba933c27df8eb2645c99','recruiter',1,'2024-07-27 20:26:20','2024-07-25 04:10:47','2024-07-27 20:40:49'),(4,'my_design','$2b$12$qpcQeWLRLOKcn8IZ5mz5X.PZVgxc2LIxFOWi3FaVIf90VYQWPrgT6','ggplknight@gmail.com','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJteV9kZXNpZ24iLCJ0eXBlIjoicmVmcmVzaF90b2tlbiIsImV4cCI6MTcyMjE5OTU4Mn0.JGGcvOkfqe-5OsXbQ9I0lDWRHoGIjIOBQkV3sXzhBjs',0,3,'e637af2e07ecdc3b41ec58cb6f96a52a','recruiter',1,'2024-07-27 20:46:23','2024-07-25 04:51:04','2024-07-27 20:46:23'),(5,'Sid','$2b$12$y0F5j6mEgAthL371Y.qKoON4jmP5ZZAVs9UkIyyZv1JgCf7jYRYD2','sidharthsathyamkrishna@gmail.com','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJTaWQiLCJ0eXBlIjoicmVmcmVzaF90b2tlbiIsImV4cCI6MTcyMTk3MjE1MX0.0Ds9ODBBQWl7YNkV90uPPKR-98U-ij9nC1DtKUnjsFo',0,4,'526bbd731bb125281e5d5ae20a907a34','recruiter',1,'2024-07-25 05:06:21','2024-07-25 05:05:38','2024-07-25 05:35:52'),(6,'ARJUN','$2b$12$gbEQK.eYAciWnRbEhw7TM.M5V3DTZv7A081vNrCbUsePjX4WXQWL6','arjunsivavilas@gmail.com','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBUkpVTiIsInR5cGUiOiJyZWZyZXNoX3Rva2VuIiwiZXhwIjoxNzIyMDEwOTE0fQ.bfUra0R5PqaSUoERG3C83e6SrGb_kM0uSnX291StV24',0,2,'191bcc6d5ef8c9b8a6481588715cfbcb','seeker',1,'2024-07-25 16:21:55','2024-07-25 05:12:28','2024-07-25 16:21:55'),(7,'lan_herald','$2b$12$EHPxUcq5uXSAUomC5EUXPungTs8FfJUzG3F5RzEXsGT6L.itM6UYa','wabeyec409@modotso.com','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJsYW5faGVyYWxkIiwidHlwZSI6InJlZnJlc2hfdG9rZW4iLCJleHAiOjE3MjIyMDI2OTN9.t_-FANP0jelQIwd9nj9bRpg-g63aFLFMwpL1DmlxKfE',0,3,'619458aad99a9ca4588b91fb8cc7f584','seeker',1,'2024-07-27 20:45:06','2024-07-25 05:44:49','2024-07-27 21:38:14'),(8,'Sreeju_Akasam','$2b$12$9uRIKz8HHbapFjnWc1tkT.oSxw1Mow3PVWqtLmzf5X0VwTy9Ced86','sreejuworks647@gmail.com','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJTcmVlanVfQWthc2FtIiwidHlwZSI6InJlZnJlc2hfdG9rZW4iLCJleHAiOjE3MjE5NzM5ODF9.XbMi8TTHyHazk2EK4m_9-H3TflnBeAOUF69yPmumpMI',0,5,'ce7e8dc3dc145845b2f5abf13e854f0e','recruiter',1,'2024-07-25 06:06:22','2024-07-25 05:46:13','2024-07-25 06:06:22'),(9,'jonathan','$2b$12$VWFC4WNOnZFJO1AdCg/MUuWVYjpmkpDfbcHh9Xf7wtu2Poe4MbhvG','roguestar60@gmail.com','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJqb25hdGhhbiIsInR5cGUiOiJyZWZyZXNoX3Rva2VuIiwiZXhwIjoxNzIyMDEwOTQyfQ.7DYE8VXhtHjmyAMeWEseei5uGFedq_R29jLymY5NDuE',0,6,'9d41ab24ee94a1b9d6b836e96e641afb','recruiter',1,'2024-07-25 16:22:23','2024-07-25 06:07:49','2024-07-25 16:22:23'),(10,'Suresh','$2b$12$4KjJPAllsscTvVZcDzcPf.2a3iJU1P4sf7o2PaUy84QolQzVLtwTS','sureshgopi@gotgel.org','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJTdXJlc2giLCJ0eXBlIjoicmVmcmVzaF90b2tlbiIsImV4cCI6MTcyMjE4ODYzOX0.iraadj66TD81d9l-1nTZExjt_2TmZwfquOjjggwOLok',0,4,'25b267182ba98a11bfbccf35f393b132','seeker',1,'2024-07-27 17:44:00','2024-07-25 08:13:26','2024-07-27 17:44:00'),(11,'Gopi','$2b$12$8Zbl5WQuB7IqvB2NCFkeZOHKOvBhOBI4N1c8HL5semgfMB5UVD5LG','gopisundar@rungel.net','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJHb3BpIiwidHlwZSI6InJlZnJlc2hfdG9rZW4iLCJleHAiOjE3MjIxODY5NDN9.AZnEANvXXK6luVTCEWWD7tg0fJNHy3D8-ZteI4hkhDg',0,5,'1f0a9236bdc353bffb44da46893b6a43','seeker',1,'2024-07-27 17:15:44','2024-07-25 08:17:17','2024-07-27 17:15:44'),(12,'Mani','$2b$12$O8orMjo5hMpd3U0R4cJiF.K458ed2JJCAZ3OC8sC52q3OKPkq9lCS','manikkandan123@rungel.net','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJNYW5pIiwidHlwZSI6InJlZnJlc2hfdG9rZW4iLCJleHAiOjE3MjIxODcwMDd9.pfvxeiY5E7khGvMMdEJ26eTzf-aGSgFPFgVs-U21--0',0,6,'ab365a3c26d1554697001aa22ff98717','seeker',1,'2024-07-27 17:16:48','2024-07-25 08:22:17','2024-07-27 17:16:48'),(13,'sadham','$2b$12$fW.aCkxiIMTbLfImaWNPQeXHl/Ls.ezMmX3fAeOrj6iGLyDX62w.2','sadhamhussain123@gotgel.org','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzYWRoYW0iLCJ0eXBlIjoicmVmcmVzaF90b2tlbiIsImV4cCI6MTcyMjE4NzE5NH0.c_y4MbeU6DYFYesWjg46lqG6RgmQ-jQUjj9z_5h2Kd0',0,7,'83ca3addf579afa131f95789cfa2a153','seeker',1,'2024-07-27 17:19:54','2024-07-25 08:38:32','2024-07-27 17:19:54'),(14,'Rangan','$2b$12$YtAo.bwUopYhE/DCQBDUJOEpewxzmEQ0KrFxD0MSyPpcXuKkDKPCm','rinemev470@stikezz.com','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJSYW5nYW4iLCJ0eXBlIjoicmVmcmVzaF90b2tlbiIsImV4cCI6MTcyMjE5OTU3MH0.HCKS0iuDc_IgZKBOpDnQixyrPQWVshLcKM3hFspdAX8',0,8,'db4c01904ee4bf8389861eb6e21a2ac7','seeker',1,'2024-07-27 20:46:10','2024-07-25 10:07:13','2024-07-27 20:46:10'),(16,'sreyas','$2b$12$.RmF2XUmsyt9OJTXx9tkjes/ON4URKKJ6Gq9e8RscFkkk6C7UNEDm','sreyaskumar40@gmail.com','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJzcmV5YXMiLCJ0eXBlIjoicmVmcmVzaF90b2tlbiIsImV4cCI6MTcyMjE5Nzc5MX0.7NUJyCJoqUyOldjYVL4P5FlaBciq-e80lzFT72zOpDs',0,10,'0fc01f9fe87c858d1c15a6b54323d643','seeker',1,'2024-07-27 18:54:31','2024-07-25 14:54:47','2024-07-27 20:16:31'),(17,'wan_raltimore','$2b$12$Bod1tQdbMn9YDpR4WtpHAOFyUvcby3/lsfWK5iTSMi.6iIr59EFee','begelic914@elahan.com',NULL,0,11,'c457be27a62a4d895bc186fb58d18483','seeker',0,NULL,'2024-07-25 16:22:56','2024-07-25 16:22:56'),(18,'huan_hoser','$2b$12$96WPtIX3RplVORgaR.9.g.o4q.CqNM1TXh3uiTrt971Z2VsIk6xFC','lirilis828@padvn.com',NULL,0,12,'cae6835d4d83d92a3405f589f6bcfebc','seeker',0,NULL,'2024-07-25 16:42:55','2024-07-25 16:42:55'),(19,'ford','$2b$12$tGQoSgWYqaA.Zas0CNUiTOyyeXE5taxMnldoCDw5cztUoDyFMZsfS','backupsreyas@gmail.com','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJmb3JkIiwidHlwZSI6InJlZnJlc2hfdG9rZW4iLCJleHAiOjE3MjIxOTc4NzZ9.gptJH8ZpaNeioMQBICdw0r0cuDr2epBVT9RYXyfRB-8',0,7,'f9b35f83a3b3703cf942e97285a81c8c','recruiter',1,'2024-07-27 18:41:52','2024-07-25 17:30:57','2024-07-27 20:17:57'),(20,'uden_ton','$2b$12$N2EKvJTkeNg9POQzgjqdFONq3V2bbzWSt3BkcsYgy.N3q83ssgSFe','kegoje4441@elahan.com',NULL,0,13,'114cb267cd157893dc57dd59f080cbe8','seeker',0,NULL,'2024-07-26 05:02:15','2024-07-26 05:02:15'),(21,'uden_dton','$2b$12$jeWJpKX7x.BouVI1n8lm5.H8se3y7P86tSPJ4Fy5nyNOkKQuUBFdG','jaretif337@digdy.com','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ1ZGVuX2R0b24iLCJ0eXBlIjoicmVmcmVzaF90b2tlbiIsImV4cCI6MTcyMjA2MDA4MX0.XmGuSvjryO3hFlYhkTF-S6dgJQ6FFXaKHE65wRKi3NU',0,14,'8b42d89600307ed727edb103578064bb','seeker',1,'2024-07-26 05:11:19','2024-07-26 05:10:45','2024-07-26 06:01:21'),(22,'void_fashion','$2b$12$J3xZeThJiUSIb6cK1bc9.uWDBtndRzfpgqDU8yvTd/c0LyBK.CR9i','hisih25791@digdy.com','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ2b2lkX2Zhc2hpb24iLCJ0eXBlIjoicmVmcmVzaF90b2tlbiIsImV4cCI6MTcyMjIwMTQ0OX0.72MXvMRF4HI916ouBxDKg-TEqxEIa1noDGpdYc1aQRo',0,8,'dee8de3e5dc1ac8b12daf28276da71d9','recruiter',1,'2024-07-27 20:46:52','2024-07-26 05:26:11','2024-07-27 21:17:30'),(23,'travis_leyton','$2b$12$Y5fWQjUrqdnOHbJN3tICOe/5MSojKydOhIUJB/gJmM4HqrbJLqt2q','nojane1685@hostlace.com','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0cmF2aXNfbGV5dG9uIiwidHlwZSI6InJlZnJlc2hfdG9rZW4iLCJleHAiOjE3MjIwNzM3Nzd9.k3r7mAhRCW-lY1eVENhtvlegqb9Eul6NAkArHq6PJ_E',0,15,'b85076033bb9fae26f0045131ae1fb6f','seeker',1,'2024-07-26 09:49:38','2024-07-26 09:48:56','2024-07-26 09:49:38'),(25,'top','$2b$12$7E/K6LDIIvFU6ou/v/n9OOPCAyjZnF0WUNk7vK6v4tIxMJ3bKfpJa','towow55713@maxturns.com','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ0b3AiLCJ0eXBlIjoicmVmcmVzaF90b2tlbiIsImV4cCI6MTcyMjE3MDMzNn0.irAmALiN3rBuYTqlV0zqMocwUWmp_Iok7cThcR-TXqA',0,16,'6b6ccc0d128eac16fd77387fd06331ef','seeker',1,'2024-07-27 10:42:02','2024-07-27 10:38:14','2024-07-27 12:38:56'),(26,'AI_Mission','$2b$12$AxuiJlZ41kr2DFuIe5RG1ezif.f84f/KQCGXUFyFsF3pSpXQpl7Fe','genaistartup@gotgel.org','eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJBSV9NaXNzaW9uIiwidHlwZSI6InJlZnJlc2hfdG9rZW4iLCJleHAiOjE3MjIxOTA4MjR9.2kOOWiADPqbiIdE52-qI_JV6yDDFW-eZfhNCkcNurFQ',0,10,'2641021df8374b63c9a016959ec36e8f','recruiter',1,'2024-07-27 18:20:25','2024-07-27 17:50:04','2024-07-27 18:20:25');
+/*!40000 ALTER TABLE `user_auth` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2024-07-28 10:21:58
+CREATE DATABASE  IF NOT EXISTS `modelDB` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `modelDB`;
+-- MySQL dump 10.13  Distrib 8.0.36, for Linux (x86_64)
+--
+-- Host: career-go.centralindia.cloudapp.azure.com    Database: modelDB
+-- ------------------------------------------------------
+-- Server version	9.0.1
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `job_recommendation_job_input`
+--
+
+DROP TABLE IF EXISTS `job_recommendation_job_input`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `job_recommendation_job_input` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `job_id` int DEFAULT NULL,
+  `job_name` varchar(256) DEFAULT NULL,
+  `job_position` varchar(32) DEFAULT NULL,
+  `company_name` varchar(256) DEFAULT NULL,
+  `city` varchar(128) DEFAULT NULL,
+  `work_style` varchar(64) DEFAULT NULL,
+  `job_description` varchar(1024) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `ix_job_recommendation_job_input_id` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `job_recommendation_job_input`
+--
+
+LOCK TABLES `job_recommendation_job_input` WRITE;
+/*!40000 ALTER TABLE `job_recommendation_job_input` DISABLE KEYS */;
+INSERT INTO `job_recommendation_job_input` VALUES (1,1,'Automobile AC Technician','Electrical Engineer','Mercedes-Benz','Kōchi,Kochi Prefecture,Kochi Prefecture','Work from home','Need An engineer Who is Skilled In AC Fixing','2024-07-25 04:06:35','2024-07-25 04:06:35'),(2,2,'Need UI/UX Designer','UX/UI Designer','My Design Space LTD','Hong Kong,undefined','Hybrid','Need a UI/UX Designer Ready to work and ready on call. ','2024-07-25 04:53:59','2024-07-25 04:53:59'),(3,5,'defence research','Electrical Engineer','scorp','Mumbai,Maharashtra,Maharashtra','Onsite','need to build a product','2024-07-25 05:23:15','2024-07-25 05:23:15'),(4,6,'qwertyui','UX/UI Designer','My Design Space LTD','Hong Kong,undefined','Onsite','Internship For UG for UI/UX design','2024-07-25 05:29:15','2024-07-25 05:29:15'),(5,7,'Technician','Laboratory Technician','Roguestar','Kerala,undefined','Work from home','As a Laboratory Technician, you will be integral to conducting scientific experiments and analyses in a laboratory setting. Your primary responsibilities will include preparing and analyzing samples, operating and maintaining laboratory equipment, and ensuring the accuracy and reliability of test results. You will be responsible for documenting and interpreting findings, adhering to strict safety protocols, and maintaining a clean and organized work environment.','2024-07-25 06:27:18','2024-07-25 06:27:18'),(6,3,'Senior Aerodynamics Engineer','Aircraft Mechanic','Raven Aeronautics','Sydenham','Onsite','**1. Design and Analysis:\n\n    Lead the aerodynamic design process for new products or improvements to existing designs.\n    Use Computational Fluid Dynamics (CFD) tools and wind tunnel testing to analyze and optimize aerodynamic performance.\n    Develop and implement aerodynamic models and simulations.\n\n**2. Research and Development:\n\n    Conduct research to explore new aerodynamic technologies and methodologies.\n    Stay updated with the latest advancements in aerodynamics and related fields.\n\n**3. Testing and Validation:\n\n    Plan and oversee wind tunnel tests, flight tests, or other experimental methods to validate aerodynamic designs.\n    Analyze test data to refine models and improve performance predictions.',NULL,NULL),(7,4,'Aeronautical Engineer','Aircraft Mechanic','Raven Aeronautics','Sydney','Onsite','**1. Design and Analysis:\n\n    Lead the aerodynamic design process for new products or improvements to existing designs.\n    Use Computational Fluid Dynamics (CFD) tools and wind tunnel testing to analyze and optimize aerodynamic performance.\n    Develop and implement aerodynamic models and simulations.\n\n**2. Research and Development:\n\n    Conduct research to explore new aerodynamic technologies and methodologies.\n    Stay updated with the latest advancements in aerodynamics and related fields.\n\n**3. Testing and Validation:\n\n    Plan and oversee wind tunnel tests, flight tests, or other experimental methods to validate aerodynamic designs.\n    Analyze test data to refine models and improve performance predictions.',NULL,NULL),(8,8,'Mechanical Engineer','Machinist','My Design Space LTD','Monaco','Hybrid','Design and develop mechanical systems and components.\nConduct research to solve engineering problems.\nTest and evaluate prototypes.\nCollaborate with other engineers and departments.\nEnsure projects meet specifications, budgets, and timelines.\nPrepare documentation and reports.','2024-07-25 18:01:42','2024-07-25 18:01:42'),(9,9,'Paralegal','Paralegal','My Design Space LTD','Tamil Nadu','Hybrid','A Paralegal assists lawyers by conducting legal research, drafting documents, organizing files, and managing case information. They help prepare for trials, hearings, and meetings.','2024-07-25 18:05:51','2024-07-25 18:05:51'),(10,10,'Python Developer','Network Administrator','My Design Space LTD','Kenya','Hybrid','A Network Administrator manages and maintains computer networks to ensure reliable and efficient network operations. They install, support, and configure hardware and software, and troubleshoot network issues.','2024-07-25 18:07:43','2024-07-25 18:07:43'),(11,11,'Assistan Python Developer','Network Administrator','My Design Space LTD','Kenya','Hybrid','A Network Administrator manages and maintains computer networks to ensure reliable and efficient network operations. They install, support, and configure hardware and software, and troubleshoot network issues.','2024-07-25 18:09:42','2024-07-25 18:09:42'),(12,12,'Junior Business Analyst','Business Analyst','My Design Space LTD','Kochi','Hybrid','A Business Analyst evaluates business processes, identifies needs, and develops strategies to maximize opportunities. They work with stakeholders to gather requirements and ensure solutions meet business objectives.','2024-07-26 16:07:14','2024-07-26 16:07:14'),(14,14,'Aircraft Mechanic','Aircraft Mechanic','Raven Aeronautics','Texas','Onsite','We seek experts','2024-07-27 09:42:22','2024-07-27 09:42:22'),(15,15,'Aerospace Engineer','Aircraft Mechanic','Raven Aeronautics','Texas County','Onsite','SkyTech Aeronautics is seeking an experienced Aerospace Engineer to join our dynamic team. The successful candidate will be responsible for designing and developing advanced aerospace systems, including aircraft structures and propulsion systems.','2024-07-27 11:07:29','2024-07-27 11:07:29'),(16,16,'Avionics Technician','Aircraft Mechanic','Raven Aeronautics','Houston','Onsite','Looking for a skilled Avionics Technician to join our maintenance team. The ideal candidate will be responsible for the installation, inspection, and repair of avionics systems in various aircraft.','2024-07-27 11:11:11','2024-07-27 11:11:11'),(17,17,'UI UX Designer','Laboratory Technician','Ford Motor Company','Taiwan','Hybrid','demo','2024-07-27 13:51:49','2024-07-27 13:51:49'),(18,18,'Assistan Python Developer','Restaurant Manager','Ford Motor Company','K11','Hybrid','demo','2024-07-27 13:55:59','2024-07-27 13:55:59'),(20,20,'Flight Response Manager','Mechanical Engineer','Raven Aeronautics','AT&T','Onsite','JetStream Aviation is searching for a Flight Operations Manager to oversee the day-to-day operations of our flight department. The role involves managing flight schedules, ensuring regulatory compliance, and optimizing operational efficiency.','2024-07-27 14:40:50','2024-07-27 14:40:50'),(21,21,'Flight Operations Manager','Aircraft Mechanic','Raven Aeronautics','Texas County','Onsite','JetStream Aviation is searching for a Flight Operations Manager to oversee the day-to-day operations of our flight department. The role involves managing flight schedules, ensuring regulatory compliance, and optimizing operational efficiency.','2024-07-27 14:50:12','2024-07-27 14:50:12'),(22,22,'AI Architect','AI engineer','AI Conquer Pvt.Ltd','Alaska',NULL,'AI_Conquer Pvt.Ltd is a leading innovator in the field of AI/ML, dedicated to leveraging cutting-edge technology to solve complex problems and create meaningful impact. We are seeking a talented AI Engineer to join our dynamic team and contribute to the development and deployment of advanced artificial intelligence solutions.\nThe company is looking for freshers who completed their B.Tech/BCA degree in the field of computer science and technology.\n\n','2024-07-27 18:03:34','2024-07-27 18:03:34'),(23,23,'Fashion Designer','Fashion Designer','Void','Germany','Onsite','Fashion Designing','2024-07-27 20:48:43','2024-07-27 20:48:43');
+/*!40000 ALTER TABLE `job_recommendation_job_input` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `seekers_input_poi`
+--
+
+DROP TABLE IF EXISTS `seekers_input_poi`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `seekers_input_poi` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `poi_id` int DEFAULT NULL,
+  `user_id` int DEFAULT NULL,
+  `position` varchar(32) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `ix_seekers_input_poi_poi_id` (`poi_id`),
+  KEY `ix_seekers_input_poi_user_id` (`user_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `seekers_input_poi`
+--
+
+LOCK TABLES `seekers_input_poi` WRITE;
+/*!40000 ALTER TABLE `seekers_input_poi` DISABLE KEYS */;
+INSERT INTO `seekers_input_poi` VALUES (1,1,1,'UX/UI Designer','2024-07-25 04:54:09','2024-07-25 04:54:09'),(14,14,6,'AI engineer','2024-07-25 08:29:00','2024-07-25 08:29:00'),(17,17,8,'Automotive Technician','2024-07-25 10:09:15','2024-07-25 10:09:15'),(18,18,8,'Electrical Engineer','2024-07-25 10:09:21','2024-07-25 10:09:21'),(19,19,3,'Mechanical Engineer','2024-07-25 11:37:37','2024-07-25 11:37:37'),(20,20,9,'Aircraft Mechanic','2024-07-25 12:21:08','2024-07-25 12:21:08'),(22,22,10,'UX/UI Designer','2024-07-25 17:38:51','2024-07-25 17:38:51'),(23,23,4,'AI engineer','2024-07-27 17:14:43','2024-07-27 17:14:43'),(24,24,4,'Data Scientist','2024-07-27 17:14:51','2024-07-27 17:14:51'),(25,25,4,'AI architect','2024-07-27 17:15:04','2024-07-27 17:15:04'),(26,26,5,'Art Assistant','2024-07-27 17:16:07','2024-07-27 17:16:07'),(27,27,5,'Content Writer','2024-07-27 17:16:16','2024-07-27 17:16:16'),(28,28,6,'Accountant','2024-07-27 17:17:04','2024-07-27 17:17:04'),(29,29,7,'Pastry Chef','2024-07-27 17:20:00','2024-07-27 17:20:00'),(30,30,7,'Chef','2024-07-27 17:20:12','2024-07-27 17:20:12');
+/*!40000 ALTER TABLE `seekers_input_poi` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2024-07-28 10:22:00
+CREATE DATABASE  IF NOT EXISTS `jobDB` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `jobDB`;
+-- MySQL dump 10.13  Distrib 8.0.36, for Linux (x86_64)
+--
+-- Host: career-go.centralindia.cloudapp.azure.com    Database: jobDB
+-- ------------------------------------------------------
+-- Server version	9.0.1
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!50503 SET NAMES utf8 */;
+/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
+/*!40103 SET TIME_ZONE='+00:00' */;
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+
+--
+-- Table structure for table `job_invite`
+--
+
+DROP TABLE IF EXISTS `job_invite`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `job_invite` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `job_id` int DEFAULT NULL,
+  `company_id` int DEFAULT NULL,
+  `status` varchar(64) DEFAULT NULL,
+  `user_id` int DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `ix_job_invite_company_id` (`company_id`),
+  KEY `ix_job_invite_job_id` (`job_id`),
+  KEY `ix_job_invite_user_id` (`user_id`),
+  CONSTRAINT `job_invite_ibfk_1` FOREIGN KEY (`job_id`) REFERENCES `job_vacancy` (`job_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `job_invite`
+--
+
+LOCK TABLES `job_invite` WRITE;
+/*!40000 ALTER TABLE `job_invite` DISABLE KEYS */;
+INSERT INTO `job_invite` VALUES (1,6,3,'Pending',1,'2024-07-25 05:31:33','2024-07-25 05:31:33'),(2,5,4,'Pending',1,'2024-07-25 05:39:03','2024-07-25 05:39:03'),(3,5,4,'Pending',2,'2024-07-25 05:39:53','2024-07-25 05:39:53'),(4,4,2,'rejected',3,'2024-07-25 05:52:30','2024-07-25 05:53:02'),(5,4,2,'rejected',3,'2024-07-25 05:54:39','2024-07-25 05:55:06'),(6,3,2,'Pending',2,'2024-07-25 05:57:08','2024-07-25 05:57:08'),(7,6,3,'approved',10,'2024-07-26 16:52:50','2024-07-26 17:00:00'),(8,8,3,'rejected',10,'2024-07-26 17:19:32','2024-07-26 17:19:45'),(9,3,2,'approved',3,'2024-07-26 20:32:20','2024-07-27 09:37:28'),(10,14,2,'rejected',3,'2024-07-27 09:43:14','2024-07-27 09:43:30'),(11,14,2,'rejected',3,'2024-07-27 09:43:58','2024-07-27 09:44:30'),(12,14,2,'rejected',3,'2024-07-27 09:49:12','2024-07-27 09:49:25'),(13,14,2,'rejected',3,'2024-07-27 09:55:41','2024-07-27 09:56:12'),(14,14,2,'rejected',3,'2024-07-27 10:02:29','2024-07-27 10:05:18'),(15,14,2,'rejected',3,'2024-07-27 10:13:20','2024-07-27 10:13:44'),(16,14,2,'rejected',3,'2024-07-27 10:20:38','2024-07-27 10:21:32'),(17,14,2,'rejected',3,'2024-07-27 10:23:42','2024-07-27 12:13:42'),(18,16,2,'approved',3,'2024-07-27 11:13:27','2024-07-27 11:17:57'),(19,14,2,'rejected',3,'2024-07-27 12:15:46','2024-07-27 12:16:02');
+/*!40000 ALTER TABLE `job_invite` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `job_requests`
+--
+
+DROP TABLE IF EXISTS `job_requests`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `job_requests` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `job_id` int DEFAULT NULL,
+  `user_id` int DEFAULT NULL,
+  `status` varchar(64) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `ix_job_requests_user_id` (`user_id`),
+  KEY `ix_job_requests_job_id` (`job_id`),
+  CONSTRAINT `job_requests_ibfk_1` FOREIGN KEY (`job_id`) REFERENCES `job_vacancy` (`job_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `job_requests`
+--
+
+LOCK TABLES `job_requests` WRITE;
+/*!40000 ALTER TABLE `job_requests` DISABLE KEYS */;
+INSERT INTO `job_requests` VALUES (1,4,3,'rejected','2024-07-25 05:45:51','2024-07-25 05:46:09'),(2,3,3,'rejected','2024-07-25 05:46:32','2024-07-25 05:47:00'),(3,4,3,'rejected','2024-07-25 05:53:10','2024-07-25 05:53:43'),(4,4,3,'approved','2024-07-25 05:55:11','2024-07-25 05:55:23'),(5,2,1,'Applied','2024-07-25 06:03:28','2024-07-25 06:03:28'),(6,7,2,'approved','2024-07-25 06:29:29','2024-07-25 06:30:19'),(9,1,10,'Applied','2024-07-25 17:31:59','2024-07-25 17:31:59'),(10,7,15,'Applied','2024-07-26 09:50:16','2024-07-26 09:50:16'),(11,11,15,'Applied','2024-07-26 09:50:26','2024-07-26 09:50:26'),(13,10,3,'Applied','2024-07-26 11:26:23','2024-07-26 11:26:23'),(14,11,10,'Applied','2024-07-26 16:04:16','2024-07-26 16:04:16'),(19,3,3,'rejected','2024-07-26 20:03:06','2024-07-26 20:04:10'),(20,3,3,'rejected','2024-07-26 20:04:44','2024-07-26 20:08:28'),(26,8,3,'Applied','2024-07-27 08:54:52','2024-07-27 08:54:52'),(32,12,3,'approved','2024-07-27 10:12:48','2024-07-27 20:47:05'),(33,14,3,'rejected','2024-07-27 10:22:09','2024-07-27 10:22:41'),(35,14,3,'approved','2024-07-27 12:20:29','2024-07-27 12:22:26'),(36,15,3,'approved','2024-07-27 12:20:37','2024-07-27 12:22:12'),(37,4,10,'rejected','2024-07-27 14:05:09','2024-07-27 20:12:02'),(38,21,3,'Applied','2024-07-27 16:06:07','2024-07-27 16:06:07'),(39,1,3,'Applied','2024-07-27 20:45:58','2024-07-27 20:45:58');
+/*!40000 ALTER TABLE `job_requests` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `job_skill`
+--
+
+DROP TABLE IF EXISTS `job_skill`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `job_skill` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `job_id` int DEFAULT NULL,
+  `skill` varchar(125) DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `ix_job_skill_job_id` (`job_id`),
+  CONSTRAINT `job_skill_ibfk_1` FOREIGN KEY (`job_id`) REFERENCES `job_vacancy` (`job_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=39 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `job_skill`
+--
+
+LOCK TABLES `job_skill` WRITE;
+/*!40000 ALTER TABLE `job_skill` DISABLE KEYS */;
+INSERT INTO `job_skill` VALUES (1,1,'Project Management','2024-07-25 04:06:35','2024-07-25 04:06:35'),(2,1,'Java','2024-07-25 04:06:35','2024-07-25 04:06:35'),(3,2,'UI Design','2024-07-25 04:53:59','2024-07-25 04:53:59'),(4,2,'UX Design','2024-07-25 04:53:59','2024-07-25 04:53:59'),(5,2,'HTML','2024-07-25 04:53:59','2024-07-25 04:53:59'),(6,2,'React','2024-07-25 04:53:59','2024-07-25 04:53:59'),(9,5,'Product Management','2024-07-25 05:23:15','2024-07-25 05:23:15'),(10,6,'Learning and Development','2024-07-25 05:29:15','2024-07-25 05:29:15'),(11,8,'Automation','2024-07-25 18:01:42','2024-07-25 18:01:42'),(12,8,'Physical Security','2024-07-25 18:01:42','2024-07-25 18:01:42'),(13,9,'Patent Law','2024-07-25 18:05:51','2024-07-25 18:05:51'),(14,9,'Labor Relations','2024-07-25 18:05:51','2024-07-25 18:05:51'),(15,10,'Network Administration','2024-07-25 18:07:43','2024-07-25 18:07:43'),(16,10,'Network Security','2024-07-25 18:07:43','2024-07-25 18:07:43'),(17,11,'Network Security','2024-07-25 18:09:42','2024-07-25 18:09:42'),(18,12,'Business Analysis','2024-07-26 16:07:14','2024-07-26 16:07:14'),(19,12,'Business Development','2024-07-26 16:07:14','2024-07-26 16:07:14'),(22,15,'Design Engineering','2024-07-27 11:07:29','2024-07-27 11:07:29'),(23,16,'Python','2024-07-27 11:11:11','2024-07-27 11:11:11'),(24,16,'FEA','2024-07-27 11:11:11','2024-07-27 11:11:11'),(25,4,'Communication','2024-07-27 11:55:10','2024-07-27 11:55:10'),(26,14,'SQL','2024-07-27 11:56:02','2024-07-27 11:56:02'),(27,14,'3D Modeling','2024-07-27 11:56:02','2024-07-27 11:56:02'),(28,17,'Java','2024-07-27 13:51:49','2024-07-27 13:51:49'),(29,18,'Python','2024-07-27 13:55:59','2024-07-27 13:55:59'),(32,20,'3D Modeling','2024-07-27 14:40:50','2024-07-27 14:40:50'),(33,21,'Operations Management','2024-07-27 14:50:12','2024-07-27 14:50:12'),(34,22,'Artificial Intelligence','2024-07-27 18:03:34','2024-07-27 18:03:34'),(35,22,'Machine Learning','2024-07-27 18:03:34','2024-07-27 18:03:34'),(36,22,'Deep Learning','2024-07-27 18:03:34','2024-07-27 18:03:34'),(37,22,'Python','2024-07-27 18:03:34','2024-07-27 18:03:34'),(38,23,'fashion designing','2024-07-27 20:48:43','2024-07-27 20:48:43');
+/*!40000 ALTER TABLE `job_skill` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `job_vacancy`
+--
+
+DROP TABLE IF EXISTS `job_vacancy`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `job_vacancy` (
+  `job_id` int NOT NULL AUTO_INCREMENT,
+  `company_id` int DEFAULT NULL,
+  `job_name` varchar(256) DEFAULT NULL,
+  `job_desc` varchar(1024) DEFAULT NULL,
+  `company_name` varchar(256) DEFAULT NULL,
+  `company_pic` mediumblob,
+  `company_username` varchar(128) DEFAULT NULL,
+  `requirement` varchar(5120) DEFAULT NULL,
+  `salary` varchar(256) DEFAULT NULL,
+  `experience` varchar(128) DEFAULT NULL,
+  `work_style` varchar(64) DEFAULT NULL,
+  `job_position` varchar(32) DEFAULT NULL,
+  `location` varchar(128) DEFAULT NULL,
+  `working_days` varchar(128) DEFAULT NULL,
+  `emp_type` varchar(128) DEFAULT NULL,
+  `last_date` datetime DEFAULT NULL,
+  `closed` tinyint(1) DEFAULT NULL,
+  `no_of_request` int DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`job_id`),
+  KEY `ix_job_vacancy_company_id` (`company_id`),
+  KEY `ix_job_vacancy_job_id` (`job_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=24 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `job_vacancy`
+--
+
+LOCK TABLES `job_vacancy` WRITE;
+/*!40000 ALTER TABLE `job_vacancy` DISABLE KEYS */;
+INSERT INTO `job_vacancy` VALUES (1,1,'Automobile AC Technician','Need An engineer Who is Skilled In AC Fixing','Mercedes-Benz',NULL,'benz','Skill: Electrical Engineering, Min: UG passout','RS-16700-','1-5 years','Work from home','Electrical Engineer','Kōchi,Kochi Prefecture,Kochi Prefecture','Monday-Friday','Full-time','2024-08-24 00:00:00',0,0,'2024-07-25 04:06:35','2024-07-25 14:48:13'),(2,3,'Need UI/UX Designer','Need a UI/UX Designer Ready to work and ready on call. ','My Design Space LTD',NULL,'my_design','Experience in React, HTML,CSS,JS and have Creative Thought','RS-120000-','1-5 years','Hybrid','UX/UI Designer','Hong Kong,undefined','Monday-Friday','Full-time','2024-08-25 00:00:00',0,0,'2024-07-25 04:53:59','2024-07-26 16:08:58'),(3,2,'Senior Aerodynamics Engineer','**1. Design and Analysis:\n\n    Lead the aerodynamic design process for new products or improvements to existing designs.\n    Use Computational Fluid Dynamics (CFD) tools and wind tunnel testing to analyze and optimize aerodynamic performance.\n    Develop and implement aerodynamic models and simulations.\n\n**2. Research and Development:\n\n    Conduct research to explore new aerodynamic technologies and methodologies.\n    Stay updated with the latest advancements in aerodynamics and related fields.\n\n**3. Testing and Validation:\n\n    Plan and oversee wind tunnel tests, flight tests, or other experimental methods to validate aerodynamic designs.\n    Analyze test data to refine models and improve performance predictions.','Raven Aeronautics',NULL,'raven_official','1. Educational Background:\n\n    Bachelor\'s degree in Aerodynamics, Aerospace Engineering, Mechanical Engineering, or a related field is required.\n    A Master\'s or Ph.D. in Aerodynamics or a related field is often preferred.\n\n**2. Experience:\n\n    Several years (typically 5-10 years) of experience in aerodynamics engineering, with a proven track record of working on relevant projects.\n    Experience in using CFD tools, such as ANSYS Fluent, OpenFOAM, or STAR-CCM+, and familiarity with wind tunnel testing.\n\n**3. Skills and Competencies:\n\n    Strong analytical and problem-solving skills, with the ability to interpret complex data and make informed decisions.\n    Proficiency in programming languages such as Python, MATLAB, or C++ is often required for developing models and simulations.\n    Excellent communication and teamwork skills, with the ability to collaborate effectively with diverse teams.\n    Detail-oriented and capable of managing multiple projects simultaneously.\n\n**4. Knowledge:\n\n    In-depth understanding of fluid dynamics, thermodynamics, and other relevant principles.\n    Familiarity with industry standards, regulations, and certification processes related to aerodynamics.\n\n**5. Additional Qualities:\n\n    A proactive approach to innovation and a willingness to explore new technologies and methodologies.\n    Leadership capabilities and experience in project management can be an asset for senior-level positions.\n\n','DLR-60000-','5-10 years','Onsite','Aircraft Mechanic','Sydenham','Monday-Friday','Full-time','2024-08-26 00:00:00',0,0,'2024-07-25 04:59:08','2024-07-27 09:36:49'),(4,2,'Aeronautical Engineer','**1. Design and Analysis:\n\n    Lead the aerodynamic design process for new products or improvements to existing designs.\n    Use Computational Fluid Dynamics (CFD) tools and wind tunnel testing to analyze and optimize aerodynamic performance.\n    Develop and implement aerodynamic models and simulations.\n\n**2. Research and Development:\n\n    Conduct research to explore new aerodynamic technologies and methodologies.\n    Stay updated with the latest advancements in aerodynamics and related fields.\n\n**3. Testing and Validation:\n\n    Plan and oversee wind tunnel tests, flight tests, or other experimental methods to validate aerodynamic designs.\n    Analyze test data to refine models and improve performance predictions.','Raven Aeronautics',NULL,'raven_official','1. Educational Background:\n\n    Bachelor\'s degree in Aerodynamics, Aerospace Engineering, Mechanical Engineering, or a related field is required.\n    A Master\'s or Ph.D. in Aerodynamics or a related field is often preferred.\n\n**2. Experience:\n\n    Several years (typically 5-10 years) of experience in aerodynamics engineering, with a proven track record of working on relevant projects.\n    Experience in using CFD tools, such as ANSYS Fluent, OpenFOAM, or STAR-CCM+, and familiarity with wind tunnel testing.\n\n**3. Skills and Competencies:\n\n    Strong analytical and problem-solving skills, with the ability to interpret complex data and make informed decisions.\n    Proficiency in programming languages such as Python, MATLAB, or C++ is often required for developing models and simulations.\n    Excellent communication and teamwork skills, with the ability to collaborate effectively with diverse teams.\n    Detail-oriented and capable of managing multiple projects simultaneously.\n\n**4. Knowledge:\n\n    In-depth understanding of fluid dynamics, thermodynamics, and other relevant principles.\n    Familiarity with industry standards, regulations, and certification processes related to aerodynamics.\n\n**5. Additional Qualities:\n\n    A proactive approach to innovation and a willingness to explore new technologies and methodologies.\n    Leadership capabilities and experience in project management can be an asset for senior-level positions.\n\n','DLR-60000-','1-5 years','Onsite','Aircraft Mechanic','Sydney','Monday-Friday','Full-time','2024-08-24 00:00:00',0,0,'2024-07-25 05:05:11','2024-07-27 11:47:18'),(5,4,'Defence Research','need to build a product','scorp',NULL,'Sid','should build a product','RS-10000-','10+ years','Onsite','Electrical Engineer','Mumbai,Maharashtra,Maharashtra','Monday-Saturday','Full-time','2024-08-01 00:00:00',0,0,'2024-07-25 05:23:15','2024-07-25 05:25:03'),(6,3,'QWERTY-UI','Internship For UG for UI/UX design','My Design Space LTD',NULL,'my_design','No minimum Requirement','RS-5001-','1-5 years','Onsite','UX/UI Designer','Hong Kong,undefined','Monday-Friday','Internship','2024-08-24 00:00:00',0,0,'2024-07-25 05:29:15','2024-07-25 05:33:49'),(7,6,'Technician','As a Laboratory Technician, you will be integral to conducting scientific experiments and analyses in a laboratory setting. Your primary responsibilities will include preparing and analyzing samples, operating and maintaining laboratory equipment, and ensuring the accuracy and reliability of test results. You will be responsible for documenting and interpreting findings, adhering to strict safety protocols, and maintaining a clean and organized work environment.','Roguestar',NULL,'jonathan','The ideal candidate for the Laboratory Technician position will hold an Associate’s or Bachelor’s degree in Laboratory Technology, Biological Sciences, Chemistry, or a related field. Previous experience in a laboratory setting is preferred, with a strong familiarity with relevant techniques and equipment being advantageous. Candidates should demonstrate proficiency in operating and maintaining laboratory instruments, possess strong analytical and problem-solving skills, and exhibit meticulous attention to detail in their work. Effective communication skills are essential for reporting findings and collaborating with team members.','RS-40000-','1-5 years','Work from home','Laboratory Technician','Kerala,undefined','Monday-Friday','Full-time','2024-08-10 00:00:00',0,0,'2024-07-25 06:27:18','2024-07-25 06:27:51'),(8,3,'Mechanical Engineer','Design and develop mechanical systems and components.\nConduct research to solve engineering problems.\nTest and evaluate prototypes.\nCollaborate with other engineers and departments.\nEnsure projects meet specifications, budgets, and timelines.\nPrepare documentation and reports.','My Design Space LTD',NULL,'my_design','Education: Bachelor\'s degree in Mechanical Engineering or related field.\n\nExperience: 2-5 years of experience in mechanical engineering or related roles.\n\nSkills: Proficiency in CAD software, strong analytical and problem-solving skills, knowledge of manufacturing processes, excellent communication skills.\n\nCertifications: Professional Engineering (PE) license preferred.\n\nAbilities: Ability to work in a team, manage multiple projects, and meet deadlines.','DLR-20000-50000','5-10 years','Hybrid','Machinist','Monaco','Monday-Friday','Full-time','2024-08-24 00:00:00',0,0,'2024-07-25 18:01:42','2024-07-25 18:01:42'),(9,3,'Paralegal','A Paralegal assists lawyers by conducting legal research, drafting documents, organizing files, and managing case information. They help prepare for trials, hearings, and meetings.','My Design Space LTD',NULL,'my_design','Education: Associate\'s degree or certificate in Paralegal Studies; Bachelor\'s degree preferred.\n\nExperience: 1-3 years of experience in a legal setting.\n\nSkills: Strong research and writing skills, proficiency in legal software, attention to detail, excellent organizational abilities.\n\nCertifications: Paralegal certification preferred (e.g., NALA, NFPA).\n\nAbilities: Ability to work under pressure, handle confidential information, and communicate effectively.','RS-75000-500000','Fresher','Hybrid','Paralegal','Tamil Nadu','Monday-Friday','Temporary','2024-08-24 00:00:00',1,0,'2024-07-25 18:05:51','2024-07-26 16:07:39'),(10,3,'Python Developer','A Network Administrator manages and maintains computer networks to ensure reliable and efficient network operations. They install, support, and configure hardware and software, and troubleshoot network issues.','My Design Space LTD',NULL,'my_design','Education: Bachelor\'s degree in Computer Science, Information Technology, or related field.\n\nExperience: 2-4 years of experience in network administration or related roles.\n\nSkills: Proficiency in network hardware/software, strong problem-solving abilities, knowledge of network protocols and security, excellent communication skills.\n\nCertifications: Relevant certifications such as CompTIA Network+, Cisco CCNA, or Microsoft MCSE preferred.\n\nAbilities: Ability to work independently, manage multiple tasks, and provide technical support.','RS-70000','1-5 years','Hybrid','Network Administrator','Kenya','Monday-Saturday','Full-time','2024-08-24 00:00:00',1,0,'2024-07-25 18:07:43','2024-07-26 16:07:34'),(11,3,'Assistan Python Developer','A Network Administrator manages and maintains computer networks to ensure reliable and efficient network operations. They install, support, and configure hardware and software, and troubleshoot network issues.','My Design Space LTD',NULL,'my_design','Education: Bachelor\'s degree in Computer Science, Information Technology, or related field.\n\nExperience: 2-4 years of experience in network administration or related roles.\n\nSkills: Proficiency in network hardware/software, strong problem-solving abilities, knowledge of network protocols and security, excellent communication skills.\n\nCertifications: Relevant certifications such as CompTIA Network+, Cisco CCNA, or Microsoft MCSE preferred.\n\nAbilities: Ability to work independently, manage multiple tasks, and provide technical support.','RS-20000','Fresher','Hybrid','Network Administrator','Kenya','Monday-Friday','Full-time','2024-08-24 00:00:00',1,0,'2024-07-25 18:09:42','2024-07-26 16:07:33'),(12,3,'Junior Business Analyst','A Business Analyst evaluates business processes, identifies needs, and develops strategies to maximize opportunities. They work with stakeholders to gather requirements and ensure solutions meet business objectives.','My Design Space LTD',NULL,'my_design','Education: Bachelor\'s degree in Business Administration, Information Systems, or related field.\n\nExperience: 2-5 years of experience in business analysis or a related role.\n\nSkills: Strong analytical and problem-solving skills, proficiency in business analysis tools, excellent communication and presentation skills.\n\nCertifications: Certified Business Analysis Professional (CBAP) or equivalent preferred.\n\nAbilities: Ability to work with cross-functional teams, manage multiple projects, and understand complex business processes.','RS-70000-','Fresher','Hybrid','Business Analyst','Kochi','Monday-Friday','Full-time','2024-08-25 00:00:00',0,0,'2024-07-26 16:07:14','2024-07-26 16:07:14'),(14,2,'Aircraft Mechanic','We seek experts','Raven Aeronautics',NULL,'raven_official','Expertise in Aircraft maintaenance and repairing','DLR-70000-','1-5 years','Onsite','Aircraft Mechanic','Texas','Monday-Saturday','Full-time','2024-08-26 00:00:00',0,0,'2024-07-27 09:42:22','2024-07-27 09:42:22'),(15,2,'Aerospace Engineer','SkyTech Aeronautics is seeking an experienced Aerospace Engineer to join our dynamic team. The successful candidate will be responsible for designing and developing advanced aerospace systems, including aircraft structures and propulsion systems.','Raven Aeronautics',NULL,'raven_official','Responsibilities:\n\n    Design and analyze aerospace systems, ensuring compliance with industry standards.\n    Conduct simulations and testing to validate designs.\n    Collaborate with manufacturing teams to oversee the production of components.\n    Prepare technical reports and presentations.\n    Stay updated with the latest advancements in aerospace technology.\n\nRequirements:\n\n    Education: Bachelor\'s degree in Aerospace Engineering or related field. A master’s degree is preferred.\n    Experience: 5+ years of experience in aerospace engineering.\n    Skills: Proficiency in CAD software, experience with finite element analysis, strong problem-solving skills, and knowledge of aerodynamics and materials science.','DLR-70000-','5-10 years','Onsite','Aircraft Mechanic','Texas County','Monday-Saturday','Full-time','2024-08-26 00:00:00',0,0,'2024-07-27 11:07:29','2024-07-27 11:07:29'),(16,2,'Avionics Technician','Looking for a skilled Avionics Technician to join our maintenance team. The ideal candidate will be responsible for the installation, inspection, and repair of avionics systems in various aircraft.','Raven Aeronautics',NULL,'raven_official','Responsibilities:\n\n    Install and maintain avionics equipment such as navigation, communication, and radar systems.\n    Perform regular inspections and troubleshooting of avionics systems.\n    Ensure all work complies with aviation safety standards and regulations.\n    Document all maintenance activities and report any issues.\n\nRequirements:\n\n    Education: Associate\'s degree or technical certification in avionics or a related field.\n    Experience: 3+ years of experience in avionics maintenance.\n    Skills: Knowledge of avionics systems, familiarity with diagnostic tools, strong attention to detail, and excellent technical and manual skills.','DLR-80000-','1-5 years','Onsite','Aircraft Mechanic','Houston','Monday-Saturday','Full-time','2024-08-26 00:00:00',0,0,'2024-07-27 11:11:11','2024-07-27 11:11:11'),(17,7,'UI UX Designer','demo','Ford Motor Company',NULL,'ford','demo','RS-70000-','Fresher','Hybrid','Laboratory Technician','Taiwan','Monday-Friday','Full-time','2024-08-26 00:00:00',0,0,'2024-07-27 13:51:49','2024-07-27 13:51:49'),(18,7,'Assistan Python Developer','demo','Ford Motor Company',NULL,'ford','demo','RS-20000-','Fresher','Hybrid','Restaurant Manager','Manzana M','Monday-Friday','Full-time','2024-08-26 00:00:00',0,0,'2024-07-27 13:55:59','2024-07-27 14:00:00'),(20,2,'Flight Response Manager','JetStream Aviation is searching for a Flight Operations Manager to oversee the day-to-day operations of our flight department. The role involves managing flight schedules, ensuring regulatory compliance, and optimizing operational efficiency.','Raven Aeronautics',NULL,'raven_official','Responsibilities:\n\n    Plan and coordinate flight schedules, crew assignments, and maintenance activities.\n    Monitor and ensure compliance with aviation regulations and company policies.\n    Coordinate with pilots, ground staff, and other departments to ensure smooth operations.\n    Handle any operational issues that arise and implement solutions.\n    Prepare and manage the department\'s budget.\n\nRequirements:\n\n    Education: Bachelor\'s degree in Aviation Management, Business Administration, or a related field.\n    Experience: 7+ years of experience in flight operations or aviation management.\n    Skills: Strong leadership and organizational skills, knowledge of FAA regulations, excellent communication abilities, and experience with flight scheduling software.','DLR-800000-','1-5 years','Onsite','Mechanical Engineer','AT&T','Monday-Saturday','Full-time','2024-08-26 00:00:00',0,0,'2024-07-27 14:40:50','2024-07-27 14:40:50'),(21,2,'Flight Operations Manager','JetStream Aviation is searching for a Flight Operations Manager to oversee the day-to-day operations of our flight department. The role involves managing flight schedules, ensuring regulatory compliance, and optimizing operational efficiency.','Raven Aeronautics',NULL,'raven_official','Responsibilities:\n\n    Plan and coordinate flight schedules, crew assignments, and maintenance activities.\n    Monitor and ensure compliance with aviation regulations and company policies.\n    Coordinate with pilots, ground staff, and other departments to ensure smooth operations.\n    Handle any operational issues that arise and implement solutions.\n    Prepare and manage the department\'s budget.\n\nRequirements:\n\n    Education: Bachelor\'s degree in Aviation Management, Business Administration, or a related field.\n    Experience: 7+ years of experience in flight operations or aviation management.\n    Skills: Strong leadership and organizational skills, knowledge of FAA regulations, excellent communication abilities, and experience with flight scheduling software.','DLR-80000-','5-10 years','Onsite','Aircraft Mechanic','Texas County','Monday-Friday','Full-time','2024-08-26 00:00:00',0,0,'2024-07-27 14:50:12','2024-07-27 14:50:12'),(22,10,'AI Architect','AI_Conquer Pvt.Ltd is a leading innovator in the field of AI/ML, dedicated to leveraging cutting-edge technology to solve complex problems and create meaningful impact. We are seeking a talented AI Engineer to join our dynamic team and contribute to the development and deployment of advanced artificial intelligence solutions.\nThe company is looking for freshers who completed their B.Tech/BCA degree in the field of computer science and technology.\n\n','AI Conquer Pvt.Ltd',NULL,'AI_Mission','The AI Engineer will design, develop, and implement AI and machine learning models to enhance our products and services. This role requires a deep understanding of machine learning algorithms, data structures, and software engineering principles. The AI Engineer will collaborate with cross-functional teams to integrate AI capabilities into various applications and drive continuous improvement through innovation and research.','RS-300000-1000000','Fresher',NULL,'AI engineer','Alaska','Monday-Friday','Full-time','2024-08-28 00:00:00',0,0,'2024-07-27 18:03:34','2024-07-27 18:03:34'),(23,8,'Fashion Designer','Fashion Designing','Void',NULL,'void_fashion','Expertise in designing clothes','DLR-120000-','5-10 years','Onsite','Fashion Designer','Germany','Monday-Friday','Full-time','2024-08-27 00:00:00',0,0,'2024-07-27 20:48:43','2024-07-27 20:48:43');
+/*!40000 ALTER TABLE `job_vacancy` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+
+-- Dump completed on 2024-07-28 10:22:02
