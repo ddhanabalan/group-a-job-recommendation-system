@@ -5,7 +5,7 @@ import SearchBar from "../../components/SearchBar/SearchBar";
 import Candidates from "../../components/Candidates/Candidates";
 import LoaderAnimation from '../../components/LoaderAnimation/LoaderAnimation';
 import { useState, useEffect } from "react";
-import {getStorage} from "../../storage/storage";
+import {getStorage, removeStorage} from "../../storage/storage";
 import { jobAPI, userAPI, modelAPI } from "../../api/axios";
 import './CandidateSection.css';
 import AiCandidates from "../../components/AiCandidates/AiCandidates";
@@ -59,7 +59,7 @@ export default function CandidateSection() {
     }
     
     const callCandidatesAPI = async () => {
-        
+        SetLoading(true)
         try {
             const response = await userAPI.get('/seeker/details/list',
                 {
@@ -79,8 +79,13 @@ export default function CandidateSection() {
                 });
             //const mod_response = response.data.map(e => ({ id: e.job_id, jobTitle: e.job_name, companyName: e.company_name, tags: /*(e.tags.length ? e.tags : */[{ 'tag': "" }], currency: e.salary.split('-')[0], salary: [e.salary.split('-')[1], e.salary.split('-')[2]], postDate: e.created_at.split('T')[0], last_date: e.last_date.split('T')[0], location: e.location, empType: e.emp_type, exp: e.experience, jobDesc: e.job_desc, jobReq: e.requirement, skills: e.skills.length ? e.skills : [{ 'skill': "" }], workStyle: e.work_style, workingDays: e.working_days, applicationsReceived: e.job_seekers }))
             const mod_response = dataNormalizer(response.data)
-
             setCandidates(mod_response);
+            if(mod_response.length ){
+                const r="current_candidate_element"
+                
+                 if(r){loadingDelay(200, scrollToItem, getStorage(r))
+                removeStorage(r)}
+            }
             SetLoading(false)
             console.log(response);
             //console.log(" after new candidates", mod_response);
@@ -89,6 +94,9 @@ export default function CandidateSection() {
 
             console.log("candidates failed", e);
             alert(e.message);
+        } finally {
+
+            SetLoading(false)
         }
     }
     
@@ -97,7 +105,8 @@ export default function CandidateSection() {
       const callAiCandidateFetch = async() =>{
           if(selectedJobEntryDetails){
             if(selectedJobEntryDetails.poi){
-                const r = callModelAPI(selectedJobEntryDetails.poi)
+                const r =  await callModelAPI(selectedJobEntryDetails.poi)
+                console.log("model calling response", r)
                 if(!r) return false;
                 else return true;
             }
@@ -132,7 +141,7 @@ export default function CandidateSection() {
             return true;
         } catch (e) {
             console.log("model response", e)
-            alert(e);
+            //alert(e);
             setAiBtnLoading(false)
             
             return false;
@@ -148,7 +157,7 @@ export default function CandidateSection() {
             //const second_response = await jobAPI.get(`/job_vacancy/company/${companyId}`)
             console.log("received job response", response)
             
-            const mod_response = response.data.map(e => ({ id: e.job_id, jobTitle: e.job_name, companyName: e.company_name, tags: e.tags, currency: e.salary.split('-')[0], salary: [e.salary.split('-')[1], e.salary.split('-')[2]], postDate: e.created_at.split('T')[0], last_date: e.last_date.split('T')[0], location: e.location, poi: e.job_position, empType: e.emp_type, exp: e.experience, workStyle: e.work_style, workingDays: e.working_days, jobDesc: e.job_desc, jobReq: e.requirement, skills: e.skills.length ? e.skills : [{ 'skill': "" }], applicationsReceived: e.job_seekers }))
+            const mod_response = response.data.map(e => ({ id: e.job_id, jobTitle: e.job_name, companyName: e.company_name, tags: e.tags, currency: e.salary.split('-')[0], salary: [e.salary.split('-')[1], e.salary.split('-')[2]], postDate: e.created_at.split('T')[0], last_date: e.last_date.split('T')[0], location: e.location, poi: e.job_position, empType: e.emp_type, exp: e.experience, workStyle: e.work_style, workingDays: e.working_days, jobDesc: e.job_desc, jobReq: e.requirement, skills: e.skills.length ? e.skills : [{ 'skill': "" }], applicationsReceived: e.job_seekers, profile_picture:  getStorage("profile pic")  }))
             
             
             setJobVacancies(mod_response);
@@ -204,6 +213,19 @@ export default function CandidateSection() {
         setAiCandidates([]);
         await callCandidatesAPI();
     }
+    const loadingDelay = (delay, callFn, value=null) =>{
+        setTimeout(() => {
+            value?callFn(value):callFn();
+        }, delay);
+    }
+    const scrollToItem = (id) => {
+        const element = document.getElementById(id);
+        console.log("scroll log, element", element , id)
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      };
+
 
 useEffect(()=>{if(companyID){callJobVacancyAPI(companyID);}}, [companyID])
 

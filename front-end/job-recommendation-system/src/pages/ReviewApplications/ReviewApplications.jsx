@@ -22,6 +22,7 @@ export default function ReviewApplications({ userType, invite = null }) {
     console.log("received from rl", link_data)
     const INVITE_ID = link_data?.invite_id || null;
     const COMPANY_USERNAME = link_data?.company_username || null;
+    const [profilePic, setProfilePic] = useState(null);
     const [companyID, setCompanyID] = useState((userType === "employer" ? getStorage("userID") : (link_data.company_id ? link_data.company_id : null)));
 
     const receivedData = useLocation();
@@ -83,11 +84,12 @@ export default function ReviewApplications({ userType, invite = null }) {
                 
             }
             
+            // console.log("profile picture received", profile_pic)
             const response = await (userType === "employer" ? jobAPI.get(`/job_vacancy/company`, { headers: { 'Authorization': `Bearer ${getStorage("userToken")}` } }) : jobAPI.get(`/job_vacancy/company/${companyId}`));
             //const second_response = await jobAPI.get(`/job_vacancy/company/${companyId}`)
             console.log("received job response", response)
             
-            const rec_response = response.data.map(e => ({ id: e.job_id, jobTitle: e.job_name, companyName: e.company_name, tags: e.tags, currency: e.salary.split('-')[0], salary: [e.salary.split('-')[1], e.salary.split('-')[2]], postDate: e.created_at, last_date: e.last_date, location: e.location, poi: e.job_position, empType: e.emp_type, exp: e.experience, workStyle: e.work_style, workingDays: e.working_days, jobDesc: e.job_desc, jobReq: e.requirement, skills: e.skills.length ? e.skills : [{ 'skill': "" }], applicationsReceived: e.job_seekers, closed: e.closed }))
+            const rec_response = response.data.map(e => ({ id: e.job_id, jobTitle: e.job_name, companyName: e.company_name, tags: e.tags, currency: e.salary.split('-')[0], salary: [e.salary.split('-')[1], e.salary.split('-')[2]], postDate: e.created_at, last_date: e.last_date, location: e.location, poi: e.job_position, empType: e.emp_type, exp: e.experience, workStyle: e.work_style, workingDays: e.working_days, jobDesc: e.job_desc, jobReq: e.requirement, skills: e.skills.length ? e.skills : [{ 'skill': "" }], applicationsReceived: e.job_seekers, closed: e.closed, profile_picture : profilePic }))
             const mod_response = dateProcessor(rec_response, "vacancy");
             if(userType=="seeker")
             {   const invites = invitesReceived.map(e=>e.job_vacancy_id);
@@ -324,6 +326,7 @@ export default function ReviewApplications({ userType, invite = null }) {
             const response = await userAPI.get(`/profile/${username}`)
             console.log("response for company details", response.data)
             setCompanyID(response.data.user_id);
+            setProfilePic(response.data.profile_picture)
 
         }
         catch (e){
@@ -549,11 +552,13 @@ export default function ReviewApplications({ userType, invite = null }) {
 
     useEffect(() =>{if(inviteNotFoundError===true)navigate("/profile")}, [inviteNotFoundError])
     useEffect(()=>{
+            
                 if(userType == "employer") {
                 callCompanyInvitesAPI();}
                 if(companyID){
                 callJobVacancyAPI(companyID);}
                 }, [companyID])
+    
     useEffect(()=>{if(selectedJobEntry && selectedJobEntry.applicationsReceived)RequestJobApplications(selectedJobEntry.applicationsReceived)}, [invitesSent]);
     useEffect(() => {console.log("jobVacancies" , jobVacancies)
         if (selectedEntry == null) {

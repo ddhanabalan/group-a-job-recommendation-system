@@ -40,7 +40,7 @@ export default function JobSection() {
         setSearch(searchValue);
     }
     const callJobVacancyAPI = async () => {
-
+        SetLoading(true)
         try {
             await Promise.all([GetSeekerSkills()]);
             const response = await jobAPI.get('/job_vacancy/',
@@ -60,11 +60,13 @@ export default function JobSection() {
             setJobVacancies(mod_response);
             console.log(response);
             console.log(" after new job vacancies", mod_response);
-            SetLoading(false)
         } catch (e) {
 
             console.log("jobs failed", e);
             alert(e.message);
+        }
+        finally {
+            SetLoading(false)
         }
     }
     const callModelAPI = async () => {  //function to get recommended jobs
@@ -78,7 +80,7 @@ export default function JobSection() {
             console.log("model response", response)
             let mod_response = dataNormalizer(response.data)
             if (mod_response && !mod_response.length) {
-                
+
                 setBlankModelData(true)
             }
             else {
@@ -86,7 +88,7 @@ export default function JobSection() {
                 setBlankModelData(false)
                 setAiJobs(mod_response)
             }
-            
+
             setAiBtnLoading(false)
             return true;
         } catch (e) {
@@ -128,7 +130,7 @@ export default function JobSection() {
                 workStyle: e.work_style,
                 workingDays: e.working_days,
                 closed: e.closed,
-                companyPic: e.company_pic,
+                profile_picture: e.company_pic,
                 applicationsReceived: e.job_seekers,
                 userApplication: userCreatedApplications,
                 invite_status: inviteStat ? inviteStat.status : null/*userInvites.length?userInvites.filter(f=>f.job_id == e.job_id)[0]?.status || null: null*/,
@@ -142,7 +144,7 @@ export default function JobSection() {
         const test = data.map(job => job.id)
         const originals = jobVacancies.filter(e => !(data.map(job => job.id).includes(e.id)))
         console.log("originals", originals, test, jobVacancies, data)
-        if(originals.length)setJobVacancies(originals);
+        if (originals.length) setJobVacancies(originals);
     }
     /*
     const GetSeekerDetails = async () => {
@@ -192,7 +194,7 @@ export default function JobSection() {
         catch (e) {
             console.log("failed to fetch user invites", e)
         }
-        finally{
+        finally {
             processDelay(false)
         }
     }
@@ -240,7 +242,7 @@ export default function JobSection() {
 
             alert(e.message);
         }
-        finally{
+        finally {
             processDelay(false)
         }
     }
@@ -269,35 +271,36 @@ export default function JobSection() {
 
             alert(e.message);
         }
-        finally{
-            
+        finally {
+
             processDelay(false)
         }
 
 
     }
 
-    const resetRecommendedJobs = async(data) => {
+    const resetRecommendedJobs = async (data) => {
         setAiJobs([]);
         await callJobVacancyAPI();
     }
-    const processDelay = (value)=>{
-        if(value===true) setProcessing(true)
-        else{
-        setTimeout(() => {
-          setProcessing(false)
-        }, PROCESSING_DELAY);
-      }
-      }
+    const processDelay = (value) => {
+        if (value === true) setProcessing(true)
+        else {
+            setTimeout(() => {
+                setProcessing(false)
+            }, PROCESSING_DELAY);
+        }
+    }
 
-    
+
 
     console.log("user datum", userData);
-    useEffect(() => { 
-        if(AiJobs.length)duplicatesFilter(AiJobs);
-        if (descriptionOn) GetUserInvites(); }, [descriptionOn])
+    useEffect(() => {
+        if (AiJobs.length) duplicatesFilter(AiJobs);
+        if (descriptionOn) GetUserInvites();
+    }, [descriptionOn])
     useEffect(() => { callJobVacancyAPI() }, [filterparam, searchVal, userInvites]);
-   // useEffect(() => { if (jobVacancies) duplicatesFilter() }, [AiJobs])
+    // useEffect(() => { if (jobVacancies) duplicatesFilter() }, [AiJobs])
 
 
     return (

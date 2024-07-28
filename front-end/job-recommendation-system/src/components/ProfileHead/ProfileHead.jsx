@@ -18,8 +18,9 @@ import EditIcon from '@mui/icons-material/Edit';
 import CheckRoundedIcon from '@mui/icons-material/CheckRounded';
 import FmdGoodRoundedIcon from '@mui/icons-material/FmdGoodRounded';
 import profilePlaceholder from '../../images/profile_placeholder.svg';
+import Tooltip from '@mui/material/Tooltip';
 import './ProfileHead.css'
-export default function ProfileHead({ access, data, blurFn, logOutFn, subForm, isNotEditing, setIsNotEditing }) {
+export default function ProfileHead({ access, data, blurFn, logOutFn, subForm, isNotEditing, setIsNotEditing,originFrom }) {
     const [img, setImg] = useState(null);
     const [user, SetUser] = useState()
     useEffect(() => {
@@ -86,12 +87,14 @@ export default function ProfileHead({ access, data, blurFn, logOutFn, subForm, i
                         <AccountSettingsBtn logOutFn={logOutFn} access={access} />
                         {access !== "viewOnly" && (
                             isNotEditing ?
+                                <Tooltip title="Edit profile" enterDelay={500} leaveDelay={100}>
                                 <IconButton aria-label="edit" onClick={() => {
                                     setIsNotEditing(false)
                                     blurFn(true)
                                 }}>
                                     <EditIcon />
-                                </IconButton>
+                                    </IconButton>
+                                </Tooltip>
                                 :
                                 <IconButton aria-label="check" onClick={() => {
                                     if (errorChild === false) {
@@ -157,13 +160,13 @@ export default function ProfileHead({ access, data, blurFn, logOutFn, subForm, i
                                     </Link>
                                 }
                                 <p className="profile-location"><FmdGoodRoundedIcon fontSize='small' sx={{ marginRight: '.1rem' }} />{data.city && data.country ? data.city + ', ' + data.country : <Skeleton className="profile-location" variant="text" sx={{ width: '15rem' }} />}</p>
-                                <p className="profile-bio">{data.bio ? data.bio : "Tell the world about yourself"}</p>
+                                <p className="profile-bio">{data.bio ? data.bio : (originFrom === "other" ? "" : "-- Tell the world about yourself by updating bio")}</p>
                             </div>
                             :
                             <div className="profile-head-info-div profile-head-info-div2">
                                 <h1 className="profile-name">{data.company_name ? data.company_name : <Skeleton className="profile-name" variant="text" sx={{ width: '20rem' }} />}</h1>
                                 <p className="profile-location"><FmdGoodRoundedIcon fontSize='small' sx={{ marginRight: '.1rem' }} />{data.city && data.country ? data.city + ', ' + data.country : <Skeleton className="profile-location" variant="text" sx={{ width: '15rem' }} />}</p>
-                                <p className="profile-bio">{data.bio ? data.bio : "Tell the world about yourself"}</p>
+                                <p className="profile-bio">{data.bio ? data.bio : (originFrom === "other" ? "" :"-- Tell the world about yourself by updating bio")}</p>
                             </div>)
                         :
                         <div className="profile-head-info-div profile-head-info-div2">

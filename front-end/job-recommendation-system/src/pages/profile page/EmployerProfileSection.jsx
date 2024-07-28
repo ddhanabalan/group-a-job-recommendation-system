@@ -21,12 +21,14 @@ export default function EmployerProfileSection({ data }) {
     const [newData, SetnewData] = useState(data);
     const [isNotEditing, SetIsNotEditing] = useState(true)
     const [jobVacancies, SetJobVacancies] = useState([]);
+    const [profilePic, setProfilePic] = useState(null);
     const updateEditStatus = (value) => {
         SetIsNotEditing(value)
     }
     const redirectFn = (data) => {
         COMPANY_USERNAME = data.username;
         COMPANY_ID = data.user_id;
+        setProfilePic(data.profile_picture);
         setStorage("userID", data.user_id)
         setStorage("username", data.username)
         setStorage("userEmail", data.email)
@@ -89,7 +91,7 @@ export default function EmployerProfileSection({ data }) {
                         }
                     }
                     );
-                    const mod_response = response.data.map(e => ({ id: e.job_id, jobTitle: e.job_name, companyId: e.company_id, companyUsername: e.company_username, companyName: e.company_name, tags: e.tags, currency: e.salary.split('-')[0], salary: [e.salary.split('-')[1], e.salary.split('-')[2]], postDate: e.created_at.split('T')[0], last_date: e.last_date.split('T')[0], location: e.location, empType: e.emp_type, exp: e.experience, workStyle: e.work_style, workingDays: e.working_days, jobDesc: e.job_desc, jobReq: e.requirement, skills: e.skills.length ? e.skills : [{ 'skill': "" }], applicationsReceived: e.job_seekers, closed:e.closed }))
+                    const mod_response = response.data.map(e => ({ id: e.job_id, jobTitle: e.job_name, companyId: e.company_id, companyUsername: e.company_username, companyName: e.company_name, tags: e.tags, currency: e.salary.split('-')[0], salary: [e.salary.split('-')[1], e.salary.split('-')[2]], postDate: e.created_at.split('T')[0], last_date: e.last_date.split('T')[0], location: e.location, empType: e.emp_type, exp: e.experience, workStyle: e.work_style, workingDays: e.working_days, jobDesc: e.job_desc, jobReq: e.requirement, skills: e.skills.length ? e.skills : [{ 'skill': "" }], applicationsReceived: e.job_seekers, closed:e.closed, profile_picture: profilePic }))
                     SetJobVacancies(mod_response);
                     console.log(response);
                     console.log(" after new job vacancies", mod_response);

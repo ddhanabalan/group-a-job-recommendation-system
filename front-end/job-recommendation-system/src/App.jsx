@@ -2,6 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import { useState, useEffect } from 'react';
 import { setStorage, getStorage } from './storage/storage';
+import { unstable_HistoryRouter as HistoryRouter, useLocation, useNavigate } from 'react-router-dom';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { PrivateRoutes, SeekerRoutes, EmployerRoutes } from './utils/PrivateRoutes';
 import axios from './api/axios';
@@ -24,6 +25,41 @@ import ReviewApplications from './pages/ReviewApplications/ReviewApplications';
 import OtherEmployerProfile from './pages/profile page/OtherEmployerProfile';
 import SeekerJobStatusSection from './pages/SeekerJobStatusSection/SeekerJobStatusSection';
 import JobInviteSection from './pages/JobInviteSection/JobInviteSection';
+import history from './context/NavigationService';
+
+
+function ScrollRestoration() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [scrollPositions, setScrollPositions] = useState({});
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollPositions((prevPositions) => ({
+        ...prevPositions,
+        [location.pathname]: window.scrollY,
+      }));
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    
+    // Cleanup on component unmount
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [location.pathname]);
+
+  useEffect(() => {
+    const savedPosition = scrollPositions[location.pathname];
+    if (savedPosition !== undefined) {
+      window.scrollTo(0, savedPosition);
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }, [location.pathname, scrollPositions]);
+
+  return null;
+}
 
 function App() {
   useEffect(() => {
@@ -31,7 +67,7 @@ function App() {
       if (getStorage("refToken")) {
         refreshTokens()
       }
-    }, 3000)//refresh tokens every 15 minutes
+    }, 900000)//refresh tokens every 15 minutes
 
     return () => clearInterval(refreshInterval)
   }, [])
@@ -64,7 +100,8 @@ function App() {
   }
   return (
     <>
-      <BrowserRouter>
+      <HistoryRouter history={history}>
+        <ScrollRestoration/>
         <Routes>
           {/* general routes */}
           <Route index element={<LandingPage />} />
@@ -90,7 +127,6 @@ function App() {
           {/* routes exclusive to seekers */}
           <Route element={<SeekerRoutes />}>
             <Route path="/jobs" element={<JobSection />} />
-            
             <Route path="/invite/:invite_id" element={<ReviewApplications userType="seeker" invite={true}/>} />
             <Route path="/seeker/openings/:company_username/:job_id" element={<ReviewApplications userType="seeker"/>} />
             <Route path="/seeker/applications" element={<SeekerJobStatusSection userType="seeker"/>} />
@@ -98,7 +134,6 @@ function App() {
           {/* routes exclusive to recruiters */}
           <Route element={<EmployerRoutes />}>
             <Route path="/candidates" element={<CandidateSection />} />
-
             <Route path="/employer/job-vacancy" element={<CreateJobVacancy />} />
             <Route path="/employer/review-applications" element={<ReviewApplications userType="employer" />} />
             <Route path="/employer/job-invite" element={<JobInviteSection userType="employer" />} />
@@ -107,7 +142,7 @@ function App() {
 
           <Route path="*" element={<Error />} />
         </Routes>
-      </BrowserRouter>
+      </HistoryRouter>
     </>
   )
 }

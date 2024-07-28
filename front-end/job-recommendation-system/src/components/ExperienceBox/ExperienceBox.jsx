@@ -16,10 +16,11 @@ export default function ExperienceBox({ access, childData, reloadFn, experiencei
     }, [childData])
     const [expdata, SetExpdata] = useState([]);
     const [newExp, SetNewExp] = useState(false)
-    const [totalExp, SetTotalExp] = useState()
+    // const [totalExp, SetTotalExp] = useState()
     const updateTotalExperience = async (data) => {
+        if(getStorage("userType")==="seeker"){
         try {
-            const response = await userAPI.put('/seeker/details', { "experience": data },
+            const response = await userAPI.put('/seeker/details/', { "experience": data },
                 {
                     headers: {
                         'Authorization': `Bearer ${getStorage("userToken")}`
@@ -33,22 +34,19 @@ export default function ExperienceBox({ access, childData, reloadFn, experiencei
             // alert(e.message)
         }
     }
-
-    useEffect(() => {
-        console.log("totalExp", totalExp)
-        updateTotalExperience(totalExp)
-    }, [totalExp])
-
+    }
+    
     const addExperience = async (e) => {
         //accepts new Experience data and adds it into existing array of Experiences
         try {
-            const response = await userAPI.post('/seeker/former-job', e, {
+            const response = await userAPI.post('/seeker/former-job/', e, {
                 headers: {
                     'Authorization': `Bearer ${getStorage("userToken")}`
                 }
             });
-            e.end_year === e.start_year ? SetTotalExp(parseInt(totalExp) + 1) :
-                SetTotalExp(parseInt(experienceinYears) + (parseInt(e.end_year) - parseInt(e.start_year) + 1))
+            const result = experienceinYears + (parseInt(e.end_year) - parseInt(e.start_year) + 1)
+            // console.log("chihuaha", result)
+            response.request.status === 201 && updateTotalExperience(result)
             response.request.status === 201 && showSuccessMsg()
             console.log(response)
             SetNewExp(false)
@@ -67,7 +65,8 @@ export default function ExperienceBox({ access, childData, reloadFn, experiencei
     const deleteExp = async (id) => {
         //deletes existing Experience from array by referring to the id passed in
         const delExp = expdata.filter(e => { return id === e.id })
-        SetTotalExp(parseInt(experienceinYears) - (parseInt(delExp[0].end_year) - parseInt(delExp[0].start_year) + 1))
+        const result = experienceinYears - (parseInt(delExp[0].end_year) - parseInt(delExp[0].start_year) + 1)
+        // console.log("chihuaha1", result)
         try {
             const response = await userAPI.delete(`/seeker/former-job/${id}`, {
                 headers: {
@@ -75,6 +74,7 @@ export default function ExperienceBox({ access, childData, reloadFn, experiencei
                 }
             })
             response.request.status === 200 && showSuccessMsg()
+            response.request.status === 200 && updateTotalExperience(result)
             reloadFn()
             SetExpdata(expdata.filter(e => { return id !== e.id }))
         } catch (e) {
@@ -90,10 +90,8 @@ export default function ExperienceBox({ access, childData, reloadFn, experiencei
         console.log("hoda", delExp)
         const exp_update = (parseInt(delExp[0].end_year) - parseInt(delExp[0].start_year) + 1)
         console.log(exp_update)
-        const exp_add_update = parseInt(experienceinYears) - exp_update + (passData.end_year === passData.start_year ? 1 : (parseInt(passData.end_year) - parseInt(passData.start_year) + 1))
-        console.log(exp_add_update)
-        SetTotalExp(exp_add_update)
-        reloadFn()
+        const exp_add_update = experienceinYears - exp_update + (passData.end_year === passData.start_year ? 1 : (parseInt(passData.end_year) - parseInt(passData.start_year) + 1))
+        // console.log("chihuaha2", exp_add_update)
         console.log("passData", passData)
 
         try {
@@ -109,6 +107,8 @@ export default function ExperienceBox({ access, childData, reloadFn, experiencei
                 }
                 return (e)
             }))
+            response.request.status === 200 && updateTotalExperience(exp_add_update)
+            reloadFn()
         } catch (e) {
             console.log(e)
             showFailMsg()

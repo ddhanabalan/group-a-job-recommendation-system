@@ -34,7 +34,9 @@
     font-size: .938rem;
     color: #7B7777;
 }
-
+.job-desc-company-name-p:hover{
+        color: #646cff
+}
 
 .job-desc-salary {
     font-size: 1rem;
