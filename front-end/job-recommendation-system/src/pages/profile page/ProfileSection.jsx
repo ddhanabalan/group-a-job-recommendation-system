@@ -3,7 +3,7 @@ import { useLocation, Navigate } from 'react-router-dom';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { getStorage, setStorage } from '../../storage/storage';
-import { userAPI} from '../../api/axios';
+import { userAPI } from '../../api/axios';
 import Lottie from 'lottie-react';
 import FeatureBox from '../../components/FeatureBox/FeatureBox';
 import FeatureBoxMiddlePane from '../../components/FeatureBoxMiddlePane/FeatureBoxMiddlePane';
@@ -20,6 +20,7 @@ import LoaderAnimation from '../../components/LoaderAnimation/LoaderAnimation';
 import cloudAnimation from '../../images/cloud-animation.json';
 import './ProfileSection.css';
 export default function ProfileSection({ data }) {
+    const [loading, SetLoading] = useState(true)
     const [newData, SetnewData] = useState(data);
     const [isNotEditing, SetIsNotEditing] = useState(true)
     const { state } = useLocation();
@@ -63,7 +64,7 @@ export default function ProfileSection({ data }) {
     }, [])
     const params = useParams();
     const user = params.username;
-    const callAPI =  async () => {
+    const callAPI = async () => {
         try {
             console.log("hello i'm being called")
             const response = (user === undefined) ?
@@ -71,13 +72,11 @@ export default function ProfileSection({ data }) {
                     headers: {
                         'Authorization': `Bearer ${getStorage("userToken")}`
                     }
-                }) :
+                }):
                 await userAPI.get(`/profile/${user}`);
             redirectFn(response.data)
         } catch (e) {
             console.log(e)
-
-            alert(e.message)
         }
     }
     useEffect(() => {
@@ -95,6 +94,9 @@ export default function ProfileSection({ data }) {
                 console.log(e)
 
                 alert(e.message)
+            }
+            finally {
+                SetLoading(false)
             }
         }
         profileAPI()
@@ -137,6 +139,7 @@ export default function ProfileSection({ data }) {
     }
     return (
         <>
+            {loading && <LoaderAnimation />}
             {redirectHome && <Navigate to='/' />}
             {data ?
                 <div id="profile-page">

@@ -15,7 +15,7 @@ import { format } from 'date-fns';
 import dayjs from 'dayjs';
 import './QualificationCard.css';
 export default function QualificationCard({ access, data, deleteFn, submitFn }) {
-    const { register, formState: { errors }, handleSubmit, getValues, control, setError, watch } = useForm({ mode: 'onTouched' });
+    const { register, formState: { errors }, handleSubmit, getValues, control, setError, watch } = useForm({ mode: 'onChange' });
     const [isNotEditing, SetIsNotEditing] = useState(true);
     const editData = () => {
         //passing the edited values along with id of the data
@@ -32,7 +32,9 @@ export default function QualificationCard({ access, data, deleteFn, submitFn }) 
     }
     useEffect(() => {
         const watchFields = watch(["start_year", "end_year"]);
+        const curYear = new Date().getFullYear();
         watchFields[0] !== null && watchFields[0] !== undefined && watchFields[1] !== null && watchFields[1] !== undefined && (watchFields[0]['$y'] > watchFields[1]['$y']) && setError("end_year", { message: "End year must be later than start year." })
+        watchFields[0] !== null && watchFields[0] !== undefined && watchFields[1] !== null && watchFields[1] !== undefined && watchFields[1]['$y'] > curYear && setError("end_year", { message: "End year must be less than or equal to current year." })
     }, [watch(["start_year", "end_year"])])
     return (
         <>
@@ -106,6 +108,9 @@ export default function QualificationCard({ access, data, deleteFn, submitFn }) 
                                 <Controller
                                     name="start_year"
                                     control={control}
+                                    rules={{
+                                        required: 'cannot be empty'
+                                    }}
                                     defaultValue={data.start_year && dayjs(data.start_year, "YYYY")}
                                     render={({ field: { onChange, value } }) => (
                                         <DatePicker label="Start year" views={['year']}
@@ -117,10 +122,7 @@ export default function QualificationCard({ access, data, deleteFn, submitFn }) 
                                             sx={{ width: '45%' }}
                                             slotProps={{
                                                 textField: {
-                                                    size: 'small', InputLabelProps: { shrink: true }, placeholder: "2000", error: 'start_year' in errors,
-                                                    ...register("start_year", {
-                                                        required: "cannot be empty"
-                                                    })
+                                                    size: 'small', InputLabelProps: { shrink: true }, placeholder: "2000", error: 'start_year' in errors
                                                 }
                                             }}
                                             renderInput={(params) =>
@@ -139,6 +141,9 @@ export default function QualificationCard({ access, data, deleteFn, submitFn }) 
                                     <Controller
                                         name="end_year"
                                         control={control}
+                                        rules={{
+                                            required: 'cannot be empty'
+                                        }}
                                         defaultValue={data.end_year && dayjs(data.end_year, "YYYY")}
                                         render={({ field: { onChange, value } }) => (
                                             <DatePicker label="End year" views={['year']}
@@ -150,10 +155,7 @@ export default function QualificationCard({ access, data, deleteFn, submitFn }) 
                                                 sx={{ width: '100%' }}
                                                 slotProps={{
                                                     textField: {
-                                                        size: 'small', InputLabelProps: { shrink: true }, placeholder: "2000", error: 'end_year' in errors,
-                                                        ...register("end_year", {
-                                                            required: "cannot be empty"
-                                                        })
+                                                        size: 'small', InputLabelProps: { shrink: true }, placeholder: "2000", error: 'end_year' in errors
                                                     }
                                                 }}
                                                 renderInput={(params) =>

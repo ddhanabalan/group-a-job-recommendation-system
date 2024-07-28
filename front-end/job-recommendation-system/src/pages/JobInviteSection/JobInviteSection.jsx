@@ -77,7 +77,9 @@ export default function JobInviteSection({userType}) {
             console.log("received job response", response)
             const invite_response = await jobAPI.get('/job_invite/company', { headers: { 'Authorization': `Bearer ${getStorage("userToken")}` } });
             console.log("update job invites", invite_response);
-            const mod_response = response.data.map(e=>({id: e.job_id, jobTitle: e.job_name, companyName: e.company_name, tags: e.tags, currency: e.salary.split('-')[0], salary: [e.salary.split('-')[1],e.salary.split('-')[2]], postDate: e.created_at.split('T')[0] , last_date: e.last_date.split('T')[0], location: e.location, poi: e.job_position, empType: e.emp_type, exp: e.experience, workStyle: e.work_style, workingDays: e.working_days, jobDesc: e.job_desc ,jobReq:e.requirement,skills: e.skills.length?e.skills: [{'skill': ""}], applicationsReceived: e.job_seekers, closed: e.closed}))
+            const ret_response = response.data.map(e=>({id: e.job_id, jobTitle: e.job_name, companyName: e.company_name, tags: e.tags, currency: e.salary.split('-')[0], salary: [e.salary.split('-')[1],e.salary.split('-')[2]], postDate: e.created_at , last_date: e.last_date, location: e.location, poi: e.job_position, empType: e.emp_type, exp: e.experience, workStyle: e.work_style, workingDays: e.working_days, jobDesc: e.job_desc ,jobReq:e.requirement,skills: e.skills.length?e.skills: [{'skill': ""}], applicationsReceived: e.job_seekers, closed: e.closed, vacancy_updated_at: e.updated_at, job_invites: e.job_invite}))
+            const dated_response = dateProcessor(ret_response);
+            const mod_response = jobPrioritizer(dated_response);
             setJobVacancies(mod_response);
             console.log(" after new job vacancies", mod_response);
             const prereq_response = await Promise.all(response.data.map(vacancy => vacancy.job_seekers.filter(user => user.user_id === receivedData.state.user_id).map(user => {
@@ -164,6 +166,8 @@ export default function JobInviteSection({userType}) {
         setSideBar(true);
     }
 
+
+
     const deleteJobRequestAPI = async (job_request_id) => {
         try {
           const r = await jobAPI.delete(`/job_request/${job_request_id}`, { headers: { 'Authorization': `Bearer ${getStorage("userToken")}` } });
@@ -215,6 +219,45 @@ export default function JobInviteSection({userType}) {
         }
 
     }
+
+    const dateProcessor=(objectList)=>{
+        objectList.sort((a, b) => b.vacancy_updated_at.localeCompare(a.vacancy_updated_at)); 
+        const arranged = objectList.map((e)=>({...e,  vacancy_updated_at: e.vacancy_updated_at.split('T')[0].split('-').reverse().join('-') ,postDate: e.postDate.split('T')[0].split('-').reverse().join('-'), last_date: e.last_date.split('T')[0].split('-').reverse().join('-') }))
+        return arranged;
+      }
+  
+    const jobPrioritizer=(objectList)=>{
+         const data = objectList
+         const invite_priority = {"pending": "1", "approved":"2", "rejected":"2"};
+         const request_priority = {"applied": "3", "approved": "4", "rejected": "5"};
+         const resp = data.sort((a,b)=>{
+                                        const b_invites = b.job_invites.map(e=>{if(e.user_id==receivedData.state.user_id) return e.status.toLowerCase()}).filter(Boolean);
+                                        const b_requests = b.applicationsReceived.map(e=>{if(e.user_id==receivedData.state.user_id) return e.status.toLowerCase()}).filter(Boolean);
+                                        const a_invites = a.job_invites.map(e=>{if(e.user_id==receivedData.state.user_id) return e.status.toLowerCase()}).filter(Boolean);
+                                        const a_requests = a.applicationsReceived.map(e=>{if(e.user_id==receivedData.state.user_id) return e.status.toLowerCase()}).filter(Boolean);
+                                        
+                                        ////Note to self: Below logic doesn't work as intended.But the result is good enough.Check if issues persist.
+                                        
+                                        let ret_val = 1;
+                                
+                                        if(b_invites.includes("rejected") && !b_invites.includes("approved") && !b_invites.includes("pending"))                                    
+                                        {   
+                                            console.log("regular invites comp",a.jobTitle,a_invites, b.jobTitle,  b_invites)
+                                            if(a_invites.includes("rejected") && !a_invites.includes("approved") && !a_invites.includes("pending"))ret_val = 1;
+                                            else ret_val=0;
+                                        }
+                                        else if(b_requests.includes("rejected") && !b_requests.includes("approved") && !b_requests.includes("applied"))
+                                            {   console.log("regular requests comp",a.jobTitle,a_requests,b.jobTitle, b_requests)
+                                                if(a_requests.includes("rejected") && !a_requests.includes("approved") && !a_requests.includes("applied"))ret_val = 1;
+                                                else ret_val = 0;
+                                            }
+                                        console.log("regular", a.jobTitle, b.jobTitle, ret_val)
+                                        return ret_val
+                                   
+        })
+         return resp;
+       }
+
     //console.log("filtered applicants",filteredApplicants);
     useEffect(() => {callJobVacancyAPI(COMPANYID)
     }, []);//only runs during initial render

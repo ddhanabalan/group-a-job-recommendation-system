@@ -25,7 +25,7 @@ export default function JobCard({ data, id, expandView, background, profilePictu
                 <p className='card-company-name-p'>{data.companyName}</p>
                 <Stack className="card-tags" direction="row" spacing={1}>
                     {chips.map(e => {
-                        return (<Chip key={uuid()} className="card-tags-child" label={e} size='small' />)
+                        if(typeof(e)==="string" && e!="")return (<Chip key={uuid()} className="card-tags-child" label={e} size='small' />)
                     })}
 
                 </Stack>

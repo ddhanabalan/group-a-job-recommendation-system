@@ -8,12 +8,14 @@ import CancelRoundedIcon from '@mui/icons-material/CancelRounded';
 import { Button } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import Lottie from "lottie-react";
 import IconButton from '@mui/material/IconButton';
 import FileOpenIcon from '@mui/icons-material/FileOpen';
 import CorporateFareRoundedIcon from '@mui/icons-material/CorporateFareRounded';
+import ProcessingAnimation from '../../images/processing.json'
 import { getStorage } from '../../storage/storage';
 
-export default function JobCardExpanded({ data = [], createJobRequest = null, deleteJobRequest = null, userData, handleSub = null, handleInvite=null, type, invite=null, applicationErrors = null }) {
+export default function JobCardExpanded({ data = [], createJobRequest = null, deleteJobRequest = null, userData, handleSub = null, handleInvite=null, type, invite=null, applicationErrors = null, processing=null }) {
     console.log("data received by form", userData, "jobdata", data, "invite", invite, type, "checkword", data.invite?.job_status !=="approved", data.invite_status?.toLowerCase() === "pending" )
 
     //console.log(userData.appliedJobs.includes("4"))
@@ -157,17 +159,20 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
                             }
                         </div>
 
-                        {userData.type == "seeker" && type == "approval" && data.status && !data.closed ?
+                        {!processing?
+                        userData.type == "seeker" && type == "approval" && data.status && !data.closed ?
                             <>
                                 <div className='job-approval-status-label'>
                                     Status: <span className={`job-status-text color-${handleStatus(data.status.toLowerCase())}`}>{data.status}</span>
                                 </div>
                                 {data.status == "Applied" &&
-                                    <div className="cancel-application-button">
-                                        <Button variant="outlined" onClick={() => { deleteJobRequest(data.job_req_id) }} sx={{ color: "black", border: "2px solid #254CE1" }} endIcon={<CancelRoundedIcon />}>
-                                            <p>Cancel Application</p>
-                                        </Button>
-                                    </div>
+                                        <button className='continue-btn invite-reject-btn' onClick={() => { deleteJobRequest(data.job_req_id) }} >
+                                            Cancel Application
+                                            <div class="arrow-wrapper">
+                                                <div class="arrow"></div>
+
+                                            </div>
+                                        </button>
                                 }
                                 {data.status == "rejected" &&
                                     <div className="cancel-application-button">
@@ -182,10 +187,12 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
 
                             :
                             <></>
+                        :
+                        <></>
                         }
 
-
-                        {(userData.type == "employer" || type == "approval" || invite) && !data.closed ?
+                        {!processing?
+                        (userData.type == "employer" || type == "approval" || invite) && !data.closed ?
                             (
                                 invite && ((data.invite && data.invite.job_status !=="approved") || (data.invite_status && data.invite_status.toLowerCase() === "pending" || false))?
                                  <>
@@ -276,13 +283,31 @@ export default function JobCardExpanded({ data = [], createJobRequest = null, de
                                     </button>
                                     )
                                     :
+                                    // <button className='continue-btn disable-apply-btn' onClick={submit ? () => { } : handleApplication} >
+                                    //     {((userJobRequest && userJobRequest.status && !data.closed)?userJobRequest.status:(data.closed?"Job Vacancy closed":""))}
+                                    // </button>             //if errors uncomment this and comment bottom bracket
+                                    (
+                                    (userJobRequest && userJobRequest.status && !data.closed)?
                                     <button className='continue-btn disable-apply-btn' onClick={submit ? () => { } : handleApplication} >
-                                        {((userJobRequest && userJobRequest.status && !data.closed)?userJobRequest.status:"Application window closed") || "Processing..."}
+                                        {userJobRequest.status}
                                     </button>
+                                    :
+                                     (data.closed?
+                                     <button className='continue-btn disable-apply-btn' onClick={submit ? () => { } : handleApplication} >
+                                       Job Vacancy Closed
+                                    </button>
+                                    :
+                                    <></>)
+                                    )
+
                                 )
                                 }
                             </div>
-                        }
+                            :
+                            <div className="processing-animation">
+                                    <Lottie animationData={ProcessingAnimation} loop={true}  />
+                            </div>    
+                            }
                     </>
                     :
                     <></>

@@ -45,25 +45,27 @@
 }
 .job-status-div{
     height: fit-content;
-    width: 7rem;
-    background-color: white;
+    width: fit-content;
+    background-color: rgb(222, 220, 220);
     display: flex;
     align-self: center;
     align-items: center;
     justify-content: space-around;
     border-radius: 20px;
-    padding: .1rem .1rem;
+    padding: .1rem .5rem;
+    gap: 0.4rem;
 }
 .invite-status-div{
     height: fit-content;
-    width: 7rem;
-    background-color: white;
+    width: fit-content;
+    background-color: rgb(222, 220, 220);
     display: flex;
     align-self: start;
     align-items: center;
     justify-content: space-around;
     border-radius: 20px;
-    padding: .1rem .1rem;
+    padding: .1rem .5rem;
+    gap: 0.4rem;
 }
 
 .invite-status-div p{

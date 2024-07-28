@@ -45,16 +45,17 @@ export default function CandidateSection() {
         setJobEntry(entry);
     }
     const dataNormalizer = (objectList)=>{
-        const normalized_data = objectList.map(e=>({applicantID: e.user_id, username: e.username, first_name: e.first_name, last_name: e.last_name,city: e.city, country: e.country, location: e.location, experience: e.experience, profile_picture: e.profile_picture}))
+        const normalized_data = objectList.map(e=>({applicantID: e.user_id, username: e.username, first_name: e.first_name, last_name: e.last_name,city: e.city, country: e.country, location: e.location, experience: e.experience, profile_picture: e.profile_picture})) || []
+        console.log("normalized dta", normalized_data)
         return normalized_data
     }
 
-    const duplicatesFilter=()=>{
-        
+    const duplicatesFilter=(data)=>{
+        //console.log("data from filter",data)
         //const test = aiCandidates.map(candidate=>candidate.applicantID)
-        const originals = candidates.filter(e=>!(aiCandidates.map(candidate=>candidate.applicantID).includes(e.applicantID)))
-        console.log("original candidates only", originals, candidates, aiCandidates)
-        setCandidates(originals);
+        const originals = candidates.filter(e=>!(data.map(candidate=>candidate.applicantID).includes(e.applicantID)))
+        console.log("original candidates only", originals, candidates, data)
+        if(originals.length)setCandidates(originals);
     }
     
     const callCandidatesAPI = async () => {
@@ -115,14 +116,18 @@ export default function CandidateSection() {
             const mod_response = dataNormalizer(response.data)
             if(mod_response && !mod_response.length) 
             {
+                console.log("mod response length", mod_response)
                 setBlankModelData(true)
             }
             else{
+                //console.log("moderated", mod_response)
+                duplicatesFilter(mod_response)
                 setBlankModelData(false)
+                setAiCandidates(mod_response)
             }
 
             console.log("ai candidates", mod_response, blankModelData)
-            setAiCandidates(mod_response)
+            
             setAiBtnLoading(false)
             return true;
         } catch (e) {
@@ -195,6 +200,11 @@ export default function CandidateSection() {
         }
     }*/
 
+    const resetAiCandidates= async ()=>{
+        setAiCandidates([]);
+        await callCandidatesAPI();
+    }
+
 useEffect(()=>{if(companyID){callJobVacancyAPI(companyID);}}, [companyID])
 
 useEffect(() => {console.log("jobVacancies" , jobVacancies)
@@ -207,15 +217,8 @@ useEffect(() => {console.log("jobVacancies" , jobVacancies)
 
 useEffect(() => { if (jobVacancies.length != 0 && selectedJobEntry != null) expJob(selectedJobEntry) }, [selectedJobEntry]);
 useEffect(() => { callCandidatesAPI() }, [filterparam, candidateSearchVal]);
-useEffect(() => {duplicatesFilter()
-    if(aiCandidates && aiCandidates.length) 
-        {
-            setBlankModelData(false)
-        }
-        else{
-            setBlankModelData(true)
-        
-}}, [aiCandidates])
+useEffect(() => {console.log("canidates ai loading", aiBtnloading)}, [aiBtnloading])
+
     return (
         <div id="page">
             {loading && <LoaderAnimation />}
@@ -223,11 +226,11 @@ useEffect(() => {duplicatesFilter()
             <Filter title="Filter applicants" userType="employer" passFilteredDataFn={filterDataSet} />            
             </div>
             <NavigationBar active="candidates" />
-            <StatsAI value="candidates" loading={aiBtnloading} callFn={callAiCandidateFetch}  jobs={filteredJobs} chooseEntryFunc={chooseJobEntry} jobSearchFunc={jobSearchBar} selectedEntry={selectedJobEntry} blankModelData={blankModelData}/>
+            <StatsAI value="candidates" aiBtnloading={aiBtnloading} callFn={callAiCandidateFetch}  jobs={filteredJobs} chooseEntryFunc={chooseJobEntry} jobSearchFunc={jobSearchBar} selectedEntry={selectedJobEntry} blankModelData={blankModelData}/>
             <div className="candidate-search">
                 <SearchBar toSearch="Search Candidates" onSearch={candidateSearchBar} />
             </div>
-            <Candidates candidateData={candidates} modelData={aiCandidates}/>
+            <Candidates candidateData={candidates} modelData={aiCandidates} setAiCandidates={resetAiCandidates}/>
         </div>
         
     )

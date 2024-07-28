@@ -166,12 +166,16 @@ export default function OpeningsListBar({ data, userType, userID, chooseEntry, s
                         <div className="opening-search">
                             <SearchBar toSearch={"Search jobs"} searchHeight={33} onSearch={onSearch} searchColor="#D9D9D9" />
                         </div>
-                        {filterFunc &&
+                        {filterFunc?
                         <div className="sort-icon">
                             <IconButton onClick={() => setFilter(!filterStat)} sx={{ borderRadius: 50, backgroundColor: (filterStat ? 'black' : '#E7E4E4'), width: 35, height: 35, "&.MuiButtonBase-root:hover": { bgcolor: (filterStat ? 'black' : '#E7E4E4') }, }}>
                                 <SortIcon sx={{ color: (filterStat ? 'white' : 'black') }} />
                             </IconButton>
-                        </div>}
+                        </div>
+                        :
+                        <div className='fill-space'>
+                        </div>
+                        }
                     </div>
                     {userType == "employer" && pageType!=="candidates" &&
                         <div className="create-vacancy-button" >
@@ -205,14 +209,22 @@ export default function OpeningsListBar({ data, userType, userID, chooseEntry, s
                         )
                             :
                         (userType=="employer"?
-                        <div className="empty-container-message">
-                            <p>You haven't created any vacancies yet.</p>
-                            <p>Start by clicking 'Create job vacancy' button.</p>
-                        </div>
-                        :
-                        <div className="empty-container-message">
-                            <p>You haven't applied for any jobs yet.</p> 
-                        </div>
+                                    (pageType==="candidates"?
+                                            <div className="empty-container-message-candidates">
+                                                <p>You haven't created any vacancies yet.</p>
+                                                <p>Visit Applications page to create.</p>
+                                            </div>
+                                            :
+                                            <div className="empty-container-message">
+                                                <p>You haven't created any vacancies yet.</p>
+                                                <p>Start by clicking 'Create job vacancy' button.</p>
+                                            </div>
+                                    )
+                        
+                                    :
+                                    <div className="empty-container-message">
+                                        <p>You haven't applied for any jobs yet.</p> 
+                                    </div>
                         )
 
                     }

@@ -6,6 +6,8 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Link } from 'react-router-dom';
 import Tooltip from '@mui/material/Tooltip';
 import CorporateFareRoundedIcon from '@mui/icons-material/CorporateFareRounded';
+import LockRoundedIcon from '@mui/icons-material/LockRounded';
+import LockOpenRoundedIcon from '@mui/icons-material/LockOpenRounded';
 import { useState, useEffect } from 'react';
 
 
@@ -64,12 +66,23 @@ export default function JobOpeningCard({ data, type = null, highlighted = null, 
     useEffect(() => {
     if(inviteJob && inviteJob.length)
     {console.log("logged invite job", inviteJob[0].invite_status);
+        const x = inviteJob.map(e=>e.job_status?e.job_status.toLowerCase():null);
         const r = inviteJob.map(e=>e.invite_status?e.invite_status.toLowerCase():null);
         console.log("registered invites", inviteJob, r, data.id)
     let index = 0;
     if(/*r.includes("rejected") && */ r.includes("pending"))
     {
         index = r.lastIndexOf("pending");
+    }
+    else if(r.includes("approved")){
+        index = r.lastIndexOf("approved");
+    }
+    
+    else if(x.includes("approved")){
+        index = x.lastIndexOf("approved");
+    }
+    else if(x.includes("applied")){
+        index = x.lastIndexOf("applied");
     }
     console.log("invite job", index)
 
@@ -114,13 +127,13 @@ export default function JobOpeningCard({ data, type = null, highlighted = null, 
                                             Edit
                                         </Button>
                                     </Link>
-                                    <Button variant="contained" disableElevation onClick={editJobVacancyStatusFunc ? () => editJobVacancyStatusFunc({ ...data,"last_date": dateFormatter(data.last_date)}, true) : undefined} className="opening-edit-button" sx={{ color: 'black', backgroundColor: '#eae9e9', border: 'solid 1px black', width: 'fit-content', paddingY: "2px", paddingX: "10px", textTransform: "none", borderRadius: 20 }} endIcon={<EditIcon />}>
+                                            <Button variant="contained" disableElevation onClick={editJobVacancyStatusFunc ? () => editJobVacancyStatusFunc({ ...data, "last_date": dateFormatter(data.last_date) }, true) : undefined} className="opening-edit-button" sx={{ color: 'black', backgroundColor: '#eae9e9', border: 'solid 1px black', width: 'fit-content', paddingY: "2px", paddingX: "10px", textTransform: "none", borderRadius: 20 }} endIcon={<LockRoundedIcon />}>
                                             Withdraw
                                     </Button>
                                     </>
                                     :
                                     <Link to="../employer/job-vacancy" state={{ ...data, last_date: null, edit: true, reopen: true }}>
-                                        <Button variant="contained" disableElevation  className="opening-edit-button" sx={{ color: 'black', backgroundColor: '#eae9e9', border: 'solid 1px black', width: 'fit-content', paddingY: "2px", paddingX: "10px", textTransform: "none", borderRadius: 20 }} endIcon={<EditIcon />}>
+                                            <Button variant="contained" disableElevation className="opening-edit-button" sx={{ color: 'black', backgroundColor: '#eae9e9', border: 'solid 1px black', width: 'fit-content', paddingY: "2px", paddingX: "10px", textTransform: "none", borderRadius: 20 }} endIcon={<LockOpenRoundedIcon />}>
                                                 Reopen
                                         </Button>
                                     </Link>
@@ -146,8 +159,8 @@ export default function JobOpeningCard({ data, type = null, highlighted = null, 
                             :
                             (data.userInvited || data.type=="invite" || (preJob && preJob.type == "invite") ?
                                 <div className="job-status-div job-status-reject job-status-opening-card">
-                                    <p>Invite</p>
-                                    <div className="skill-status blue"></div>
+                                    <p>Invite </p>
+                                <div className={`skill-status ${data.invite_status?(data.invite_status==="rejected"?"red":(data.invite_status==="approved"?"green":"blue")):""}`}></div>
                                 </div>
                                 : <>
                                     {data.status === "rejected"/*data.userApplication?data.userApplication[0].status === "rejected":null*/ &&

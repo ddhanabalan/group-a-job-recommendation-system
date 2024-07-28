@@ -13,7 +13,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { format } from 'date-fns';
 import dayjs from 'dayjs';
 export default function QualificationAdd({ submitFn, cancelFn }) {
-    const { register, formState: { errors }, handleSubmit, control, setError, watch } = useForm({ mode: 'onTouched' });
+    const { register, formState: { errors }, handleSubmit, control, setError, watch } = useForm({ mode: 'onChange' });
     const formatData = (data) => {
         const formattedStartYear = data.start_year ? format(new Date(data.start_year.year(), data.start_year.month()), 'yyyy') : '';
         // console.log("formattedstart", formattedStartYear)
@@ -25,7 +25,9 @@ export default function QualificationAdd({ submitFn, cancelFn }) {
     }
     useEffect(() => {
         const watchFields = watch(["start_year", "end_year"]);
+        const curYear = new Date().getFullYear();
         watchFields[0] !== null && watchFields[0] !== undefined && watchFields[1] !== null && watchFields[1] !== undefined && (watchFields[0]['$y'] > watchFields[1]['$y']) && setError("end_year", { message: "End year must be later than start year." })
+        watchFields[0] !== null && watchFields[0] !== undefined && watchFields[1] !== null && watchFields[1] !== undefined && watchFields[1]['$y'] > curYear && setError("end_year", { message: "End year must be less than or equal to current year." })
     }, [watch(["start_year", "end_year"])])
     return (
 
@@ -71,11 +73,15 @@ export default function QualificationAdd({ submitFn, cancelFn }) {
                     <p style={{ color: 'red' }}>{errors.education_provider && errors.education_provider.message !== "cannot be empty" && errors.education_provider.message}</p>
                 </div>
                 <div className='qualification-year' style={{ marginBottom: '.5rem' }}>
+                    <div style={{ width: '45%' }}>
                     <LocalizationProvider dateAdapter={AdapterDayjs}>
                         <Controller
                             name="start_year"
                             control={control}
                             defaultValue={null}
+                            rules={{
+                                required: 'cannot be empty'
+                            }}
                             render={({ field: { onChange, value } }) => (
                                 <DatePicker label="Start year" views={['year']}
                                     disableFuture
@@ -83,13 +89,10 @@ export default function QualificationAdd({ submitFn, cancelFn }) {
                                     onChange={(date) => {
                                         onChange(date);
                                     }}
-                                    sx={{ width: '45%' }}
+                                    sx={{ width: '100%' }}
                                     slotProps={{
                                         textField: {
-                                            size: 'small', InputLabelProps: { shrink: true }, placeholder: "2000", error: 'start_year' in errors,
-                                            ...register("start_year", {
-                                                required: "cannot be empty"
-                                            })
+                                            size: 'small', InputLabelProps: { shrink: true }, placeholder: "2000", error: 'start_year' in errors
                                         }
                                     }}
                                     renderInput={(params) =>
@@ -101,7 +104,9 @@ export default function QualificationAdd({ submitFn, cancelFn }) {
                                 />
                             )}
                         />
-                    </LocalizationProvider>
+                        </LocalizationProvider>
+                        <p style={{ color: 'red', position: 'absolute' }}>{errors.start_year && errors.start_year.message !== "cannot be empty" && errors.start_year.message}</p>
+                    </div>
                     <p>-</p>
                     <div style={{ width: '45%' }}>
                         <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -109,6 +114,9 @@ export default function QualificationAdd({ submitFn, cancelFn }) {
                                 name="end_year"
                                 control={control}
                                 defaultValue={null}
+                                rules={{
+                                    required: 'cannot be empty'
+                                }}
                                 render={({ field: { onChange, value } }) => (
                                     <DatePicker label="End year" views={['year']}
                                         disableFuture
@@ -119,10 +127,7 @@ export default function QualificationAdd({ submitFn, cancelFn }) {
                                         sx={{ width: '100%' }}
                                         slotProps={{
                                             textField: {
-                                                size: 'small', InputLabelProps: { shrink: true }, placeholder: "2000", error: 'end_year' in errors,
-                                                ...register("end_year", {
-                                                    required: "cannot be empty"
-                                                })
+                                                size: 'small', InputLabelProps: { shrink: true }, placeholder: "2000", error: 'end_year' in errors
                                             }
                                         }}
                                         renderInput={(params) =>

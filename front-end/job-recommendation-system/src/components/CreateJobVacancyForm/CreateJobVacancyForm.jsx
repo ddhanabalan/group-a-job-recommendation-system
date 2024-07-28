@@ -10,6 +10,7 @@ import { Button, IconButton } from '@mui/material';
 import { useState, useEffect } from 'react';
 import { set, useForm } from 'react-hook-form';
 import GoogleLocationSearch from '../GoogleLocationSearch/GoogleLocationSearchV2';
+import CorporateFareRoundedIcon from '@mui/icons-material/CorporateFareRounded';
 import CreateFormTextFields from './CreateFormTextFields';
 import MultipleOptions from '../MultipleOptions/MultipleOptions';
 import AddTags from '../AddTags/AddTags';
@@ -51,13 +52,13 @@ export default function JobVacancyForm({ data = {} }) {
     const [preferences, setPreferences] = useState({ "skills": skills, "tags": tags, "empType": dta.empType, "exp": dta.exp, "workStyle": dta.workStyle, "workingDays": dta.workingDays });
     const [preview, setPreview] = useState(false);
     const [finalApplicationData, setData] = useState({});
-    const [poi, SetPOI] = useState(dta.poi?dta.poi:'');
+    const [poi, SetPOI] = useState(dta.poi ? dta.poi : '');
     const [poisList, SetPoisList] = useState([]);
     const lowerLimit = watch("salary.0");
     const [isUpperLimitEnabled, setIsUpperLimitEnabled] = useState(false);
 
     useEffect(() => {
-        if (lowerLimit!==undefined) {
+        if (lowerLimit !== undefined) {
             setIsUpperLimitEnabled(true);
         } else {
             setIsUpperLimitEnabled(false);
@@ -67,7 +68,7 @@ export default function JobVacancyForm({ data = {} }) {
     const poiListAPI = async () => {
         try {
             const response = await utilsAPI.get(`/api/v1/positions?q=${poi}`)
-            SetPoisList([{ "position": "" }, ...response.data])
+            SetPoisList([...response.data])
         }
         catch (e) {
             console.log(e)
@@ -100,29 +101,29 @@ export default function JobVacancyForm({ data = {} }) {
         console.log("data to submit to server ", rec_data)
         setSubmissionStatus("processing");
         try {
-            if(!edit)
-            {const response = await jobAPI.post('/job_vacancy/', rec_data, {
-            headers:{
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${getStorage("userToken")}` 
-            }         
+            if (!edit) {
+                const response = await jobAPI.post('/job_vacancy/', rec_data, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${getStorage("userToken")}`
+                    }
+                }
+
+                );
+
             }
-            
-            );
-            
-            }
-            else
-            {   const update_data = {...rec_data, 'skills_delete': deletedSkills}
+            else {
+                const update_data = { ...rec_data, 'skills_delete': deletedSkills }
                 console.log("updating data", update_data)
                 const response = await jobAPI.put(`/job_vacancy/${dta.id}`, update_data, {
-                headers:{
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${getStorage("userToken")}`
-                }         
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${getStorage("userToken")}`
+                    }
                 }
-                
+
                 );
-                
+
             }
             return true;
 
@@ -137,7 +138,7 @@ export default function JobVacancyForm({ data = {} }) {
     const skillsAPI = async () => {
         try {
             const response = await utilsAPI.get(`/api/v1/skills?q=${skill}`)
-            setSkillsList([{ "name": "" }, ...response.data])
+            setSkillsList([...response.data])
         }
         catch (e) {
             console.log(e)
@@ -197,13 +198,13 @@ export default function JobVacancyForm({ data = {} }) {
     const handleSkillData = (tags, tagType) => {
         //function for adding selected skill tags into submitting form data
         console.log("skills and tags", tags, "check", checkSkillsList)
-        checkSkillsList.forEach(skill => {if(Object.keys(tags).length == 0 || !(tags.map(tag => tag.id).includes(skill.id))){if(!deletedSkills.includes(skill.id) && skill.id){setDeletedSkills([...deletedSkills,skill.id])}}})
-        tags.forEach(skill => {if(typeof(skill.id)!="number" && skill.id && !addedSkills.includes(skill.tag) )setAddedSkills([...addedSkills, skill.tag])})
-    
+        checkSkillsList.forEach(skill => { if (Object.keys(tags).length == 0 || !(tags.map(tag => tag.id).includes(skill.id))) { if (!deletedSkills.includes(skill.id) && skill.id) { setDeletedSkills([...deletedSkills, skill.id]) } } })
+        tags.forEach(skill => { if (typeof (skill.id) != "number" && skill.id && !addedSkills.includes(skill.tag)) setAddedSkills([...addedSkills, skill.tag]) })
+
         //console.log("preferences befre changing", preferences)
         setPreferences({ ...preferences, [tagType]: tags.map(tagObj => { return (tagObj['tag']) }) });
     }
-    console.log("only added tags", addedSkills )
+    console.log("only added tags", addedSkills)
     console.log("deleted skills", deletedSkills,)
     const dateValidation = (closing_date) => {
         const today = new Date();
@@ -251,94 +252,97 @@ export default function JobVacancyForm({ data = {} }) {
         //console.log("preferences", preferences)
         //console.log("form data", data)
         if (Object.keys(prefError).length === 0) {
-            setData({ ...data, ...preferences, ...prefilleddata,'profile_picture': profile_picture });
+            setData({ ...data, ...preferences, ...prefilleddata, 'profile_picture': profile_picture });
             { preview ? console.log(finalApplicationData) : setPreview(true) }
         }
     }
 
-    const handleEdit = ()=>{
+    const handleEdit = () => {
         setDta(finalApplicationData);
         setPreview(false);
     }
 
 
-    const handlePostVacancy =async() =>{
+    const handlePostVacancy = async () => {
         //Application submission data
-        const submissionData={
-                                "company_id": USERID,
-                                "company_name": (Object.keys(companyData).length) ? companyData.company_name : finalApplicationData['companyName'],
-                                "emp_type": (typeof(finalApplicationData["empType"])=="object")?finalApplicationData["empType"][0]:finalApplicationData["empType"],
-                                "salary": finalApplicationData["currency"] + "-" + ((finalApplicationData["salary"][1]==="")?finalApplicationData["salary"][0]:finalApplicationData["salary"].join("-")),
-	                            "working_days": (typeof(finalApplicationData["workingDays"])=="object")?finalApplicationData["workingDays"][0]:finalApplicationData["workingDays"],
-                                "work_style": (typeof(finalApplicationData["workStyle"])=="object")?finalApplicationData["workStyle"][0]:finalApplicationData["workStyle"],
-                                "experience": (typeof(finalApplicationData["exp"])=="object")?finalApplicationData["exp"][0]:finalApplicationData["exp"],
-                                "job_name": finalApplicationData['jobTitle'],
-                                "job_position": finalApplicationData['poi'],
-                                "location": finalApplicationData['location'],
+        const submissionData = {
+            "company_id": USERID,
+            "company_name": (Object.keys(companyData).length) ? companyData.company_name : finalApplicationData['companyName'],
+            "emp_type": (typeof (finalApplicationData["empType"]) == "object") ? finalApplicationData["empType"][0] : finalApplicationData["empType"],
+            "salary": finalApplicationData["currency"] + "-" + ((finalApplicationData["salary"][1] === "") ? finalApplicationData["salary"][0] : finalApplicationData["salary"].join("-")),
+            "working_days": (typeof (finalApplicationData["workingDays"]) == "object") ? finalApplicationData["workingDays"][0] : finalApplicationData["workingDays"],
+            "work_style": (typeof (finalApplicationData["workStyle"]) == "object") ? finalApplicationData["workStyle"][0] : finalApplicationData["workStyle"],
+            "experience": (typeof (finalApplicationData["exp"]) == "object") ? finalApplicationData["exp"][0] : finalApplicationData["exp"],
+            "job_name": finalApplicationData['jobTitle'],
+            "job_position": finalApplicationData['poi'],
+            "location": finalApplicationData['location'],
 
-                                "job_desc": finalApplicationData['jobDesc'],
-                                
-                                "requirement": finalApplicationData['jobReq'],
-                                "last_date": finalApplicationData['last_date'],
-                                
-                                "skills": addedSkills,
-                                "closed": false,
-                            };
+            "job_desc": finalApplicationData['jobDesc'],
+
+            "requirement": finalApplicationData['jobReq'],
+            "last_date": finalApplicationData['last_date'],
+
+            "skills": addedSkills,
+            "closed": false,
+        };
         //submissionData["salary"]=(submissionData["salary"][1]==="")?submissionData["salary"][0]:submissionData["salary"].join("-");
 
 
         const success = await callJobAPI(submissionData, dta.edit);
         console.log("succes status", success)
         console.log("successfully submitted", submissionData);
-        if(success === true)
-        {setSubmit(true);
+        if (success === true) {
+            setSubmit(true);
             setSubmissionStatus("success");
         }
-        else{
+        else {
             setSubmissionStatus("failed")
         }
 
     }
     //useEffect(() => { if (submit === true) { navigate("../employer/review-applications") } }, [submit]); //This line is not required
-     useEffect(() => {
-         console.log("submission status", submissionStatus)
-         if(submissionStatus ==="success" || submissionStatus ==="failed"){
-                     console.log("rerouting submission status", submissionStatus)
-                         setTimeout(() => {
-                             navigate("../employer/review-applications")    
-                         }, 2000);
-     }},[submissionStatus])
-    useEffect(() => {skillsAPI()}, [skill])
-    useEffect(() => {callCompanyAPI()}, [])
-    useEffect(() => {console.log("yep i am", preferences.skills)
-        setAddedSkills(prevSkills => prevSkills.filter(skill => preferences.skills.includes(skill)));}, [preferences]);
-    
+    useEffect(() => {
+        console.log("submission status", submissionStatus)
+        if (submissionStatus === "success" || submissionStatus === "failed") {
+            console.log("rerouting submission status", submissionStatus)
+            setTimeout(() => {
+                navigate("../employer/review-applications")
+            }, 2000);
+        }
+    }, [submissionStatus])
+    useEffect(() => { skillsAPI() }, [skill])
+    useEffect(() => { callCompanyAPI() }, [])
+    useEffect(() => {
+        console.log("yep i am", preferences.skills)
+        setAddedSkills(prevSkills => prevSkills.filter(skill => preferences.skills.includes(skill)));
+    }, [preferences]);
+
     //useEffect(() => {setPreferences({ ...preferences, "skills_delete": deletedSkills })}, [deletedSkills])
     return (
         <>
             {preview ?
                 <div className="job-preview-container">
                     <JobCardExpanded data={finalApplicationData} userData={{ "type": "employer" }} />
-                    
-                    {submissionStatus === "success" || submissionStatus==="failed"?                                  //submission status banner 
-                    <div className={`submission-status-banner status-${submissionStatus}`}>
-                        <p>{submissionStatus==="success"?(`Job vacancy ${(dta?.reopen)?"reopened":"posted"} successfully`):`Failed to ${(dta?.reopen)?"reopen":"post"} vacancy.Try again later`}</p>
-                    </div>
-                    :
-                    <div className="post-vacancy-buttons">
-                        {/* <Button variant="contained" color="success" onClick={() => setPreview(false)} sx={{ color: "white" }} startIcon={<EditIcon />}>
+
+                    {submissionStatus === "success" || submissionStatus === "failed" ?                                  //submission status banner 
+                        <div className={`submission-status-banner status-${submissionStatus}`}>
+                            <p>{submissionStatus === "success" ? (`Job vacancy ${(dta?.reopen) ? "reopened" : "posted"} successfully`) : `Failed to ${(dta?.reopen) ? "reopen" : "post"} vacancy.Try again later`}</p>
+                        </div>
+                        :
+                        <div className="post-vacancy-buttons">
+                            {/* <Button variant="contained" color="success" onClick={() => setPreview(false)} sx={{ color: "white" }} startIcon={<EditIcon />}>
                             <p>Edit</p>
                         </Button> */}
-                        <button className='continue-btn post-vacancy-edit-btn' onClick={handleEdit} >
-                            <EditIcon /> Edit 
-                        </button>
-                        {/* <Button variant="contained" onClick={handlePostVacancy} sx={{ color: submit ? "gray" : "white" }} startIcon={submit ? <DoneIcon /> : <MailIcon />}>
+                            <button className='continue-btn post-vacancy-edit-btn' onClick={handleEdit} >
+                                <EditIcon /> Edit
+                            </button>
+                            {/* <Button variant="contained" onClick={handlePostVacancy} sx={{ color: submit ? "gray" : "white" }} startIcon={submit ? <DoneIcon /> : <MailIcon />}>
                             <p>{submit ? "Posted" : "Post Vacancy"}</p>
                         </Button> */}
-                        <button className='continue-btn post-vacancy-confirm-btn' onClick={handlePostVacancy}>
-                                {submit ? <DoneIcon /> : <MailIcon />} {submissionStatus === "processing" ? "Posting.." : (submit ? "Posted" : (dta?.reopen)?"Reopen":"Post Vacancy")}
-                        </button>
-                    </div>
+                            <button className='continue-btn post-vacancy-confirm-btn' onClick={handlePostVacancy}>
+                                {submit ? <DoneIcon /> : <MailIcon />} {submissionStatus === "processing" ? "Posting.." : (submit ? "Posted" : (dta?.reopen) ? "Reopen" : "Post Vacancy")}
+                            </button>
+                        </div>
                     }
                 </div>
                 :
@@ -359,14 +363,17 @@ export default function JobVacancyForm({ data = {} }) {
                                     </div>
                                     <CreateFormTextFields inputPlaceholder="Title" hparam="50px" fontsz="1.875rem" defaultValue={dta.jobTitle || ""} {...register("jobTitle", { required: "Job title is required", })} />
                                 </h1>
-                                <p className='error-message' style={{paddingLeft:'4px'}}>{errors.jobTitle?.message}</p>
+                                <p className='error-message' style={{ paddingLeft: '4px' }}>{errors.jobTitle?.message}</p>
                                 <p className='create-job-vacancy-company-name-p'>{Object.keys(companyData).length ? companyData.company_name : ""}</p>
 
 
                             </div>
                             <div className='create-job-vacancy-div2'>
                                 <div className='create-job-vacancy-img-container'>
-                                    {profile_picture ? <img src={profile_picture} alt="" /> : <></>}
+                                    {profile_picture!=="null" ? <img src={profile_picture} alt="" /> :
+                                        <IconButton disabled>
+                                            <CorporateFareRoundedIcon fontSize='large' />
+                                        </IconButton>}
                                 </div>
 
                             </div>
@@ -378,7 +385,7 @@ export default function JobVacancyForm({ data = {} }) {
                             <div className="create-job-vacancy-details">
 
                                 <div className='detail-divs'>
-                                <span className='details-header'>Position of Interest:</span>
+                                    <span className='details-header'>Position of Interest<span className="text-danger">*</span> :</span>
                                     <div className='option-divs'>
                                         <Autocomplete
                                             disablePortal
@@ -393,6 +400,7 @@ export default function JobVacancyForm({ data = {} }) {
                                             renderInput={(params) => <TextField
                                                 className="autocomplete-poi-textbox"
                                                 {...params}
+                                                placeholder='Electrical Engineer'
                                                 InputProps={{
                                                     ...params.InputProps,
                                                     disableUnderline: true,
@@ -405,10 +413,10 @@ export default function JobVacancyForm({ data = {} }) {
                                                     width: "fit-content",
                                                     minWidth: "230px",
                                                     height: "30px",
-                                                    paddingY:'.05rem',
+                                                    paddingY: '.05rem',
                                                     paddingX: "5px",
                                                     borderRadius: "7px",
-                                                    '.MuiInputBase-input': { fontFamily: "Inter-regular", fontSize: "15px"},
+                                                    '.MuiInputBase-input': { fontFamily: "Inter-regular", fontSize: "15px" },
                                                 }}
                                                 {...register("poi", { required: "Field is required", })}
                                             />}
@@ -419,9 +427,9 @@ export default function JobVacancyForm({ data = {} }) {
                                     </div>
                                 </div>
                                 <div className="detail-divs detail-divs-multiple">
-                                    <span className='details-header'>Location:</span>
+                                    <span className='details-header'>Location<span className="text-danger">*</span> :</span>
                                     <div className='option-divs'>
-                                    <GoogleLocationSearch data={{ heading: "preferred job locations", inputPlaceholder: "Kerala", isLocation: true }}
+                                        <GoogleLocationSearch data={{ heading: "preferred job locations", inputPlaceholder: "Kerala", isLocation: true }}
                                             changeFn={handleChangeLocation}
                                             locationValue={location}
                                             value={googleLocationAutoField}
@@ -436,19 +444,19 @@ export default function JobVacancyForm({ data = {} }) {
                                             fntSize="15px"
                                             {...register("location", { required: "Location is required", })}
                                         />
-                                    
+
                                         <p className="error-message  vacancy-form-error">{errors.location?.message}</p>
                                     </div>
                                 </div>
                                 <div className="detail-divs detail-divs-multiple">
-                                    <p><span className='details-header'>Employment type:</span></p>
+                                    <p><span className='details-header'>Employment type<span className="text-danger">*</span> :</span></p>
                                     <div className="option-divs">
                                         <MultipleOptions options={["Full-time", "Internship", "Temporary"]} preselected={preferences.empType || null} dataType="empType" checkLimit={1} onChange={handleCheckboxChange} />
                                         <p className="error-message  vacancy-form-error vacancy-form-error-multiple-options">{prefError.empType?.message}</p>
                                     </div>
                                 </div>
                                 <div className="detail-divs detail-divs-multiple">
-                                    <p><span className='details-header'>Experience:</span></p>
+                                    <p><span className='details-header'>Experience<span className="text-danger"> *</span> :</span></p>
                                     <div className="option-divs">
                                         <MultipleOptions options={["Fresher", "1-5 years", "5-10 years", "10+ years"]} preselected={preferences.exp || null} dataType="exp" checkLimit={1} onChange={handleCheckboxChange} />
                                         <p className="error-message  vacancy-form-error vacancy-form-error-multiple-options">{prefError.exp?.message}</p>
@@ -456,27 +464,27 @@ export default function JobVacancyForm({ data = {} }) {
                                 </div>
 
                                 <div className="detail-divs detail-divs-multiple">
-                                    <p><span className='details-header'>Work style:</span></p>
+                                    <p><span className='details-header'>Work style<span className="text-danger">*</span> :</span></p>
                                     <div className="option-divs">
                                         <MultipleOptions options={["Hybrid", "Work from home", "Onsite"]} preselected={preferences.workStyle || null} dataType="workStyle" checkLimit={1} onChange={handleCheckboxChange} />
                                         <p className="error-message   vacancy-form-error vacancy-form-error-multiple-options">{prefError.workStyle?.message}</p>
                                     </div>
                                 </div>
                                 <div className="detail-divs detail-divs-multiple">
-                                    <p><span className='details-header'>Working days:</span></p>
+                                    <p><span className='details-header'>Working days<span className="text-danger">*</span> :</span></p>
                                     <div className="option-divs">
                                         <MultipleOptions options={["Monday-Friday", "Monday-Saturday"]} preselected={preferences.workingDays || null} dataType="workingDays" checkLimit={1} onChange={handleCheckboxChange} />
                                         <p className="error-message  vacancy-form-error vacancy-form-error-multiple-options">{prefError.workingDays?.message}</p>
                                     </div>
                                 </div>
                                 <div className="skill-divs">
-                                    <p><span>Skills:</span></p>
+                                    <p><span className='details-header'>Skills:</span></p>
                                     <div className='create-job-skill-field'>
-                                    <AddTags availableDomains={skillsList} value={skill} tags={skills} tagType={"skills"} deleteFn={handleDeleteSkill} changeFn={handleChangeSkill} updateFn={handleSkill} onChange={handleSkillData} data={{inputPlaceholder: "HTML", isLocation: false }} />
+                                        <AddTags availableDomains={skillsList} value={skill} tags={skills} tagType={"skills"} deleteFn={handleDeleteSkill} changeFn={handleChangeSkill} updateFn={handleSkill} onChange={handleSkillData} data={{ inputPlaceholder: "HTML", isLocation: false }} />
                                     </div>
                                 </div>
                                 <div className='salary-div'>
-                                    <p><span className={`details-header${errors.salary ? "-error" : ""/*console.log("salary erros", errors.salary)*/}`}>Salary:</span></p>
+                                    <p><span className={`details-header details-header${errors.salary ? "-error" : ""/*console.log("salary erros", errors.salary)*/}`}>Salary<span className="text-danger"> *</span> :</span></p>
                                     <div className='option-divs'>
                                         <div className="salary-fields">
                                             <CreateFormTextFields inputPlaceholder="Title" wparam="80px" fontsz="14px" select={true} defaultValue={dta.currency || "RS"} items={['RS', 'DLR', 'YEN']} {...register("currency", { required: "Currency is required" })} />
@@ -539,17 +547,16 @@ export default function JobVacancyForm({ data = {} }) {
                                 </div>
 
                                 <div className="create-job-vacancy-description-div">
-                                    <p><span>Job description:</span></p>
+                                    <p><span className='details-header'>Job description<span className="text-danger">*</span> :</span></p>
                                     <div className="create-job-desc-field"><CreateFormTextFields inputPlaceholder="Enter job details" fontsz="14px" wparam="100%" defaultValue={dta.jobDesc || ""} multipleLine={true} minrows={8}  /*justify={true}*/ {...register("jobDesc", { required: "Field required", })} /></div>
                                     <p className="create-job-desc-field error-message">{errors.jobDesc?.message}</p>
                                 </div>
 
                                 <div className="create-job-vacancy-description-div">
-                                    <p><span>Job requirements:</span></p>
+                                    <p><span className='details-header'>Job requirements<span className="text-danger">*</span> :</span></p>
                                     <div className="create-job-desc-field"><CreateFormTextFields inputPlaceholder="Enter criteria" fontsz="14px" wparam="100%" defaultValue={dta.jobReq || ""} multipleLine={true} minrows={8} /*justify={true}*/ {...register("jobReq", { required: "Field required", })} /></div>
                                     <p className="create-job-desc-field error-message">{errors.jobReq?.message}</p>
                                 </div>
-
                             </div>
                         </div>
 
@@ -559,7 +566,7 @@ export default function JobVacancyForm({ data = {} }) {
                                 <p>Preview and Post vacancy</p>
                             </Button> */}
                             <button className='continue-btn post-vacancy-btn' >
-                                <RemoveRedEyeOutlinedIcon/>  {(dta?.reopen)?"Preview and Reopen Post":"Preview and Post Vacancy"}
+                                <RemoveRedEyeOutlinedIcon />  {(dta?.reopen) ? "Preview and Reopen Post" : "Preview and Post Vacancy"}
                             </button>
                         </div>
 

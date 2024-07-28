@@ -11,8 +11,12 @@ import NavigationBar from '../../components/NavigationBar/NavigationBar';
 import DetailsCard from '../../components/DetailsCard/DetailsCard';
 import FeatureBoxMiddlePaneText from '../../components/FeatureBoxMiddlePane/FeatureBoxMiddlePaneText';
 import FeatureBoxMiddlePaneOpenings from '../../components/FeatureBoxMiddlePane/FeatureBoxMiddlePaneOpenings';
+import LoaderAnimation from '../../components/LoaderAnimation/LoaderAnimation';
 import './EmployerProfileSection.css';
 export default function OtherEmployerProfile({ data }) {
+    const [loading, SetLoading] = useState(true)
+    let COMPANY_USERNAME= null;
+    let COMPANY_ID = null;
     const [newData, SetnewData] = useState(data);
     const [isNotEditing, SetIsNotEditing] = useState(true)
     const [jobVacancies, SetJobVacancies] = useState([]);
@@ -20,6 +24,8 @@ export default function OtherEmployerProfile({ data }) {
         SetIsNotEditing(value)
     }
     const redirectFn = (data) => {
+        COMPANY_USERNAME = data.username;
+        COMPANY_ID = data.user_id; 
         setStorage("guestUserID", data.user_id)
         setStorage("guestUsername", data.username)
         setStorage("guestUserType", data.user_type)
@@ -63,6 +69,9 @@ export default function OtherEmployerProfile({ data }) {
 
                 alert(e.message)
             }
+            finally {
+                SetLoading(false)
+            }
         };
         profileAPI();
     }, []);
@@ -72,7 +81,7 @@ export default function OtherEmployerProfile({ data }) {
             const callJobVacancyAPI = async (companyId) => {
                 try {
                     const response = await jobAPI.get(`/job_vacancy/company/${companyId}`);
-                    const mod_response = response.data.map(e => ({ id: e.job_id, jobTitle: e.job_name, companyId: e.company_id, companyName: e.company_name, tags: e.tags, currency: e.salary.split('-')[0], salary: [e.salary.split('-')[1], e.salary.split('-')[2]], postDate: e.created_at.split('T')[0], last_date: e.last_date.split('T')[0], location: e.location, empType: e.emp_type, exp: e.experience, workStyle: e.work_style, workingDays: e.working_days, jobDesc: e.job_desc, jobReq: e.requirement, skills: e.skills.length ? e.skills : [{ 'skill': "" }], applicationsReceived: e.job_seekers, closed: e.closed }))
+                    const mod_response = response.data.map(e => ({ id: e.job_id, jobTitle: e.job_name, companyId: e.company_id, companyUsername: e.company_username, companyName: e.company_name, tags: e.tags, currency: e.salary.split('-')[0], salary: [e.salary.split('-')[1], e.salary.split('-')[2]], postDate: e.created_at.split('T')[0], last_date: e.last_date.split('T')[0], location: e.location, empType: e.emp_type, exp: e.experience, workStyle: e.work_style, workingDays: e.working_days, jobDesc: e.job_desc, jobReq: e.requirement, skills: e.skills.length ? e.skills : [{ 'skill': "" }], applicationsReceived: e.job_seekers, closed: e.closed }))
                     mod_response.sort((a, b) => {return Number(a.closed) - Number(b.closed) || b.postDate.localeCompare(a.postDate)}); 
 
                     SetJobVacancies(mod_response);
@@ -95,6 +104,7 @@ export default function OtherEmployerProfile({ data }) {
     }
     return (
         <div id="employer-profile-page">
+            {loading && <LoaderAnimation />}
             {redirectHome && <Navigate to='/' />}
             <ProfileHead access="viewOnly" data={newData} isNotEditing={isNotEditing} setIsNotEditing={updateEditStatus} />
             <NavigationBar active="employer-profile" />
@@ -114,7 +124,7 @@ export default function OtherEmployerProfile({ data }) {
                 <div className="employer-profile-pane employer-profile-middle-pane">
                     <FeatureBoxMiddlePaneText access="viewOnly" data={{ title: "About", edit: false }} childData={newData.overview}
                         reloadFn={callAPI} />
-                    <FeatureBoxMiddlePaneOpenings data={{ title: "Recent Job Openings", edit: false, vacancies: jobVacancies, userType: "seeker" }} childData={{ text: "This is for demo purpose only" }} />
+                    <FeatureBoxMiddlePaneOpenings data={{ title: "Recent Job Openings", edit: false, vacancies: jobVacancies, userType: "seeker", companyUsername: COMPANY_USERNAME, companyId: COMPANY_ID }} childData={{ text: "This is for demo purpose only" }} />
                     {/* <FeatureBoxMiddlePaneReview data={{title: "Reviews", edit: false}} childData={{text: "This is for demo purpose only"}}/> */}
 
 

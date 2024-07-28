@@ -68,7 +68,7 @@ export default function ContactCard({access, data, companyInfo, reloadFn, showSu
             {
                 isNotEditing ?
                     <Stack direction="column" spacing={1} className='contact-cards'>
-                        <Stack direction="row" spacing={1} className='contact-medium detail-medium'>
+                        <Stack direction="row" spacing={1} className='detail-medium'>
                             <div className='detail-identifier'>
                                 <IconButton aria-label="industry" disabled>
                                     <FactoryRoundedIcon />
@@ -78,7 +78,7 @@ export default function ContactCard({access, data, companyInfo, reloadFn, showSu
                             <p className="contact-p details-p">{companyInfo.industry ? companyInfo.industry : <span className='data-not-present-handle'>not linked</span>}</p>
                         </Stack>
 
-                        <Stack direction="row" spacing={1} className='contact-medium detail-medium'>
+                        <Stack direction="row" spacing={1} className='detail-medium'>
                             <div className='detail-identifier'>
                                 <IconButton aria-label="company size" disabled>
                                     <GroupsRoundedIcon />
@@ -87,7 +87,7 @@ export default function ContactCard({access, data, companyInfo, reloadFn, showSu
                             </div>
                             <p className="contact-p details-p">{companyInfo.company_size ? companyInfo.company_size : <span className='data-not-present-handle'>not linked</span>}</p>
                         </Stack>
-                        <Stack direction="row" spacing={1} className='contact-medium detail-medium'>
+                        <Stack direction="row" spacing={1} className='detail-medium'>
                             <div className='detail-identifier'>
                                 <IconButton aria-label="headquarters" disabled>
                                     <LocationCityRoundedIcon />
@@ -105,7 +105,7 @@ export default function ContactCard({access, data, companyInfo, reloadFn, showSu
                             </div>
                             <p className="contact-p details-p">{companyInfo.specialities ? companyInfo.specialities : <span className='data-not-present-handle'>not linked</span>}</p>
                         </Stack> */}
-                        <Stack direction="row" spacing={1} className='contact-medium detail-medium'>
+                        <Stack direction="row" spacing={1} className='detail-medium'>
                             <div className='detail-identifier'>
                                 <IconButton aria-label="locations" disabled>
                                     <AddLocationAltRoundedIcon />
@@ -119,7 +119,7 @@ export default function ContactCard({access, data, companyInfo, reloadFn, showSu
                     :
 
                     <Stack direction="column" spacing={1} className='contact-cards'>
-                        <Stack direction="row" spacing={1} className='contact-medium detail-medium'>
+                        <Stack direction="row" spacing={1} className='detail-medium'>
                             <div className='detail-identifier'>
                                 <IconButton aria-label="industry" disabled>
                                     <FactoryRoundedIcon />
@@ -134,7 +134,7 @@ export default function ContactCard({access, data, companyInfo, reloadFn, showSu
                             </TextField>
                         </Stack>
 
-                        <Stack direction="row" spacing={1} className='contact-medium detail-medium'>
+                        <Stack direction="row" spacing={1} className='detail-medium'>
                             <div className='detail-identifier'>
                                 <IconButton aria-label="company size" disabled>
                                     <GroupsRoundedIcon />
@@ -154,7 +154,7 @@ export default function ContactCard({access, data, companyInfo, reloadFn, showSu
                                 })}>
                             </TextField>
                         </Stack>
-                        <Stack direction="row" spacing={1} className='contact-medium detail-medium'>
+                        <Stack direction="row" spacing={1} className='detail-medium'>
                             <div className='detail-identifier'>
                                 <IconButton aria-label="headquarters" disabled>
                                     <LocationCityRoundedIcon />
@@ -181,7 +181,7 @@ export default function ContactCard({access, data, companyInfo, reloadFn, showSu
                                 {...register("specialities")}>
                             </TextField>
                         </Stack> */}
-                        <Stack direction="row" spacing={1} className='contact-medium detail-medium'>
+                        <Stack direction="row" spacing={1} className='detail-medium'>
                             <div className='detail-identifier'>
                                 <IconButton aria-label="locations" disabled>
                                     <AddLocationAltRoundedIcon />

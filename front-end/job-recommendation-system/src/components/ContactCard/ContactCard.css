@@ -5,6 +5,14 @@
 
 .contact-medium p {
     font-size: 1rem;
+    width: 70%;
+    /* overflow: hidden; */
+    overflow-x: auto;
+    white-space: nowrap;
+}
+.contact-medium p:hover {
+    font-size: 1rem;
+    color:#646cff
 }
 
 .contact-medium svg {

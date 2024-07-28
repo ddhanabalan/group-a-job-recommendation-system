@@ -17,7 +17,7 @@ import axios from 'axios';
 
 const autocompleteService = { current: null };
 
-const GoogleLocationSearch = forwardRef(function GoogleLocationSearch({ data, changeFn, locationValue, value, updateValue, textFieldType = "standard", disUnderline = false, textBgColor = "#D9D9D9", textPad = "0px", bordRad = "0px", fntFam = "auto", fntSize = "auto", use="jobs", ...props }, ref) {
+const GoogleLocationSearch = forwardRef(function GoogleLocationSearch({ data,usedIn, changeFn, locationValue, value, updateValue, textFieldType = "standard", disUnderline = false, textBgColor = "#D9D9D9", textPad = "0px", bordRad = "0px", fntFam = "auto", fntSize = "auto", use="jobs", ...props }, ref) {
     const MAPS_API_KEY = 'pk.0da703607c1469e631ae01d8480aa43e';
     const [query, setQuery] = useState(locationValue || '');
     const [options, setOptions] = useState([]);
@@ -82,6 +82,7 @@ const GoogleLocationSearch = forwardRef(function GoogleLocationSearch({ data, ch
                         ...params.InputProps,
                         disableUnderline: disUnderline,
                     }}
+                    className={usedIn==="filter"?"tags-add-input":""}
                     inputRef={ref}
                     sx={{
                         boxSizing: 'content-box',
@@ -89,7 +90,7 @@ const GoogleLocationSearch = forwardRef(function GoogleLocationSearch({ data, ch
                         paddingY: '0.05rem',
                         paddingX: textPad,
                         borderRadius: bordRad,
-                        '.MuiInputBase-input': { fontFamily: fntFam, fontSize: fntSize},
+                        '.MuiInputBase-input': { fontFamily: 'Inter-regular', fontSize: fntSize },
                     }}
                     {...props} />
 

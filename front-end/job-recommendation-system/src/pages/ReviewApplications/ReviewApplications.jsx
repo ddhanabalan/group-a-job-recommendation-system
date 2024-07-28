@@ -12,9 +12,11 @@ import { jobAPI, userAPI } from "../../api/axios";
 import NavigationBar from "../../components/NavigationBar/NavigationBar";
 import noApplicationsFiller from "../../images/no-applications-found.json";
 import careerGoLogo from "../../images/careergo_logo.svg";
+import LoaderAnimation from '../../components/LoaderAnimation/LoaderAnimation';
 
 export default function ReviewApplications({ userType, invite = null }) {
-
+    const [loading, SetLoading] = useState(true)
+    const PROCESSING_DELAY = 1000;
     console.log("user is ", userType)
     const link_data = useParams();
     console.log("received from rl", link_data)
@@ -35,6 +37,7 @@ export default function ReviewApplications({ userType, invite = null }) {
     //demoInfo is example vacancy profiles
     const [jobVacancies, setJobVacancies] = useState([]);
     const [jobApplicants, setApplicants] = useState([]);
+    const [processing, setProcessing] = useState(false);
     /*const demoInfo = [{ },
                       { id: 1, jobTitle: "Java Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "RS", salary: ["5000","10000"], postDate: "13/9/23" , location: 'Moscow', empType: 'Internship', exp: '1-5 years', jobDesc: "This is for demo purpose" ,jobReq:"This is for demo purpose",skills: ["java", "AI"], applicationsReceived: [1,2,3,4,5,7,8,9]},
                       { id: 2, jobTitle: "Ruby Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "RS", salary: ["5000","10000"], postDate: "13/9/23" , location: 'Uganda', empType: 'Temporary', exp: 'Fresher', jobDesc: "This is for demo purpose" ,jobReq:"This is for demo purpose",skills: ["ruby", "AI", "Django"], applicationsReceived: [1,2,3,4,5,7,9]},
@@ -114,6 +117,9 @@ export default function ReviewApplications({ userType, invite = null }) {
             console.log("jobs failed", e )
 
             alert(e.message);
+        }
+        finally {
+            SetLoading(false)
         }
     }
 
@@ -195,6 +201,7 @@ export default function ReviewApplications({ userType, invite = null }) {
     }
 
     const CreateJobRequest = async (jobId) => {
+        processDelay(true)
         try {
             const response = await jobAPI.post('/job_request/', {
                 "job_id": Number(jobId),
@@ -216,6 +223,9 @@ export default function ReviewApplications({ userType, invite = null }) {
             console.log("jobs failed", e)
 
             alert(e.message);
+        }
+        finally{
+            processDelay(false)
         }
     }
 
@@ -420,7 +430,7 @@ export default function ReviewApplications({ userType, invite = null }) {
     }
 
     const handleInvite=async(status, job_invite_id)=>{
-      
+        processDelay(true)
         const req_data = {
             "status": status,
         }
@@ -443,7 +453,9 @@ export default function ReviewApplications({ userType, invite = null }) {
 
             alert(e.message);
         }
-    
+        finally{
+            processDelay(false);
+        }
 
     }
 
@@ -496,6 +508,15 @@ export default function ReviewApplications({ userType, invite = null }) {
     const handleClick=(timeout, callFn, value=null)=>{
         setTimeout(() => {value?callFn(value):callFn()}, timeout);
     };
+
+    const processDelay = (value)=>{
+        if(value===true) setProcessing(true)
+        else{
+        setTimeout(() => {
+          setProcessing(false)
+        }, PROCESSING_DELAY);
+      }
+      }
 
     const expJob = (selection) => {
         //console.log("select", selection);
@@ -558,6 +579,7 @@ export default function ReviewApplications({ userType, invite = null }) {
 
     return (
         <div id="page" >
+            {loading && <LoaderAnimation />}
             <div className={`review-left-bar${sidebarState ? " wide" : ""}`}>
                 {sidebarState ?
                     <>
@@ -565,7 +587,7 @@ export default function ReviewApplications({ userType, invite = null }) {
                         <div className="back-button-review" onClick={() => setSideBar(false)}><BackBtn outlineShape={"square"} butColor={"white"} /></div>
                     </>
                     :
-                    <OpeningsListBar data={filtered} userType={userType} userID={companyID} pageType="review" chooseEntry={chooseEntry} searchBar={searchBar} listToDescParentFunc={listToDescParentFunc} preselectedEntry={selectedEntry} filterFunc={filterStateSet} deleteJobFunc={DeleteJobAPI} editJobVacancyStatusFunc={editJobVacancyStatusAPI} invite={Number(link_data.job_id)} />
+                    <OpeningsListBar data={filtered} userType={userType} userID={companyID} pageType="review" chooseEntry={chooseEntry} searchBar={searchBar} listToDescParentFunc={listToDescParentFunc} preselectedEntry={selectedEntry} /*filterFunc={filterStateSet}*/ deleteJobFunc={DeleteJobAPI} editJobVacancyStatusFunc={editJobVacancyStatusAPI} invite={Number(link_data.job_id)} />
                 }
             </div>
             {filterstat ?
@@ -626,7 +648,7 @@ export default function ReviewApplications({ userType, invite = null }) {
                     )
                     :
                     (selectedJobEntry != null && filtered.length != 0 ?
-                        <JobCardExpanded data={selectedJobEntry} createJobRequest={CreateJobRequest} userData={userData} invite={selectedJobEntry.userInvited?true: null} handleInvite={handleInvite} applicationErrors={applicationErrors}/>
+                        <JobCardExpanded data={selectedJobEntry} createJobRequest={CreateJobRequest} userData={userData} invite={selectedJobEntry.userInvited?true: null} handleInvite={handleInvite} applicationErrors={applicationErrors} processing={processing}/>
                         :
                         <></>
                     )
