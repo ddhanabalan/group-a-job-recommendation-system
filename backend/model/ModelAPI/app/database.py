@@ -1,3 +1,9 @@
+"""
+Database module for the ModelAPI application.
+
+This module contains the database engine and session for the ModelAPI application.
+
+"""
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base

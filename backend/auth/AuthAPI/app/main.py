@@ -984,7 +984,7 @@ def username_verify(email: str, db: Session = Depends(get_db)):
     return authcrud.get_verify_by_email(db, email)
 
 
-@app.post("/user/verified/{username}", status_code=status.HTTP_200_OK)
+@app.get("/user/verified/{username}", status_code=status.HTTP_200_OK)
 def check_user_verified(username: str, db: Session = Depends(get_db)):
     """
     Check if the given username is verified in the database.

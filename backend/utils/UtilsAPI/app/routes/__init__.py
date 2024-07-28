@@ -1,3 +1,11 @@
+"""
+Module for the routes for the UtilsAPI application.
+
+This module contains the routes for the UtilsAPI application.
+
+The routes include the skill, position, industry, and country routes.
+
+"""
 from ..models import skill, position
 from ..schemas import skill, position
 from ..crud import skill, position

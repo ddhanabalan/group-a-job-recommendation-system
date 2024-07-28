@@ -10,6 +10,7 @@ ENV SQL_HOST=mysql_server
 ENV DATABASE_NAME=utilDB
 ENV SQL_USER=utilsql
 ENV SQL_PASSWORD=utilsqlPass_32
+ENV SERVER_IP ="http://career-go.centralindia.cloudapp.azure.com"
 ENV SQL_PORT=3306
 
 

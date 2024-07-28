@@ -6,6 +6,7 @@ ENV SQL_HOST=mysql_server
 ENV AUTH_API_HOST=authapi
 ENV USER_API_HOST=userapi
 ENV JOB_API_HOST=jobapi
+ENV SERVER_IP ="http://career-go.centralindia.cloudapp.azure.com"
 ENV DATABASE_NAME=modelDB
 ENV SQL_USER=modelsql
 ENV SQL_PASSWORD=modelsPass_32
@@ -24,7 +25,6 @@ RUN apt-get update && apt-get install -y python3-dev default-libmysqlclient-dev 
 COPY ./ModelAPI /app
 
 RUN wget --no-check-certificate "https://drive.google.com/uc?export=download&id=1psJZZBbYxwSEobRsW28Trp6G164zoGzF" -O /mlmodel/tfidf_vectorizer.pkl
-#RUN wget --no-check-certificate "https://drive.google.com/uc?export=download&id=1mXT4kTNUZ-XGBLcUHqcbqC3p8ZMuqoFh" -O mlmodel/final_data.pkl
 RUN wget --no-check-certificate "https://drive.google.com/uc?export=download&id=1xAxFvfMDG-B1pPIAPLlbI36OLuJK8Y5u" -O /mlmodel/nn_model_jobs.pkl
 RUN wget --no-check-certificate "https://drive.google.com/uc?export=download&id=1bOvHktgvWScaG_pSRkRqHrBgYykNd3Dl" -O /mlmodel/nn_model_applicants.pkl
 COPY requirements.txt $APP_HOME/

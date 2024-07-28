@@ -1,4 +1,4 @@
-from typing import Type
+from typing import Type, List
 
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
@@ -28,57 +28,15 @@ def create(db: Session, position: schema.PositionCreate):
         return False
 
 
-def update(db: Session, position_id: int, position: schema.PositionUpdate):
+
+def get_all(db: Session) -> List[Type[model.Position]]:
     """
-    Update an existing position in the database.py.
+    Retrieve all positions from the database.py.
 
     Args:
         db (Session): SQLAlchemy database.py session.
-        position_id (int): ID of the position to be updated.
-        position (schema.PositionUpdate): Updated position details.
 
     Returns:
-        bool: True if update is successful, False otherwise.
+        List[model.Position]: List of all position objects.
     """
-    try:
-        position_db = (
-            db.query(model.Position).filter(model.Position.id == position_id).first()
-        )
-        if not position_db:
-            return False
-        for k, v in position.dict(exclude_unset=True).items():
-            setattr(position_db, k, v)
-        db.commit()
-        return True
-    except SQLAlchemyError:
-        db.rollback()
-        return False
-
-
-def delete(db: Session, position_id: int):
-    """
-    Delete an existing position from the database.py.
-
-    Args:
-        db (Session): SQLAlchemy database.py session.
-        position_id (int): ID of the position to be deleted.
-
-    Returns:
-        bool: True if deletion is successful, False otherwise.
-    """
-    try:
-        position_db = (
-            db.query(model.Position).filter(model.Position.id == position_id).first()
-        )
-        if not position_db:
-            return False
-        db.delete(position_db)
-        db.commit()
-        return True
-    except SQLAlchemyError:
-        db.rollback()
-        return False
-
-
-def get_all(db: Session):
     return db.query(model.Position).all()

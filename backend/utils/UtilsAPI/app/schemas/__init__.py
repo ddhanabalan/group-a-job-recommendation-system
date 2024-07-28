@@ -1,3 +1,8 @@
+"""
+Module for the schemas for the UtilsAPI application.
+
+
+"""
 from .skill import Skill, SkillCreate
 
 from .position import Position, PositionCreate, PositionUpdate

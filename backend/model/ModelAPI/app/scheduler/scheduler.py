@@ -1,11 +1,13 @@
+"""
+This module contains the scheduler for the ModelAPI application.
+"""
 import logging
 import pickle
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from sqlalchemy.orm import Session
 
-from . import crud, schemas,get_db
-from ..database import SessionLocal
+from . import crud, schemas, get_db
 
 logger = logging.getLogger(__name__)
 
@@ -17,6 +19,16 @@ with open("/mlmodel/nn_model_jobs.pkl", "rb") as f:
 
 
 async def update_job_recommendation(data, db: Session):
+    """
+    Update the job recommendation in the database.
+
+    Args:
+        data (schemas.JobRecommendation): The job recommendation data.
+        db (Session): The database session.
+
+    Returns:
+        None
+    """
     crud.delete_all_job_output(db)
     for idx, data in enumerate(data.output):
         crud.create_job_output(db, data)
@@ -25,6 +37,16 @@ async def update_job_recommendation(data, db: Session):
 
 
 async def update_seeker_recommendation(datas, db: Session):
+    """
+    Update the seeker recommendation in the database.
+
+    Args:
+        datas (List[schemas.SeekerOutput]): The seeker recommendation data.
+        db (Session): The database session.
+
+    Returns:
+        None
+    """
     crud.delete_all_seeker_output(db)
     for idx, data in enumerate(datas):
         crud.create_seeker_output(db, data)
@@ -88,15 +110,16 @@ async def recommend_applicants(input_data, db: Session):
     await update_seeker_recommendation(db=db, datas=data)
 
 
-async def recommend_jobs_for_applicant(input_data, db: Session):
+async def recommend_jobs_for_applicant(input_data, db: Session) -> None:
     """
     Recommends jobs based on their positions of interest and job descriptions.
+
     Args:
         input_data (InputData): The input data containing the job details and applicant positions of interest.
         db (Session): The database session.
 
     Returns:
-
+        None
     """
     jobs = input_data.jobs
     logger.info("Number of jobs: %s", len(jobs))
@@ -131,7 +154,7 @@ async def recommend_jobs_for_applicant(input_data, db: Session):
 
         top_jobs_for_applicant = [jobs[idx].job_id for idx in nearest_neighbors_indices]
         logger.info(
-            # "Job recommendations for applicant %s %s: %s",
+            "Job recommendations for applicant %s %s: %s",
             applicant_id,
             applicant.position_of_interest,
             top_jobs_for_applicant,
@@ -140,7 +163,6 @@ async def recommend_jobs_for_applicant(input_data, db: Session):
             output.append({"user_id": applicant_id, "job_id": job})
 
     await update_job_recommendation(db=db, data=schemas.JobOutputData(output=output))
-
 
 async def model_instance_runner():
     """
@@ -175,6 +197,7 @@ async def model_instance_runner():
         logger.info("Model Instance finished!")
     finally:
         db.close()
+
 
 job_recommendation_scheduler = AsyncIOScheduler()
 job_recommendation_scheduler.add_job(

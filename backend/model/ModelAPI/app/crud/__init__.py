@@ -1,3 +1,8 @@
+"""
+CRUD module for the ModelAPI application.
+
+"""
+
 from ..models import (
     JobRecommendationJobOutput,
     JobRecommendationJobInput,

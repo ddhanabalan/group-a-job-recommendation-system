@@ -19,3 +19,5 @@ DATABASE_NAME = os.environ.get("DATABASE_NAME")
 # Retrieving Host Auth and User
 AUTH_API_HOST = os.environ.get("AUTH_API_HOST")
 USER_API_HOST = os.environ.get("USER_API_HOST")
+JOB_API_HOST = os.environ.get("JOB_API_HOST")
+SERVER_IP = os.environ.get("SERVER_IP")

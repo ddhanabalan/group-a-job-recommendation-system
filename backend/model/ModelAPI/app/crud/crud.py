@@ -10,24 +10,48 @@ from . import schemas
 
 def create_job_input(
     db: Session, job_recommendation_job_input: model.JobRecommendationJobInput
-):
+) -> bool:
+    """
+    Creates a new job input in the database.
+
+    Args:
+        db (Session): The SQLAlchemy database session.
+        job_recommendation_job_input (model.JobRecommendationJobInput): The job input object to be created.
+
+    Returns:
+        bool: True if the job input is successfully created, False otherwise.
+
+    Raises:
+        SQLAlchemyError: If an error occurs during the creation of the job input.
+    """
     try:
         db.add(job_recommendation_job_input)
         db.commit()
-        
+
         return True
     except SQLAlchemyError as e:
         db.rollback()
         return False
 
 
-def create_seeker_input(
-    db: Session, job_recommendation_seeker_input: model.SeekerInputPOI
-):
+def create_seeker_input(db: Session, job_recommendation_seeker_input: model.SeekerInputPOI) -> bool:
+    """
+    Creates a new seeker input in the database.
+
+    Args:
+        db (Session): The SQLAlchemy database session.
+        job_recommendation_seeker_input (model.SeekerInputPOI): The seeker input object to be created.
+
+    Returns:
+        bool: True if the seeker input is successfully created, False otherwise.
+
+    Raises:
+        SQLAlchemyError: If an error occurs during the creation of the seeker input.
+    """
     try:
         db.add(job_recommendation_seeker_input)
         db.commit()
-        
+
         return True
     except SQLAlchemyError as e:
         db.rollback()
@@ -35,52 +59,110 @@ def create_seeker_input(
 
 
 def create_job_output(db: Session, job_recommendation_job_output: schemas.JobOutput):
+    """
+    Creates a new job output in the database.
+
+    Args:
+        db (Session): The SQLAlchemy database session.
+        job_recommendation_job_output (schemas.JobOutput): The job output object to be created.
+
+    Returns:
+        bool: True if the job output is successfully created, False otherwise.
+
+    Raises:
+        SQLAlchemyError: If an error occurs during the creation of the job output.
+    """
     try:
         db.add(model.JobRecommendationJobOutput(**job_recommendation_job_output.dict()))
         db.commit()
-        
+
         return True
     except SQLAlchemyError as e:
         db.rollback()
         return False
 
 
-def create_seeker_output(
-    db: Session, job_recommendation_seeker_output: schemas.SeekerOutput
-):
+def create_seeker_output(db: Session, job_recommendation_seeker_output: schemas.SeekerOutput):
+    """
+    Creates a new seeker output in the database.
+
+    Args:
+        db (Session): The SQLAlchemy database session.
+        job_recommendation_seeker_output (schemas.SeekerOutput): The seeker output object to be created.
+
+    Returns:
+        bool: True if the seeker output is successfully created, False otherwise.
+
+    Raises:
+        SQLAlchemyError: If an error occurs during the creation of the seeker output.
+    """
     try:
-        db.add(model.JobRecommendationSeekerOutput(**job_recommendation_seeker_output))
+        db.add(model.JobRecommendationSeekerOutput(**job_recommendation_seeker_output.dict()))
         db.commit()
-        
+
         return True
     except SQLAlchemyError as e:
         db.rollback()
         return False
 
 
-def delete_all_job_output(db: Session):
+def delete_all_job_output(db: Session) -> bool:
+    """
+    Deletes all job outputs from the database.
+
+    Args:
+        db (Session): SQLAlchemy database.py session.
+
+    Returns:
+        bool: True if the job outputs were successfully deleted, False otherwise.
+    """
     try:
         db.query(model.JobRecommendationJobOutput).delete()
         db.commit()
-        
+
         return True
     except SQLAlchemyError:
         db.rollback()
         return False
 
 
-def delete_all_seeker_output(db: Session):
+def delete_all_seeker_output(db: Session) -> bool:
+    """
+    Deletes all seeker outputs from the database.
+
+    Args:
+        db (Session): SQLAlchemy database.py session.
+
+    Returns:
+        bool: True if the seeker outputs were successfully deleted, False otherwise.
+
+    Raises:
+        SQLAlchemyError: If an error occurs during the deletion of the seeker outputs.
+    """
     try:
         db.query(model.JobRecommendationSeekerOutput).delete()
         db.commit()
-        
+
         return True
     except SQLAlchemyError:
         db.rollback()
         return False
 
 
-def delete_job_input(db: Session, job_id: int):
+def delete_job_input(db: Session, job_id: int) -> bool:
+    """
+    Delete job input from the database.
+
+    Args:
+        db (Session): SQLAlchemy database.py session.
+        job_id (int): ID of the job input to delete.
+
+    Returns:
+        bool: True if the job input deletion is successful, False otherwise.
+
+    Raises:
+        SQLAlchemyError: If an error occurs during the deletion of the job input.
+    """
     try:
         data = (
             db.query(model.JobRecommendationJobInput)
@@ -89,14 +171,27 @@ def delete_job_input(db: Session, job_id: int):
         )
         db.delete(data)
         db.commit()
-        
+
         return True
     except SQLAlchemyError:
         db.rollback()
         return False
 
 
-def delete_seeker_input(db: Session, poi_id: int):
+def delete_seeker_input(db: Session, poi_id: int) -> bool:
+    """
+    Delete seeker input from the database.
+
+    Args:
+        db (Session): SQLAlchemy database.py session.
+        poi_id (int): ID of the seeker input to delete.
+
+    Returns:
+        bool: True if the seeker input deletion is successful, False otherwise.
+
+    Raises:
+        SQLAlchemyError: If an error occurs during the deletion of the seeker input.
+    """
     try:
         data = (
             db.query(model.SeekerInputPOI)
@@ -105,7 +200,7 @@ def delete_seeker_input(db: Session, poi_id: int):
         )
         db.delete(data)
         db.commit()
-        
+
         return True
     except SQLAlchemyError:
         db.rollback()
@@ -113,6 +208,17 @@ def delete_seeker_input(db: Session, poi_id: int):
 
 
 def get_applicant_output(db: Session, applicant_id: int) -> List[int] | []:
+    """
+    Retrieve job IDs associated with a given applicant ID from the database.
+
+    Args:
+        db (Session): SQLAlchemy database.py session.
+        applicant_id (int): ID of the applicant whose job IDs are to be retrieved.
+
+    Returns:
+        List[int]: List of job IDs associated with the applicant.
+        []: If an error occurs during the retrieval of the job IDs.
+    """
     try:
         result = (
             db.query(model.JobRecommendationJobOutput.job_id)
@@ -131,6 +237,17 @@ def get_applicant_output(db: Session, applicant_id: int) -> List[int] | []:
 def get_job_output(
     db: Session, job_pos: str
 ) -> List[model.JobRecommendationSeekerOutput] | []:
+    """
+    Retrieve user IDs associated with a given job position from the database.
+
+    Args:
+        db (Session): SQLAlchemy database.py session.
+        job_pos (str): The job position whose user IDs are to be retrieved.
+
+    Returns:
+        List[model.JobRecommendationSeekerOutput]: List of user IDs associated with the job position.
+        []: If an error occurs during the retrieval of the user IDs.
+    """
     try:
         result = (
             db.query(model.JobRecommendationSeekerOutput.user_id)
@@ -145,6 +262,16 @@ def get_job_output(
 
 
 def get_seeker_input(db: Session) -> List[Dict[str, str]] | []:
+    """
+    Retrieve seeker input from the database.
+
+    Args:
+        db (Session): SQLAlchemy database.py session.
+
+    Returns:
+        List[Dict[str, str]]: List of dictionaries containing applicant ID and position of interest.
+        []: If an error occurs during the retrieval of the seeker input.
+    """
     try:
         seeker_input = db.query(
             model.SeekerInputPOI.user_id, model.SeekerInputPOI.position
@@ -165,6 +292,16 @@ def get_seeker_input(db: Session) -> List[Dict[str, str]] | []:
 
 
 def get_job_input(db: Session) -> List[Dict[str, Union[int, str]]] | []:
+    """
+    Retrieve job input from the database.
+
+    Args:
+        db (Session): SQLAlchemy database.py session.
+
+    Returns:
+        List[Dict[str, Union[int, str]]]: List of dictionaries containing job input data.
+        []: If an error occurs during the retrieval of the job input.
+    """
     try:
         job_input = db.query(model.JobRecommendationJobInput).all()
         job_dict = [

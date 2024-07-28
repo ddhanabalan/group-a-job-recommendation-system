@@ -1,8 +1,12 @@
-from typing import Type
+"""
+Industry CRUD module for the UtilsAPI application.
 
-from sqlalchemy.orm import Session
+"""
+from typing import List, Type
+
 from sqlalchemy.exc import SQLAlchemyError
-from pydantic import EmailStr
+from sqlalchemy.orm import Session
+
 from ..models import industry as model
 from ..schemas import industry as schema
 
@@ -28,57 +32,15 @@ def create(db: Session, industry: schema.IndustryCreate):
         return False
 
 
-def update(db: Session, industry_id: int, industry: schema.IndustryUpdate):
+
+def get_all(db: Session) -> List[Type[model.Industry]]:
     """
-    Update an existing industry in the database.py.
+    Retrieve all industries from the database.py.
 
     Args:
         db (Session): SQLAlchemy database.py session.
-        industry_id (int): ID of the industry to be updated.
-        industry (schema.IndustryUpdate): Updated industry details.
 
     Returns:
-        bool: True if update is successful, False otherwise.
+        List[model.Industry]: List of all industry objects in the database.
     """
-    try:
-        industry_db = (
-            db.query(model.Industry).filter(model.Industry.id == industry_id).first()
-        )
-        if not industry_db:
-            return False
-        for k, v in industry.dict(exclude_unset=True).items():
-            setattr(industry_db, k, v)
-        db.commit()
-        return True
-    except SQLAlchemyError:
-        db.rollback()
-        return False
-
-
-def delete(db: Session, industry_id: int):
-    """
-    Delete an existing industry from the database.py.
-
-    Args:
-        db (Session): SQLAlchemy database.py session.
-        industry_id (int): ID of the industry to be deleted.
-
-    Returns:
-        bool: True if deletion is successful, False otherwise.
-    """
-    try:
-        industry_db = (
-            db.query(model.Industry).filter(model.Industry.id == industry_id).first()
-        )
-        if not industry_db:
-            return False
-        db.delete(industry_db)
-        db.commit()
-        return True
-    except SQLAlchemyError:
-        db.rollback()
-        return False
-
-
-def get_all(db: Session):
     return db.query(model.Industry).all()
