@@ -8,7 +8,7 @@ ENV USER_API_HOST=userapi
 
 ENV MODEL_API_HOST=modelapi
 
-ENV SERVER_IP ="http://career-go.centralindia.cloudapp.azure.com"
+ENV SERVER_IP="http://career-go.centralindia.cloudapp.azure.com"
 ENV DATABASE_NAME=jobDB
 ENV SQL_USER=jobsql
 ENV SQL_PASSWORD=jobsPass_32

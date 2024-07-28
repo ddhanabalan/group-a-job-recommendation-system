@@ -16,7 +16,7 @@ from .. import (
     check_authorization,
     get_current_user,
 )
-from ...utils import get_seeker_details,  send_request_status_notif
+from ...utils import get_seeker_info,  send_request_status_notif
 
 job_request_router = APIRouter(prefix="/job_request")
 
@@ -130,7 +130,7 @@ async def update_job_request(
         )
     job_request = jobcrud.request.get(db, job_request_id)
     job = jobcrud.vacancy.get(db, job_request.job_id)
-    seeker = await get_seeker_details(job_request.user_id, authorization=authorization)
+    seeker = await get_seeker_info(job_request.user_id, authorization=authorization)
     await send_request_status_notif(
         seeker.get("username"),
         job.company_name,
