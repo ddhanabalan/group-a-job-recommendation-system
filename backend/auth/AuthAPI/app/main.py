@@ -26,7 +26,7 @@ from .config import (
     JOB_API_HOST,
     USER_API_HOST,
     MODEL_API_HOST,
-    PORT,
+    PORT, SERVER_IP,
 )
 from .crud import authcrud
 from .database import SessionLocal, engine
@@ -36,7 +36,7 @@ from .utils import validate_user_update, send_verify, send_pwd_reset
 
 authmodel.Base.metadata.create_all(bind=engine)
 origins = [
-    "http://career-go.centralindia.cloudapp.azure.com",
+    F"{SERVER_IP}",
     f"http://{USER_API_HOST}:{PORT}",
     f"http://{JOB_API_HOST}:{PORT}",
     f"http://{MODEL_API_HOST}:{PORT}",
@@ -982,3 +982,18 @@ def username_verify(email: str, db: Session = Depends(get_db)):
         bool: True if the email is verified, False otherwise.
     """
     return authcrud.get_verify_by_email(db, email)
+
+
+@app.post("/user/verified/{username}", status_code=status.HTTP_200_OK)
+def check_user_verified(username: str, db: Session = Depends(get_db)):
+    """
+    Check if the given username is verified in the database.
+
+    Args:
+        username (str): The username to check.
+        db (Session, optional): The database session. Defaults to Depends(get_db).
+
+    Returns:
+        bool: True if the username is verified, False otherwise.
+    """
+    return authcrud.check_user_verified(db, username)

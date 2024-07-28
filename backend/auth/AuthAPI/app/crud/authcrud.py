@@ -240,3 +240,21 @@ def check_email_available(db: Session, email: str) -> bool:
         .first()
         is None
     )
+
+def check_user_verified(db: Session, username: str) -> bool:
+    """
+    Check if the user is verified by username.
+
+    Args:
+        db (Session): SQLAlchemy database.py session.
+        username (str): Username of the user to retrieve.
+
+    Returns:
+        bool: True if the user is verified, False otherwise.
+    """
+    return (
+        db.query(authmodel.UserAuth.verified)
+        .filter(authmodel.UserAuth.username == username)
+        .first()
+        .verified
+    )

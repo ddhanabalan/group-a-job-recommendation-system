@@ -1,8 +1,15 @@
+
+"""
+Routers for the Job API.
+
+"""
+
 from fastapi import APIRouter
 from sqlalchemy.orm import Session
 
 from ..schemas import jobschema
 from ..models import jobmodel
+from ..config import USER_API_HOST,AUTH_API_HOST,MODEL_API_HOST,SERVER_IP
 from ..utils import (
     get_db,
     check_authorization,

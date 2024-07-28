@@ -1,3 +1,9 @@
+"""
+
+This module contains the scheduler for closing vacancies.
+
+"""
+
 import httpx
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 import logging

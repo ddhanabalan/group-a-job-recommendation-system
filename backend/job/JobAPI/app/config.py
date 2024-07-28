@@ -1,3 +1,12 @@
+"""
+Configuration module for the JobAPI application.
+
+This module contains the configuration values needed to run the application.
+Values are read from the environment variables and stored in constants.
+
+"""
+
+
 import os
 from dotenv import load_dotenv
 
@@ -19,6 +28,9 @@ DATABASE_NAME = os.environ.get("DATABASE_NAME")
 # Retrieving Host Auth and User
 AUTH_API_HOST = os.environ.get("AUTH_API_HOST")
 USER_API_HOST = os.environ.get("USER_API_HOST")
+MODEL_API_HOST = os.environ.get("MODEL_API_HOST")
+
+SERVER_IP = os.environ.get("SERVER_IP")
 
 SMTP_SERVER = os.environ.get("SMTP_SERVER")
 SMTP_PORT = os.environ.get("SMTP_PORT")

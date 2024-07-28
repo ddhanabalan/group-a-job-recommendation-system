@@ -1,3 +1,11 @@
+"""
+Main module for the JobAPI application.
+
+This module contains the main FastAPI application for the JobAPI application.
+The application is configured using FastAPI and CORS middleware.
+
+"""
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -10,12 +18,7 @@ from .scheduler import vacancy_close_scheduler
 
 origins = [
     "*",
-    "http://localhost.tiangolo.com",
-    "https://localhost.tiangolo.com",
-    "http://localhost",
-    "http://127.0.0.1:5500",
-    "http://localhost:8000",
-    "http://localhost:5500",
+
 ]
 
 logging.basicConfig(level=logging.INFO)

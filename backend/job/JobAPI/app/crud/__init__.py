@@ -1,3 +1,6 @@
+"""
+Module for CRUD operations.
+"""
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from typing import List, Type

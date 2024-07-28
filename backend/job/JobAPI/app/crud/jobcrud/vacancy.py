@@ -1,3 +1,9 @@
+"""
+
+Job Vacancy CRUD Operations
+
+"""
+
 from datetime import datetime
 
 from sqlalchemy import func, Integer, cast, desc, asc
@@ -30,6 +36,17 @@ def get_all(db: Session, company_id: int = None) -> List[Type[jobschema.JobVacan
 
 
 def get_all_by_close_time(db: Session, close_date: datetime = datetime.utcnow()):
+    """
+    Retrieves all job vacancies from the database.py that have a last_date equal to the specified close_date.
+
+    Args:
+        db (Session): SQLAlchemy database.py session.
+        close_date (datetime, optional): The date to filter job vacancies by. Defaults to the current UTC date and time.
+
+    Returns:
+        List[jobmodel.JobVacancy]: A list of job vacancy objects that have a last_date equal to the specified close_date.
+                                   If an SQLAlchemyError occurs, an empty list is returned.
+    """
     try:
         return (
             db.query(jobmodel.JobVacancy)
@@ -41,12 +58,26 @@ def get_all_by_close_time(db: Session, close_date: datetime = datetime.utcnow())
 
 
 def get_all_by_job_ids(db: Session, job_ids: List[int]):
+    """
+    Retrieves all job vacancies from the database.py based on a list of job IDs.
+
+    Args:
+        db (Session): The SQLAlchemy database session.
+        job_ids (List[int]): A list of job IDs.
+
+    Returns:
+        List[jobmodel.JobVacancy]: A list of job vacancy objects.
+
+    Raises:
+        SQLAlchemyError: If an error occurs while querying the database.
+
+    """
     try:
-        jobs=[]
+        jobs = []
         for job_id in job_ids:
             query = (
                 db.query(jobmodel.JobVacancy)
-                .filter(jobmodel.JobVacancy.job_id==job_id)
+                .filter(jobmodel.JobVacancy.job_id == job_id)
                 .first()
             )
             jobs.append(query)
@@ -77,6 +108,19 @@ def get(db: Session, job_vacancy_id: int) -> Type[jobmodel.JobVacancy] | None:
 
 
 def create(db: Session, job_vacancy: jobmodel.JobVacancy) -> bool:
+    """
+    Creates a new job vacancy in the database.
+
+    Args:
+        db (Session): The SQLAlchemy database session.
+        job_vacancy (jobmodel.JobVacancy): The job vacancy object to be created.
+
+    Returns:
+        bool: True if the job vacancy is successfully created, False otherwise.
+
+    Raises:
+        SQLAlchemyError: If an error occurs during the creation of the job vacancy.
+    """
     try:
         db.add(job_vacancy)
         db.commit()
@@ -88,15 +132,18 @@ def create(db: Session, job_vacancy: jobmodel.JobVacancy) -> bool:
 
 def update(db: Session, job_vacancy_id: int, update_job_vacancy: dict) -> bool:
     """
-    Update a job vacancy in the database.py.
+    Update a job vacancy in the database.
 
     Args:
-        db (Session): SQLAlchemy database.py session.
+        db (Session): SQLAlchemy database session.
         job_vacancy_id (int): ID of the job vacancy to update.
-        job_vacancy (jobschema.JobVacancyCreate): Updated job vacancy details.
+        update_job_vacancy (dict): Updated job vacancy details.
 
     Returns:
-        jobmodel.JobVacancy: Updated job vacancy object.
+        bool: True if the job vacancy is successfully updated, False otherwise.
+
+    Raises:
+        SQLAlchemyError: If an error occurs during the update of the job vacancy.
     """
     try:
         job_vacancy = (
@@ -116,14 +163,14 @@ def update(db: Session, job_vacancy_id: int, update_job_vacancy: dict) -> bool:
 
 def delete(db: Session, job_vacancy_id: int) -> bool:
     """
-    Delete a job vacancy from the database.py.
+    Delete a job vacancy from the database.py by ID.
 
     Args:
         db (Session): SQLAlchemy database.py session.
         job_vacancy_id (int): ID of the job vacancy to delete.
 
     Returns:
-        None
+        bool: True if the job vacancy was deleted successfully, False otherwise.
     """
     try:
         db.query(jobmodel.JobVacancy).filter(
@@ -131,7 +178,7 @@ def delete(db: Session, job_vacancy_id: int) -> bool:
         ).delete()
         db.commit()
         return True
-    except SQLAlchemyError as e:
+    except SQLAlchemyError:
         db.rollback()
         return False
 
@@ -238,14 +285,10 @@ def get_filtered_jobs(
     try:
         return query.all()
     except SQLAlchemyError as e:
-        print(e)
         return []
 
 
-def delete_by_user_id(
-    db: Session,
-    user_id: int,
-):
+def delete_by_user_id(db: Session, user_id: int) -> bool:
     """
     Delete all job vacancies associated with a user.
 
@@ -257,15 +300,25 @@ def delete_by_user_id(
         bool: True if job vacancies were deleted successfully, False otherwise.
     """
     try:
-        allVacany = (
+        # Get all job vacancies associated with the user
+        job_vacancies = (
             db.query(jobmodel.JobVacancy)
             .filter(jobmodel.JobVacancy.user_id == user_id)
             .all()
         )
-        for i in allVacany:
-            invite.delete_by_vacancy_id(db, i.job_id)
-            request.delete_by_vacancy_id(db, i.job_id)
-            db.delete(i)
+
+        # Delete all job invites associated with the job vacancies
+        for job_vacancy in job_vacancies:
+            invite.delete_by_vacancy_id(db, job_vacancy.job_id)
+
+        # Delete all job requests associated with the job vacancies
+        for job_vacancy in job_vacancies:
+            request.delete_by_vacancy_id(db, job_vacancy.job_id)
+
+        # Delete the job vacancies
+        for job_vacancy in job_vacancies:
+            db.delete(job_vacancy)
+
         db.commit()
         return True
     except SQLAlchemyError:
