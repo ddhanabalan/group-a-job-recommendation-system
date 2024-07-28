@@ -1,3 +1,10 @@
+"""
+
+Models for the UserAPI application.
+
+Seekers Side.
+
+"""
 from sqlalchemy import (
     Column,
     String,
@@ -14,6 +21,11 @@ from ..database import Base
 
 
 class SeekersDetails(Base):
+    """
+    Seekers details model.
+
+    Represents the details of a seeker in the database.
+    """
     __tablename__ = "seekers_details"
 
     user_id = Column(Integer, primary_key=True, index=True)
@@ -43,6 +55,11 @@ class SeekersDetails(Base):
 
 
 class SeekersPOI(Base):
+    """
+    Seekers POI model.
+
+    Represents the Points of Interest (POI) of a seeker in the database.
+    """
     __tablename__ = "seekers_poi"
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("seekers_details.user_id"))
@@ -52,8 +69,12 @@ class SeekersPOI(Base):
 
 
 class SeekersEmpType(Base):
-    __tablename__ = "seekers_emp_type"
+    """
+    Seekers Employment Type model.
 
+    Represents the type of employment a seeker in the database.
+    """
+    __tablename__ = "seekers_emp_type"
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("seekers_details.user_id"), index=True)
     emp_type = Column(String(32))
@@ -62,6 +83,11 @@ class SeekersEmpType(Base):
 
 
 class SeekersEducation(Base):
+    """
+    Seekers Education model.
+
+    Represents the education details of a seeker in the database.
+    """
     __tablename__ = "seekers_education"
 
     id = Column(Integer, primary_key=True)
@@ -75,6 +101,11 @@ class SeekersEducation(Base):
 
 
 class SeekersSkill(Base):
+    """
+    Seekers Skill model.
+
+    Represents the skills of a seeker in the database.
+    """
     __tablename__ = "seekers_skill"
 
     id = Column(Integer, primary_key=True)
@@ -85,6 +116,11 @@ class SeekersSkill(Base):
 
 
 class SeekersFormerJob(Base):
+    """
+    Seekers Former Job model.
+
+    Represents the previous job details of a seeker in the database.
+    """
     __tablename__ = "seekers_former_job"
 
     id = Column(Integer, primary_key=True)
@@ -98,6 +134,11 @@ class SeekersFormerJob(Base):
 
 
 class SeekersLocType(Base):
+    """
+    Seekers Loc Type model.
+
+    Represents the type of location a seeker in the database.
+    """
     __tablename__ = "seekers_loc_type"
 
     id = Column(Integer, primary_key=True)
@@ -108,6 +149,11 @@ class SeekersLocType(Base):
 
 
 class SeekersCertificate(Base):
+    """
+    Seekers Certificate model.
+
+    Represents the certificate details of a seeker in the database.
+    """
     __tablename__ = "seekers_certificate"
 
     id = Column(Integer, primary_key=True)
@@ -121,6 +167,11 @@ class SeekersCertificate(Base):
 
 
 class SeekersLanguage(Base):
+    """
+    Seekers Language model.
+
+    Represents the language details of a seeker in the database.
+    """
     __tablename__ = "seekers_language"
 
     id = Column(Integer, primary_key=True)

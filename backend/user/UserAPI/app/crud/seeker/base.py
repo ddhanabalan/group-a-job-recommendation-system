@@ -1,3 +1,8 @@
+"""
+Base module for the UserAPI application.
+
+"""
+
 from .. import seekermodel, seekerschema, Session, SQLAlchemyError
 
 

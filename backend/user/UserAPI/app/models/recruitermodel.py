@@ -1,11 +1,21 @@
-from sqlalchemy import Column, String, Integer, Date, DateTime, ForeignKey, Text
-from sqlalchemy.orm import relationship
-from sqlalchemy import event
+"""
+Models for the UserAPI application.
+
+"""
 from datetime import datetime
+
+from sqlalchemy import Column, String, Integer, Date, DateTime, ForeignKey, Text
+
 from ..database import Base
 
 
 class RecruiterDetails(Base):
+    """
+    Recruiter details model.
+
+    Represents the details of a recruiter in the database.
+    """
+
     __tablename__ = "recruiter_details"
 
     user_id = Column(Integer, primary_key=True, index=True)
@@ -32,9 +42,15 @@ class RecruiterDetails(Base):
     created_at = Column(DateTime, default=datetime.utcnow)
     updated_at = Column(DateTime, default=datetime.utcnow, onupdate=datetime.utcnow)
 
-
 class RecruiterAchievements(Base):
+    """
+    Recruiter achievements model.
+
+    Represents the achievements of a recruiter in the database.
+    """
+
     __tablename__ = "recruiter_achievements"
+
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey("recruiter_details.user_id"))
     achievement = Column(String(32))
@@ -43,6 +59,12 @@ class RecruiterAchievements(Base):
 
 
 class RecruiterSpeciality(Base):
+    """
+    Recruiter speciality model.
+
+    Represents the specialities of a recruiter in the database.
+    """
+
     __tablename__ = "recruiter_speciality"
 
     id = Column(Integer, primary_key=True)
@@ -53,6 +75,12 @@ class RecruiterSpeciality(Base):
 
 
 class RecruiterEmpType(Base):
+    """
+    Recruiter employment type model.
+
+    Represents the employment types of a recruiter in the database.
+    """
+
     __tablename__ = "recruiter_emp_type"
 
     id = Column(Integer, primary_key=True)
@@ -63,6 +91,12 @@ class RecruiterEmpType(Base):
 
 
 class RecruiterLocType(Base):
+    """
+    Recruiter location type model.
+
+    Represents the location types of a recruiter in the database.
+    """
+
     __tablename__ = "recruiter_loc_type"
 
     id = Column(Integer, primary_key=True)
