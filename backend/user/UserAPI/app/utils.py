@@ -1,3 +1,7 @@
+"""
+Utils module for the UserAPI application.
+
+"""
 import httpx
 from fastapi import Header, status, HTTPException
 from .database import SessionLocal
@@ -70,4 +74,3 @@ async def get_current_user(
                 status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid access token"
             )
         return response.json()
-

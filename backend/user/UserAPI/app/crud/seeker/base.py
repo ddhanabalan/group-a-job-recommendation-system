@@ -13,9 +13,7 @@ def create(db: Session, user: seekerschema.SeekersBase) -> bool:
         bool: True if creation is successful, False otherwise.
     """
     try:
-        user_model = seekermodel.SeekersDetails(
-            **user.dict()
-        )
+        user_model = seekermodel.SeekersDetails(**user.dict())
         db.add(user_model)
         db.commit()
         return True

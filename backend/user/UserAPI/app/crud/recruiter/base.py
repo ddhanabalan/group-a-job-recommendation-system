@@ -13,9 +13,7 @@ def create(db: Session, user: recruiterschema.RecruiterBase) -> bool:
         None
     """
     try:
-        user_model = recruitermodel.RecruiterDetails(
-            **user.dict()
-        )
+        user_model = recruitermodel.RecruiterDetails(**user.dict())
         print(user_model)
         db.add(user_model)
         db.commit()

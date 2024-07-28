@@ -6,7 +6,7 @@ from sqlalchemy import (
     DateTime,
     ForeignKey,
     LargeBinary,
-    Text
+    Text,
 )
 from sqlalchemy.orm import relationship
 from datetime import datetime

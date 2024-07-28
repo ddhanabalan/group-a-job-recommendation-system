@@ -1,3 +1,12 @@
+"""
+Config module for the UserAPI application.
+
+This module contains the configuration variables for the UserAPI application.
+
+The config variables are imported from the .env file.
+
+"""
+
 import os
 from dotenv import load_dotenv
 
@@ -19,3 +28,5 @@ DATABASE_NAME = os.environ.get("DATABASE_NAME")
 # Retrieving Host of Auth and Job
 AUTH_API_HOST = os.environ.get("AUTH_API_HOST")
 JOB_API_HOST = os.environ.get("JOB_API_HOST")
+SERVER_IP = os.environ.get("SERVER_IP")
+MODEL_API_HOST = os.environ.get("MODEL_API_HOST")

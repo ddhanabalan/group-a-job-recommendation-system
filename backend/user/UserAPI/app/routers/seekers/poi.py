@@ -1,3 +1,6 @@
+"""
+
+"""
 from typing import List
 
 import httpx
@@ -20,7 +23,17 @@ router = APIRouter()
 @router.get("/poi", response_model=List[seekerschema.SeekersPOI])
 async def user_seeker_poi(
     db: Session = Depends(get_db), authorization: str = Header(...)
-):
+) -> List[seekerschema.SeekersPOI]:
+    """
+    Get all point of interest (POI) details for the logged in seeker user.
+
+    Args:
+        db (Session): The SQLAlchemy database session.
+        authorization (str): The authorization token.
+
+    Returns:
+        List[seekerschema.SeekersPOI]: The list of POI details.
+    """
     user = await get_current_user(authorization=authorization)
     user_id = user.get("user_id")
     user_poi = crud.seeker.poi.get_all(db=db, user_id=user_id)
@@ -33,6 +46,17 @@ async def create_seeker_poi(
     db: Session = Depends(get_db),
     authorization: str = Header(...),
 ):
+    """
+    Create a new Point of Interest (POI) for a seeker in the database.
+
+    Args:
+        poi (seekerschema.SeekersPOI): The POI details to be created.
+        db (Session): SQLAlchemy database.py session.
+        authorization (str): The authorization token.
+
+    Returns:
+        dict: A dictionary containing a detail message on the success of the creation.
+    """
     user = await get_current_user(authorization=authorization)
     user_id = user.get("user_id")
     poi.user_id = user_id
@@ -62,6 +86,20 @@ async def create_seeker_poi(
 async def delete_seeker_poi(
     poi_id: int, db: Session = Depends(get_db), authorization: str = Header(...)
 ):
+    """
+    Delete a point of interest (POI) by its ID.
+
+    Args:
+        poi_id (int): The ID of the POI to delete.
+        db (Session, optional): The database session. Defaults to get_db().
+        authorization (str, optional): The authorization header. Defaults to Header(...).
+
+    Returns:
+        dict: A dictionary containing a detail message on the success of the deletion.
+
+    Raises:
+        HTTPException: If the POI is not found or if deleting the POI fails.
+    """
     await check_authorization(authorization=authorization)
 
     async with httpx.AsyncClient() as client:
@@ -89,6 +127,21 @@ async def update_seeker_poi(
     db: Session = Depends(get_db),
     authorization: str = Header(...),
 ):
+    """
+    Update a point of interest (POI) by its ID.
+
+    Args:
+        poi_id (int): The ID of the POI to update.
+        poi (seekerschema.SeekersPOI): The updated POI details.
+        db (Session): The SQLAlchemy database session.
+        authorization (str): The authorization token.
+
+    Returns:
+        seekerschema.SeekersPOI: The updated POI details.
+
+    Raises:
+        HTTPException: If the POI is not found or if updating the POI fails.
+    """
     await check_authorization(authorization)
     updated_poi = crud.seeker.poi.update(db, poi_id, poi)
     if not updated_poi:

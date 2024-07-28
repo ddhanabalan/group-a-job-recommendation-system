@@ -1,3 +1,8 @@
+"""
+Routers module for the UserAPI application.
+
+"""
+
 from fastapi import APIRouter
 from sqlalchemy.orm import Session
 

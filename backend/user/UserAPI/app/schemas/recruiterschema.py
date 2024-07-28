@@ -18,7 +18,6 @@ class RecruiterBase(BaseModel):
     profile_picture: Optional[str] = None
 
 
-
 class RecruiterDetails(RecruiterBase):
     bio: Optional[str] = None
     overview: Optional[str] = None

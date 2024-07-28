@@ -5,6 +5,8 @@ ENV APP_HOME /app
 ENV SQL_HOST=mysql_server
 ENV AUTH_API_HOST=authapi
 ENV JOB_API_HOST=jobapi
+ENV MODEL_API_HOST=modelapi
+ENV SERVER_IP="http://career-go.centralindia.cloudapp.azure.com"
 ENV DATABASE_NAME=usersDB
 ENV SQL_USER=usersql
 ENV SQL_PASSWORD=usersPass_32
