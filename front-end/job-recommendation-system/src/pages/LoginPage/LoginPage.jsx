@@ -53,6 +53,8 @@ export default function LoginPage({fixUser}) {
         }
     }
 
+    
+
     return (
         <div id="page" className='login-page'>
             {/* <LogoRedirect /> */}

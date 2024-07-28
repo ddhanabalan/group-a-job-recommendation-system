@@ -56,6 +56,44 @@ export default function JobVacancyForm({ data = {} }) {
     const [poisList, SetPoisList] = useState([]);
     const lowerLimit = watch("salary.0");
     const [isUpperLimitEnabled, setIsUpperLimitEnabled] = useState(false);
+    const currencyCodes = [
+        "USD", // United States of America
+        "EUR", // Germany, France
+        "GBP", // United Kingdom
+        "JPY", // Japan
+        "INR", // India
+        "AUD", // Australia
+        "CAD", // Canada
+        "CHF", // Switzerland
+        "CNY", // China
+        "RUB", // Russia
+        "BRL", // Brazil
+        "KRW", // South Korea
+        "MXN", // Mexico
+        "SGD", // Singapore
+        "ZAR", // South Africa
+        "SEK", // Sweden
+        "NOK", // Norway
+        "DKK", // Denmark
+        "TRY", // Turkey
+        "THB", // Thailand
+        "NZD", // New Zealand
+        "MYR", // Malaysia
+        "IDR", // Indonesia
+        "PHP", // Philippines
+        "VND", // Vietnam
+        "HKD", // Hong Kong
+        "SAR", // Saudi Arabia
+        "AED", // United Arab Emirates
+        "EGP", // Egypt
+        "NGN", // Nigeria
+        "COP", // Colombia
+        "ARS", // Argentina
+        "CLP",  // Chile
+        "RS",
+        "DLR",
+        "YEN"
+      ];
 
     useEffect(() => {
         if (lowerLimit !== undefined) {
@@ -362,7 +400,12 @@ export default function JobVacancyForm({ data = {} }) {
                                             <BackBtn />
                                         </Link>
                                     </div>
-                                    <CreateFormTextFields inputPlaceholder="Title" hparam="50px" fontsz="1.875rem" defaultValue={dta.jobTitle || ""} {...register("jobTitle", { required: "Job title is required", })} />
+                                    <CreateFormTextFields inputPlaceholder="Title" hparam="50px" fontsz="1.875rem" defaultValue={dta.jobTitle || ""} {...register("jobTitle", { required: "Job title is required", 
+                                        pattern: {
+                                            value: /^[A-Za-z\s]{0,256}$/,
+                                            message: "Only letters allowed"
+                                          }
+                                    })} />
                                 </h1>
                                 <p className='error-message' style={{ paddingLeft: '4px' }}>{errors.jobTitle?.message}</p>
                                 <p className='create-job-vacancy-company-name-p'>{Object.keys(companyData).length ? companyData.company_name : ""}</p>
@@ -488,7 +531,7 @@ export default function JobVacancyForm({ data = {} }) {
                                     <p><span className={`details-header details-header${errors.salary ? "-error" : ""/*console.log("salary erros", errors.salary)*/}`}>Salary<span className="text-danger"> *</span> :</span></p>
                                     <div className='option-divs'>
                                         <div className="salary-fields">
-                                            <CreateFormTextFields inputPlaceholder="Title" wparam="80px" fontsz="14px" select={true} defaultValue={dta.currency || "RS"} items={['RS', 'DLR', 'YEN']} {...register("currency", { required: "Currency is required" })} />
+                                            <CreateFormTextFields inputPlaceholder="Title" wparam="80px" fontsz="14px" select={true} defaultValue={dta.currency || "INR"} items={currencyCodes} {...register("currency", { required: "Currency is required" })} />
 
                                             <CreateFormTextFields inputPlaceholder="Lower limit" wparam="120px"
                                                 defaultValue={dta.salary ? dta.salary[0] || null : null}
@@ -549,13 +592,19 @@ export default function JobVacancyForm({ data = {} }) {
 
                                 <div className="create-job-vacancy-description-div">
                                     <p><span className='details-header'>Job description<span className="text-danger">*</span> :</span></p>
-                                    <div className="create-job-desc-field"><CreateFormTextFields inputPlaceholder="Enter job details" fontsz="14px" wparam="100%" defaultValue={dta.jobDesc || ""} multipleLine={true} minrows={8}  /*justify={true}*/ {...register("jobDesc", { required: "Field required", })} /></div>
+                                    <div className="create-job-desc-field"><CreateFormTextFields inputPlaceholder="Enter job details" fontsz="14px" wparam="100%" defaultValue={dta.jobDesc || ""} multipleLine={true} minrows={8}  /*justify={true}*/ {...register("jobDesc", { required: "Field required", pattern: {
+                                            value: /^[\s\S]{0,1024}$/,
+                                            message: "Number of characters limited to 1024"
+                                          }})} /></div>
                                     <p className="create-job-desc-field error-message">{errors.jobDesc?.message}</p>
                                 </div>
 
                                 <div className="create-job-vacancy-description-div">
                                     <p><span className='details-header'>Job requirements<span className="text-danger">*</span> :</span></p>
-                                    <div className="create-job-desc-field"><CreateFormTextFields inputPlaceholder="Enter criteria" fontsz="14px" wparam="100%" defaultValue={dta.jobReq || ""} multipleLine={true} minrows={8} /*justify={true}*/ {...register("jobReq", { required: "Field required", })} /></div>
+                                    <div className="create-job-desc-field"><CreateFormTextFields inputPlaceholder="Enter criteria" fontsz="14px" wparam="100%" defaultValue={dta.jobReq || ""} multipleLine={true} minrows={8} /*justify={true}*/ {...register("jobReq", { required: "Field required", pattern: {
+                                            value: /^[\s\S]{0,5120}$/,
+                                            message: "Number of characters limited to 5120"
+                                          } })} /></div>
                                     <p className="create-job-desc-field error-message">{errors.jobReq?.message}</p>
                                 </div>
                             </div>

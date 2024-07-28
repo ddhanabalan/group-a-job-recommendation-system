@@ -22,6 +22,7 @@ import './DetailsCard.css';
 // import '../FeatureBox/FeatureBox.css';
 // import './ContactCard.css';
 export default function ContactCard({access, data, companyInfo, reloadFn, showSuccessMsg, showFailMsg }) {
+    const RETRY_DELAY = 500;
     const [isNotEditing, SetIsNotEditing] = useState(true);
     const { register, formState: { errors }, getValues, trigger, setError, setValue } = useForm({});
 
@@ -29,7 +30,10 @@ export default function ContactCard({access, data, companyInfo, reloadFn, showSu
     const [countries, setCountries] = useState([])
     
     const [fetchingErrors, setFetchingErrors] = useState({ "countries": false });
-    const [userHeadquarters, setUserHeadquarters] = useState({ "country": data.headquarters })
+    const [userHeadquarters, setUserHeadquarters] = useState({ "country": data.headquarters, 'industry': data.industry })
+    const backupIndustries = [{ "industry": 'Automobile' }, { "industry": 'Agriculture' }, { "industry": 'Medical' }, { "industry": 'Defense' }, { "industry": 'Aeronautical' }, { "industry": 'Chemical' }]
+    const [industries, setIndustries] = useState([])
+    const [userIndustry, setUserIndustry] = useState({industry: companyInfo.industry})
 
     const fetchCountries = async () => {
         try {
@@ -53,6 +57,26 @@ export default function ContactCard({access, data, companyInfo, reloadFn, showSu
 
         }
     }
+
+    const fetchIndustries = async () => {
+        try {
+          const r = await utilsAPI.get('api/v1/industry/');
+          if (r.data.length) {
+            setIndustries(r.data);
+            setFetchingErrors({ ...fetchingErrors, "industries": false });
+          }
+          else {
+            setIndustries(backupIndustries);
+            setFetchingErrors({ ...fetchingErrors, "industries": true });
+          }
+        }
+        catch (e) {
+          console.log("industry fetch failed", e);
+          //alert("industries not fetched");
+          setIndustries(backupIndustries);
+          setFetchingErrors({ ...fetchingErrors, "industries": true });
+        }
+      }
 
     async function updateContact(data) {
         SetIsNotEditing(true)
@@ -83,11 +107,26 @@ export default function ContactCard({access, data, companyInfo, reloadFn, showSu
             value ? callFn(value) : callFn()
         }, delay);
     }
+    const parallelRetryFn = (delay) => {
+        setTimeout(() => {
+          if (fetchingErrors.industries) fetchIndustries();
+          if (fetchingErrors.countries) fetchCountries();
+        }, delay);
+        console.log(delay, " ms over")
+        return () => clearInterval(parallelRetryFn);
+      }
 
     useEffect(()=>{
         fetchCountries()
+        fetchIndustries()
         setValue('headquarters', data.headquarters)
     }, [])
+    useEffect(() => {
+        console.log("fetching errors", fetchingErrors, industries, countries)
+        if (Object.keys(fetchingErrors).some((e) => fetchingErrors[e] === true)) parallelRetryFn(RETRY_DELAY);
+    
+      }, [fetchingErrors])
+
     return (
         <form className="feature-box detail-box" >
             < h4 className="feature-title" > {data.title}</h4 >
@@ -168,12 +207,32 @@ export default function ContactCard({access, data, companyInfo, reloadFn, showSu
                                 </IconButton>
                                 <p className='stat-title'>Industry</p>
                             </div>
-                            <TextField className="personal-details-input profile-edit-bio contact-card-textfield" variant="outlined"
-                                defaultValue={companyInfo.industry}
+                            
+                            <Autocomplete
+                                disablePortal
+                                options={industries}
                                 placeholder='Automobile'
-                                error={'industry' in errors}
-                                {...register("industry")}>
-                            </TextField>
+                                value={userIndustry}
+                                getOptionLabel={(option) => option["industry"]}
+                                isOptionEqualToValue={(option) => industries.some(e => e["industry"] === option)}
+                                onChange={(event, newInputValue) => {
+                                    setUserIndustry(newInputValue)
+                                    setValue('industry', newInputValue["industry"])
+                                }}
+                                renderInput={(params) => 
+                                <TextField
+                                className="personal-details-input profile-edit-bio contact-card-textfield"
+                                {...params}
+                                InputProps={{
+                                    ...params.InputProps,
+                                    disableUnderline: true,
+                                }}
+
+                                variant="outlined"
+
+                                {...register("industry", { required: "Field is required", })}
+                                />}
+                            />
                         </Stack>
 
                         <Stack direction="row" spacing={1} className='detail-medium'>

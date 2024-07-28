@@ -76,7 +76,7 @@ const setupInterceptor = (apiInstance) => {
         console.log("errors encountered man", error)
         
         if (error.response && error.response.status === 401 && !loggedOut && proceed) {
-          
+        
           console.log(`Big almost unauthorized error from ${apiInstance.defaults.baseURL}`);
           proceed = false;
           const r = refreshTokens();
@@ -89,10 +89,10 @@ const setupInterceptor = (apiInstance) => {
           console.log(`Model error registered`);
           
         }
-        else{
-          console.log("big error")
-          navigate('/*')
-        }
+        // else{
+        //   console.log("big error")
+        //   navigate('/*')
+        // }
         return Promise.reject(error);
       }
     );
