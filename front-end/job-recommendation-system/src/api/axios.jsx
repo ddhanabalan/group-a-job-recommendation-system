@@ -70,13 +70,20 @@ const refreshTokens = async() => {
 
 const setupInterceptor = (apiInstance) => {
     apiInstance.interceptors.response.use(
-      response => response,
+      response => response
+      //   {
+      //   if(response.status===200 && response.data.access_token && response.data.refresh_token && response.data.token_type==="bearer"){
+      //     console.log("response received true", response)
+      //   loggedOut=false}
+      //   return response
+      // }
+      ,
       error => {
         console.log("logging out", loggedOut)
         console.log("errors encountered man", error)
+        const current_url =  window.location.href.includes("/login") || window.location.href.includes("/signup");
+        if (error.response && error.response.status === 401 && !loggedOut && proceed && !current_url) {
         
-        if (error.response && error.response.status === 401 && !loggedOut && proceed) {
-          
           console.log(`Big almost unauthorized error from ${apiInstance.defaults.baseURL}`);
           proceed = false;
           const r = refreshTokens();
@@ -89,10 +96,10 @@ const setupInterceptor = (apiInstance) => {
           console.log(`Model error registered`);
           
         }
-        else{
-          console.log("big error")
-          navigate('/*')
-        }
+        // else{
+        //   console.log("big error")
+        //   navigate('/*')
+        // }
         return Promise.reject(error);
       }
     );

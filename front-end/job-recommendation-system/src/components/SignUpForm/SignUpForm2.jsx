@@ -60,6 +60,7 @@ function SignUpForm2() {
   const [serverMsg, setServerMsg] = useState({});
   const [mailInfo, setMailInfo] = useState(location.state ? location.state : null);
   const [fetchingErrors, setFetchingErrors] = useState({ "username": false, "industries": false, "countries": false });
+  const [imgSize, setImgSize] = useState();
   const handleChange = (e) => {
     console.log(e)
     const fac = new FastAverageColor();
@@ -68,6 +69,8 @@ function SignUpForm2() {
       SetImg(data.result)
       fac.getColorAsync(data.result).then(color => setBannerColor(color.hex))
     })
+    console.log("ruff", Math.ceil(e.target.files.item(0).size / 1024/1024))
+    e.target.files.item(0).size>0&&setImgSize(Math.ceil(e.target.files.item(0).size / 1024/1024))
     data.readAsDataURL(e.target.files[0])
 
   }
@@ -83,40 +86,41 @@ function SignUpForm2() {
 
   async function subForm(data) {
     //form data submission and redirecting to login
-
-    SetLoading(true)
+    if(imgSize <=16 ) {
+      SetLoading(true)
     console.log(location)
     const newdata = { ...data, ...location.state, 'profile_picture': img, 'profile_banner_color': bannerColor };
-    const checkUserType = newdata.userType
+      const checkUserType = newdata.userType
     console.log("checked type", checkUserType)
     delete newdata.userType
     console.log("full data", newdata);
-    try {
-      const res = await axios.post(`/${checkUserType == "seeker" ? "seeker" : "recruiter"}/register`, newdata, {
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      })
+      try {
+        const res = await axios.post(`/${checkUserType == "seeker" ? "seeker" : "recruiter"}/register`, newdata, {
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        })
       setServerMsg({ ...res });
       res.request.status === 201 && setTimeout(() => {
-        navigate(`/login`)
-      }, 2000)
+          navigate(`/login`)
+        }, 2000)
 
-    } catch (e) {
-      setServerMsg({ ...e.response });
-      console.log(e)
-      // setTimeout(() => {
-      //   navigate(`/login`)
-      // }, 5000)
-      // alert(e.message)
-    }
+      } catch(e) {
+        setServerMsg({ ...e.response });
+        console.log(e)
+        // setTimeout(() => {
+        //   navigate(`/login`)
+        // }, 5000)
+        // alert(e.message)
+      }
 
 
 
     SetLoading(false)
     SetSuccess(true);
-    // setTimeout(()=>{setSuccess(false)},3000)
-    // navigate("/login/" + userType);
+      // setTimeout(()=>{setSuccess(false)},3000)
+      // navigate("/login/" + userType);
+    }
 
   }
 
@@ -298,7 +302,10 @@ function SignUpForm2() {
                     <img src={img ? img : profilePlaceholder} alt="profile picture" />
                   </div>
                 </div>
-                <p className='warning-pic-format'>supported formats: .jpg, .jpeg, .webp</p>
+               
+                <p className='warning-pic-format'>
+                  {imgSize > 16 ? <span className="warning-pic-size">Image size should not be greater than 16 MB</span> :"supports jpg, jpeg, png and many more formats"}
+                </p>
               </div>
               <div id="item-3">
                 {
@@ -312,8 +319,8 @@ function SignUpForm2() {
                           {
                             required: "please enter first name",
                             pattern: {
-                              value: /^[a-zA-Z]+$/,
-                              message: "Only letters allowed"
+                              value: /^[a-zA-Z]{1,32}$/,
+                              message: "Only letters allowed, with a maximum length of 32 characters"
                             }
                           })} />
                       <p className="error-message">{errors.first_name?.message || ""}</p>
@@ -327,6 +334,10 @@ function SignUpForm2() {
                         {...register("company_name",
                           {
                             required: "please enter company name",
+                            pattern: {
+                              value: /^[a-zA-Z0-9\s]{1,128}$/,
+                              message: "Only letters, numbers and whitespace with a maximum length of 128 characters"
+                            }
                           })} />
                       <p className="error-message">{errors.company_name?.message || ""}</p>
                     </div>
@@ -346,8 +357,8 @@ function SignUpForm2() {
                           {
                             required: "please enter last name",
                             pattern: {
-                              value: /^[a-zA-Z\s]+$/,
-                              message: "Only letters and whitespace allowed"
+                              value: /^[a-zA-Z\s]{1,32}$/,
+                              message: "Only letters and whitespace with a maximum length of 32 characters"
                             }
                           })} />
                       <p className="error-message">{errors.last_name?.message || ""}</p>
@@ -420,6 +431,10 @@ function SignUpForm2() {
                       {...register("city",
                         {
                           required: "please enter city",
+                          pattern: {
+                            value: /^[a-zA-Z]{1,128}$/,
+                            message: "Only letters allowed, with a maximum length of 128 characters"
+                          }
                         })} />
                     <p className="error-message">{errors.city?.message || ""}</p>
                   </div>
@@ -472,8 +487,8 @@ function SignUpForm2() {
                           {
                             required: "please enter pincode",
                             pattern: {
-                              value: /^[0-9]+$/,
-                              message: "Only numbers allowed"
+                              value: /^[0-9]{1,8}$/,
+                              message: "Only numbers allowed, with a maximum length of 8 characters"
                             }
                           })} />
                       <p className="error-message">{errors.pincode?.message || ""}</p>
@@ -507,6 +522,11 @@ function SignUpForm2() {
                         {...register("address",
                           {
                             required: "please enter address",
+                            pattern: {
+                              value: /^[a-zA-Z0-9\s,'-.#]{1,256}$/,
+                              message: "Invalid address format. Maximum length of 256 characters."
+                            }
+
                           })} />
                       <p className="error-message">{errors.address?.message || ""}</p>
                     </div>

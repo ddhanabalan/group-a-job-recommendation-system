@@ -79,7 +79,7 @@ export default function JobInviteSection({userType}) {
             console.log("update job invites", invite_response);
             const ret_response = response.data.map(e=>({id: e.job_id, jobTitle: e.job_name, companyName: e.company_name, tags: e.tags, currency: e.salary.split('-')[0], salary: [e.salary.split('-')[1],e.salary.split('-')[2]], postDate: e.created_at , last_date: e.last_date, location: e.location, poi: e.job_position, empType: e.emp_type, exp: e.experience, workStyle: e.work_style, workingDays: e.working_days, jobDesc: e.job_desc ,jobReq:e.requirement,skills: e.skills.length?e.skills: [{'skill': ""}], applicationsReceived: e.job_seekers, closed: e.closed, vacancy_updated_at: e.updated_at, job_invites: e.job_invite}))
             const dated_response = dateProcessor(ret_response);
-            const mod_response = jobPrioritizer(dated_response);
+            const mod_response = dated_response//jobPrioritizer(dated_response);
             setJobVacancies(mod_response);
             console.log(" after new job vacancies", mod_response);
             const prereq_response = await Promise.all(response.data.map(vacancy => vacancy.job_seekers.filter(user => user.user_id === receivedData.state.user_id).map(user => {

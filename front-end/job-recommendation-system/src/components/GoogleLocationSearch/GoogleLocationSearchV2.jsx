@@ -17,7 +17,7 @@ import axios from 'axios';
 
 const autocompleteService = { current: null };
 
-const GoogleLocationSearch = forwardRef(function GoogleLocationSearch({ data,usedIn, changeFn, locationValue, value, updateValue, textFieldType = "standard", disUnderline = false, textBgColor = "#D9D9D9", textPad = "0px", bordRad = "0px", fntFam = "auto", fntSize = "auto", use="jobs", ...props }, ref) {
+const GoogleLocationSearch = forwardRef(function GoogleLocationSearch({ data,usedIn=null, changeFn, locationValue, value, updateValue, textFieldType = "standard", disUnderline = false, textBgColor = "#D9D9D9", textPad = "0px", bordRad = "0px", fntFam = "auto", fntSize = "auto", use="jobs", ...props }, ref) {
     const MAPS_API_KEY = 'pk.0da703607c1469e631ae01d8480aa43e';
     const [query, setQuery] = useState(locationValue || '');
     const [options, setOptions] = useState([]);
@@ -54,7 +54,7 @@ const GoogleLocationSearch = forwardRef(function GoogleLocationSearch({ data,use
             sx={{ width: 300 }}
             getOptionLabel={(option) =>
             {
-                return option.address!== undefined ? option.address.name:option
+                return option.address!== undefined ? (usedIn==="filter"?option.address.name:option.address.name + " , " + option.address.country):option
             }
               
             }
@@ -68,7 +68,7 @@ const GoogleLocationSearch = forwardRef(function GoogleLocationSearch({ data,use
             onChange={(event, newValue) => {
                 //setOptions(options);
                 console.log("new", newValue)
-                updateValue(newValue.address?newValue.address.name:"");
+                updateValue(newValue?(newValue.address?newValue.address.name:""):"");
             }}
             onInputChange={(event, newInputValue) => {
                 setQuery(newInputValue);

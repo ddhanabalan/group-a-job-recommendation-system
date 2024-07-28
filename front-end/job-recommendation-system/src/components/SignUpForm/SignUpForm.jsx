@@ -10,7 +10,7 @@ import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 import CircleIcon from '@mui/icons-material/Circle';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
 import axios from "../../api/axios"
-
+import LogoRedirect from '../LogoRedirect/LogoRedirect';
 
 
 function SignUpForm() {

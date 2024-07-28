@@ -51,6 +51,7 @@ export default function Filter({ title, userType=null, passFilteredDataFn = null
     }, [domains, preferences, locations, sortOrder, salaryCutOff])
     
     const setGoogleAutoField = (v) => {
+        console.log("registered field", v)
         SetGoogleLocationAutoField(v)
     }
     const handleDeleteDomain = (id) => {
