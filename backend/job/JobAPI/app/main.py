@@ -15,16 +15,18 @@ from .database import engine
 from .models import jobmodel
 from .routers import router
 from .scheduler import vacancy_close_scheduler
-
+from .config import SERVER_IP,USER_API_HOST,AUTH_API_HOST,MODEL_API_HOST,PORT
 origins = [
-    "*",
-
+    SERVER_IP,
+    f"http://{USER_API_HOST}:{PORT}",
+    f"http://{AUTH_API_HOST}:{PORT}",
+    f"http://{MODEL_API_HOST}:{PORT}",
 ]
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-app = FastAPI()
+app = FastAPI(docs_url=None, redoc_url=None)
 
 app.add_middleware(
     CORSMiddleware,

@@ -36,8 +36,7 @@ from .utils import validate_user_update, send_verify, send_pwd_reset
 
 authmodel.Base.metadata.create_all(bind=engine)
 origins = [
-    "*",
-    F"{SERVER_IP}",
+    f"{SERVER_IP}",
     f"http://{USER_API_HOST}:{PORT}",
     f"http://{JOB_API_HOST}:{PORT}",
     f"http://{MODEL_API_HOST}:{PORT}",
@@ -70,7 +69,7 @@ def get_db() -> Generator[Session, None, None]:
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-app = FastAPI()
+app = FastAPI(docs_url=None, redoc_url=None)
 app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY)
 app.add_middleware(
     CORSMiddleware,

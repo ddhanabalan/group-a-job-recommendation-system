@@ -10,10 +10,10 @@ from .routes import router
 
 origins = [
     "*",
-    SERVER_IP
+    SERVER_IP,
 ]
 
-app = FastAPI()
+app = FastAPI(docs_url=None, redoc_url=None)
 
 
 app.add_middleware(

@@ -15,7 +15,6 @@ from .scheduler import job_recommendation_scheduler
 Base.metadata.create_all(bind=engine)
 
 origins = [
-    "*",
     SERVER_IP,
     f"http://{JOB_API_HOST}:8000/",
     f"http://{USER_API_HOST}:8000/",
@@ -25,7 +24,7 @@ origins = [
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-app = FastAPI()
+app = FastAPI(docs_url=None, redoc_url=None)
 
 app.add_middleware(
     CORSMiddleware,
