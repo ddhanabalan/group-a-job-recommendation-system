@@ -53,12 +53,12 @@ background-color: #eae9e9 !important;
 }
 .openings-container{
     width: 100%;
-    height: fit-content;
+    height: 90vh /*fit-content*/ ;/*Change this after work*/
     display: flex;
     flex-direction: column;
     align-items: center;
     overflow-y: auto;
-    background-color: white;
+    background-color: rgba(255, 255, 255, 0);
 }
 
 .empty-container-message{
@@ -69,9 +69,33 @@ background-color: #eae9e9 !important;
     filter: grayscale(100%);
     
 }
+.empty-container-message-candidates{
+    position: absolute;
+    top: 28%;
+    text-align: center;
+    color: gray;
+    filter: grayscale(100%);
+    
+}
 
 .card-holder{
     width: 95%;
+}
+.user-application-filter{
+    align-self: center;
+    margin-top: 0.1rem ;
+    margin-bottom: 0.7rem;
+}
+
+.user-application-filter-btn{
+    box-shadow: 0px 0px 15px 7px rgba(0, 0, 0, 0.1);
+    /*border: 0.005rem solid rgb(218, 216, 216);*/
+    margin: 0.1rem 0.9rem ;
+}
+
+.fill-space{
+    width: 0.8rem;
+    height: 0.8rem;
 }
 
 

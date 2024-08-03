@@ -31,6 +31,8 @@ DATABASE_NAME = os.environ.get("DATABASE_NAME")
 # Retrieving Host for User and Job API
 USER_API_HOST = os.environ.get("USER_API_HOST")
 JOB_API_HOST = os.environ.get("JOB_API_HOST")
+MODEL_API_HOST=os.environ.get("MODEL_API_HOST")
+SERVER_IP=os.environ.get("SERVER_IP")
 
 GOOGLE_OAUTH_CLIENT_ID = os.environ.get("GOOGLE_OAUTH_CLIENT_ID")
 GOOGLE_OAUTH_CLIENT_SECRET = os.environ.get("GOOGLE_OAUTH_CLIENT_SECRET")

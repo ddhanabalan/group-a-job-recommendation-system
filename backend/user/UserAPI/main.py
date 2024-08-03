@@ -1,3 +1,7 @@
+"""
+Main entrypoint for the UserAPI application.
+"""
+
 import uvicorn
 from app.config import HOST, PORT, RELOAD
 

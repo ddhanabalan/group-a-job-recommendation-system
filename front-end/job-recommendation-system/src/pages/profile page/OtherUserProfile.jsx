@@ -17,6 +17,7 @@ import NavigationBar from '../../components/NavigationBar/NavigationBar';
 import LoaderAnimation from '../../components/LoaderAnimation/LoaderAnimation';
 import './ProfileSection.css';
 export default function OtherUserProfile({ data }) {
+    const [loading, SetLoading] = useState(true)
     const [newData, SetnewData] = useState(data);
     const [isNotEditing, SetIsNotEditing] = useState(true)
     const { state } = useLocation();
@@ -35,6 +36,7 @@ export default function OtherUserProfile({ data }) {
         setStorage("guestUserType", data.user_type)
         console.log("Users:", data)
         SetnewData(data)
+        SetLoading(false)
     }
 
     const params = useParams();
@@ -49,8 +51,9 @@ export default function OtherUserProfile({ data }) {
                     }
                 }) :
                 await userAPI.get(`/profile/${user}`);
-            response.data.user_type && response.data.user_type==="recruiter"&&SetIsEmployer(true)
+            response.data.user_type && response.data.user_type === "recruiter" && SetIsEmployer(true)
             redirectFn(response.data)
+          
         } catch (e) {
             console.log(e)
 
@@ -75,15 +78,16 @@ export default function OtherUserProfile({ data }) {
             }
         }
         profileAPI()
-    }, []); 
+    }, []);
 
     return (
         <>
+            {loading && <LoaderAnimation />}
             {redirectHome && <Navigate to='/' />}
-            {isEmployer && <Navigate to={'/e/profile/'+user} />}
+            {isEmployer && <Navigate to={'/e/profile/' + user} />}
             {data ?
                 <div id="profile-page">
-                    <ProfileHead access={"viewOnly"} data={newData} logOutFn={logOut}  isNotEditing={isNotEditing} setIsNotEditing={updateEditStatus} />
+                    <ProfileHead access={"viewOnly"} data={newData} logOutFn={logOut} isNotEditing={isNotEditing} setIsNotEditing={updateEditStatus} originFrom="other" />
                     <NavigationBar active="profile" redirect={state} />
                     <div className="profile-body-section">
                         <div className="profile-pane profile-left-pane">
@@ -93,12 +97,12 @@ export default function OtherUserProfile({ data }) {
                                 contactData={newData} reloadFn={callAPI} />
                         </div>
                         <div className="profile-pane profile-middle-pane">
-                            <ExperienceBox access={"viewOnly"} childData={newData.former_jobs} reloadFn={callAPI}  />
+                            <ExperienceBox access={"viewOnly"} childData={newData.former_jobs} reloadFn={callAPI} />
                             <FeatureBoxMiddlePane //component defaults to QualificationBox
                                 access={"viewOnly"} childData={newData.prev_education}
                             />
                             <LicenseBox
-                                access={"viewOnly"} 
+                                access={"viewOnly"}
                                 childData={newData.certificate} reloadFn={callAPI}
                             />
                             <AddSkills access={"viewOnly"} id="profile-section-skills" reloadFn={callAPI} newData={newData} data={{ title: "Skills", inputPlaceholder: "HTML" }} />

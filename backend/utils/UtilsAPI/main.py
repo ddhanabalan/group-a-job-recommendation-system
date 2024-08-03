@@ -1,3 +1,8 @@
+"""
+Main entrypoint for the UtilsAPI application.
+
+"""
+
 import uvicorn
 from app.config import HOST, PORT, RELOAD
 

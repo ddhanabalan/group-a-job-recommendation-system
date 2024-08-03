@@ -34,7 +34,9 @@
     font-size: .938rem;
     color: #7B7777;
 }
-
+.job-desc-company-name-p:hover{
+        color: #646cff
+}
 
 .job-desc-salary {
     font-size: 1rem;
@@ -123,6 +125,12 @@
     margin-top: 1rem;
 }
 
+.justified-pre {
+    text-align: justify !important;
+    white-space: pre-wrap !important; /* Allows wrapping of the text */
+    word-wrap: break-word !important; /* Breaks words to fit the container */
+  }
+
 .job-details span {
     font-family: "Inter-b";
 }
@@ -162,6 +170,7 @@
 }
 .job-status-text {
     font-family: Inter-sb;
+    text-transform: capitalize;
 }
 
 .job-status-text.color-black {
@@ -176,6 +185,10 @@
     color: red;
 }
 
+.cancel-application-button{
+    margin-top: 1rem;
+}
+
 .apply-button {
     margin-top: 10%;
 }
@@ -183,24 +196,46 @@
     background-color:#D9D9D9 !important ;
 }
 
+.invite-accepted-btn{
+    background-color: #2BA84A !important;
+}
+
+.invite-rejected-btn{
+    background-color: #f30707 !important;
+}
+
 .invite-buttons-container{
     display: flex;
-    width: 90%;
+    width:20rem;
     flex-direction: row;
-    justify-content: center;
-    gap: 20rem;
+    justify-content: space-around;
+
 }
 
 .invite-buttons-container button{
     margin-top: 10%;
     margin-bottom: 10%;
-    padding: 0.5rem 2rem;
+    padding: 0.4rem 1.5rem;
 }
 
-.accept{
-    background-color: green;   
+.invite-banner{
+    background-color: rgb(222, 218, 210);
+    border-radius: 0.4rem;
+    margin-top: 2rem;
+    padding: 0.5rem 1rem;
+    font-family: "Inter-sb";
+    color: gray;
 }
 
-.reject{
-    background-color: red;
+.invite-accept-btn{
+    --primary-color: #23c483 !important;   
+}
+.invite-reject-btn{
+    --primary-color: #e01414 !important;
+}
+
+.processing-animation{
+    margin-top: 10%;
+    width:5rem;
+    height: 5rem;
 }

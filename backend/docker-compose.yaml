@@ -21,7 +21,7 @@ services:
       context: ./auth
       dockerfile: Dockerfile
     ports:
-      - "8000:8000"
+      - "8010:8000"
     depends_on:
       mysql_server:
         condition: service_healthy
@@ -90,15 +90,14 @@ services:
 
   modelapi:
     build:
-      context: ./model
+      context: ./user
       dockerfile: Dockerfile
     ports:
       - "8004:8000"
     depends_on:
-      mysql_server:
-        condition: service_healthy
+      - mysql_server
     volumes:
-      - ./model/ModelAPI:/app
+      - ./Model/ModelAPI:/app
     environment:
       SQL_HOST: mysql_server
       AUTH_API_HOST: authapi

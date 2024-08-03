@@ -1,3 +1,8 @@
+"""
+Crud module for the UserAPI application.
+
+"""
+
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 

@@ -1,8 +1,9 @@
-import base64
+"""
+Utils module for the UserAPI application.
 
+"""
 import httpx
 from fastapi import Header, status, HTTPException
-
 from .database import SessionLocal
 from .config import AUTH_API_HOST, PORT
 
@@ -73,18 +74,3 @@ async def get_current_user(
                 status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid access token"
             )
         return response.json()
-
-
-async def decode64_image(image: str):
-    """
-    Decodes the base64 encoded image string.
-    """
-    return base64.b64decode(image + "==")
-
-
-async def encode64_image(image) -> str:
-    """
-    Encodes the image as a base64 string.
-    """
-    profile_picture64 = base64.b64encode(image).decode("utf-8")
-    return f"data:image/png;base64,{profile_picture64.split('base64')[1]}"

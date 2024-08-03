@@ -1,3 +1,7 @@
+"""
+Main entry point for the JobAPI application.
+
+"""
 import uvicorn
 from app.config import HOST, PORT, RELOAD
 

@@ -43,10 +43,69 @@
     align-items: center;
     gap: 1rem;
 }
+.job-status-div{
+    height: fit-content;
+    width: fit-content;
+    background-color: rgb(222, 220, 220);
+    display: flex;
+    align-self: center;
+    align-items: center;
+    justify-content: space-around;
+    border-radius: 20px;
+    padding: .1rem .5rem;
+    gap: 0.4rem;
+}
+.invite-status-div{
+    height: fit-content;
+    width: fit-content;
+    background-color: rgb(222, 220, 220);
+    display: flex;
+    align-self: start;
+    align-items: center;
+    justify-content: space-around;
+    border-radius: 20px;
+    padding: .1rem .5rem;
+    gap: 0.4rem;
+}
 
+.invite-status-div p{
+    font-size: .9rem;
+}
+.job-status-div p{
+    font-size: .9rem;
+}
+
+.invite-status-pending{
+    display: flex;
+    flex-direction: row !important;
+    /*justify-content: center;*/
+    /*width: fit-content;*/
+    /*gap: 0.4rem !important;*/
+    /*padding: 0rem 0rem;*/
+
+}
+
+.invite-div{
+    align-self: flex-end;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.7rem;
+    padding-right: 1.3rem;
+    padding-left: 1rem;
+    padding-bottom: 1rem;
+}
+
+.card-status-div{
+    display: flex;
+    flex-direction: column;
+    gap: 20%;
+    justify-content: center;
+}
 .job-card-div1 {
     width: 80%;
 }
+
 
 .job-card {
     flex-direction: row-reverse;
@@ -65,4 +124,13 @@
     height: 100%;
     width: 100%;
     object-fit: cover;
+}
+.approved-candidate-card{
+    background-color:#d8f3dc !important ;
+}
+.rejected-candidate-card{
+    background-color: #f6cacc !important;
+}
+.invited-candidate-card{
+    background-color: #adcbf1 !important;
 }

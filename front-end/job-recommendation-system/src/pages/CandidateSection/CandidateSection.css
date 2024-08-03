@@ -4,3 +4,57 @@
     width: 40%;
     margin-top: 15px;
 }
+
+.prompt-banner{
+    position: absolute;
+    top: 0%;
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 25rem;
+    height: 5rem; 
+    left: 36%;
+    z-index: 100;
+    background: linear-gradient(0deg, #ff03e3 0%, rgba(220, 121, 234, 0.97) 47%, rgb(223, 139, 237) 100%);
+    box-shadow: 0 8px 15px -7px #00000025;
+    /* background-color: rgb(255, 238, 151); */
+    border-radius: 0.5rem;
+    
+    font-family: "Inter-sb";
+    padding: 2rem 1rem;
+    color: rgb(55, 55, 55);
+    transform: translateY(-100%); /* Initially position above view */
+    transition: transform 1s, opacity 0.5s;
+    /* border: 0.02rem solid rgb(121, 121, 121); */
+}
+
+.prompt-content p{
+    font-size: 0.8rem;
+    margin-right: 3.2rem;
+}
+
+.prompt-content img{
+    width: 2rem;
+    height: 2rem;
+    position: absolute;
+    right: 8%;
+    top: 25%;
+    
+}
+
+
+
+.prompt-banner.show{
+    visibility: visible;
+    opacity: 1;
+    transform: translateY(0); /* Slide down to view */
+    transition-delay: 0s;
+}
+
+.prompt-banner.hide {
+    opacity: 0;
+    transform: translateY(-100%); /* Slide back up */
+  }
+

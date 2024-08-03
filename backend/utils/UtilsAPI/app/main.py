@@ -1,24 +1,19 @@
-from typing import Optional
+"""
+Main Module for the UtilsAPI application.
+"""
 
-from fastapi import FastAPI, Depends, HTTPException
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy.orm import Session
 
-from .utils import get_db
-from .database import engine
+from .config import SERVER_IP
 from .routes import router
 
 origins = [
     "*",
-    "http://localhost.tiangolo.com",
-    "https://localhost.tiangolo.com",
-    "http://localhost",
-    "http://127.0.0.1:5500",
-    "http://localhost:8000",
-    "http://localhost:5500",
+    SERVER_IP,
 ]
 
-app = FastAPI()
+app = FastAPI(docs_url=None, redoc_url=None)
 
 
 app.add_middleware(

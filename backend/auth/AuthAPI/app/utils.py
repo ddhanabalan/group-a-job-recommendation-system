@@ -1,13 +1,18 @@
+"""
+
+Utility functions for the AuthAPI.
+
+This module contains utility functions for the AuthAPI.
+
+"""
 import smtplib
-from pydantic import EmailStr
-from fastapi import Depends
-
 from email.message import EmailMessage
-from sqlalchemy.orm import Session
-from sqlalchemy.exc import SQLAlchemyError
 
-from .config import SMTP_SERVER, SMTP_PORT, EMAIL_PASSWORD, EMAIL_ADDRESS
-from .schemas import authschema
+from pydantic import EmailStr
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import Session
+
+from .config import SMTP_SERVER, SMTP_PORT, EMAIL_PASSWORD, EMAIL_ADDRESS, SERVER_IP
 from .crud import authcrud
 
 
@@ -36,12 +41,13 @@ valid for 30 minutes. If the link expires, please log in again to generate a new
         If you believe you received this email in error or did not initiate this request, please don't hesitate to \
 contact us.
         
-        http://localhost:5173/verify/{token}
+        {SERVER_IP}/verify/{token}
         
         Thank you for your attention to this matter.
         
         Best regards,
         Career Go
+        {SERVER_IP}
         """
     )
     with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT) as smtp:
@@ -74,12 +80,13 @@ valid for 30 minutes. If the link expires, please log in again to generate a new
         If you believe you received this email in error or did not initiate this request, please don't hesitate to \
 contact us.
         
-        http://localhost:5173/forgot_password/verify/{token}
+        {SERVER_IP}/forgot_password/verify/{token}
         
         Thank you for your attention to this matter.
         
         Best regards,
         Career Go
+        {SERVER_IP}
 """
     )
     with smtplib.SMTP_SSL(SMTP_SERVER, SMTP_PORT) as smtp:

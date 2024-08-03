@@ -15,9 +15,6 @@ class RecruiterBase(BaseModel):
     industry: Optional[str] = None
     city: Optional[str] = None
     phone: Optional[str] = None
-
-
-class RecruiterBaseInDB(RecruiterBase):
     profile_picture: Optional[str] = None
 
 
@@ -88,6 +85,13 @@ class RecruiterProfile(RecruiterDetails):
     speciality: Optional[List[RecruiterSpeciality]]
     emp_type: Optional[List[RecruiterEmpType]]
     user_type: Optional[str]
+
+    class Config:
+        from_attributes = True
+
+
+class CompanyIDSIn(BaseModel):
+    company_ids: Optional[List[int]] = None
 
     class Config:
         from_attributes = True

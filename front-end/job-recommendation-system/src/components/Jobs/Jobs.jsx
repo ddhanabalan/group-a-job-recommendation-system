@@ -3,11 +3,18 @@ import { useState, useEffect } from 'react';
 import JobCard from '../JobCard/JobCard';
 import JobCardExpanded from '../JobCardExpanded/JobCardExpanded';
 import AiJobs from '../../components/AiJobs/AiJobs';
+import { v4 as uuid } from 'uuid';
+import { indexOf } from 'lodash';
 
 
-export default function Jobs({ data, dataType=null, dataToParentFn = null, createJobRequest = null, desc_state = null, userData }) {
+export default function Jobs({ userData, data=[], modelData=[],dataType=null, dataToParentFn = null, createJobRequest = null, handleInvite=null, desc_state = null, processing=null, setAiJobs=null}) {
 
-    const finalInfo = [...data];
+    // const randomJobs = [...data.map(e=>({...e, 'element-index': data.indexOf(e)}))].filter(Boolean)
+    // const aiJobs = [...modelData.map(e=>({...e, 'element-index': modelData.indexOf(e)}))].filter(Boolean)
+    const randomJobs = [...data]
+    const aiJobs = [...modelData]
+    const finalInfo = [...randomJobs, ...aiJobs];
+    
     console.log("final information to job card", finalInfo)
     //const userType="none";
     //console.log("data to card", finalInfo)
@@ -15,6 +22,7 @@ export default function Jobs({ data, dataType=null, dataToParentFn = null, creat
     const [descriptionOn, setDesc] = useState(desc_state ? desc_state : false);
     const [selectedId, setId] = useState(null);
     const [selectedJob, setSelectedJob] = useState(null);
+    const [focusElement, setFocusElement] = useState(null);
     //console.log("final data info" ,finalInfo);
     function openDesc(id) {
         console.log("selected id", id);
@@ -26,18 +34,49 @@ export default function Jobs({ data, dataType=null, dataToParentFn = null, creat
 
 
     }
+
+    const chooseElementId=(id)=>{
+        console.log("scroll log, saving", id)
+        setFocusElement(id);
+    }
+    
+    const scrollToItem = (id) => {
+        const element = document.getElementById(id) || document.getElementById(`${id}`);
+        console.log("scroll log, element", element)
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      };
+
+    const scrollToStart = ()=>{
+        window.scrollTo({top:100}
+        )
+    }
+
+    const loadingDelay = (delay, callFn, value=null) =>{
+        setTimeout(() => {
+            value?callFn(value):callFn();
+        }, delay);
+    }
     //console.log("description status job component",descriptionOn);
 
     useEffect(() => {
         if (dataToParentFn) dataToParentFn(descriptionOn)
-    }, [descriptionOn])
+}, [descriptionOn])
     useEffect(() => {
         if (desc_state !== null) setDesc(desc_state);
         //console.log("changed");
     }, [desc_state]);
     useEffect(() => {
         if (selectedId != null) setSelectedJob(finalInfo.filter(e => (e.id == selectedId ? e : false))[0]);
+        if(finalInfo && finalInfo.length && focusElement && descriptionOn===false){
+            console.log("scroll log , scrolling to",focusElement)
+            loadingDelay(200,scrollToItem,focusElement);}
     }, [finalInfo])
+    useEffect(() => {
+        if(aiJobs)scrollToStart();
+    }, [aiJobs])
+
     const demoInfo = [{ id: 0, jobTitle: "Python Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000", "10000"], postDate: "13/9/23", location: 'London', empType: 'Full-time', exp: '5-10 years', jobDesc: "This is for demo purpose", jobReq: "This is for demo purpose", skills: ["python", "AI", "Django"] },
     { id: 1, jobTitle: "Java Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000", "10000"], postDate: "13/9/23", location: 'Moscow', empType: 'Internship', exp: '1-5 years', jobDesc: "This is for demo purpose", jobReq: "This is for demo purpose", skills: ["java", "AI"] },
     { id: 2, jobTitle: "Ruby Developer", companyName: "Google LLC", tags: ["on-site", "software / IT", "Monday-Friday"], currency: "₹", salary: ["5000", "10000"], postDate: "13/9/23", location: 'Uganda', empType: 'Temporary', exp: 'Fresher', jobDesc: "This is for demo purpose", jobReq: "This is for demo purpose", skills: ["ruby", "AI", "Django"] },
@@ -53,13 +92,13 @@ export default function Jobs({ data, dataType=null, dataToParentFn = null, creat
         <div className="cards-container">
 
             {descriptionOn ?
-                <JobCardExpanded data={selectedJob} createJobRequest={createJobRequest} userData={userData} />
+                <JobCardExpanded data={selectedJob} createJobRequest={createJobRequest} handleInvite={handleInvite} userData={userData} invite={selectedJob.invite_status?true:null} processing={processing}/>
                 : (
                     <>  
-                        
-                        {dataType != "approval"?<AiJobs childData={finalInfo} expandView={openDesc} />: <></>}
+                        {console.log("lenghds ", modelData.length)}
+                        {(dataType !== "approval"&& aiJobs.length) ?<AiJobs childData={aiJobs} expandView={openDesc} setAiJobs={setAiJobs} chooseSelectedId={chooseElementId} />: <></>}
                         {
-                            Object.keys(finalInfo).map((card) => (<JobCard key={finalInfo[card]["id"]} id={finalInfo[card]["id"]} expandView={openDesc} data={{ ...finalInfo[card], 'userType': "seeker" }} />))
+                            randomJobs.map((job) => (<JobCard key={uuid()} id={`random-job-${job.id}`} expandView={openDesc} data={{ ...job, 'userType': "seeker" }} chooseSelectedId={chooseElementId} />))
                         }
                     </>
                 )

@@ -27,7 +27,7 @@ function loadScript(src, position, id) {
 
 const autocompleteService = { current: null };
 
-const GoogleLocationSearch = forwardRef(function GoogleLocationSearch({ data, changeFn, locationValue, value, updateValue,textFieldType="standard",disUnderline=false, textBgColor="#D9D9D9", textPad="0px", bordRad="0px", fntFam="auto", fntSize="auto", ...props}, ref) {
+const GoogleLocationSearch = forwardRef(function GoogleLocationSearch({ data, changeFn, locationValue, value, updateValue, textFieldType = "standard", disUnderline = false, textBgColor = "#D9D9D9", textPad = "0px", bordRad = "0px", fntFam = "auto", fntSize = "auto", ...props }, ref) {
     const [inputValue, setInputValue] = React.useState('');
     const [options, setOptions] = React.useState([]);
     const loaded = React.useRef(false);
@@ -120,17 +120,18 @@ const GoogleLocationSearch = forwardRef(function GoogleLocationSearch({ data, ch
             }}
             renderInput={(params) => (
                 <TextField {...params} placeholder={data.inputPlaceholder} value={locationValue} variant={textFieldType} className='tags-add-input'
-                InputProps={{
-                    ...params.InputProps,
-                    disableUnderline: disUnderline,
-                  }}
-                ref={ref}
-                sx={{backgroundColor: textBgColor,
-                     paddingX: textPad,
-                     borderRadius: bordRad,
-                     '.MuiInputBase-input': { fontFamily: fntFam, fontSize: fntSize},              
+                    InputProps={{
+                        ...params.InputProps,
+                        disableUnderline: disUnderline,
                     }}
-                {...props}/>
+                    ref={ref}
+                    sx={{
+                        backgroundColor: textBgColor,
+                        paddingX: textPad,
+                        borderRadius: bordRad,
+                        '.MuiInputBase-input': { fontFamily: fntFam, fontSize: fntSize },
+                    }}
+                    {...props} />
 
             )}
             renderOption={(props, option) => {

@@ -1,7 +1,7 @@
 import TextField from '@mui/material/TextField';
 import qs from 'qs';
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import axios from '../../api/axios';
 import { userAPI } from '../../api/axios';
 import { getStorage } from '../../storage/storage';
@@ -10,43 +10,70 @@ import { Button } from '@mui/material';
 import LogoRedirect from '../LogoRedirect/LogoRedirect';
 import './DeleteAccount.css';
 import successAnim from '../../images/green-confirm.json'
+import failanim from '../../images/fail-animation.json'
 export default function DeleteAccount() {
     const navigate = useNavigate();
     const [userPassword, SetUserPassword] = useState('')
     const [showBanner, SetShowBanner] = useState(false)
-    const [validationError, SetValidationError] = useState(false)
-    const deleteAccount = async () => {
-        console.log(userPassword)
-        try {
+    const [validationError, SetValidationError] = useState(false);
+    const [deletionError, SetDeletionError] = useState(false);
+
+    const verifiedDeletion = async ()=>{
+        try{
             const validate = await axios.post('/token', qs.stringify({ "username": getStorage("userEmail"), "password": userPassword }), {
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded'
                 }
-            })
-            validate.data.access_token &&
-                await userAPI.delete('/seeker/details', {
+            }
+        )
+        if(validate.data.access_token){
+            
+            SetValidationError(false)};
+            deleteAccount();
+        }
+        catch(e){
+            console.log(e)
+            SetValidationError(true);
+        }
+    }
+    const deleteAccount = async () => {
+        console.log(userPassword)
+        try {
+            
+            
+             
+               await axios.delete('/user', {
                     headers: {
                         'Authorization': `Bearer ${getStorage("userToken")}`
                     }
-                }).then(
-                    sessionStorage.clear(),
-                     SetShowBanner(true)
-                )
+                })
+                sessionStorage.clear(),
+                SetShowBanner(true)
+                
            
-            SetValidationError(false)
+            SetDeletionError(false)
             setTimeout(() => {
                 navigate(`/`)
-            }, 5000)
+            }, 2000)
+            
+            
         } catch (e) {
             console.log(e);
-            SetValidationError(true)
+            SetShowBanner(true);
+            SetDeletionError(true);
+            setTimeout(() => {
+                SetShowBanner(false);
+                SetDeletionError(false);
+            }, 2000)
+            
         }
     }
+    
     return (
         <div id="page">
             <LogoRedirect />
             <div className='confirm-delete-message'>
-                {showBanner && <ConfBox message={"Account has been deleted"} animation={successAnim} bgcolor="#99FF99" />}
+                {showBanner?(deletionError? <ConfBox message={"We are facing some issues.Try again later"} animation={failanim} bgcolor="#FFE5B4" />:<ConfBox message={"Account has been deleted"} animation={successAnim} bgcolor="#99FF99" />):<></>}
             </div>
 
             <div className="delete-container">
@@ -69,7 +96,7 @@ export default function DeleteAccount() {
                 <Button variant="contained"
                     disableElevation
                     className='delete-btn'
-                    onClick={deleteAccount}
+                    onClick={verifiedDeletion}
                 >
                     Delete
                 </Button>

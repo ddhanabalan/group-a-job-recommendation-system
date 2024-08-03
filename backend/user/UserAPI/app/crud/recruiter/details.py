@@ -84,6 +84,31 @@ def get_all(db: Session) -> List[recruitermodel.RecruiterDetails] | []:
         return []
 
 
+def get_all_pic(
+    db: Session, user_ids: List[int]
+) -> List[recruitermodel.RecruiterDetails] | []:
+    """
+    Retrieve all recruiter details.
+
+    Args:
+        db (Session): SQLAlchemy database.py session.
+
+    Returns:
+        List[recruitermodel.RecruiterDetails] or []: List of all recruiter details if found, else empty list.
+    """
+    try:
+        return (
+            db.query(
+                recruitermodel.RecruiterDetails.user_id,
+                recruitermodel.RecruiterDetails.profile_picture,
+            )
+            .filter(recruitermodel.RecruiterDetails.user_id.in_(user_ids))
+            .all()
+        )
+    except SQLAlchemyError:
+        return []
+
+
 def create(db: Session, recruiter_details: recruiterschema.RecruiterDetails) -> bool:
     """
     Create a new recruiter details record in the database.

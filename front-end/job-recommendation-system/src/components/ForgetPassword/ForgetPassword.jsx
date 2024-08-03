@@ -21,10 +21,12 @@ export default function ForgetPassword() {
         console.log(data)
         try {
             const response = await axios.post('/forgot_password', data)
-            response.status===200&&setSuccess(true)&&
-            setTimeout(() => {
-                navigate(`/`)
-            }, 5000)
+            if (response.status === 200) {
+                setSuccess(true)
+                setTimeout(() => {
+                    navigate(`/`)
+                }, 2000)
+            }
             SetValidationError(false)
         } catch (e) {
             console.log(e);

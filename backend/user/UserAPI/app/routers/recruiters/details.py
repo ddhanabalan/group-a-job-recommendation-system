@@ -1,19 +1,20 @@
+"""
+Details module for the UserAPI application.
+
+"""
 from typing import List
 
+import httpx
 from fastapi import APIRouter, Depends, HTTPException, status, Header, Body
 
 from .. import (
     get_db,
     get_current_user,
     recruiterschema,
-    recruitermodel,
     crud,
     Session,
-    check_authorization,
-    encode64_image,
-    decode64_image,
+    JOB_API_HOST,
 )
-
 
 router = APIRouter(prefix="/details")
 
@@ -21,7 +22,17 @@ router = APIRouter(prefix="/details")
 @router.get("/", response_model=recruiterschema.RecruiterDetails)
 async def get_recruiter_details(
     db: Session = Depends(get_db), authorization: str = Header(...)
-):
+) -> recruiterschema.RecruiterDetails:
+    """
+    Get the details of a recruiter user.
+
+    Args:
+        db (Session): The SQLAlchemy database session.
+        authorization (str): The authorization token.
+
+    Returns:
+        recruiterschema.RecruiterDetails: The details of the recruiter user.
+    """
     user = await get_current_user(authorization=authorization, user_type="recruiter")
     user_id = user.get("user_id")
     user_details = crud.recruiter.details.get(db=db, user_id=user_id)
@@ -34,6 +45,20 @@ async def update_recruiter_details(
     db: Session = Depends(get_db),
     authorization: str = Header(...),
 ):
+    """
+    Update the details of a recruiter user.
+
+    Args:
+        user_details (dict): The updated details of the recruiter user.
+        db (Session): The SQLAlchemy database session.
+        authorization (str): The authorization header.
+
+    Returns:
+        dict: A success message.
+
+    Raises:
+        HTTPException: If the recruiter user is not found or if updating the details fails.
+    """
     username = await get_current_user(
         authorization=authorization, user_type="recruiter"
     )
@@ -44,9 +69,6 @@ async def update_recruiter_details(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
         )
-    profile_pic = user_details.get("profile_picture", None)
-    if profile_pic is not None:
-        user_details.update({"profile_picture": await decode64_image(profile_pic)})
     updated_user = crud.recruiter.details.update(
         db=db, user_id=existing_user.user_id, recruiter_details=user_details
     )
@@ -62,6 +84,19 @@ async def update_recruiter_details(
 async def delete_recruiter_details(
     db: Session = Depends(get_db), authorization: str = Header(...)
 ):
+    """
+    Delete the details of a recruiter user.
+
+    Args:
+        db (Session): The SQLAlchemy database session.
+        authorization (str): The authorization header.
+
+    Returns:
+        dict: A success message.
+
+    Raises:
+        HTTPException: If the recruiter user is not found or if deleting the details fails.
+    """
     # Start a transaction
     user = await get_current_user(authorization=authorization, user_type="recruiter")
     user_id = user["user_id"]
@@ -73,5 +108,10 @@ async def delete_recruiter_details(
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Failed to delete user details",
+        )
+    async with httpx.AsyncClient() as client:
+        headers = {"Authorization": authorization}
+        await client.delete(
+            f"http://{JOB_API_HOST}:8000/job_vacancy/user/{user_id}", headers=headers
         )
     return {"detail": "User details deleted successfully"}

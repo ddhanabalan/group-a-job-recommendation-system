@@ -11,6 +11,15 @@
     cursor: pointer;
     transition: all 0.2s ease-in-out;
     border: 1px solid rgb(186, 185, 185);
+    position: relative;
+    overflow: hidden;
+}
+
+.disabled{
+    cursor: none !important;
+    transition: none !important;
+    pointer-events: none  !important;
+    background-color: rgb(237, 232, 232) !important;
 }
 
 .opening-card:hover {
@@ -33,13 +42,9 @@
     color: #7B7777;
 }
 
-.opening-card-img-container {
-    margin-top: 2px;
-    margin-right: 4px !important;
-    width: 5.8rem;
-    height: 5.7rem;
-    border-radius: 50%;
-    background-color: white;
+.opening-card-img {
+   background-color: rgba(255, 255, 255, 0.712);
+   border: solid 1px rgba(0, 0, 0, 0.644);
 }
 
 .opening-card-salary {
@@ -69,6 +74,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    position: relative;
 
 }
 
@@ -151,7 +157,52 @@
     background-color: rgba(0, 0, 0, 0.04) !important;
     border-color: #646cff;
 }
+.job-status-opening-card{
+    display: flex;
+    flex-direction: row;
+    gap: 0.4rem;
+    width:fit-content;
+    padding: 0.1rem 0.7rem;
+    margin-top: .5rem;
+    background-color: rgba(29, 28, 28, 0.082);
+}
+.job-status-opening-card p{
+    font-size: .75rem;
+}
 
+.application-creation-date{
+    margin-top: 0.2rem;
+}
+.application-creation-date p{
+    font-size: 0.7rem;
+}
+
+.closed-indicator {
+   background-color: rgb(255, 235, 16);
+   font-size: 0.8rem;
+   padding: 0.05rem 1rem;
+   border-radius: 0.5rem; 
+   margin-left: 6rem;
+   position: absolute;
+   top: .2rem;
+   right: 2rem;
+}
+.yellow{
+    background-color: orange;
+}
+.blue{
+    background-color: blue !important;
+}
+
+.red{
+    background-color: red !important;
+}
+.green{
+    background-color: rgb(144, 234, 8) !important;
+}
+.orange{
+    background-color: orange!important;
+}
 @media only screen and (max-width: 960px) {
     .opening-vacancy-buttons {
         flex-flow: column;

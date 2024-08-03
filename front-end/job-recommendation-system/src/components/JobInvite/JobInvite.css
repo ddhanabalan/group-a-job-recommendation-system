@@ -111,11 +111,22 @@
     width: 100%;
 }
 
+.recruiter-details{
+    display: flex;
+    flex-direction: row;
+    gap: 5rem;
+
+}
+
 .job-vacancy-selection-container{
     width: 100%;
     margin-left: 1.5rem;
 
 
+}
+
+.en{
+    background-color: #efeded;
 }
 
 .selection-hint-text{
@@ -156,6 +167,11 @@
     font-family: "Inter-b";
 }
 
+.recruiter-details span{
+    font-family: "Inter-b";
+    
+}
+
 
 .confirm-job-invite-button {
     margin-top: 10%;
@@ -165,5 +181,10 @@
     background-color: transparent !important;
     font-family: inherit !important;
     color: #7B7777 !important;
+}
+
+.error-text{
+    color: red;
+    
 }
 

@@ -5,5 +5,14 @@
     position: absolute;
     right: 0;
     padding: 20px;
+    overflow: hidden;
+}
+.prompt-text{
+    margin-top: 3%;
+    margin-left: 20%;
+}
 
+.jobs-listing{
+    overflow: hidden;
+    height: 60%;
 }

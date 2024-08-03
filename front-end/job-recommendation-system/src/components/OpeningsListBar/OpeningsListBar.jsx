@@ -10,24 +10,39 @@ import { useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 
 
-function HighlightableJobCard({ id, highlighted, type, data, listToDescFunc, deleteJobFunc, onclick, invite }) {
+function HighlightableJobCard({ id, highlighted, type, data, listToDescFunc, deleteJobFunc,editJobVacancyStatusFunc, onclick, invite, inviteJob, seekerJobs, applicationType }) {
     //console.log("highlighted ", id, " : ", highlighted)
+    console.log("id", id, highlighted)
+    const [disabled, setDisabled] = useState(false);
+
+    const disableCard =(status)=>{
+        setDisabled(status);
+    }
+    let inviteData=null;
+    if(inviteJob)inviteData={"type":inviteJob.type,"status": (inviteJob.type=="invite"?inviteJob.invite_status:inviteJob.job_status), "id": (inviteJob.type=="invite"?inviteJob.job_invite_id:inviteJob.job_request_id)}
+    console.log("data pass", data, inviteJob)
     return (
-        <div className="card-holder" onClick={() => onclick(id)}>
-            <JobOpeningCard data={data} type={type} listToDescFunc={listToDescFunc} deleteJobFunc={deleteJobFunc} highlighted={highlighted} invite={invite} />
+        <div className="card-holder" onClick={!disabled?() => {inviteData?onclick(id,inviteData.type, inviteData.status, inviteData.id):(seekerJobs===true?onclick(id, applicationType):onclick(id))}: ()=>{}}>
+            <JobOpeningCard disabled={disableCard} data={data} type={type} listToDescFunc={listToDescFunc} deleteJobFunc={deleteJobFunc} editJobVacancyStatusFunc={editJobVacancyStatusFunc} highlighted={highlighted} invite={invite} inviteJob={inviteJob} />
         </div>
     )
 }
 
-export default function OpeningsListBar({ data, userType, userID, chooseEntry, searchBar, preselectedEntry, filterFunc, pageType, listToDescParentFunc = null, deleteJobFunc = null, invite=null }) {
-
+export default function OpeningsListBar({ data, userType, userID, chooseEntry, searchBar, preselectedEntry=null, preselectedEntryType=null, filterFunc = null, pageType, handleApplicationStatus = null, userJobs = null, listToDescParentFunc = null, deleteJobFunc = null,editJobVacancyStatusFunc=null, invite=null, seekerJobs = false, revertibleSelection=false }) {
+    console.log("user received jobs", userJobs, seekerJobs)
+    
     console.log("received jobs to openings list bar", data);
-    const finalInfo = { ...data }
-    //console.log("opening bar data",data)
-    //console.log("data passed to opening cards", finalInfo)
-    const [highlightedId, setHighlightedId] = useState(preselectedEntry);
+    const [initInfo,setInitInfo] = useState(data)
+    const [finalInfo,setFinalInfo] = useState(data) 
+    const [applicationFilter, setApplicationFilter] = useState({"Applied": false, "Invited": false, "Rejected": false, "Approved": false})
 
-    //console.log("highlighted id=",preselectedEntry)
+    //console.log("opening bar data",data)
+    
+    const [highlightedId, setHighlightedId] = useState(preselectedEntry);
+    const [highlightedEntryType, setHighlightedEntryType] = useState(preselectedEntryType)
+    const [applicationTypeData, setApplicationTypeData] = useState({});
+
+    console.log("highlighted id=",preselectedEntry, highlightedId)
     const [searchVal, setSearch] = useState(null); //variable for storing earth star value
     const [filterStat, setFilter] = useState(false);
     const [sidebarDesc, setSideBar] = useState(false);
@@ -40,16 +55,65 @@ export default function OpeningsListBar({ data, userType, userID, chooseEntry, s
         setSearch(searchValue);
     }
 
-    function highlightDiv(id) {
+    function handleSeekerJobSection(card_info){
+        const r = seekerJobs?(card_info.type=="request"?card_info["job_req_id"]:card_info["job_invite_id"]):card_info["id"];
+        console.log("logged", seekerJobs, r, card_info)
+        return r;
+    }
+    function handleApplicationFilter(entry){
+        //function for passing selected job opening card from child component to parent componenet
+        setApplicationFilter(entry);
+    }
+
+    function statusFilter(){
+        const activeFilters = Object.keys(applicationFilter).filter(key => applicationFilter[key]).map(f=>f.toLowerCase());
+        console.log("activ filters", applicationFilter, activeFilters)
+        if(activeFilters.length)
+        {const filterResponse = initInfo.filter(e=>{if(e.type === "invite" && activeFilters.includes("invited")){return e}
+                                else if( e.type ==="request" && activeFilters.includes(e.status.toLowerCase())){return e}
+                                else return null;})
+          console.log("filtered applications list ", data,filterResponse, activeFilters)
+
+          setFinalInfo(filterResponse);
+        }
+        else{
+            setFinalInfo(initInfo);
+        }
+        
+        
+      }
+
+    function highlightDiv(id, application_type = null, application_status = null, application_id=null) {
         //function for highlighting selected opening cards
         //console.log("highlighting id", id)
+        if(revertibleSelection && highlightedId === id) setHighlightedId(null);
+        else{
         setHighlightedId(id);
+        }
+        console.log("application da", application_status, application_type)
+        if(application_type && seekerJobs){
+            setHighlightedEntryType(application_type);
+        }
+        else if(application_type && application_id){
+            setApplicationTypeData({"application_type": application_type, "application_status": application_status, "application_id": application_id})
+        }
 
     }
 
     useEffect(() => {
-        if (highlightedId != null) {
+        if(seekerJobs===false)
+        {   if(revertibleSelection){
             chooseEntry(highlightedId)
+        }
+            else if(highlightedId!=null) {
+            chooseEntry(highlightedId)
+        }}
+        else{
+            console.log("highlighted id", highlightedId, highlightedEntryType)
+            if (highlightedId != null && highlightedEntryType != null) {
+                chooseEntry(highlightedId, highlightedEntryType)
+                console.log("highlighted")
+            } 
         }
         if (searchVal != null) {
             searchBar(searchVal)
@@ -58,7 +122,7 @@ export default function OpeningsListBar({ data, userType, userID, chooseEntry, s
         [highlightedId, searchVal])
 
     useEffect(() => {
-        filterFunc(filterStat)
+        if(filterFunc)filterFunc(filterStat);
     },
         [filterStat])
 
@@ -71,27 +135,49 @@ export default function OpeningsListBar({ data, userType, userID, chooseEntry, s
         setHighlightedId(preselectedEntry)
     },
         [preselectedEntry])
+    useEffect(() => {
+        setHighlightedEntryType(preselectedEntryType)
+        console.log("preselected entry type set", preselectedEntryType)
+    },
+        [preselectedEntryType])
+    useEffect(() => {
+        if(handleApplicationStatus && Object.keys(applicationTypeData).length)handleApplicationStatus(applicationTypeData);
+    }, [applicationTypeData])
+    useEffect(() => {
+        if(seekerJobs)statusFilter();
+        else(setFinalInfo(initInfo))
+    }, [applicationFilter, initInfo])
+    useEffect(()=>{
+        setInitInfo(data);
+    }, [data])
 
     return (
         <>
             <div className="left-bar">
                 <div className="openings-search-tile">
                     <div className="search-bar">
+                        {pageType !== "candidates" &&
                         <div className="back-icon-opening">
                             <Link to="/profile">
                                 <BackBtn />
                             </Link>
                         </div>
+                        }
                         <div className="opening-search">
                             <SearchBar toSearch={"Search jobs"} searchHeight={33} onSearch={onSearch} searchColor="#D9D9D9" />
                         </div>
+                        {filterFunc?
                         <div className="sort-icon">
                             <IconButton onClick={() => setFilter(!filterStat)} sx={{ borderRadius: 50, backgroundColor: (filterStat ? 'black' : '#E7E4E4'), width: 35, height: 35, "&.MuiButtonBase-root:hover": { bgcolor: (filterStat ? 'black' : '#E7E4E4') }, }}>
                                 <SortIcon sx={{ color: (filterStat ? 'white' : 'black') }} />
                             </IconButton>
                         </div>
+                        :
+                        <div className='fill-space'>
+                        </div>
+                        }
                     </div>
-                    {userType == "employer" &&
+                    {userType == "employer" && pageType!=="candidates" &&
                         <div className="create-vacancy-button" >
                             <Link to="../employer/job-vacancy" state={{ user_id: userID }}>
                                 <Button
@@ -103,20 +189,42 @@ export default function OpeningsListBar({ data, userType, userID, chooseEntry, s
                         </div>
                     }
                 </div>
-
+                {seekerJobs?
+                <div className="user-application-filter">
+                    {Object.keys(applicationFilter).map(e=>
+                    <button className={`user-application-filter-btn application-filter-btn application-filter-btn-apply application-filter-btn${applicationFilter[e]?`-active-${e.toLowerCase()}`: ""} application-filter-btn${"-" + e.toLowerCase()}`} onClick={()=>{handleApplicationFilter({...applicationFilter, [e]: !applicationFilter[e]})}}> 
+                    {e}
+                    </button>)
+                    }  
+                </div>
+                :
+                <></>
+                }
                 <div className="openings-container">
-                    {Object.keys(finalInfo).length!=0?
-                        Object.keys(finalInfo).map((card) => (<HighlightableJobCard key={finalInfo[card]["id"]} id={finalInfo[card]["id"]} onclick={highlightDiv} highlighted={highlightedId == finalInfo[card]["id"]} type={userType == "employer" ? pageType : null} deleteJobFunc={deleteJobFunc} listToDescFunc={listToDescFunc} data={{ ...finalInfo[card], 'userType': userType, 'highlightedId': highlightedId }} invite={invite} />))
-                        :
+                    {finalInfo.length!=0?
+                        (
+                        //console.log("finalInfo check", finalInfo)
+                        //Object.keys(finalInfo).map((card) => console.log("this is what i received", card, finalInfo[card]))
+                         finalInfo.map((card) => (<HighlightableJobCard key= {finalInfo.indexOf(card)} id={handleSeekerJobSection(card)} onclick={highlightDiv} highlighted={highlightedId == handleSeekerJobSection(card) && (seekerJobs?(card.type===highlightedEntryType): true)} type={userType == "employer" && pageType!=="candidates" ? pageType : null} applicationType={seekerJobs?card.type: null} inviteJob={userJobs && userJobs.length?userJobs.filter(job => {if(job.job_vacancy_id == card["id"] )return job}): null} deleteJobFunc={deleteJobFunc} editJobVacancyStatusFunc={editJobVacancyStatusFunc} listToDescFunc={listToDescFunc} data={{ ...card, 'userType': userType, 'highlightedId': highlightedId }} invite={invite} seekerJobs={seekerJobs?true: false}/>))
+                        )
+                            :
                         (userType=="employer"?
-                        <div className="empty-container-message">
-                            <p>You haven't created any vacancies yet.</p>
-                            <p>Start by clicking 'Create job vacancy' button.</p>
-                        </div>
-                        :
-                        <div className="empty-container-message">
-                            <p>You haven't applied for any jobs yet.</p> 
-                        </div>
+                                    (pageType==="candidates"?
+                                            <div className="empty-container-message-candidates">
+                                                <p>You haven't created any vacancies yet.</p>
+                                                <p>Visit Applications page to create.</p>
+                                            </div>
+                                            :
+                                            <div className="empty-container-message">
+                                                <p>You haven't created any vacancies yet.</p>
+                                                <p>Start by clicking 'Create job vacancy' button.</p>
+                                            </div>
+                                    )
+                        
+                                    :
+                                    <div className="empty-container-message">
+                                        <p>You haven't applied for any jobs yet.</p> 
+                                    </div>
                         )
 
                     }

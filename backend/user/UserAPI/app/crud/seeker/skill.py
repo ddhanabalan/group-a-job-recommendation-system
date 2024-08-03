@@ -66,6 +66,27 @@ def create(db: Session, skill: seekerschema.SeekersSkill) -> bool:
         return False
 
 
+def get_all_list(db: Session, skills: List[str]) -> List[int]:
+    """
+    Retrieve the list of user IDs associated with the given skills from the database.py.
+
+    Args:
+        db (Session): The SQLAlchemy database.py session.
+        skills (List[str]): A list of skills to filter the user IDs by.
+
+    Returns:
+        List[int]: A list of unique user IDs associated with the given skills. If an error occurs during the query, an empty list is returned.
+    """
+    try:
+        result = (
+            db.query(seekermodel.SeekersSkill.user_id)
+            .filter(seekermodel.SeekersSkill.skill.in_(skills))
+            .all()
+        )
+        return list(set([_[0] for _ in result]))
+    except SQLAlchemyError:
+        return []
+
 def update(db: Session, id: int, updated_skill: seekerschema.SeekersSkill) -> bool:
     """
     Update skill details of a seeker in the database.py.

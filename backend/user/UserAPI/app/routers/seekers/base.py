@@ -1,37 +1,48 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Header, UploadFile, File
-import base64
+"""
+Seekers module for the UserAPI application.
+
+This module contains the routes for the Seekers API.
+
+
+"""
+from fastapi import APIRouter, Depends, HTTPException, status, Header
 
 from .. import (
     get_db,
     get_current_user,
     seekerschema,
-    seekermodel,
     crud,
     Session,
-    decode64_image,
-    encode64_image,
+    check_authorization,
 )
-
 
 router = APIRouter()
 
 
 @router.post("/init", status_code=status.HTTP_201_CREATED)
 async def user_seeker_init(
-    user: seekerschema.SeekersBaseIn, db: Session = Depends(get_db)
-):
-    if user.profile_picture is not None:
-        contents = await decode64_image(user.profile_picture)
-    else:
-        contents = None
+    user: seekerschema.SeekersBase, db: Session = Depends(get_db)
+) -> dict:
+    """
+    Initializes a new seeker user.
+
+    Args:
+        user (seekerschema.SeekersBase): The seeker user information.
+        db (Session, optional): The database session. Defaults to Depends(get_db).
+
+    Raises:
+        HTTPException: If the user already exists or the initialization was not successful.
+
+    Returns:
+        dict: A dictionary with the user ID if the initialization is successful.
+
+    """
     username = user.username
     user_details = crud.seeker.base.get_userid_from_username(db=db, username=username)
     if user_details is not None:
         return {"user_id": user_details.user_id}
-    user_details = user.dict()
-    user_details.pop("profile_picture")
-    user_init = seekerschema.SeekersBase(**user_details)
-    res = crud.seeker.base.create(db=db, user=user_init, profile_picture=contents)
+
+    res = crud.seeker.base.create(db=db, user=user)
     if not res:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
@@ -42,15 +53,22 @@ async def user_seeker_init(
 
 
 @router.get("/profile", response_model=seekerschema.SeekersProfile)
-async def profile(authorization: str = Header(...), db: Session = Depends(get_db)):
+async def profile(
+    authorization: str = Header(...), db: Session = Depends(get_db)
+) -> seekerschema.SeekersProfile:
+    """
+    Get the profile of the logged in seeker user.
+
+    Args:
+        authorization (str, optional): The authorization token. Defaults to Header(...).
+        db (Session, optional): The database session. Defaults to Depends(get_db).
+
+    Returns:
+        seekerschema.SeekersProfile: The seeker user profile.
+    """
     username = await get_current_user(authorization=authorization)
     username = username["user"]
     details = crud.seeker.details.get_by_username(db=db, username=username)
-    if details.profile_picture is not None:
-        profile_pic = details.profile_picture
-        profile_picture64 = await encode64_image(profile_pic)
-    else:
-        profile_picture64 = None
 
     user_details = seekerschema.SeekersDetails.from_orm(details)
 
@@ -73,7 +91,6 @@ async def profile(authorization: str = Header(...), db: Session = Depends(get_db
     print(user_certificate)
     return seekerschema.SeekersProfile(
         **user_details.dict(),
-        profile_picture=profile_picture64,
         loc_type=user_loc_type,
         emp_type=user_emp_type,
         skill=user_skill,
@@ -87,13 +104,20 @@ async def profile(authorization: str = Header(...), db: Session = Depends(get_db
 
 
 @router.get("/profile/{username}", response_model=seekerschema.SeekersProfile)
-async def profile_by_username(username: str, db: Session = Depends(get_db)):
+async def profile_by_username(
+    username: str, db: Session = Depends(get_db)
+) -> seekerschema.SeekersProfile:
+    """
+    Get the profile of a seeker user by username.
+
+    Args:
+        username (str): The username of the seeker user.
+        db (Session): The database session.
+
+    Returns:
+        seekerschema.SeekersProfile: The seeker user profile.
+    """
     details = crud.seeker.details.get_by_username(db=db, username=username)
-    if details.profile_picture is not None:
-        profile_pic = details.profile_picture
-        profile_picture64 = await encode64_image(profile_pic)
-    else:
-        profile_picture64 = None
 
     user_details = seekerschema.SeekersDetails.from_orm(details)
 
@@ -116,7 +140,6 @@ async def profile_by_username(username: str, db: Session = Depends(get_db)):
     print(user_certificate)
     return seekerschema.SeekersProfile(
         **user_details.dict(),
-        profile_picture=profile_picture64,
         loc_type=user_loc_type,
         emp_type=user_emp_type,
         skill=user_skill,
@@ -127,3 +150,23 @@ async def profile_by_username(username: str, db: Session = Depends(get_db)):
         language=user_language,
         user_type="seeker"
     )
+
+
+@router.get("/info/{user_id}")
+async def seeker_info(
+    user_id: int, authorization: str = Header(...), db: Session = Depends(get_db)
+) -> dict:
+    """
+    Get the username and email of a seeker user.
+
+    Args:
+        user_id (int): The user id of the seeker.
+        authorization (str, optional): The authorization token. Defaults to Header(...).
+        db (Session, optional): The database session. Defaults to Depends(get_db).
+
+    Returns:
+        dict: The username and email of the seeker user.
+    """
+    await check_authorization(authorization=authorization, user_type="recruiter")
+    user = crud.seeker.details.get(db=db, user_id=user_id)
+    return {"username": user.username, "email": user.email}

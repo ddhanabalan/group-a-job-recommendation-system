@@ -3,7 +3,7 @@ import { useLocation, Navigate } from 'react-router-dom';
 import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import { getStorage, setStorage } from '../../storage/storage';
-import { userAPI} from '../../api/axios';
+import { userAPI } from '../../api/axios';
 import Lottie from 'lottie-react';
 import FeatureBox from '../../components/FeatureBox/FeatureBox';
 import FeatureBoxMiddlePane from '../../components/FeatureBoxMiddlePane/FeatureBoxMiddlePane';
@@ -20,6 +20,7 @@ import LoaderAnimation from '../../components/LoaderAnimation/LoaderAnimation';
 import cloudAnimation from '../../images/cloud-animation.json';
 import './ProfileSection.css';
 export default function ProfileSection({ data }) {
+    const [loading, SetLoading] = useState(true)
     const [newData, SetnewData] = useState(data);
     const [isNotEditing, SetIsNotEditing] = useState(true)
     const { state } = useLocation();
@@ -63,7 +64,7 @@ export default function ProfileSection({ data }) {
     }, [])
     const params = useParams();
     const user = params.username;
-    const callAPI =  async () => {
+    const callAPI = async () => {
         try {
             console.log("hello i'm being called")
             const response = (user === undefined) ?
@@ -71,13 +72,11 @@ export default function ProfileSection({ data }) {
                     headers: {
                         'Authorization': `Bearer ${getStorage("userToken")}`
                     }
-                }) :
+                }):
                 await userAPI.get(`/profile/${user}`);
             redirectFn(response.data)
         } catch (e) {
             console.log(e)
-
-            alert(e.message)
         }
     }
     useEffect(() => {
@@ -96,10 +95,14 @@ export default function ProfileSection({ data }) {
 
                 alert(e.message)
             }
+            finally {
+                SetLoading(false)
+            }
         }
         profileAPI()
     }, []);
     const subForm = async (data) => {
+        
         SetnewData({ ...newData, city: data.city, first_name: data.first_name, last_name: data.last_name, country: data.country, bio: data.bio, profile_picture: data.profile_picture, profile_banner_color: data.profile_banner_color })
         console.log("data", data);
         try {
@@ -137,6 +140,7 @@ export default function ProfileSection({ data }) {
     }
     return (
         <>
+            {loading && <LoaderAnimation />}
             {redirectHome && <Navigate to='/' />}
             {data ?
                 <div id="profile-page">
@@ -150,7 +154,7 @@ export default function ProfileSection({ data }) {
                                 contactData={newData} reloadFn={callAPI} showSuccessMsg={showSuccessMsg} showFailMsg={showFailMsg} />
                         </div>
                         <div className="profile-pane profile-middle-pane">
-                            <ExperienceBox childData={newData.former_jobs} reloadFn={callAPI} showSuccessMsg={showSuccessMsg} showFailMsg={showFailMsg} />
+                            <ExperienceBox childData={newData.former_jobs} experienceinYears={newData.experience} reloadFn={callAPI} showSuccessMsg={showSuccessMsg} showFailMsg={showFailMsg} />
                             <FeatureBoxMiddlePane //component defaults to QualificationBox
                                 childData={newData.prev_education} reloadFn={callAPI}
                                 showSuccessMsg={showSuccessMsg} showFailMsg={showFailMsg}

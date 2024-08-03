@@ -1,3 +1,12 @@
+"""
+Database module for the UtilsAPI application.
+
+This module contains the database configuration for the UtilsAPI application.
+
+The database configuration is imported from the .env file.
+
+
+"""
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base

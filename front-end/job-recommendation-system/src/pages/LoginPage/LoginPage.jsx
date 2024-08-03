@@ -8,6 +8,7 @@ import axios from '../../api/axios';
 import { getStorage,setStorage } from '../../storage/storage';
 import qs from 'qs';
 import ConfBox from '../../components/ConfirmMsgBox/ConfirmMsgBox';
+import LogoRedirect from "../../components/LogoRedirect/LogoRedirect";
 import '../pages.css';
 export default function LoginPage({fixUser}) {
     const [redirect, SetRedirect] = useState(false)
@@ -47,13 +48,16 @@ export default function LoginPage({fixUser}) {
             console.log(e)
             SetLoading(false)
             // alert(e.message)
-            const received_error = e.response?.data.detail || (e.message == "Network Error" ? "We are facing some issues, please try again later." : e.message);
+            const received_error = e.response?e.response.data.detail : (e.message == "Network Error" ? "We are facing some issues, please try again later." : e.message);
             SetServerMsg(received_error);
         }
     }
 
+    
+
     return (
         <div id="page" className='login-page'>
+            {/* <LogoRedirect /> */}
             {redirect && < Navigate to="/profile" />}
             {serverMsg ?
                 <div className='message-box-login'>

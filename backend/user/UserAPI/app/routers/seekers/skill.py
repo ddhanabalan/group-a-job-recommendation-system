@@ -1,3 +1,11 @@
+"""
+Skill module for the UserAPI application.
+
+This module contains the routes for the Skill model.
+
+"""
+from typing import List
+
 from fastapi import APIRouter, Depends, HTTPException, status, Header
 
 from .. import (
@@ -17,7 +25,17 @@ router = APIRouter()
 @router.get("/skill")
 async def user_seeker_skill(
     db: Session = Depends(get_db), authorization: str = Header(...)
-):
+) -> List[seekerschema.SeekersSkill]:
+    """
+    Get all skills for the logged in seeker user.
+
+    Args:
+        db (Session): The SQLAlchemy database session.
+        authorization (str): The authorization token.
+
+    Returns:
+        List[seekerschema.SeekersSkill]: The list of skills.
+    """
     user = await get_current_user(authorization=authorization)
     user_id = user.get("user_id")
     user_skills = crud.seeker.skill.get_all(db=db, user_id=user_id)
@@ -29,7 +47,18 @@ async def create_seeker_skill(
     skill: seekerschema.SeekersSkill,
     db: Session = Depends(get_db),
     authorization: str = Header(...),
-):
+) -> dict:
+    """
+    Create a new skill for the logged in seeker user.
+
+    Args:
+        skill (seekerschema.SeekersSkill): The skill details to create.
+        db (Session): The SQLAlchemy database session.
+        authorization (str): The authorization token.
+
+    Returns:
+        dict: A dictionary containing a success message.
+    """
     user = await get_current_user(authorization=authorization)
     user_id = user.get("user_id")
     skill.user_id = user_id
@@ -45,7 +74,21 @@ async def create_seeker_skill(
 @router.delete("/skill/{skill_id}", status_code=status.HTTP_200_OK)
 async def delete_seeker_skill(
     skill_id: int, db: Session = Depends(get_db), authorization: str = Header(...)
-):
+) -> dict:
+    """
+    Delete a skill by its ID for the logged in seeker user.
+
+    Args:
+        skill_id (int): The ID of the skill to delete.
+        db (Session): The SQLAlchemy database session.
+        authorization (str): The authorization token.
+
+    Returns:
+        dict: A dictionary containing a success message.
+
+    Raises:
+        HTTPException: If the skill with the given ID is not found.
+    """
     await check_authorization(authorization=authorization)
     deleted = crud.seeker.skill.delete(db, skill_id)
     if not deleted:
@@ -62,7 +105,22 @@ async def update_seeker_skill(
     skill: seekerschema.SeekersSkill,
     db: Session = Depends(get_db),
     authorization: str = Header(...),
-):
+) -> dict:
+    """
+    Update a skill by its ID for the logged in seeker user.
+
+    Args:
+        skill_id (int): The ID of the skill to update.
+        skill (seekerschema.SeekersSkill): The updated skill data.
+        db (Session): The SQLAlchemy database session.
+        authorization (str): The authorization token.
+
+    Returns:
+        dict: A dictionary containing a success message.
+
+    Raises:
+        HTTPException: If the skill with the given ID is not found.
+    """
     await check_authorization(authorization)
     updated_skill = crud.seeker.skill.update(db, skill_id, skill)
     if not updated_skill:

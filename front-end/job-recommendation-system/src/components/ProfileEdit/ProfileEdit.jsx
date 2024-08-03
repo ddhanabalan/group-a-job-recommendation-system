@@ -1,4 +1,4 @@
-import { useForm } from 'react-hook-form'
+import { useForm, FormProvider, useFormContext } from 'react-hook-form'
 import { useState, useEffect } from 'react'
 import { Button, TextField, MenuItem } from '@mui/material'
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -12,14 +12,71 @@ import AddCircleRoundedIcon from '@mui/icons-material/AddCircleRounded';
 import profilePlaceholder from '../../images/profile_placeholder.svg';
 import greentick from '../../images/green-confirm.json'
 import failanim from '../../images/fail-animation.json'
+import { Autocomplete } from '@mui/material';
+import { utilsAPI } from '../../api/axios';
 import '../SignUpForm/SignUpForm2.css';
 import './ProfileEdit.css';
-export default function ProfileEdit({ data, register, errors }) {
+export default function ProfileEdit({ data, isErrorChild, getProfileValues }) {
+    const { register, getValues, formState: { errors }, watch, setValue } = useFormContext();
+    const backupCountries = [{ "country": 'India' }, { "country": 'USA' }, { "country": "Germany" }, { "country": 'Australia' }, { 'country': "Japan" }]
+    const [countries, setCountries] = useState([])
     const [user, SetUser] = useState()
+    const [fetchingErrors, setFetchingErrors] = useState({ "countries": false });
+    const [userCountry, setUserCountry] = useState({ "country": data.country })
+
+    const fetchCountries = async () => {
+        try {
+            const r = await utilsAPI.get('api/v1/country/');
+            if (r.data.length) {
+                setCountries(r.data);
+                setFetchingErrors({ ...fetchingErrors, "countries": false })
+            }
+            else {
+                setCountries(backupCountries);
+
+                setFetchingErrors({ ...fetchingErrors, "countries": true })
+
+            }
+        }
+        catch (e) {
+            console.log("industry fetch failed", e);
+            //alert("industries not fetched");
+            setCountries(backupCountries);
+            setFetchingErrors({ ...fetchingErrors, "countries": true })
+
+        }
+    }
+
+    const generateDelay = (delay, callFn, value = null) => {
+        setTimeout(() => {
+            value ? callFn(value) : callFn()
+        }, delay);
+    }
+
     useEffect(() => {
         SetUser(getStorage("userType"))
+        fetchCountries()
+        setValue('country', data.country)
     }, [])
-    console.log("error in head", data.first_name)
+    // const watchedFields = watch()
+    // useEffect(() => {
+    //     getProfileValues({ ...getValues() })
+    // }, [watchedFields,getProfileValues])
+    watch(() => {
+        getProfileValues({ ...getValues() })
+    })
+    useEffect(() => {
+
+        if (fetchingErrors.countries) generateDelay(3000, fetchCountries)
+    }, [fetchingErrors])
+
+    console.log("error in head", errors)
+    Object.keys(errors).length === 0 && isErrorChild(false)
+    const myErrors = errors
+    useEffect(() => {
+        console.log("hhhwhhw", errors)
+        Object.keys(errors).length !== 0 && isErrorChild(true)
+    }, [myErrors])
     return (
         <>
             {/*SignUp Form part-2(Personal info from seekers/Company info from employers)*/}
@@ -41,10 +98,10 @@ export default function ProfileEdit({ data, register, errors }) {
                                     error={'first_name' in errors}
                                     {...register("first_name",
                                         {
-                                            required: "please enter first name",
+                                            required: "Please enter first name",
                                             pattern: {
-                                                value: /^[a-zA-Z]+$/,
-                                                message: "Only letters allowed"
+                                                value: /^[a-zA-Z]{1,32}$/,
+                                                message: "Only letters allowed, with a maximum length of 32 characters"
                                             }
                                         })} />
                                 <p className="error-message">{errors.first_name?.message || ""}</p>
@@ -60,14 +117,14 @@ export default function ProfileEdit({ data, register, errors }) {
                                     error={'company_name' in errors}
                                     {...register("company_name",
                                         {
-                                            required: "please enter company name",
+                                            required: "Please enter company name",
                                             pattern: {
-                                                value: /^[a-zA-Z]+$/,
-                                                message: "Only letters allowed"
+                                                value: /^[a-zA-Z0-9\s]{1,128}$/,
+                                                message: "Only letters, numbers and whitespace with a maximum length of 128 characters"
                                             }
                                         })} />
                                 <p className="error-message">{errors.company_name?.message || ""}</p>
-                        </div>}
+                            </div>}
 
                         {/* Last Name */}
                         {user === "seeker" &&
@@ -78,10 +135,10 @@ export default function ProfileEdit({ data, register, errors }) {
                                     error={'last_name' in errors}
                                     {...register("last_name",
                                         {
-                                            required: "please enter last name",
+                                            required: "Please enter last name",
                                             pattern: {
-                                                value: /^[a-zA-Z\s]+$/,
-                                                message: "Only letters and whitespace allowed"
+                                                value: /^[a-zA-Z\s]{1,32}$/,
+                                                message: "Only letters and whitespace with a maximum length of 32 characters"
                                             }
                                         })} />
                                 <p className="error-message">{errors.last_name?.message || ""}</p>
@@ -91,14 +148,42 @@ export default function ProfileEdit({ data, register, errors }) {
                         {/*Country*/}
                         <div id="item-5">
                             <p className="text-head">Country<span className="text-danger"> *</span></p>
-                            <TextField className="personal-details-input profile-edit-input" variant="outlined"
-                                defaultValue={data.country}
-                                error={'country' in errors}
-                                {...register("country",
-                                    {
-                                        required: "please select country",
-                                    })}>
-                            </TextField>
+                            <Autocomplete
+                                disablePortal
+                                options={countries}
+                                value={userCountry}
+                                defaultValue={{ "country": data.country }}
+                                getOptionLabel={(option) => option["country"]}
+                                isOptionEqualToValue={(option, value) => value["country"] === option["country"]}
+
+                                onChange={(event, newInputValue) => {
+                                    setUserCountry(newInputValue)
+                                    setValue('country', newInputValue["country"])
+                                }}
+
+                                renderInput={(params) => <TextField
+
+                                    className="personal-details-input profile-edit-input"
+                                    {...params}
+                                    InputProps={{
+                                        ...params.InputProps,
+                                        disableUnderline: true
+                                    }}
+
+                                    variant="outlined"
+                                    defaultValue={data.country}
+                                    {...register("country", {
+                                        required: "Field is required",
+                                        // validate: (value)=>{
+                                        //     const r= countries.some(e=>e.country===value)
+                                        //     if( r)
+                                        //         { console.log("country compare", r)
+                                        //             return true;}
+                                        //     else return false;
+                                        // }
+                                    })}
+                                />}
+                            />
                             <p className="error-message">{errors.country?.message || ""}</p>
                         </div>
 
@@ -110,11 +195,12 @@ export default function ProfileEdit({ data, register, errors }) {
                                 error={'city' in errors}
                                 {...register("city",
                                     {
-                                        required: "",
+                                        required: "Please enter city",
                                         pattern: {
-                                            value: /^\d{10}$/, // Regular expression to check exactly 10 digits
-                                            // message: "Phone number must be exactly 10 numbers"
+                                            value: /^[a-zA-Z]{1,128}$/,
+                                            message: "Only letters allowed, with a maximum length of 128 characters"
                                         }
+
                                     })} />
 
                             <p className="error-message">{errors.city?.message || ""}</p>
@@ -122,14 +208,18 @@ export default function ProfileEdit({ data, register, errors }) {
 
                     </div>
                     <div id="item-8">
-                        <p className="text-head">Bio<span className="text-danger"> *</span></p>
+                        <p className="text-head">Bio</p>
                         <TextField className="personal-details-input profile-edit-bio profile-edit-input" variant="outlined" fullWidth
                             multiline
                             defaultValue={data.bio}
                             error={'bio' in errors}
                             {...register("bio",
                                 {
-                                    required: ""
+                                    required: "",
+                                    pattern: {
+                                        value: /^[a-zA-Z0-9\s.,'?!@#$%^&*()_+\-=\[\]{};:"\\|<>\/~`]{1,512}$/,
+                                        message: "Maximum length of 512 characters allowed."
+                                    }
                                 })}>
                         </TextField>
                         <p className="error-message">{errors.bio?.message || ""}</p>
