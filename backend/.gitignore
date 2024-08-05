@@ -1,23 +1,5 @@
 ../.idea/
-auth/AuthAPI/app/__pycache__/
-auth/AuthAPI/app/crud/__pycache__/
-auth/AuthAPI/app/models/__pycache__/
-auth/AuthAPI/app/schemas/__pycache__/
-job/JobAPI/app/__pycache__/
-job/JobAPI/app/crud/__pycache__/
-job/JobAPI/app/crud/jobcrud/__pycache__/
-job/JobAPI/app/models/__pycache__/
-job/JobAPI/app/routers/__pycache__/
-job/JobAPI/app/routers/jobrouters/__pycache__/
-job/JobAPI/app/schemas/__pycache__/
-user/UserAPI/app/__pycache__/
-user/UserAPI/app/crud/__pycache__/
-user/UserAPI/app/crud/seeker/__pycache__/
-user/UserAPI/app/models/__pycache__/
-user/UserAPI/app/routers/__pycache__/
-user/UserAPI/app/routers/seekers/__pycache__/
-user/UserAPI/app/schemas/__pycache__/
+**/__pycache__/
 
-user/UserAPI/.env
-auth/AuthAPI/.env
-job/JobAPI/.enc
+**/.env
+**/*.pkl

@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr, PastDate
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
 
 
@@ -10,20 +10,28 @@ class RecruiterBase(BaseModel):
     email: EmailStr
     address: Optional[str] = None
     pincode: Optional[str] = None
-    profile_picture: Optional[str] = None
+    profile_banner_color: Optional[str] = None
     country: Optional[str] = None
     industry: Optional[str] = None
+    city: Optional[str] = None
+    phone: Optional[str] = None
+    profile_picture: Optional[str] = None
 
 
 class RecruiterDetails(RecruiterBase):
     bio: Optional[str] = None
+    overview: Optional[str] = None
     dob: Optional[PastDate] = None
-    city: Optional[str] = None
     company_size: Optional[str] = None
     headquarters: Optional[str] = None
-    location: Optional[str] = None
+    locations: Optional[str] = None
+    website: Optional[str] = None
+    contact_email: Optional[str] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
 
 
 class RecruiterLocType(BaseModel):
@@ -33,6 +41,9 @@ class RecruiterLocType(BaseModel):
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
+    class Config:
+        from_attributes = True
+
 
 class RecruiterEmpType(BaseModel):
     id: int
@@ -41,18 +52,46 @@ class RecruiterEmpType(BaseModel):
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
+    class Config:
+        from_attributes = True
+
 
 class RecruiterSpeciality(BaseModel):
-    id: int
-    user_id: int
+    id: Optional[int] = None
+    user_id: Optional[int] = None
     speciality: str
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
 
+    class Config:
+        from_attributes = True
+
 
 class RecruiterAchievements(BaseModel):
-    id: int
-    user_id: int
+    id: Optional[int] = None
+    user_id: Optional[int] = None
     position: str
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
+
+    class Config:
+        from_attributes = True
+
+
+class RecruiterProfile(RecruiterDetails):
+    profile_picture: Optional[str] = None
+    loc_type: Optional[List[RecruiterLocType]]
+    achievements: Optional[List[RecruiterAchievements]]
+    speciality: Optional[List[RecruiterSpeciality]]
+    emp_type: Optional[List[RecruiterEmpType]]
+    user_type: Optional[str]
+
+    class Config:
+        from_attributes = True
+
+
+class CompanyIDSIn(BaseModel):
+    company_ids: Optional[List[int]] = None
+
+    class Config:
+        from_attributes = True

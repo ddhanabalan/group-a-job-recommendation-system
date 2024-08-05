@@ -1,52 +1,117 @@
-.chip-with-icon{
+.chip-with-icon {
     background-color: transparent !important;
     font-size: 15px !important;
     font-family: inherit !important;
     color: #7B7777 !important;
 }
-.job-card-info-div-parameter{
+
+.job-card-info-div-parameter {
     color: #7B7777;
 }
 
-.cs{
+.cs {
     color: #fc2828;
 }
-.job-card-info-div{
+
+.job-card-info-div {
     display: flex;
     justify-content: space-between;
     margin-bottom: 5px;
 }
 
-.job-card-info-div p{
+.job-card-info-div p {
     font-size: 15px;
     width: 50%;
 }
+
 .job-card-div2 {
     width: 20%;
     display: flex;
     flex-direction: column;
+    justify-content: center;
     align-items: center;
     gap: 1rem;
 
 }
-.application-review-buttons{
+
+.application-review-buttons {
+    height: 100%;
+    display: flex;
+    /* flex-direction: column; */
+    width: 7rem;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+}
+.job-status-div{
+    height: fit-content;
+    width: fit-content;
+    background-color: rgb(222, 220, 220);
+    display: flex;
+    align-self: center;
+    align-items: center;
+    justify-content: space-around;
+    border-radius: 20px;
+    padding: .1rem .5rem;
+    gap: 0.4rem;
+}
+.invite-status-div{
+    height: fit-content;
+    width: fit-content;
+    background-color: rgb(222, 220, 220);
+    display: flex;
+    align-self: start;
+    align-items: center;
+    justify-content: space-around;
+    border-radius: 20px;
+    padding: .1rem .5rem;
+    gap: 0.4rem;
+}
+
+.invite-status-div p{
+    font-size: .9rem;
+}
+.job-status-div p{
+    font-size: .9rem;
+}
+
+.invite-status-pending{
+    display: flex;
+    flex-direction: row !important;
+    /*justify-content: center;*/
+    /*width: fit-content;*/
+    /*gap: 0.4rem !important;*/
+    /*padding: 0rem 0rem;*/
+
+}
+
+.invite-div{
+    align-self: flex-end;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
+    justify-content: center;
+    gap: 0.7rem;
+    padding-right: 1.3rem;
+    padding-left: 1rem;
+    padding-bottom: 1rem;
 }
 
-.application-review-buttons button{
-    align-self: start;
+.card-status-div{
+    display: flex;
+    flex-direction: column;
+    gap: 20%;
+    justify-content: center;
 }
-
 .job-card-div1 {
     width: 80%;
 }
-.job-card{
+
+
+.job-card {
     flex-direction: row-reverse;
 }
-.job-card-img-container{
+
+.job-card-img-container {
     align-self: center;
     height: 4.375rem;
     width: 4.375rem;
@@ -54,8 +119,18 @@
     background-color: #D9D9D9;
     overflow: hidden;
 }
-.job-card-img-container img{
+
+.job-card-img-container img {
     height: 100%;
     width: 100%;
     object-fit: cover;
+}
+.approved-candidate-card{
+    background-color:#d8f3dc !important ;
+}
+.rejected-candidate-card{
+    background-color: #f6cacc !important;
+}
+.invited-candidate-card{
+    background-color: #adcbf1 !important;
 }

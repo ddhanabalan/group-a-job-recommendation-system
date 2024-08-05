@@ -1,12 +1,12 @@
 from .. import recruitermodel, recruiterschema, Session, SQLAlchemyError
 
 
-def create_init(db: Session, user: recruiterschema.RecruiterBase) -> bool:
+def create(db: Session, user: recruiterschema.RecruiterBase) -> bool:
     """
-    Create a new seeker's details in the database.
+    Create a new seeker's details in the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         user (recruiterschema.RecruiterBase): Seeker details to be created.
 
     Returns:
@@ -14,20 +14,22 @@ def create_init(db: Session, user: recruiterschema.RecruiterBase) -> bool:
     """
     try:
         user_model = recruitermodel.RecruiterDetails(**user.dict())
+        print(user_model)
         db.add(user_model)
         db.commit()
         return True
-    except SQLAlchemyError:
+    except SQLAlchemyError as e:
+        print(e)
         db.rollback()
         return False
 
 
-def get_userid_from_username(db: Session, username: str) -> int | None:
+def get_userid_from_username(db: Session, username: str):
     """
     Retrieve the user ID of a recruiter by username.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         username (str): Username of the recruiter.
 
     Returns:
@@ -38,6 +40,6 @@ def get_userid_from_username(db: Session, username: str) -> int | None:
             db.query(recruitermodel.RecruiterDetails)
             .filter(recruitermodel.RecruiterDetails.username == username)
             .first()
-        ).user_id
+        )
     except SQLAlchemyError:
         return None

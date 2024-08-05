@@ -8,7 +8,7 @@ def get_all(db: Session, user_id: int) -> List[Type[seekermodel.SeekersPOI]]:
     Retrieve Point of Interest (POI) details of a seeker.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         user_id (int): User ID of the seeker.
 
     Returns:
@@ -29,7 +29,7 @@ def get(db: Session, poi_id: int) -> Type[seekermodel.SeekersPOI] | None:
     Retrieve Point of Interest (POI) details of a seeker.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         poi_id (int): POI id to get from DB.
 
     Returns:
@@ -45,20 +45,19 @@ def get(db: Session, poi_id: int) -> Type[seekermodel.SeekersPOI] | None:
         return None
 
 
-def create(db: Session, poi: seekerschema.SeekersPOI) -> bool:
+def create(db: Session, poi: seekermodel.SeekersPOI) -> bool:
     """
-    Create a new Point of Interest (POI) for a seeker in the database.
+    Create a new Point of Interest (POI) for a seeker in the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         poi (seekerschema.SeekersPOI): POI details to be created.
 
     Returns:
         bool: True if creation is successful, False otherwise.
     """
     try:
-        poi_model = seekermodel.SeekersPOI(**poi.dict())
-        db.add(poi_model)
+        db.add(poi)
         db.commit()
         return True
     except SQLAlchemyError:
@@ -68,10 +67,10 @@ def create(db: Session, poi: seekerschema.SeekersPOI) -> bool:
 
 def update(db: Session, id: int, updated_poi: seekerschema.SeekersPOI) -> bool:
     """
-    Update Point of Interest (POI) details of a seeker in the database.
+    Update Point of Interest (POI) details of a seeker in the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         id (int): User ID of the seeker.
         updated_poi (seekerschema.SeekersPOI): Updated POI details.
 
@@ -91,10 +90,10 @@ def update(db: Session, id: int, updated_poi: seekerschema.SeekersPOI) -> bool:
 
 def delete(db: Session, id: int) -> bool:
     """
-    Delete Point of Interest (POI) details of a seeker from the database.
+    Delete Point of Interest (POI) details of a seeker from the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         id (int): User ID of the seeker.
 
     Returns:
@@ -103,6 +102,28 @@ def delete(db: Session, id: int) -> bool:
     try:
         db.query(seekermodel.SeekersPOI).filter(
             seekermodel.SeekersPOI.id == id
+        ).delete()
+        db.commit()
+        return True
+    except SQLAlchemyError:
+        db.rollback()
+        return False
+
+
+def delete_by_user_id(db: Session, user_id: int) -> bool:
+    """
+    Delete Point of Interest (POI) details of a seeker from the database.py.
+
+    Args:
+        db (Session): SQLAlchemy database.py session.
+        id (int): User ID of the seeker.
+
+    Returns:
+        bool: True if deletion is successful, False otherwise.
+    """
+    try:
+        db.query(seekermodel.SeekersPOI).filter(
+            seekermodel.SeekersPOI.user_id == user_id
         ).delete()
         db.commit()
         return True

@@ -12,25 +12,28 @@ ENV PORT=8000
 ENV RELOAD=True
 ENV USER_API_HOST=userapi
 ENV JOB_API_HOST=jobapi
+ENV MODEL_API_HOST=modelapi
+ENV SERVER_IP="http://career-go.centralindia.cloudapp.azure.com"
 ENV SMTP_SERVER="smtp.gmail.com"
 ENV SMTP_PORT=465
 ENV EMAIL_ADDRESS="careergo.noreply@gmail.com"
-ENV EMAIL_PASSWORD=""
+ENV EMAIL_PASSWORD="txdd fmjg vatx dqyd"
 
 WORKDIR $APP_HOME
 
-RUN apt-get update && apt-get install -y python3-dev default-libmysqlclient-dev build-essential pkg-config && \
+RUN apt-get update && apt-get install -y python3-dev default-libmysqlclient-dev build-essential pkg-config openssl && \
     rm -rf /var/lib/apt/lists/*
 
 COPY ./AuthAPI /app
 COPY ./requirements.txt $APP_HOME/
 
 RUN pip install --no-cache-dir -r requirements.txt
-RUN KEY=$(openssl rand -hex 32)
+RUN openssl rand -hex 32 > key.txt && KEY=$(cat key.txt) && rm key.txt
 
 ENV SECRET_KEY=$KEY
 ENV ALGORITHM=HS256
 ENV ACCESS_TOKEN_EXPIRE_MINUTES=30
+ENV REFRESH_TOKEN_EXPIRE_MINUTES=144
 
 EXPOSE 8000
 

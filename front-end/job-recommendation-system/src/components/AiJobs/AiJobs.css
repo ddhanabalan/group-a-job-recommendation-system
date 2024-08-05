@@ -4,3 +4,44 @@
     flex-direction: column;
     align-items: center;
 }
+.ai-jobs-h3{
+    font-size: 1rem;
+    font-family: Inter-sb;
+    align-self: flex-start;
+    margin: 1rem 0 0 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.ai-clear-response-btn {
+    align-self: flex-end;
+    font-size: .85rem;
+    --primary-color: #ff0486;
+    --secondary-color: #ffd5ea;
+    --hover-color: #ffd5ea;
+    --arrow-width: 10px;
+    --arrow-stroke: 2px;
+    box-sizing: border-box;
+    border: 0;
+    border-radius: 20px;
+    color: var(--secondary-color);
+    padding: .5em 1em;
+    background: var(--primary-color);
+    display: flex;
+    transition: 0.2s background;
+    align-items: center;
+    gap: 0.6em;
+    font-weight: bold;
+    margin: 0 1rem 0 0;
+}
+
+.ai-clear-response-btn .arrow-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.ai-clear-response-btn:hover {
+    background-color: var(--hover-color);
+    color: var(--primary-color);
+}

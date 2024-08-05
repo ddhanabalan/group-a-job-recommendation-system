@@ -2,6 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import { useState, useEffect } from 'react';
 import { setStorage, getStorage } from './storage/storage';
+import { unstable_HistoryRouter as HistoryRouter, useLocation, useNavigate } from 'react-router-dom';
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 import { PrivateRoutes, SeekerRoutes, EmployerRoutes } from './utils/PrivateRoutes';
 import axios from './api/axios';
@@ -23,28 +24,69 @@ import ForgetPasswordResponse from './components/ForgetPassword/ForgetPasswordRe
 import ReviewApplications from './pages/ReviewApplications/ReviewApplications';
 import OtherEmployerProfile from './pages/profile page/OtherEmployerProfile';
 import SeekerJobStatusSection from './pages/SeekerJobStatusSection/SeekerJobStatusSection';
+import JobInviteSection from './pages/JobInviteSection/JobInviteSection';
+import history from './context/NavigationService';
+
+
+function ScrollRestoration() {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [scrollPositions, setScrollPositions] = useState({});
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollPositions((prevPositions) => ({
+        ...prevPositions,
+        [location.pathname]: window.scrollY,
+      }));
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    
+    // Cleanup on component unmount
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [location.pathname]);
+
+  useEffect(() => {
+    const savedPosition = scrollPositions[location.pathname];
+    if (savedPosition !== undefined) {
+      window.scrollTo(0, savedPosition);
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }, [location.pathname, scrollPositions]);
+
+  return null;
+}
+
 function App() {
-  // useEffect(() => {
-  //   setInterval(() => {
-  //     if (getStorage("refToken")) {
-  //       refreshTokens()
-  //     }
-  //   }, 30000)//refresh token every 1 minute
-  // }, [])
-  // const refreshTokens = async () => {
-  //   try {
-  //     const response = await axios.get('/refresh_token', {
-  //       headers: {
-  //         'Authorization': `Bearer ${getStorage("refToken")}`
-  //       }
-  //     })
-  //     console.log(response)
-  //     response && setStorage("refToken", response.data.refresh_token)
-  //     response && setStorage("userToken", response.data.access_token)
-  //   } catch (e) {
-  //     console.log(e)
-  //   }
-  // }
+  useEffect(() => {
+    const refreshInterval = setInterval(() => {
+      if (getStorage("refToken")) {
+        refreshTokens()
+      }
+    }, 900000)//refresh tokens every 15 minutes
+
+    return () => clearInterval(refreshInterval)
+  }, [])
+  const refreshTokens = () => {
+
+    axios.get('/refresh_token', {
+      headers: {
+        'Authorization': `Bearer ${getStorage("refToken")}`
+      }
+   }).then((response) => {
+      console.log(response)
+      setStorage("refToken", response.data.refresh_token)
+      setStorage("userToken", response.data.access_token)
+    }).catch((error) => {
+      console.log(error)
+    })
+
+
+  }
   useEffect(() => {
     SetUser(getStorage("userType"))
   }, []);
@@ -58,7 +100,8 @@ function App() {
   }
   return (
     <>
-      <BrowserRouter>
+      <HistoryRouter history={history}>
+        <ScrollRestoration/>
         <Routes>
           {/* general routes */}
           <Route index element={<LandingPage />} />
@@ -76,7 +119,7 @@ function App() {
           <Route path="/verify/:accessToken" element={<VerifyAccount />} />
           {/* routes common to signed-in users */}
           <Route element={<PrivateRoutes />}>
-            <Route path="/profile" element={user !== null && user === "seeker" ? <ProfileSection data={{}} /> : user ==="recruiter" && <EmployerProfileSection data={{}} />} />
+            <Route path="/profile" element={user !== null && user === "seeker" ? <ProfileSection data={{}} /> : user === "recruiter" && <EmployerProfileSection data={{}} />} />
             <Route path="/profile/:username" element={<OtherUserProfile data={{}} />} />
             <Route path="/e/profile/:username" element={<OtherEmployerProfile data={{}} />} />
             <Route path="/employer-profile" element={<EmployerProfileSection data={{}} />} />
@@ -84,20 +127,22 @@ function App() {
           {/* routes exclusive to seekers */}
           <Route element={<SeekerRoutes />}>
             <Route path="/jobs" element={<JobSection />} />
-            <Route path="/seeker/openings" element={<ReviewApplications userType="seeker"/>} />
+            <Route path="/invite/:invite_id" element={<ReviewApplications userType="seeker" invite={true}/>} />
+            <Route path="/seeker/openings/:company_username/:job_id" element={<ReviewApplications userType="seeker"/>} />
             <Route path="/seeker/applications" element={<SeekerJobStatusSection userType="seeker"/>} />
           </Route>
           {/* routes exclusive to recruiters */}
           <Route element={<EmployerRoutes />}>
             <Route path="/candidates" element={<CandidateSection />} />
-
             <Route path="/employer/job-vacancy" element={<CreateJobVacancy />} />
             <Route path="/employer/review-applications" element={<ReviewApplications userType="employer" />} />
+            <Route path="/employer/job-invite" element={<JobInviteSection userType="employer" />} />
+            
           </Route>
 
           <Route path="*" element={<Error />} />
         </Routes>
-      </BrowserRouter>
+      </HistoryRouter>
     </>
   )
 }

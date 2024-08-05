@@ -3,15 +3,16 @@ import Chip from '@mui/material/Chip';
 import Stack from '@mui/material/Stack';
 import LocationOnIcon from '@mui/icons-material/LocationOn';
 import WorkIcon from '@mui/icons-material/Work';
-import Person2RoundedIcon from '@mui/icons-material/Person2Rounded';
 import profilePlaceholder from '../../images/profile_placeholder.svg';
-import CloseIcon from '@mui/icons-material/Close';
 import DoneIcon from '@mui/icons-material/Done';
-import { Button } from '@mui/material';
-import { v4 as uuid } from 'uuid';
+import CloseIcon from '@mui/icons-material/Close';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import { IconButton } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useState, useEffect } from 'react';
-export default function CandidateCard({ type = null, jobEntryId = null, crLink = null, data, jobApprovalFunction = null,background, profilePictureStyle }) {
+import Tooltip from '@mui/material/Tooltip';
+import {getStorage, setStorage} from '../../storage/storage';
+export default function CandidateCard({ type = null,id=null,  jobEntryId = null, crLink = null, data, jobApprovalFunction = null, removeInvite=null, applicantList=null, background, profilePictureStyle,reloadFn }) {
     const [profile, setProfile] = useState(false)
     const [approval, setApproval] = useState('')
     console.log("cand data", data)
@@ -21,22 +22,27 @@ export default function CandidateCard({ type = null, jobEntryId = null, crLink =
     }
 
     useEffect(() => {
-        if (profile && approval=='') navigate(`/profile/${data.username}`
-            , { state: { presentjobId: jobEntryId, link: crLink } })
-        setProfile(false)
+        if (profile) {
+            navigate(`/profile/${data.username}`, { state: { presentjobId: jobEntryId, link: crLink,  } })
+            if(id){setStorage("current_candidate_element", id);}
+            setProfile(false)
+        }
     }, [profile])
-    useEffect(() => {if(jobApprovalFunction)
-        {if(approval==="approved")jobApprovalFunction(data.job_request_id, "approved", data.applicantID);
-         else if(approval==="rejected")jobApprovalFunction(data.job_request_id, "rejected", data.applicantID);
-        }}, [approval])
+    useEffect(() => {
+        if (jobApprovalFunction) {
+            if (approval === "approved") jobApprovalFunction(data.job_request_id, "approved", data.applicantID);
+            else if (approval === "rejected") jobApprovalFunction(data.job_request_id, "rejected", data.applicantID);
+        }
+    }, [approval])
 
     console.log("experience", data.experience)
+    const candidateCardClass = `card job-card ${data.job_status === "approved" && 'approved-candidate-card ' || data.job_status === "rejected" && 'rejected-candidate-card' ||data.application_type === "invite" && 'invited-candidate-card '|| data.job_status === "applied" && 'applied-candidate-card '}`
     return (
-        <div className="card job-card" style={background} onClick={() => setProfile(true)}>
+        <div className={candidateCardClass} id={id} style={background} onClick={() => setProfile(true)}>
             <div className='job-card-div1'>
                 <h1 className='card-h1'>{data.first_name} {data.last_name}</h1>
                 <Stack direction="row" spacing={1}>
-                    <Chip className="chip-with-icon" icon={<LocationOnIcon />} label={data.city + ',' + data.country || "not available"} />
+                    <Chip className="chip-with-icon" icon={<LocationOnIcon />} label={(data.city?(data.city!=""?data.city + ',':null):null) + (data.country?(data.country!=""?data.country:null):null) || "not available"} />
                     <Chip className="chip-with-icon" icon={<WorkIcon />} label={data.experience + " years"} />
                 </Stack>
                 <Stack className="card-tags" direction="row" spacing={1}>
@@ -50,21 +56,73 @@ export default function CandidateCard({ type = null, jobEntryId = null, crLink =
                 <div className='job-card-img-container' style={profilePictureStyle}>
                     <img src={data.profile_picture ? data.profile_picture : profilePlaceholder} alt="candidate profile" />
                 </div>
-                {type === "review" ?
-                    <div className="application-review-buttons">
-                        <Button variant="contained" onClick={showProfile} sx={{ color: 'black', backgroundColor: '#d2cece', width: 'fit-content', paddingY: "2px", paddingX: "10px", textTransform: "none" }} endIcon={<Person2RoundedIcon />}>
-                            <p>View full profile</p>
-                        </Button>
-                        <Button variant="contained" onClick={()=>setApproval('approved')} sx={{ color: 'black', backgroundColor: '#38b000', width: '100%', paddingY: "2px", paddingX: "10px", textTransform: "none" }} endIcon={<DoneIcon />}>
-                            <p>Approve</p>
-                        </Button>
-                        <Button variant="contained" onClick={()=>setApproval('rejected')} sx={{ color: 'black', backgroundColor: '#fc2828', width: '100%', paddingY: "2px", paddingX: "10px", textTransform: "none" }} endIcon={<CloseIcon />}>
-                            <p>Reject</p>
-                        </Button>
-                    </div>
-                    :
-                    <></>
-                }
+            </div>
+            {type === "review" && data.job_status==="applied" &&
+                <div className="application-review-buttons">
+                    <Tooltip title="Approve" enterDelay={500} leaveDelay={200}>
+                        <IconButton className='application-approve-btn' onClick={(event) => {
+                            event.stopPropagation();
+                            setApproval('approved')
+                            reloadFn()
+                         }}
+                            sx={{ color: '#38b000', backgroundColor: "#d8f3dc" }}>
+                            <DoneIcon />
+                        </IconButton>
+                    </Tooltip>
+                    <Tooltip title="Reject" enterDelay={500} leaveDelay={200}>
+                        <IconButton className='application-reject-btn' onClick={(event) => {
+                            event.stopPropagation();
+                            setApproval('rejected')
+                            reloadFn()
+                         }}
+                            sx={{ color: '#ff0000', backgroundColor: "#f6cacc" }}>
+                            <CloseIcon />
+                        </IconButton>
+                    </Tooltip>
+                </div>
+            }
+            <div className='card-status-div'>
+            {
+                data.application_type == "invite" && data.job_status=="pending" &&
+                <>
+                <div className="invite-status-div invite-status-pending">
+                    <p>Invited</p>
+                    <div className="skill-status blue"></div>
+                </div>
+                </>    
+            }
+            {
+                data.job_status === "approved" && data.application_type == "request" &&
+                <div className="job-status-div job-status-approve">
+                    <p>Approved</p>
+                    <div className="skill-status green"></div>
+                </div>
+            }
+            {
+                data.job_status === "rejected" && data.application_type == "request" && 
+                <div className="job-status-div job-status-reject">
+                    <p>Rejected</p>
+                    <div className="skill-status red"></div>
+                </div>
+            }
+            {
+                data.job_status === "rejected" && data.application_type == "invite" &&
+                <>
+                <div className="job-status-div job-status-reject">
+                    <p>Declined</p>
+                    <div className="skill-status red"></div>
+                </div>
+                
+                </>
+            }
+            {
+                data.job_status === "approved" && data.application_type == "invite" &&
+                <div className="job-status-div job-status-approve">
+                    <p>Accepted</p>
+                    <div className="skill-status green"></div>
+                </div>
+            }
+            
             </div>
         </div>
     )

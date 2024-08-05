@@ -2,22 +2,27 @@
     font-family: Inter-black;
 }
 
+.link-login-signup {
+    color: black;
+}
+
 .signup-container {
-    border-radius: 15px;
+    border-radius: 20px;
     padding: 20px 235px;
-    width: 60%;
-    height: 70vh;
+    width: 50rem;
+    height: 36.6rem;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 10px;
-    background-color: rgba(196, 196, 196, 0.425);
     position: relative;
-    backdrop-filter: blur(10px);
+    background-color: rgba(255, 255, 255, 0.76);
+    backdrop-filter: blur(50px);
+    box-shadow: 0px 0px 25px 1px rgba(0, 0, 0, 0.2);
 }
 
 .details-container {
-    box-shadow: 0px 5px 12px 0px rgba(0, 0, 0, 0.2);
+    box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.2);
     height: fit-content;
     border-radius: 10px;
     width: fit-content;
@@ -33,11 +38,71 @@
     align-self: center;
     position: absolute;
     bottom: 2rem;
-
 }
 
 .login-redirect p {
     font-family: Inter-b;
     font-size: 14px;
-    color: rgb(0, 153, 255);
+    color: rgb(0, 0, 0);
+}
+.continue-btn {
+    font-size: 1rem;
+    --primary-color: rgb(247, 49, 207);
+    --secondary-color: #fff;
+    --hover-color: #111;
+    --arrow-width: 10px;
+    --arrow-stroke: 2px;
+    box-sizing: border-box;
+    border: 0;
+    border-radius: 20px;
+    color: var(--secondary-color);
+    padding: .5em 1.3em;
+    background: var(--primary-color);
+    display: flex;
+    transition: 0.2s background;
+    align-items: center;
+    gap: 0.6em;
+    font-weight: bold;
+    margin: 1.5rem 0 0 0;
+}
+
+.continue-btn .arrow-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.continue-btn .arrow {
+    margin-top: 1px;
+    width: var(--arrow-width);
+    background: var(--primary-color);
+    height: var(--arrow-stroke);
+    position: relative;
+    transition: 0.2s;
+}
+
+.continue-btn .arrow::before {
+    content: "";
+    box-sizing: border-box;
+    position: absolute;
+    border: solid var(--secondary-color);
+    border-width: 0 var(--arrow-stroke) var(--arrow-stroke) 0;
+    display: inline-block;
+    top: -3px;
+    right: 3px;
+    transition: 0.2s;
+    padding: 3px;
+    transform: rotate(-45deg);
+}
+
+.continue-btn:hover {
+    background-color: var(--hover-color);
+}
+
+.continue-btn:hover .arrow {
+    background: var(--secondary-color);
+}
+
+.continue-btn:hover .arrow:before {
+    right: 0;
 }

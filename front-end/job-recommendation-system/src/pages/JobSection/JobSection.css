@@ -1,9 +1,11 @@
 .job-search{
+    position: absolute;
+    top: 0;
     width: 40%;
     display: flex;
-    flex-direction: row;
     align-items: center;
-    justify-content: center;
+    justify-content: space-around;
+    margin-top: 15px;
 }
 
 .job-search-top-bar{
@@ -17,7 +19,9 @@
 }
 .back-icon{
     position: absolute;
-    top: 3%;
-    left: 27%;
+    left: -3rem;
 }
+
+
+
 

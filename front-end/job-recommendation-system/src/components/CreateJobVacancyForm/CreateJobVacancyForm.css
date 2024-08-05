@@ -62,7 +62,7 @@ form{
     right: 32px;
 }
 .create-job-vacancy-company-name-p{
-    padding-left: 0.5rem;
+    padding-left: 4px;
     font-size: .938rem;
     color: #7B7777;
 }
@@ -72,6 +72,9 @@ form{
     border-radius: 50%;
     background-color: #D9D9D9;
     overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .create-job-vacancy-img-container img{
@@ -154,69 +157,80 @@ padding-left: 2rem;
 .create-job-vacancy-details{
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 1rem;
 
 }
 
-.create-job-vacancy-details .detail-divs, .skill-divs, .salary-fields{
+.create-job-vacancy-details .detail-divs, .skill-divs, .salary-fields,.salary-div{
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: 25px;
+    margin-bottom: 1.5rem;
 }
-.details-header-error{
-    position:relative;
-    bottom: 0.7rem;
+.salary-div {
+    gap: 59px;
 }
-.create-job-vacancy-details .detail-divs .option-divs{
+.skill-divs{
+    align-items: flex-start;
+}
+.detail-divs-multiple,.salary-fields{
+    margin-bottom: 0 !important;
+}
+ .vacancy-form-error{
+    position: absolute;
+    bottom: -1.5rem;
+ }
+ .vacancy-form-error-multiple-options{
+    bottom: 0;
+ }
+.option-divs{
     display: flex;
     flex-direction: column;
     gap: 2px;
+    position: relative;
 }
-
-.salary-div{
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 59px;
-}
-
 .last-date-div{
     display: flex;
     flex-direction: row;
     align-items: center;
     gap: 10px;
+    margin-bottom: 1.5rem;
 }
-
-
+.post-vacancy-btn,.post-vacancy-confirm-btn{
+    --primary-color: #2BA84A !important;
+}
+.post-vacancy-edit-btn{
+    --primary-color:#d6761d !important;
+}
+.post-vacancy-edit-btn,.post-vacancy-confirm-btn{
+    padding: .4em 1em !important;
+}
 
 .create-job-vacancy-description-div p{
     margin-bottom: 14px;
 }
 
 .create-job-vacancy-details .skill-divs {
-    margin-top: 8px;
     align-items: start !important;
 }
 .create-job-vacancy-body p{
-    
     font-size: 0.85rem;
     font-family: "Inter-regular";
 }
 
 .create-job-vacancy-body .create-job-desc-field{
     padding-left: 111px;
-    width: 100%;
+    width: 125%;
 }
 
 .create-job-vacancy-body .create-job-skill-field{
     padding-left: 40px;
     width: 90%;
     position: relative;
-    bottom: 2rem;
 }
 .create-job-vacancy-details span{
-    font-size: 1rem;    
+    font-size: 1rem;
 }
 
 .skill-status{
@@ -244,14 +258,30 @@ padding-left: 2rem;
     margin: 0 0 2rem 0;
 }
 
-.post-vacancy-buttons button{
-    width: 170px;
-    height: fit-content;
-}
 
 .helper-text{
-    font-family:Arial, Helvetica, sans-serif !important;
+    font-family:Inter-light;
     font-size: 0.75rem !important;
     position: absolute;
+    bottom: -1.5rem;
     text-align: center;
+}
+
+.submission-status-banner{
+    width: fit-content;
+    padding: 0.5rem 2rem;
+    border-radius: 0.7rem;
+    font-family: "Inter-sb";
+    margin-bottom: 2rem;
+}
+
+.status-success{
+    background-color: rgb(101, 254, 101);
+}
+
+.status-failed{
+    background-color: rgb(247, 186, 105);
+}
+.details-header{
+    font-family: "Inter-sb";
 }

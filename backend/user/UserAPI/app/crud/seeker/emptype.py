@@ -8,7 +8,7 @@ def get_all(db: Session, user_id: int) -> List[Type[seekermodel.SeekersEmpType]]
     Retrieve location type details of a seeker.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         user_id (int): User ID of the seeker.
 
     Returns:
@@ -29,7 +29,7 @@ def get(db: Session, emp_type_id: int) -> Type[seekermodel.SeekersEmpType] | Non
     Retrieve education details of a seeker.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         emp_type_id (int): Emp Type id to get the info.
 
     Returns:
@@ -47,10 +47,10 @@ def get(db: Session, emp_type_id: int) -> Type[seekermodel.SeekersEmpType] | Non
 
 def create(db: Session, emp_type: seekerschema.SeekersEmpType) -> bool:
     """
-    Create a new employment type record for a seeker in the database.
+    Create a new employment type record for a seeker in the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         emp_type (seekerschema.SeekersEmpType): Employment type details to be created.
 
     Returns:
@@ -68,10 +68,10 @@ def create(db: Session, emp_type: seekerschema.SeekersEmpType) -> bool:
 
 def update(db: Session, id: int, updated_emp_type: seekerschema.SeekersEmpType) -> bool:
     """
-    Update employment type details of a seeker in the database.
+    Update employment type details of a seeker in the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         id (int): User ID of the seeker.
         updated_emp_type (seekerschema.SeekersEmpType): Updated employment type details.
 
@@ -91,10 +91,10 @@ def update(db: Session, id: int, updated_emp_type: seekerschema.SeekersEmpType) 
 
 def delete(db: Session, id: int) -> bool:
     """
-    Delete employment type details of a seeker from the database.
+    Delete employment type details of a seeker from the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         id (int): User ID of the seeker.
 
     Returns:
@@ -103,6 +103,28 @@ def delete(db: Session, id: int) -> bool:
     try:
         db.query(seekermodel.SeekersEmpType).filter(
             seekermodel.SeekersEmpType.id == id
+        ).delete()
+        db.commit()
+        return True
+    except SQLAlchemyError:
+        db.rollback()
+        return False
+
+
+def delete_by_user_id(db: Session, user_id: int) -> bool:
+    """
+    Delete employment type details of a seeker from the database.py.
+
+    Args:
+        db (Session): SQLAlchemy database.py session.
+        id (int): User ID of the seeker.
+
+    Returns:
+        bool: True if deletion is successful, False otherwise.
+    """
+    try:
+        db.query(seekermodel.SeekersEmpType).filter(
+            seekermodel.SeekersEmpType.user_id == user_id
         ).delete()
         db.commit()
         return True

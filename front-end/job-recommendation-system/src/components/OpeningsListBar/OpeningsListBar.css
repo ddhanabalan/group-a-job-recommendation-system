@@ -1,11 +1,11 @@
 .left-bar{
     width: 100%;
-    height: 100vh;
+    height: 100%;
     position: relative;
     align-self: start;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    background-color: white;
     
 }
 
@@ -14,72 +14,88 @@
 }
 .openings-search-tile{
     background-color: white;
-    height: 15vh;
+    height: fit-content;
     width: 100%;
-    position: absolute;
-    top: 0%;
     display: flex;
     flex-direction: column;
     align-items: center;
-    overflow-y: auto;
-    box-shadow: 0rem 0.001rem 0.5rem rgb(120, 120, 120);
-    
+    overflow-y: auto; 
 }
-.back-icon{
+.back-icon-opening{
     background-color: #E7E4E4;
     border-radius: 50%;
 }
-.openings-search-tile .create-vacancy-button{
-    position: absolute;
-    top: 60%;
-    left: 13%;
 
-}
 
 .openings-search-tile .create-vacancy-button p{
     font-size: 11px;
 }
-.openings-search-tile .search-bar{
+
+.search-bar{
     width: 100%;
-    height: fit-content;
-    
+    height: 5rem;
     display: flex;
-    flex-direction: row;
     align-items: center;
     justify-content: center;
-    position: absolute;
-    left: -12px;
     gap: 0.7rem;
-    
-
+}
+.create-vacancy-button{
+    align-self: flex-start;
+    margin-left: 1rem;
 }
 .create-vacancy-mui-btn:hover{
 background-color: #eae9e9 !important;
 }
-.openings-search-tile .search-bar .back-icon, .sort-icon{
-    position: relative;
-    top: 21px;
-    left: 5px;
-}
 
 .opening-search{
+    height: fit-content;
     width: 70%;
 }
 .openings-container{
     width: 100%;
-    height: 84vh;
-    top: 16vh;
-    position: absolute;
+    height: 90vh /*fit-content*/ ;/*Change this after work*/
     display: flex;
     flex-direction: column;
     align-items: center;
     overflow-y: auto;
-    box-shadow: 0rem -0.1rem 0.5rem rgb(142, 142, 142);
-    background-color: white;
+    background-color: rgba(255, 255, 255, 0);
+}
+
+.empty-container-message{
+    position: absolute;
+    top: 50%;
+    text-align: center;
+    color: gray;
+    filter: grayscale(100%);
+    
+}
+.empty-container-message-candidates{
+    position: absolute;
+    top: 28%;
+    text-align: center;
+    color: gray;
+    filter: grayscale(100%);
+    
 }
 
 .card-holder{
     width: 95%;
+}
+.user-application-filter{
+    align-self: center;
+    margin-top: 0.1rem ;
+    margin-bottom: 0.7rem;
+}
+
+.user-application-filter-btn{
+    box-shadow: 0px 0px 15px 7px rgba(0, 0, 0, 0.1);
+    /*border: 0.005rem solid rgb(218, 216, 216);*/
+    margin: 0.1rem 0.9rem ;
+}
+
+.fill-space{
+    width: 0.8rem;
+    height: 0.8rem;
 }
 
 

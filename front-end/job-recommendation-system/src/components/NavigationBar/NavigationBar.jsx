@@ -8,6 +8,7 @@ import AccountCircleRoundedIcon from '@mui/icons-material/AccountCircleRounded';
 import ArticleRoundedIcon from '@mui/icons-material/ArticleRounded';
 import WorkRoundedIcon from '@mui/icons-material/WorkRounded';
 import ContactPageRoundedIcon from '@mui/icons-material/ContactPageRounded';
+import Tooltip from '@mui/material/Tooltip';
 import './NavigationBar.css';
 export default function NavigationBar({ active, redirect = null }) {
     console.log("present redirect", redirect);
@@ -19,55 +20,52 @@ export default function NavigationBar({ active, redirect = null }) {
     return (
 
         //code below needs to be optimized, will focus on this later
-        
-            <Stack direction="row" className='nav-bar'>
-                {
-                    redirect ?
-                        <div className="nav-back">
-                            <Link to={redirect.link} state={{ highlightedId: redirect.presentjobId }}>
 
-                                <BackBtn />
-
-                            </Link>
-                        </div>
-                        :
-                        <></>
-
-                }
-                <Link to="/profile">
-                    <IconButton aria-label="profile" className={`nav-btn-profile ${active=="profile"?"nav-btn-active":""}`} >
+        <Stack direction="row" className='nav-bar'>
+            <Link to="/profile">
+                <Tooltip title="Profile" enterDelay={500} leaveDelay={100}>
+                    <IconButton aria-label="profile" className={`nav-btn-profile ${active == "profile" ? "nav-btn-active" : ""}`} >
                         <AccountCircleRoundedIcon fontSize='large' />
                     </IconButton>
-                </Link>
-                {user === "seeker" ?
-                    <>
+                </Tooltip>
+            </Link>
+            {user === "seeker" ?
+                <>
                     <Link to="/jobs">
-                        <IconButton aria-label="job/candidate" className={`nav-btn-explore ${active=="jobs"?"nav-btn-active":""}`}>
-                            <WorkRoundedIcon fontSize='large' />
-                        </IconButton>
-                    </Link> 
-                    <Link to="/seeker/applications">
-                        <IconButton aria-label="job/candidate" className={`nav-btn-application-approval ${active=="job-applications"?"nav-btn-active":""}`}>
-                            <ArticleRoundedIcon fontSize='large' />
-                        </IconButton>
+                        <Tooltip title="Explore Jobs" enterDelay={500} leaveDelay={100}>
+                            <IconButton aria-label="job/candidate" className={`nav-btn-explore ${active == "jobs" ? "nav-btn-active" : ""}`}>
+                                <WorkRoundedIcon fontSize='large' />
+                            </IconButton>
+                        </Tooltip>
                     </Link>
-                    </>
-                    :
-                    <>
+                    <Link to="/seeker/applications">
+                        <Tooltip title="Job Activity" enterDelay={500} leaveDelay={100}>
+                            <IconButton aria-label="job/candidate" className={`nav-btn-application-approval ${active == "job-applications" ? "nav-btn-active" : ""}`}>
+                                <ArticleRoundedIcon fontSize='large' />
+                            </IconButton>
+                        </Tooltip>
+                    </Link>
+                </>
+                :
+                <>
                     <Link to="/candidates">
-                        <IconButton aria-label="job/candidate" className={`nav-btn-explore ${active=="candidates"?"nav-btn-active":""}`}>
-                            <WorkRoundedIcon fontSize='large' />
-                        </IconButton>
+                        <Tooltip title="Explore Candidates" enterDelay={500} leaveDelay={100}>
+                            <IconButton aria-label="job/candidate" className={`nav-btn-explore ${active == "candidates" ? "nav-btn-active" : ""}`}>
+                                <WorkRoundedIcon fontSize='large' />
+                            </IconButton>
+                        </Tooltip>
                     </Link>
                     <Link to="/employer/review-applications">
-                        <IconButton aria-label="job/candidate" className={`nav-btn-review-applications ${active=="review-applications"?"nav-btn-active":""}`}>
+                        <Tooltip title="Candidate Management" enterDelay={500} leaveDelay={100}>
+                        <IconButton aria-label="job/candidate" className={`nav-btn-review-applications ${active == "review-applications" ? "nav-btn-active" : ""}`}>
                             <ContactPageRoundedIcon fontSize='large' />
-                        </IconButton>
+                            </IconButton>
+                        </Tooltip>
                     </Link>
-                    </>
-                }
-            </Stack>
-            
+                </>
+            }
+        </Stack>
+
 
     )
 }

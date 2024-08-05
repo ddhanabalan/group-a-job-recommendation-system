@@ -10,7 +10,7 @@ def get_by_username(
     Retrieve seeker details based on username.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         username (str): Username of the seeker.
 
     Returns:
@@ -31,7 +31,7 @@ def get_by_email(db: Session, email: str) -> Type[seekermodel.SeekersDetails] | 
     Retrieve seeker details based on email.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         email (str): Email address of the seeker.
 
     Returns:
@@ -52,7 +52,7 @@ def get(db: Session, user_id: int) -> Type[seekermodel.SeekersDetails] | None:
     Retrieve seeker details based on user ID.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         user_id (int): User ID of the seeker.
 
     Returns:
@@ -68,12 +68,29 @@ def get(db: Session, user_id: int) -> Type[seekermodel.SeekersDetails] | None:
         return
 
 
-def create(db: Session, seeker_details: seekerschema.SeekersDetails) -> bool:
-    """
-    Create a new seeker's details in the database.
+def get_all(db: Session) -> List[Type[seekermodel.SeekersDetails]] | []:
+    """None
+    Retrieve seeker details based on user ID.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
+        user_id (int): User ID of the seeker.
+
+    Returns:
+        seekermodel.SeekersDetails: Seeker details if found, else None.
+    """
+    try:
+        return db.query(seekermodel.SeekersDetails).all()
+    except SQLAlchemyError:
+        return []
+
+
+def create(db: Session, seeker_details: seekerschema.SeekersDetails) -> bool:
+    """
+    Create a new seeker's details in the database.py.
+
+    Args:
+        db (Session): SQLAlchemy database.py session.
         seeker_details (seekerschema.SeekersDetails): Seeker details to be created.
 
     Returns:
@@ -91,10 +108,10 @@ def create(db: Session, seeker_details: seekerschema.SeekersDetails) -> bool:
 
 def update(db: Session, user_id: int, updated_details: dict) -> bool:
     """
-    Update seeker details in the database.
+    Update seeker details in the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         user_id (int): User ID of the seeker.
         updated_details (seekerschema.SeekersDetails): Updated seeker details.
 
@@ -119,10 +136,10 @@ def update(db: Session, user_id: int, updated_details: dict) -> bool:
 
 def delete(db: Session, user_id: int) -> bool:
     """
-    Delete seeker details from the database.
+    Delete seeker details from the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         user_id (int): User ID of the seeker to be deleted.
 
     Returns:

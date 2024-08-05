@@ -14,3 +14,11 @@
     display: flex;
     justify-content: center;
 }
+
+
+@keyframes slideIn {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }

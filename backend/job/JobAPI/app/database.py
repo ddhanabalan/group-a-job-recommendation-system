@@ -1,3 +1,21 @@
+"""
+Database module
+
+This module contains the database configuration for the JobAPI application.
+
+The database is configured using SQLAlchemy.
+
+The database engine is created using the URL_DATABASE.
+
+The SessionLocal is created using the engine.
+
+The Base is created using the declarative_base.
+
+The SQL_HOST, SQL_USER, SQL_PASSWORD, SQL_PORT, and DATABASE_NAME variables
+are imported from the config module.
+
+"""
+
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base

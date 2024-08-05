@@ -10,7 +10,7 @@ def get(
     Retrieve achievements of a recruiter.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         user_id (int): User ID of the recruiter.
 
     Returns:
@@ -34,7 +34,7 @@ def get_all(
     Retrieve achievements of a recruiter.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         user_id (int): User ID of the recruiter.
 
     Returns:
@@ -53,10 +53,10 @@ def get_all(
 
 def create(db: Session, speciality: recruiterschema.RecruiterSpeciality) -> bool:
     """
-    Create a new speciality record for a recruiter in the database.
+    Create a new speciality record for a recruiter in the database.py.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         speciality (recruiterschema.RecruiterSpeciality): Achievement details to be created.
 
     Returns:
@@ -79,7 +79,7 @@ def update(
     Update achievements of a recruiter.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         user_id (int): User ID of the recruiter.
         speciality (str): New speciality.
 
@@ -102,7 +102,7 @@ def delete(db: Session, speciality_id: int) -> bool:
     Delete achievements of a recruiter.
 
     Args:
-        db (Session): SQLAlchemy database session.
+        db (Session): SQLAlchemy database.py session.
         user_id (int): User ID of the recruiter.
 
     Returns:

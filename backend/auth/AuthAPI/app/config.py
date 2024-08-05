@@ -1,3 +1,10 @@
+"""
+Configuration module for the AuthAPI application.
+
+This module contains the configuration values needed to run the application.
+Values are read from the environment variables and stored in constants.
+"""
+
 import os
 from dotenv import load_dotenv
 
@@ -12,6 +19,7 @@ RELOAD = bool(os.environ.get("RELOAD"))
 SECRET_KEY = os.environ.get("SECRET_KEY")
 ALGORITHM = os.environ.get("ALGORITHM")
 ACCESS_TOKEN_EXPIRE_MINUTES = int(os.environ.get("ACCESS_TOKEN_EXPIRE_MINUTES"))
+REFRESH_TOKEN_EXPIRE_MINUTES = int(os.environ.get("REFRESH_TOKEN_EXPIRE_MINUTES"))
 
 # Retrieving SQL Connection Info from env
 SQL_HOST = os.environ.get("SQL_HOST")
@@ -23,6 +31,8 @@ DATABASE_NAME = os.environ.get("DATABASE_NAME")
 # Retrieving Host for User and Job API
 USER_API_HOST = os.environ.get("USER_API_HOST")
 JOB_API_HOST = os.environ.get("JOB_API_HOST")
+MODEL_API_HOST=os.environ.get("MODEL_API_HOST")
+SERVER_IP=os.environ.get("SERVER_IP")
 
 GOOGLE_OAUTH_CLIENT_ID = os.environ.get("GOOGLE_OAUTH_CLIENT_ID")
 GOOGLE_OAUTH_CLIENT_SECRET = os.environ.get("GOOGLE_OAUTH_CLIENT_SECRET")
